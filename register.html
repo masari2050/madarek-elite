@@ -196,11 +196,15 @@
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            console.log('🔵 Form submitted - Starting registration...');
+            
             // Get form values
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            console.log('🔵 Form data:', { name, email, gender: selectedGender });
             
             // Validation
             if (!name || !email || !password || !confirmPassword) {
@@ -230,7 +234,9 @@
             submitBtn.textContent = 'جاري التسجيل...';
 
             try {
-                // Sign up with Supabase
+                console.log('🔵 Calling Supabase signUp...');
+                
+                // Sign up with Supabase - with emailRedirectTo disabled for testing
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -238,36 +244,41 @@
                         data: {
                             name: name,
                             gender: selectedGender
-                        }
+                        },
+                        emailRedirectTo: undefined // Disable email confirmation for testing
                     }
                 });
 
-                if (error) throw error;
+                console.log('🔵 Supabase response:', { data, error });
 
-                // Success!
-                showSuccess('تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني لتفعيل الحساب 📧');
+                if (error) {
+                    console.error('🔴 Supabase error:', error);
+                    throw error;
+                }
+
+                console.log('✅ Registration successful!');
                 
-                // Clear form
-                document.getElementById('registerForm').reset();
-                selectedGender = null;
-                document.getElementById('maleBtn').className = 'flex-1 py-3 border-2 border-indigo-500 text-indigo-600 rounded-lg hover:bg-indigo-50 transition font-medium';
-                document.getElementById('femaleBtn').className = 'flex-1 py-3 border-2 border-pink-400 text-pink-500 rounded-lg hover:bg-pink-50 transition font-medium';
-
-                // Redirect to login after 3 seconds
+                // Success!
+                showSuccess('تم إنشاء الحساب بنجاح! جاري تحويلك للوحة التحكم...');
+                
+                // Redirect to dashboard immediately (for testing without email confirmation)
                 setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 3000);
+                    console.log('🔵 Redirecting to dashboard...');
+                    window.location.href = 'dashboard.html';
+                }, 1500);
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('🔴 Error during registration:', error);
                 
                 // Handle specific errors
-                if (error.message.includes('already registered')) {
+                if (error.message.includes('already registered') || error.message.includes('already been registered')) {
                     showError('هذا البريد الإلكتروني مسجل مسبقاً');
                 } else if (error.message.includes('Invalid email')) {
                     showError('البريد الإلكتروني غير صحيح');
+                } else if (error.message.includes('Password')) {
+                    showError('كلمة المرور ضعيفة. استخدم أحرف وأرقام');
                 } else {
-                    showError('حدث خطأ في التسجيل. حاول مرة أخرى');
+                    showError('حدث خطأ: ' + error.message);
                 }
             } finally {
                 // Re-enable submit button
@@ -275,6 +286,8 @@
                 submitBtn.textContent = 'إنشاء الحساب 🚀';
             }
         });
+        
+        console.log('✅ Script loaded successfully');
     </script>
 
 </body>
