@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+        <div class="text-center mb-8">
+            <div class="text-4xl mb-3">🎓</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">أهلاً بعودتك</h1>
+            <p class="text-gray-600">سجّل دخولك وكمّل رحلتك</p>
+        </div>
+
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">البريد الإلكتروني</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="example@email.com"
+                >
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">كلمة المرور</label>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="أدخل كلمة المرور"
+                    >
+                    <button 
+                        type="button"
+                        onclick="togglePass()"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <div id="errorMsg" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"></div>
+
+            <button 
+                type="submit"
+                id="submitBtn"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+                تسجيل الدخول 🚀
+            </button>
+        </form>
+
+        <div class="text-center mt-6">
+            <p class="text-gray-600">
+                ما عندك حساب؟ 
+                <a href="register.html" class="text-indigo-600 font-bold hover:underline">سجّل الآن</a>
+            </p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="index.html" class="text-gray-500 text-sm hover:underline">← العودة للصفحة الرئيسية</a>
+        </div>
+    </div>
+
+    <script>
+        const sb = window.supabase.createClient(
+            'https://czzcmbxejxbotjemyuqf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+        );
+
+        function togglePass() {
+            const f = document.getElementById('password');
+            f.type = f.type === 'password' ? 'text' : 'password';
+        }
+
+        function showErr(m) {
+            const e = document.getElementById('errorMsg');
+            e.textContent = m;
+            e.classList.remove('hidden');
+        }
+
+        async function checkAuth() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        checkAuth();
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const em = document.getElementById('email').value.trim();
+            const p = document.getElementById('password').value;
+            
+            if (!em || !p) {
+                showErr('الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'جاري تسجيل الدخول...';
+
+            try {
+                const { data, error } = await sb.auth.signInWithPassword({
+                    email: em,
+                    password: p
+                });
+
+                if (error) throw error;
+
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                if (error.message.includes('Invalid')) {
+                    showErr('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+                } else if (error.message.includes('not confirmed')) {
+                    showErr('لم يتم تأكيد البريد الإلكتروني');
+                } else {
+                    showErr('حدث خطأ: ' + error.message);
+                }
+                
+                btn.disabled = false;
+                btn.textContent = 'تسجيل الدخول 🚀';
+            }
+        });
+    </script>
+</body>
+</html>

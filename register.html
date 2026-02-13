@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+        <div class="text-center mb-8">
+            <div class="text-4xl mb-3">🎓</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">مرحباً بك في مساري</h1>
+            <p class="text-gray-600">أنشئ حسابك وابدأ رحلتك نحو التميز</p>
+        </div>
+
+        <form id="registerForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">الاسم الكامل</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="أدخل اسمك الكامل"
+                >
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">البريد الإلكتروني</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="example@email.com"
+                >
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">كلمة المرور</label>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        required
+                        minlength="6"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="أدخل كلمة المرور (6 أحرف على الأقل)"
+                    >
+                    <button 
+                        type="button"
+                        onclick="togglePass('password')"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">تأكيد كلمة المرور</label>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        required
+                        minlength="6"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="أعد إدخال كلمة المرور"
+                    >
+                    <button 
+                        type="button"
+                        onclick="togglePass('confirmPassword')"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">الجنس</label>
+                <div class="flex gap-3">
+                    <button 
+                        type="button" 
+                        id="maleBtn"
+                        onclick="pickGender('male')"
+                        class="flex-1 py-3 border-2 border-indigo-500 text-indigo-600 rounded-lg hover:bg-indigo-50 transition font-medium"
+                    >
+                        ذكر 👨
+                    </button>
+                    <button 
+                        type="button" 
+                        id="femaleBtn"
+                        onclick="pickGender('female')"
+                        class="flex-1 py-3 border-2 border-pink-400 text-pink-500 rounded-lg hover:bg-pink-50 transition font-medium"
+                    >
+                        أنثى 👩
+                    </button>
+                </div>
+            </div>
+
+            <div id="errorMsg" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"></div>
+            <div id="successMsg" class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm"></div>
+
+            <button 
+                type="submit"
+                id="submitBtn"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+                إنشاء الحساب 🚀
+            </button>
+        </form>
+
+        <div class="text-center mt-6">
+            <p class="text-gray-600">
+                عندك حساب؟ 
+                <a href="login.html" class="text-indigo-600 font-bold hover:underline">سجّل دخول</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const sb = window.supabase.createClient(
+            'https://czzcmbxejxbotjemyuqf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+        );
+
+        let userGender = null;
+
+        function togglePass(id) {
+            const f = document.getElementById(id);
+            f.type = f.type === 'password' ? 'text' : 'password';
+        }
+
+        function pickGender(g) {
+            userGender = g;
+            const mb = document.getElementById('maleBtn');
+            const fb = document.getElementById('femaleBtn');
+            
+            if (g === 'male') {
+                mb.className = 'flex-1 py-3 border-2 border-indigo-600 bg-indigo-600 text-white rounded-lg transition font-medium';
+                fb.className = 'flex-1 py-3 border-2 border-pink-400 text-pink-500 rounded-lg hover:bg-pink-50 transition font-medium';
+            } else {
+                fb.className = 'flex-1 py-3 border-2 border-pink-400 bg-pink-400 text-white rounded-lg transition font-medium';
+                mb.className = 'flex-1 py-3 border-2 border-indigo-500 text-indigo-600 rounded-lg hover:bg-indigo-50 transition font-medium';
+            }
+        }
+
+        function showErr(m) {
+            const e = document.getElementById('errorMsg');
+            const s = document.getElementById('successMsg');
+            e.textContent = m;
+            e.classList.remove('hidden');
+            s.classList.add('hidden');
+        }
+
+        function showSuccess(m) {
+            const s = document.getElementById('successMsg');
+            const e = document.getElementById('errorMsg');
+            s.textContent = m;
+            s.classList.remove('hidden');
+            e.classList.add('hidden');
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const n = document.getElementById('name').value.trim();
+            const em = document.getElementById('email').value.trim();
+            const p = document.getElementById('password').value;
+            const cp = document.getElementById('confirmPassword').value;
+            
+            if (!n || !em || !p || !cp) {
+                showErr('الرجاء ملء جميع الحقول');
+                return;
+            }
+            
+            if (!userGender) {
+                showErr('الرجاء اختيار الجنس');
+                return;
+            }
+            
+            if (p.length < 6) {
+                showErr('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            if (p !== cp) {
+                showErr('كلمة المرور وتأكيد كلمة المرور غير متطابقتين');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'جاري التسجيل...';
+
+            try {
+                const { data: signUpData, error: signUpError } = await sb.auth.signUp({
+                    email: em,
+                    password: p,
+                    options: {
+                        data: { name: n, gender: userGender }
+                    }
+                });
+
+                if (signUpError) throw signUpError;
+
+                // Try to sign in immediately
+                const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({
+                    email: em,
+                    password: p
+                });
+
+                if (signInError) {
+                    showSuccess('تم إنشاء الحساب! تحقق من بريدك الإلكتروني لتفعيل الحساب');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                } else {
+                    showSuccess('تم إنشاء الحساب بنجاح! جاري تحويلك...');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+                }
+
+            } catch (error) {
+                if (error.message.includes('already')) {
+                    showErr('هذا البريد الإلكتروني مسجل مسبقاً');
+                } else {
+                    showErr('حدث خطأ: ' + error.message);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'إنشاء الحساب 🚀';
+            }
+        });
+    </script>
+</body>
+</html>

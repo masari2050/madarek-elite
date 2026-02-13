@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🎓</span>
+                <h1 class="text-2xl font-bold text-indigo-600">مساري</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-700" id="userName">مرحباً</span>
+                <button 
+                    onclick="logOut()"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+                >
+                    تسجيل الخروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- Welcome Card -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white mb-8">
+            <h2 class="text-3xl font-bold mb-2">مرحباً بك <span id="displayName"></span>!</h2>
+            <p class="text-indigo-100">استعد لرحلتك نحو التميز في اختبارات القدرات والتحصيلي</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Total Questions -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-4xl">📊</span>
+                    <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">نشط</span>
+                </div>
+                <h3 class="text-gray-600 text-sm mb-1">إجمالي الأسئلة المحلولة</h3>
+                <p class="text-3xl font-bold text-gray-800" id="totalAnswered">0</p>
+            </div>
+
+            <!-- Correct Answers -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-4xl">✅</span>
+                    <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">دقيق</span>
+                </div>
+                <h3 class="text-gray-600 text-sm mb-1">الإجابات الصحيحة</h3>
+                <p class="text-3xl font-bold text-gray-800" id="correctAnswers">0</p>
+            </div>
+
+            <!-- Success Rate -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-4xl">🎯</span>
+                    <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm font-medium">نسبة</span>
+                </div>
+                <h3 class="text-gray-600 text-sm mb-1">نسبة النجاح</h3>
+                <p class="text-3xl font-bold text-gray-800" id="successRate">0%</p>
+            </div>
+        </div>
+
+        <!-- Subjects Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Verbal Aptitude -->
+            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer" onclick="startPractice('قدرات لفظي')">
+                <div class="text-5xl mb-4 text-center">📚</div>
+                <h3 class="text-xl font-bold text-gray-800 text-center mb-2">قدرات لفظي</h3>
+                <p class="text-gray-600 text-center text-sm mb-4">استيعاب المقروء والتناظر اللفظي</p>
+                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition">
+                    ابدأ التدريب →
+                </button>
+            </div>
+
+            <!-- Quantitative Aptitude -->
+            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer" onclick="startPractice('قدرات كمي')">
+                <div class="text-5xl mb-4 text-center">🔢</div>
+                <h3 class="text-xl font-bold text-gray-800 text-center mb-2">قدرات كمي</h3>
+                <p class="text-gray-600 text-center text-sm mb-4">الرياضيات والحساب</p>
+                <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition">
+                    ابدأ التدريب →
+                </button>
+            </div>
+
+            <!-- Achievement Test -->
+            <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer" onclick="startPractice('تحصيلي')">
+                <div class="text-5xl mb-4 text-center">📖</div>
+                <h3 class="text-xl font-bold text-gray-800 text-center mb-2">تحصيلي</h3>
+                <p class="text-gray-600 text-center text-sm mb-4">المناهج الدراسية</p>
+                <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition">
+                    ابدأ التدريب →
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const sb = window.supabase.createClient(
+            'https://czzcmbxejxbotjemyuqf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+        );
+
+        let currentUser = null;
+
+        async function checkAuth() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = session.user;
+            loadUserData();
+        }
+
+        function loadUserData() {
+            const name = currentUser.user_metadata?.name || 'طالب مساري';
+            document.getElementById('userName').textContent = 'مرحباً ' + name;
+            document.getElementById('displayName').textContent = name;
+            
+            // Load stats (from localStorage for now)
+            const stats = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            const totalAnswered = stats.length;
+            const correctAnswers = stats.filter(a => a.isCorrect).length;
+            const successRate = totalAnswered > 0 ? Math.round((correctAnswers / totalAnswered) * 100) : 0;
+            
+            document.getElementById('totalAnswered').textContent = totalAnswered;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+
+        async function logOut() {
+            await sb.auth.signOut();
+            window.location.href = 'login.html';
+        }
+
+        function startPractice(subject) {
+            localStorage.setItem('selectedSubject', subject);
+            window.location.href = 'practice.html';
+        }
+
+        checkAuth();
+    </script>
+
+</body>
+</html>
