@@ -1,152 +1,170 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - مساري</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen flex items-center justify-center p-4">
-
-    <div class="w-full max-w-md">
-        <!-- Logo/Title -->
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+        <!-- Logo & Title -->
         <div class="text-center mb-8">
-            <a href="index.html" class="inline-flex items-center gap-3 hover:opacity-80 transition mb-3">
-                <div class="text-5xl">🎓</div>
-                <h1 class="text-5xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                    مساري
-                </h1>
-            </a>
-            <p class="text-gray-700 text-lg font-medium mt-3">مرحباً بعودتك 👋</p>
+            <div class="text-4xl mb-3">🎓</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">أهلاً بعودتك</h1>
+            <p class="text-gray-600">سجّل دخولك وكمّل رحلتك</p>
         </div>
 
         <!-- Login Form -->
-        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">تسجيل الدخول</h2>
-
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
-                
-                <!-- Email -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-2">البريد الإلكتروني</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        required 
-                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none transition"
-                        placeholder="example@email.com"
-                    >
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-2">كلمة المرور</label>
-                    <div class="relative">
-                        <input 
-                            type="password" 
-                            id="password" 
-                            required 
-                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none transition"
-                            placeholder="اكتب كلمة المرور"
-                        >
-                        <button 
-                            type="button" 
-                            onclick="togglePassword()"
-                            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                        >
-                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Error Message -->
-                <div id="errorMessage" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                    البريد الإلكتروني أو كلمة المرور غير صحيحة
-                </div>
-
-                <!-- Submit Button -->
-                <button 
-                    type="submit" 
-                    class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-105"
+        <form id="loginForm" class="space-y-4">
+            
+            <!-- Email -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">البريد الإلكتروني</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="example@email.com"
                 >
-                    تسجيل الدخول
-                </button>
+            </div>
 
-            </form>
+            <!-- Password -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">كلمة المرور</label>
+                <div class="relative">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="أدخل كلمة المرور"
+                    >
+                    <button 
+                        type="button"
+                        onclick="togglePassword()"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                        👁️
+                    </button>
+                </div>
+            </div>
 
-            <!-- Register Link -->
-            <p class="text-center text-gray-600 mt-6">
-                ما عندك حساب؟
-                <a href="register.html" class="text-indigo-600 font-medium hover:underline">سجل الآن</a>
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"></div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit"
+                id="submitBtn"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+                تسجيل الدخول 🚀
+            </button>
+        </form>
+
+        <!-- Register Link -->
+        <div class="text-center mt-6">
+            <p class="text-gray-600">
+                ما عندك حساب؟ 
+                <a href="register.html" class="text-indigo-600 font-bold hover:underline">سجّل الآن</a>
             </p>
         </div>
 
         <!-- Back to Home -->
-        <div class="text-center mt-6">
-            <a href="index.html" class="text-gray-600 hover:text-gray-800 text-sm">
-                ← العودة للرئيسية
-            </a>
+        <div class="text-center mt-4">
+            <a href="index.html" class="text-gray-500 text-sm hover:underline">← العودة للصفحة الرئيسية</a>
         </div>
     </div>
 
     <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Toggle password visibility
         function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
-                `;
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                `;
+            const field = document.getElementById('password');
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        // Check if user is already logged in
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                window.location.href = 'dashboard.html';
             }
         }
 
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
+        // Run on page load
+        checkAuth();
 
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-
-            // Get user from localStorage
-            const storedUser = localStorage.getItem('masari_user');
             
-            if (!storedUser) {
-                errorMessage.classList.remove('hidden');
+            // Validation
+            if (!email || !password) {
+                showError('الرجاء ملء جميع الحقول');
                 return;
             }
 
-            const user = JSON.parse(storedUser);
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري تسجيل الدخول...';
 
-            // Verify credentials
-            if (user.email === email && user.password === password) {
-                // Login successful
+            try {
+                // Sign in with Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                // Success! Redirect to dashboard
                 window.location.href = 'dashboard.html';
-            } else {
-                // Login failed
-                errorMessage.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Handle specific errors
+                if (error.message.includes('Invalid login credentials')) {
+                    showError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+                } else if (error.message.includes('Email not confirmed')) {
+                    showError('الرجاء تفعيل حسابك من البريد الإلكتروني أولاً');
+                } else {
+                    showError('حدث خطأ في تسجيل الدخول. حاول مرة أخرى');
+                }
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'تسجيل الدخول 🚀';
             }
-        }
+        });
     </script>
 
 </body>
