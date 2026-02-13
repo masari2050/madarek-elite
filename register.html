@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-integration.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>* { font-family: 'Tajawal', sans-serif; }</style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+        <!-- Logo/Title -->
+        <div class="text-center mb-8">
+            <a href="index.html" class="inline-flex items-center gap-3 hover:opacity-80 transition mb-3">
+                <div class="text-5xl">🎓</div>
+                <h1 class="text-5xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                    مساري
+                </h1>
+            </a>
+            <p class="text-gray-700 text-lg font-medium mt-3">🚀 يلّا نبدأ مشوارك للتفوق</p>
+            <p class="text-gray-500 text-sm">سجل الحين وابدأ تدريبك المجاني</p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">إنشاء حساب جديد</h2>
+
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-5">
+                <!-- Name -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">الاسم</label>
+                    <input type="text" id="name" required placeholder="اكتب اسمك"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition">
+                </div>
+
+                <!-- Gender -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">الجنس</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="selectGender('male')" id="maleBtn"
+                            class="px-4 py-3 border-2 border-gray-300 rounded-lg font-medium text-gray-700 hover:border-indigo-500 transition">
+                            ذكر
+                        </button>
+                        <button type="button" onclick="selectGender('female')" id="femaleBtn"
+                            class="px-4 py-3 border-2 border-gray-300 rounded-lg font-medium text-gray-700 hover:border-pink-500 transition">
+                            أنثى
+                        </button>
+                    </div>
+                    <input type="hidden" id="gender" required>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="email" required placeholder="example@email.com"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition">
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">كلمة المرور</label>
+                    <div class="relative">
+                        <input type="password" id="password" required placeholder="على الأقل 6 أحرف"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition pr-12">
+                        <button type="button" onclick="togglePassword('password')"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">تأكيد كلمة المرور</label>
+                    <div class="relative">
+                        <input type="password" id="confirmPassword" required placeholder="أعد كتابة كلمة المرور"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition pr-12">
+                        <button type="button" onclick="togglePassword('confirmPassword')"
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" id="submitBtn"
+                    class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-3 rounded-lg font-bold text-lg hover:shadow-xl transition-all hover:scale-105">
+                    إنشاء الحساب
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <p class="text-center text-gray-600 mt-6">
+                عندك حساب؟ 
+                <a href="login.html" class="text-indigo-600 font-medium hover:text-indigo-800">سجل دخول</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-gray-500 text-sm mt-6">
+            © 2025 مساري - العودة للرئيسية
+        </p>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+            <div class="w-20 h-20 mx-auto bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white text-4xl mb-6">
+                ✓
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-3">تم إنشاء حسابك بنجاح</h3>
+            <p class="text-lg text-gray-700 mb-6" id="motivationMessage"></p>
+            <button onclick="goToDashboard()"
+                class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-3 rounded-lg font-bold hover:shadow-lg transition">
+                ابدأ الآن
+            </button>
+        </div>
+    </div>
+
+    <script src="motivations.js"></script>
+    <script>
+        let selectedGender = null;
+
+        function selectGender(gender) {
+            selectedGender = gender;
+            document.getElementById('gender').value = gender;
+            
+            const maleBtn = document.getElementById('maleBtn');
+            const femaleBtn = document.getElementById('femaleBtn');
+            
+            maleBtn.classList.remove('border-indigo-500', 'bg-indigo-50', 'text-indigo-700', 'border-pink-500', 'bg-pink-50', 'text-pink-700');
+            femaleBtn.classList.remove('border-indigo-500', 'bg-indigo-50', 'text-indigo-700', 'border-pink-500', 'bg-pink-50', 'text-pink-700');
+            
+            if (gender === 'male') {
+                maleBtn.classList.add('border-indigo-500', 'bg-indigo-50', 'text-indigo-700');
+            } else {
+                femaleBtn.classList.add('border-pink-500', 'bg-pink-50', 'text-pink-700');
+            }
+        }
+
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const gender = document.getElementById('gender').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!gender) {
+                alert('الرجاء اختيار الجنس');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('كلمة المرور غير متطابقة');
+                return;
+            }
+            
+            const user = {
+                name: name,
+                gender: gender,
+                email: email,
+                password: password,
+                createdAt: Date.now()
+            };
+            
+            localStorage.setItem('masari_user', JSON.stringify(user));
+            
+            const message = getMotivationalMessage(gender);
+            document.getElementById('motivationMessage').textContent = message;
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

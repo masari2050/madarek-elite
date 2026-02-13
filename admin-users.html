@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المستخدمين - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>* { font-family: 'Tajawal', sans-serif; }</style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="admin.html" class="text-gray-600 hover:text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </a>
+                <h1 class="text-2xl font-black text-gray-800">👥 إدارة المستخدمين</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-gray-600" id="adminName">المدير</span>
+                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                    خروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-blue-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">الطلاب</span>
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">👨‍🎓</div>
+                </div>
+                <p class="text-3xl font-black text-blue-600" id="studentsCount">0</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-green-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">المعلمين</span>
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">👨‍🏫</div>
+                </div>
+                <p class="text-3xl font-black text-green-600" id="teachersCount">0</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-purple-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">الدعم الفني</span>
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl">🛟</div>
+                </div>
+                <p class="text-3xl font-black text-purple-600" id="supportCount">0</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-amber-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">المشتركين</span>
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-2xl">💎</div>
+                </div>
+                <p class="text-3xl font-black text-amber-600" id="subscribersCount">0</p>
+            </div>
+        </div>
+
+        <!-- Add User Button -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">قائمة المستخدمين</h2>
+            <button onclick="openAddUserModal()" class="bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-600 transition flex items-center gap-2">
+                <span class="text-xl">➕</span>
+                إضافة مستخدم
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-xl p-4 mb-6 shadow-sm flex gap-4 flex-wrap">
+            <button onclick="filterUsers('all')" id="filter-all" class="px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium">
+                الكل
+            </button>
+            <button onclick="filterUsers('student')" id="filter-student" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
+                طلاب
+            </button>
+            <button onclick="filterUsers('teacher')" id="filter-teacher" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
+                معلمين
+            </button>
+            <button onclick="filterUsers('support')" id="filter-support" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
+                دعم فني
+            </button>
+            <button onclick="filterUsers('admin')" id="filter-admin" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
+                مدراء
+            </button>
+        </div>
+
+        <!-- Users Table -->
+        <div class="bg-white rounded-xl shadow-lg border overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b-2">
+                    <tr>
+                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">الاسم</th>
+                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">البريد</th>
+                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">الدور</th>
+                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">الحالة</th>
+                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">تاريخ التسجيل</th>
+                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            لا يوجد مستخدمين
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Add/Edit User Modal -->
+    <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
+            <h2 class="text-3xl font-black mb-6" id="modalTitle">إضافة مستخدم جديد</h2>
+            
+            <form id="userForm" class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">الاسم الكامل</label>
+                        <input type="text" id="userName" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="userEmail" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
+                        <input type="password" id="userPassword" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
+                        <p class="text-xs text-gray-500 mt-1">اتركها فارغة للتعديل</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">الجنس</label>
+                        <select id="userGender" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
+                            <option value="male">ذكر</option>
+                            <option value="female">أنثى</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">الدور الوظيفي</label>
+                    <select id="userRole" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
+                        <option value="student">طالب - يمكنه حل الأسئلة فقط</option>
+                        <option value="teacher">معلم - يمكنه إضافة وتعديل الأسئلة</option>
+                        <option value="support">دعم فني - يمكنه عرض بيانات الطلاب</option>
+                        <option value="admin">مدير - صلاحيات كاملة</option>
+                    </select>
+                </div>
+
+                <div id="subscriptionSection">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">نوع الاشتراك (للطلاب)</label>
+                    <select id="userSubscription" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
+                        <option value="free">مجاني</option>
+                        <option value="monthly">شهري</option>
+                        <option value="yearly">سنوي</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-indigo-500 text-white py-3 rounded-xl font-bold hover:bg-indigo-600 transition">
+                        حفظ
+                    </button>
+                    <button type="button" onclick="closeUserModal()" class="px-8 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300 transition">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check admin
+        const currentUser = JSON.parse(localStorage.getItem('masari_user') || 'null');
+        if (!currentUser || currentUser.role !== 'admin') {
+            alert('غير مصرح لك بالدخول');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('adminName').textContent = currentUser.name;
+
+        // Load users
+        let users = JSON.parse(localStorage.getItem('masari_all_users') || '[]');
+        let currentFilter = 'all';
+        let editingUserId = null;
+
+        // Initialize with sample data if empty
+        if (users.length === 0) {
+            users = [
+                {
+                    id: 'user_' + Date.now(),
+                    name: 'عبدالله',
+                    email: 'test@admin.com',
+                    role: 'student',
+                    gender: 'male',
+                    subscription: 'monthly',
+                    createdAt: Date.now()
+                }
+            ];
+            localStorage.setItem('masari_all_users', JSON.stringify(users));
+        }
+
+        function loadStats() {
+            const students = users.filter(u => u.role === 'student').length;
+            const teachers = users.filter(u => u.role === 'teacher').length;
+            const support = users.filter(u => u.role === 'support').length;
+            const subscribers = users.filter(u => u.role === 'student' && u.subscription !== 'free').length;
+
+            document.getElementById('studentsCount').textContent = students;
+            document.getElementById('teachersCount').textContent = teachers;
+            document.getElementById('supportCount').textContent = support;
+            document.getElementById('subscribersCount').textContent = subscribers;
+        }
+
+        function loadUsers() {
+            const tbody = document.getElementById('usersTable');
+            const filtered = currentFilter === 'all' ? users : users.filter(u => u.role === currentFilter);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">لا يوجد مستخدمين</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(user => {
+                const roleLabels = {
+                    student: 'طالب',
+                    teacher: 'معلم',
+                    support: 'دعم فني',
+                    admin: 'مدير'
+                };
+
+                const roleColors = {
+                    student: 'bg-blue-100 text-blue-700',
+                    teacher: 'bg-green-100 text-green-700',
+                    support: 'bg-purple-100 text-purple-700',
+                    admin: 'bg-red-100 text-red-700'
+                };
+
+                const subLabels = {
+                    free: 'مجاني',
+                    monthly: 'شهري',
+                    yearly: 'سنوي'
+                };
+
+                const date = new Date(user.createdAt).toLocaleDateString('ar-SA');
+
+                return `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium text-gray-800">${user.name}</td>
+                        <td class="px-6 py-4 text-gray-600">${user.email}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium ${roleColors[user.role]}">
+                                ${roleLabels[user.role]}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            ${user.role === 'student' ? `<span class="text-sm text-gray-600">${subLabels[user.subscription || 'free']}</span>` : '-'}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${date}</td>
+                        <td class="px-6 py-4">
+                            <button onclick="editUser('${user.id}')" class="text-blue-600 hover:underline ml-3">تعديل</button>
+                            <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:underline">حذف</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterUsers(role) {
+            currentFilter = role;
+            
+            // Update button styles
+            ['all', 'student', 'teacher', 'support', 'admin'].forEach(r => {
+                const btn = document.getElementById(`filter-${r}`);
+                if (r === role) {
+                    btn.className = 'px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300';
+                }
+            });
+
+            loadUsers();
+        }
+
+        function openAddUserModal() {
+            editingUserId = null;
+            document.getElementById('modalTitle').textContent = 'إضافة مستخدم جديد';
+            document.getElementById('userForm').reset();
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            editingUserId = userId;
+            document.getElementById('modalTitle').textContent = 'تعديل مستخدم';
+            document.getElementById('userName').value = user.name;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userGender').value = user.gender;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userSubscription').value = user.subscription || 'free';
+            document.getElementById('userPassword').value = '';
+            
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function deleteUser(userId) {
+            if (!confirm('متأكد من حذف هذا المستخدم؟')) return;
+
+            users = users.filter(u => u.id !== userId);
+            localStorage.setItem('masari_all_users', JSON.stringify(users));
+            loadStats();
+            loadUsers();
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+            editingUserId = null;
+        }
+
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const userData = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                gender: document.getElementById('userGender').value,
+                role: document.getElementById('userRole').value,
+                subscription: document.getElementById('userSubscription').value
+            };
+
+            if (editingUserId) {
+                // Edit existing user
+                const index = users.findIndex(u => u.id === editingUserId);
+                users[index] = { ...users[index], ...userData };
+                
+                const password = document.getElementById('userPassword').value;
+                if (password) {
+                    users[index].password = password;
+                }
+            } else {
+                // Add new user
+                const newUser = {
+                    id: 'user_' + Date.now(),
+                    ...userData,
+                    password: document.getElementById('userPassword').value || '123456',
+                    createdAt: Date.now()
+                };
+                users.push(newUser);
+            }
+
+            localStorage.setItem('masari_all_users', JSON.stringify(users));
+            closeUserModal();
+            loadStats();
+            loadUsers();
+        });
+
+        function logout() {
+            if (confirm('متأكد تبي تسجل خروج؟')) {
+                window.location.href = 'admin.html';
+            }
+        }
+
+        // Initialize
+        loadStats();
+        loadUsers();
+    </script>
+</body>
+</html>

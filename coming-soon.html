@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قريباً - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-fadeInUp { animation: fadeInUp 1s ease-out; }
+        .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 min-h-screen overflow-y-auto relative">
+    
+    <!-- Animated Background -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
+        <div class="absolute bottom-20 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="max-w-5xl w-full text-center">
+            
+            <!-- Logo -->
+            <div class="animate-fadeInUp mb-8">
+                <h1 class="text-6xl md:text-8xl font-black text-white mb-4 animate-pulse-slow">
+                    مساري
+                </h1>
+                <div class="h-2 w-32 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Main Message -->
+            <div class="animate-fadeInUp delay-100 mb-12">
+                <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+                    قادم بطريقة
+                    <span class="block gradient-text text-5xl md:text-7xl mt-2">
+                        جديدة ومختلفة
+                    </span>
+                </h2>
+                <p class="text-xl md:text-2xl text-purple-200 max-w-3xl mx-auto leading-relaxed">
+                    نحضّر لك تجربة تعليمية لم تشهدها من قبل<br>
+                    <span class="text-white font-bold">استعد لمستوى جديد من التميز</span>
+                </p>
+            </div>
+
+            <!-- Features Preview -->
+            <div class="animate-fadeInUp delay-200 grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:scale-105 transition-all">
+                    <div class="text-5xl mb-3 animate-float">🎯</div>
+                    <h3 class="text-xl font-bold text-white mb-2">تحليل ذكي</h3>
+                    <p class="text-purple-200 text-sm">تقنيات متقدمة لفهم أعمق</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:scale-105 transition-all">
+                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 0.5s;">📊</div>
+                    <h3 class="text-xl font-bold text-white mb-2">محتوى شامل</h3>
+                    <p class="text-purple-200 text-sm">تغطية كاملة ومتجددة</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:scale-105 transition-all">
+                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 1s;">⚡</div>
+                    <h3 class="text-xl font-bold text-white mb-2">سرعة وكفاءة</h3>
+                    <p class="text-purple-200 text-sm">وصول سريع ونتائج فورية</p>
+                </div>
+            </div>
+
+            <!-- Countdown Badge -->
+            <div class="animate-fadeInUp delay-300 mb-12">
+                <div class="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-full px-8 py-4 shadow-2xl animate-pulse-slow">
+                    <p class="text-white font-black text-2xl md:text-3xl">
+                        🚀 قريباً جداً
+                    </p>
+                </div>
+            </div>
+
+            <!-- Notification Form -->
+            <div class="animate-fadeInUp delay-400 max-w-md mx-auto mb-12">
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                    <h3 class="text-xl font-bold text-white mb-4">تبي تكون أول من يعرف؟</h3>
+                    <form class="flex flex-col md:flex-row gap-3">
+                        <input 
+                            type="email" 
+                            placeholder="بريدك الإلكتروني"
+                            class="flex-1 px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                        >
+                        <button 
+                            type="submit"
+                            class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:shadow-xl transition-all hover:scale-105"
+                        >
+                            أعلمني
+                        </button>
+                    </form>
+                    <p class="text-purple-200 text-xs mt-3">سنرسل لك إشعار فور الإطلاق</p>
+                </div>
+            </div>
+
+            <!-- Supervisor -->
+            <div class="animate-fadeInUp delay-400">
+                <p class="text-purple-300 text-sm mb-2">بإشراف</p>
+                <p class="text-white font-bold text-xl">الأستاذ / عبدالله الزهراني</p>
+            </div>
+
+            <!-- Social Links -->
+            <div class="animate-fadeInUp delay-400 mt-12">
+                <p class="text-purple-300 text-sm mb-4">تابعنا</p>
+                <div class="flex justify-center gap-6">
+                    <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl hover:scale-110 transition-all border border-white/20">
+                        𝕏
+                    </a>
+                    <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl hover:scale-110 transition-all border border-white/20">
+                        📱
+                    </a>
+                    <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl hover:scale-110 transition-all border border-white/20">
+                        ✉️
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="relative z-10 pb-4 text-center">
+        <p class="text-purple-300 text-sm">© 2026 مساري - جميع الحقوق محفوظة</p>
+    </div>
+
+</body>
+</html>

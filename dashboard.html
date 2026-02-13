@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-integration.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحتي - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-indigo-100">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg" id="userAvatar"></div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="font-bold text-gray-800" id="userName">الطالب</h2>
+                        <!-- Subscription Badge -->
+                        <span id="subscriptionBadge" class="hidden px-2 py-0.5 rounded-full text-xs font-bold"></span>
+                    </div>
+                    <p class="text-xs text-gray-500" id="userRole">مستوى: مبتدئ</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Quick Stats (للمجانيين فقط) -->
+                <div id="quickTrialInfo" class="hidden text-right bg-amber-50 px-4 py-2 rounded-lg border border-amber-200">
+                    <p class="text-xs text-amber-700 font-medium">باقي لك</p>
+                    <p class="text-lg font-black text-amber-900"><span id="headerRemainingQuestions">10</span> سؤال</p>
+                </div>
+                <button onclick="logout()" class="text-sm text-gray-600 hover:text-red-500 transition">
+                    تسجيل خروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- Welcome Message -->
+        <div class="bg-gradient-to-r from-indigo-500 to-blue-500 rounded-2xl p-6 mb-6 text-white shadow-lg">
+            <h1 class="text-2xl font-bold mb-2" id="welcomeMessage">مرحبًا بك</h1>
+            <p class="text-indigo-100" id="motivationalMessage">استعد لتحقيق أهدافك</p>
+        </div>
+
+        <!-- Free Trial Banner (للمجانيين فقط) -->
+        <div id="freeTrialBanner" class="hidden bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-2xl p-6 mb-6 text-white shadow-xl">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">🎁</span>
+                        <h3 class="text-2xl font-black">باقي لك <span id="remainingQuestions">10</span> أسئلة مجانية فقط!</h3>
+                    </div>
+                    <p class="text-white/90 text-lg mb-3">اشترك الحين واحصل على +300 سؤال متنوع مع تحليل تفصيلي لأدائك</p>
+                    <div class="flex gap-2 text-sm flex-wrap">
+                        <span class="bg-white/20 px-3 py-1 rounded-full">✅ بنك أسئلة ضخم</span>
+                        <span class="bg-white/20 px-3 py-1 rounded-full">📊 تحليل دقيق</span>
+                        <span class="bg-white/20 px-3 py-1 rounded-full">🎯 تتبع التقدم</span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="pricing.html" class="block bg-white text-orange-600 px-8 py-4 rounded-xl font-black text-lg hover:shadow-2xl transition-all hover:scale-105">
+                        🚀 اشترك الآن
+                    </a>
+                    <p class="text-xs text-white/80 mt-2">خصم 20٪ - كود: WELCOME20</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <!-- Total Questions -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-600 text-sm">إجمالي الأسئلة</span>
+                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">📝</span>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800" id="totalQuestions">0</p>
+            </div>
+
+            <!-- Correct Answers -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-600 text-sm">الإجابات الصحيحة</span>
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">✅</span>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-green-600" id="correctAnswers">0</p>
+            </div>
+
+            <!-- Wrong Answers -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-600 text-sm">الإجابات الخاطئة</span>
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">❌</span>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-red-600" id="wrongAnswers">0</p>
+            </div>
+
+            <!-- Success Rate -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-600 text-sm">نسبة النجاح</span>
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">🎯</span>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-blue-600" id="successRate">0%</p>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-100">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-gray-800">تقدمك هذا الأسبوع</h3>
+                <span class="text-sm text-gray-500" id="weeklyProgress">0 سؤال</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <!-- Start Practice -->
+            <a href="select-section.html" class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-1">ابدأ التدريب</h3>
+                        <p class="text-indigo-100 text-sm">حل أسئلة جديدة</p>
+                    </div>
+                    <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
+                        <span class="text-3xl">🚀</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Detailed Stats -->
+            <a href="stats.html" class="bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all hover:scale-105 group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-1">إحصائياتي</h3>
+                        <p class="text-purple-100 text-sm">تحليل تفصيلي لأدائك</p>
+                    </div>
+                    <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition">
+                        <span class="text-3xl">📊</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Review Mistakes -->
+            <button onclick="reviewMistakes()" class="bg-white border-2 border-red-200 text-gray-800 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all hover:scale-105 group relative">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold mb-1">راجع أخطائك</h3>
+                        <p class="text-gray-500 text-sm">تعلم من الأخطاء السابقة</p>
+                    </div>
+                    <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center group-hover:bg-red-100 transition">
+                        <span class="text-3xl">📖</span>
+                    </div>
+                </div>
+                <span id="mistakesCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">0</span>
+            </button>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>📊</span>
+                آخر النشاطات
+            </h3>
+            <div id="recentActivity" class="space-y-3">
+                <p class="text-gray-500 text-center py-8">لا توجد نشاطات حتى الآن<br><span class="text-sm">ابدأ بحل الأسئلة لعرض تقدمك</span></p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Trial Ended Modal -->
+    <div id="trialEndedModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl animate-bounce-in">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-6xl">🎉</span>
+                </div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">خلصت كل الأسئلة المجانية!</h2>
+                <p class="text-lg text-gray-600">أنت الحين جاهز للمستوى التالي 🚀</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 mb-6">
+                <p class="text-xl font-bold text-indigo-900 mb-4">اشترك واحصل على:</p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</span>
+                        <p class="text-gray-700">+300 سؤال متنوع في كل الأقسام</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</span>
+                        <p class="text-gray-700">تحليل مفصل لأدائك ونقاط ضعفك</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</span>
+                        <p class="text-gray-700">تتبع تقدمك اليومي والأسبوعي</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</span>
+                        <p class="text-gray-700">أسئلة جديدة تُضاف باستمرار</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 mb-6 text-center">
+                <p class="text-amber-900 font-bold text-lg">🎁 خصم خاص لأول 100 مشترك</p>
+                <p class="text-amber-700 text-2xl font-black">20% خصم - كود: WELCOME20</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="goToPricing()" class="flex-1 bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition-all hover:scale-105">
+                    💎 شاهد الباقات
+                </button>
+                <button onclick="closeTrialModal()" class="px-6 bg-gray-100 text-gray-600 py-4 rounded-xl font-bold hover:bg-gray-200 transition">
+                    لاحقاً
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motivations Script -->
+    <script src="motivations.js"></script>
+
+    <script>
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem('masari_user') || 'null');
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+
+        // Load user data
+        function loadUserData() {
+            const userName = document.getElementById('userName');
+            const userAvatar = document.getElementById('userAvatar');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const motivationalMessage = document.getElementById('motivationalMessage');
+
+            // Set user name and avatar
+            userName.textContent = user.name;
+            userAvatar.textContent = user.name.charAt(0);
+
+            // Set welcome message based on gender
+            const greeting = user.gender === 'female' ? 'أهلاً' : 'أهلاً';
+            welcomeMessage.textContent = `${greeting} ${user.name}`;
+
+            // Set motivational message
+            if (typeof getMotivationalMessage === 'function') {
+                motivationalMessage.textContent = getMotivationalMessage(user.gender);
+            }
+
+            // ============================================
+            // ✅ Update Subscription Badge & Trial Info
+            // ============================================
+            updateSubscriptionDisplay();
+        }
+
+        // Update subscription display
+        function updateSubscriptionDisplay() {
+            const FREE_TRIAL_LIMIT = 10;
+            const subscription = JSON.parse(localStorage.getItem('masari_subscription') || 'null');
+            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            const remaining = FREE_TRIAL_LIMIT - attempts.length;
+
+            const badge = document.getElementById('subscriptionBadge');
+            const quickInfo = document.getElementById('quickTrialInfo');
+            const headerRemaining = document.getElementById('headerRemainingQuestions');
+            const roleEl = document.getElementById('userRole');
+
+            if (subscription && subscription.plan !== 'free') {
+                // مشترك مدفوع
+                badge.classList.remove('hidden');
+                badge.classList.add('bg-gradient-to-r', 'from-yellow-400', 'to-orange-500', 'text-white');
+                
+                if (subscription.plan === 'monthly') {
+                    badge.textContent = '💎 مشترك شهري';
+                } else if (subscription.plan === 'yearly') {
+                    badge.textContent = '👑 مشترك سنوي';
+                }
+                
+                roleEl.textContent = 'عضو مميز';
+                quickInfo.classList.add('hidden');
+            } else {
+                // مجاني
+                badge.classList.remove('hidden');
+                badge.classList.add('bg-gray-200', 'text-gray-700');
+                badge.textContent = '🆓 مجاني';
+                
+                roleEl.textContent = `مستوى: مبتدئ`;
+                
+                // عرض الأسئلة المتبقية
+                if (remaining > 0 && remaining <= 10) {
+                    quickInfo.classList.remove('hidden');
+                    headerRemaining.textContent = remaining;
+                    
+                    // تغيير اللون حسب العدد
+                    if (remaining <= 3) {
+                        quickInfo.className = quickInfo.className.replace('amber', 'red');
+                    }
+                }
+            }
+        }
+
+        // Load statistics
+        function loadStatistics() {
+            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            const mistakes = JSON.parse(localStorage.getItem('masari_mistakes') || '[]');
+
+            const total = attempts.length;
+            const correct = attempts.filter(a => a.isCorrect).length;
+            const wrong = attempts.filter(a => !a.isCorrect).length;
+            const successRate = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+            document.getElementById('totalQuestions').textContent = total;
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('successRate').textContent = successRate + '%';
+            document.getElementById('mistakesCount').textContent = mistakes.length;
+
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = successRate + '%';
+
+            // Weekly progress (questions this week)
+            const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+            const weeklyQuestions = attempts.filter(a => a.timestamp > oneWeekAgo).length;
+            document.getElementById('weeklyProgress').textContent = weeklyQuestions + ' سؤال';
+
+            // ============================================
+            // ✅ Free Trial Logic
+            // ============================================
+            checkFreeTrial(total);
+        }
+
+        // Check free trial status
+        function checkFreeTrial(totalAttempts) {
+            const FREE_TRIAL_LIMIT = 50; // ⬆️ زودناه عشان تشوف البانر (عندك 41 سؤال)
+            const subscription = JSON.parse(localStorage.getItem('masari_subscription') || 'null');
+            
+            // لو مشترك، ما نعرض البانر
+            if (subscription && subscription.plan !== 'free') {
+                return;
+            }
+
+            const remaining = FREE_TRIAL_LIMIT - totalAttempts;
+            
+            // لو باقي أسئلة، نعرض البانر
+            if (remaining > 0 && remaining <= 15) { // ⬆️ زودنا الحد عشان يظهر لك
+                const banner = document.getElementById('freeTrialBanner');
+                const remainingEl = document.getElementById('remainingQuestions');
+                
+                banner.classList.remove('hidden');
+                remainingEl.textContent = remaining;
+                
+                // تغيير اللون حسب العدد المتبقي
+                if (remaining <= 5) {
+                    banner.className = banner.className.replace('from-amber-500', 'from-red-500');
+                    banner.className = banner.className.replace('via-orange-500', 'via-red-600');
+                    banner.className = banner.className.replace('to-red-500', 'to-pink-600');
+                }
+            }
+            
+            // لو خلصت، نحفظ حالة
+            if (remaining <= 0) {
+                localStorage.setItem('masari_trial_ended', 'true');
+            }
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            const recentActivity = document.getElementById('recentActivity');
+
+            if (attempts.length === 0) return;
+
+            // Get last 5 attempts
+            const recent = attempts.slice(-5).reverse();
+            
+            recentActivity.innerHTML = recent.map(attempt => {
+                const date = new Date(attempt.timestamp);
+                const timeAgo = getTimeAgo(date);
+                const icon = attempt.isCorrect ? '✅' : '❌';
+                const color = attempt.isCorrect ? 'text-green-600' : 'text-red-600';
+                const text = attempt.isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة';
+
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl">${icon}</span>
+                            <div>
+                                <p class="font-medium ${color}">${text}</p>
+                                <p class="text-xs text-gray-500">${timeAgo}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get time ago
+        function getTimeAgo(date) {
+            const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+            
+            if (seconds < 60) return 'الآن';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' دقيقة';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + ' ساعة';
+            return Math.floor(seconds / 86400) + ' يوم';
+        }
+
+        // Review mistakes
+        function reviewMistakes() {
+            const mistakes = JSON.parse(localStorage.getItem('masari_mistakes') || '[]');
+            if (mistakes.length === 0) {
+                alert('ما شاء الله، ما عندك أخطاء لحد الحين');
+                return;
+            }
+            localStorage.setItem('masari_review_mode', 'true');
+            window.location.href = 'practice.html';
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('متأكد تبي تسجل خروج؟')) {
+                localStorage.removeItem('masari_user');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Go to pricing
+        function goToPricing() {
+            window.location.href = 'pricing.html';
+        }
+
+        // Close trial modal
+        function closeTrialModal() {
+            document.getElementById('trialEndedModal').classList.add('hidden');
+        }
+
+        // Show trial ended modal if needed
+        function showTrialModalIfNeeded() {
+            const trialEnded = localStorage.getItem('masari_trial_ended');
+            const modalShown = sessionStorage.getItem('trial_modal_shown');
+            
+            if (trialEnded === 'true' && !modalShown) {
+                setTimeout(() => {
+                    document.getElementById('trialEndedModal').classList.remove('hidden');
+                    sessionStorage.setItem('trial_modal_shown', 'true');
+                }, 1000);
+            }
+        }
+
+        // Initialize dashboard
+        loadUserData();
+        loadStatistics();
+        loadRecentActivity();
+        showTrialModalIfNeeded();
+    </script>
+
+</body>
+</html>

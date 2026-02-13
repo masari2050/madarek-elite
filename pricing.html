@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأسعار - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-indigo-100">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                مساري
+            </a>
+            <div class="flex gap-3">
+                <a href="login.html" class="px-4 py-2 text-indigo-600 font-medium hover:text-indigo-800 transition">
+                    تسجيل دخول
+                </a>
+                <a href="register.html" class="px-4 py-2 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg transition">
+                    إنشاء حساب
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <div class="inline-block px-4 py-2 bg-green-100 rounded-full text-green-700 text-sm font-medium mb-4">
+                🎁 ابدأ بتجربة مجانية
+            </div>
+            <h1 class="text-5xl font-black text-gray-800 mb-4">اختر الخطة المناسبة لك</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                ابدأ مجاناً، ثم اختر الخطة اللي تناسبك لتستمر في رحلة التميز
+            </p>
+        </div>
+
+        <!-- Limited Offer Banner -->
+        <div class="bg-gradient-to-r from-red-500 to-pink-500 rounded-2xl p-6 text-center text-white mb-12 shadow-lg">
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-2xl">🔥</span>
+                <h3 class="text-2xl font-bold">عرض محدود</h3>
+                <span class="text-2xl">🔥</span>
+            </div>
+            <p class="text-lg">وفّر 120 ريال عند الاشتراك السنوي - العرض ينتهي قريباً</p>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+
+            <!-- Free Trial -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm border-2 border-gray-200 hover:shadow-lg transition-all">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        🆓
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">تجربة مجانية</h3>
+                    <div class="text-4xl font-black text-gray-800 mb-1">0 ريال</div>
+                    <p class="text-sm text-gray-500">للأبد</p>
+                </div>
+
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-600">10 أسئلة مجانية</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-600">إحصائيات أساسية</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-600">رسائل تحفيزية</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-gray-300 text-xl">✗</span>
+                        <span class="text-gray-400">بنك الأسئلة الكامل</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-gray-300 text-xl">✗</span>
+                        <span class="text-gray-400">مراجعة الأخطاء</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-gray-300 text-xl">✗</span>
+                        <span class="text-gray-400">إحصائيات متقدمة</span>
+                    </li>
+                </ul>
+
+                <a href="register.html" class="block w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-bold text-center hover:bg-gray-200 transition">
+                    ابدأ التجربة
+                </a>
+            </div>
+
+            <!-- Monthly Plan (Most Popular) -->
+            <div class="bg-white rounded-2xl p-8 shadow-xl border-2 border-indigo-500 relative hover:shadow-2xl transition-all transform scale-105">
+                <!-- Popular Badge -->
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-6 py-1 rounded-full text-sm font-bold">
+                    الأكثر شعبية
+                </div>
+
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        📅
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">اشتراك شهري</h3>
+                    <div class="text-5xl font-black text-indigo-600 mb-1">29 ريال</div>
+                    <p class="text-sm text-gray-500">شهرياً</p>
+                </div>
+
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">أسئلة غير محدودة</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">30+ سؤال متنوع</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">مراجعة الأخطاء</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">إحصائيات متقدمة</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">تحديثات مستمرة</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">دعم فني</span>
+                    </li>
+                </ul>
+
+                <button onclick="subscribe('monthly')" class="block w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-3 rounded-xl font-bold text-center hover:shadow-lg transition-all hover:scale-105">
+                    اشترك الآن
+                </button>
+            </div>
+
+            <!-- Yearly Plan (Best Value) -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm border-2 border-green-200 relative hover:shadow-lg transition-all">
+                <!-- Save Badge -->
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-1 rounded-full text-sm font-bold">
+                    أفضل قيمة - وفّر 120 ريال
+                </div>
+
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        💎
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">اشتراك سنوي</h3>
+                    <div class="text-5xl font-black text-green-600 mb-1">19 ريال</div>
+                    <p class="text-sm text-gray-500">شهرياً (يُدفع 228 سنوياً)</p>
+                    <div class="mt-2 text-sm text-gray-400 line-through">348 ريال</div>
+                </div>
+
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">كل مميزات الشهري</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">وفّر 108 ريال سنوياً</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">خصم 47% على السنة</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">أولوية في التحديثات</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">دعم مميز</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span class="text-gray-700 font-medium">محتوى حصري</span>
+                    </li>
+                </ul>
+
+                <button onclick="subscribe('yearly')" class="block w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-xl font-bold text-center hover:shadow-lg transition-all hover:scale-105">
+                    اشترك الآن
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Features Comparison -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">مقارنة شاملة</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b-2 border-gray-200">
+                            <th class="text-right py-4 px-4 font-bold text-gray-700">الميزة</th>
+                            <th class="text-center py-4 px-4 font-bold text-gray-700">مجاني</th>
+                            <th class="text-center py-4 px-4 font-bold text-indigo-600">شهري</th>
+                            <th class="text-center py-4 px-4 font-bold text-green-600">سنوي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 text-gray-700">عدد الأسئلة</td>
+                            <td class="text-center py-4 px-4">10 أسئلة</td>
+                            <td class="text-center py-4 px-4 text-indigo-600 font-medium">غير محدود</td>
+                            <td class="text-center py-4 px-4 text-green-600 font-medium">غير محدود</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 text-gray-700">بنك الأسئلة</td>
+                            <td class="text-center py-4 px-4">محدود</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 text-gray-700">مراجعة الأخطاء</td>
+                            <td class="text-center py-4 px-4">✗</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 text-gray-700">إحصائيات متقدمة</td>
+                            <td class="text-center py-4 px-4">✗</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 text-gray-700">تحديثات الأسئلة</td>
+                            <td class="text-center py-4 px-4">✗</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="py-4 px-4 text-gray-700">الدعم الفني</td>
+                            <td class="text-center py-4 px-4">محدود</td>
+                            <td class="text-center py-4 px-4">✓</td>
+                            <td class="text-center py-4 px-4">مميز</td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 px-4 text-gray-700">محتوى حصري</td>
+                            <td class="text-center py-4 px-4">✗</td>
+                            <td class="text-center py-4 px-4">✗</td>
+                            <td class="text-center py-4 px-4 text-green-600 font-medium">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">الأسئلة الشائعة</h2>
+            
+            <div class="space-y-6 max-w-3xl mx-auto">
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-2">كيف أبدأ التجربة المجانية؟</h3>
+                    <p class="text-gray-600">سجل حساب جديد وابدأ فوراً بحل 10 أسئلة مجانية بدون الحاجة لبطاقة ائتمانية</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-2">هل يمكنني إلغاء الاشتراك؟</h3>
+                    <p class="text-gray-600">نعم، يمكنك إلغاء الاشتراك في أي وقت من لوحة التحكم</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-2">ما الفرق بين الشهري والسنوي؟</h3>
+                    <p class="text-gray-600">الاشتراك السنوي يوفر لك 120 ريال سنوياً (شهرين مجاناً) بالإضافة لمميزات حصرية</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-gray-800 mb-2">ماذا يحدث بعد انتهاء التجربة المجانية؟</h3>
+                    <p class="text-gray-600">ستحتاج للاشتراك للاستمرار في حل الأسئلة، لكن تبقى إحصائياتك محفوظة</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="container mx-auto px-4 py-8 mt-20 border-t border-gray-200">
+        <div class="text-center text-gray-600">
+            <p class="mb-2">© 2025 مساري - جميع الحقوق محفوظة</p>
+            <p class="text-sm text-gray-500">منصة تعليمية سعودية للاستعداد للاختبارات</p>
+        </div>
+    </footer>
+
+    <script>
+        function subscribe(plan) {
+            // Check if user is logged in
+            const user = JSON.parse(localStorage.getItem('masari_user') || 'null');
+            
+            if (!user) {
+                alert('يرجى إنشاء حساب أولاً');
+                window.location.href = 'register.html';
+                return;
+            }
+            
+            // Redirect to coming soon page (payment gateway)
+            window.location.href = 'coming-soon.html?plan=' + plan;
+        }
+    </script>
+
+</body>
+</html>

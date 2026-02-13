@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قريباً - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-fadeInUp { animation: fadeInUp 1s ease-out; }
+        .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 min-h-screen overflow-y-auto relative">
+    
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
+        <div class="absolute bottom-20 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 1s;"></div>
+    </div>
+
+    <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="max-w-5xl w-full">
+            
+            <!-- Rocket Icon -->
+            <div class="text-center mb-8 animate-fadeInUp">
+                <div class="w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
+                    <span class="text-7xl">🚀</span>
+                </div>
+            </div>
+
+            <!-- Main Title -->
+            <div class="text-center mb-8 animate-fadeInUp delay-100">
+                <h1 class="text-5xl md:text-7xl font-black text-white mb-4">
+                    قريباً
+                </h1>
+                <p class="text-2xl md:text-3xl font-bold mb-2">
+                    <span class="text-yellow-400">👊 شيء جديد في الطريق!</span>
+                </p>
+            </div>
+
+            <!-- Motivational Box -->
+            <div class="bg-gradient-to-r from-purple-600/40 to-indigo-600/40 backdrop-blur-md rounded-3xl p-8 md:p-12 border-2 border-white/20 mb-8 animate-fadeInUp delay-200">
+                <h2 class="text-2xl md:text-3xl font-black text-yellow-400 mb-6 text-center">
+                    نستعد لإطلاق تجربة تعليمية استثنائية
+                </h2>
+                
+                <p class="text-xl md:text-2xl text-white leading-relaxed text-center mb-6">
+                    منصة مساري تأتيك بطريقة <span class="font-black text-yellow-300">جديدة</span> وأسلوب <span class="font-black text-yellow-300">مختلف</span> 
+                    لتحضيرك لاختبارات القدرات والتحصيلي
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-purple-900/50 rounded-2xl p-6 text-center border border-purple-400/30">
+                        <div class="text-4xl mb-3">⚡</div>
+                        <h3 class="text-lg font-bold text-white mb-2">تجربة سلسة</h3>
+                        <p class="text-purple-200 text-sm">واجهة حديثة وسهلة الاستخدام</p>
+                    </div>
+                    <div class="bg-purple-900/50 rounded-2xl p-6 text-center border border-purple-400/30">
+                        <div class="text-4xl mb-3">🎯</div>
+                        <h3 class="text-lg font-bold text-white mb-2">تحليل دقيق</h3>
+                        <p class="text-purple-200 text-sm">تتبع تقدمك ونقاط قوتك</p>
+                    </div>
+                    <div class="bg-purple-900/50 rounded-2xl p-6 text-center border border-purple-400/30">
+                        <div class="text-4xl mb-3">📚</div>
+                        <h3 class="text-lg font-bold text-white mb-2">محتوى شامل</h3>
+                        <p class="text-purple-200 text-sm">تجميعات محدثة وأسئلة متنوعة</p>
+                    </div>
+                </div>
+
+                <!-- Motivation Message -->
+                <div class="bg-gradient-to-r from-amber-900/50 to-orange-900/50 rounded-2xl p-6 border-2 border-yellow-400/40">
+                    <p class="text-center text-yellow-100 text-lg leading-relaxed">
+                        <span class="font-black text-yellow-300">✨ نسعى للأفضل ✨</span><br>
+                        نقدم تجميعات مدروسة بعناية مع التنويه بأن الاجتهاد واردة لكثرة الأسئلة وتعدد المصادر. 
+                        المسؤولية النهائية عن التعلم تقع على المتعلم نفسه. 
+                    </p>
+                </div>
+            </div>
+
+            <!-- Supervisor -->
+            <div class="text-center mb-8 animate-fadeInUp delay-300">
+                <p class="text-purple-300 text-sm mb-2">تحت إشراف</p>
+                <p class="text-white font-bold text-2xl">الأستاذ / عبدالله الزهراني</p>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="text-center animate-fadeInUp delay-300">
+                <a href="index.html" class="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white px-12 py-5 rounded-2xl font-black text-xl hover:shadow-2xl transition-all hover:scale-105 animate-pulse-slow">
+                    ارجع للصفحة الرئيسية
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="relative z-10 pb-4 text-center">
+        <p class="text-purple-300 text-sm">© 2026 مساري - جميع الحقوق محفوظة</p>
+    </div>
+
+</body>
+</html>

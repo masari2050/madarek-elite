@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-integration.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التدريب - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+        .equation-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            direction: ltr;
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            border: 2px solid #e0e7ff;
+        }
+        .option-btn {
+            transition: all 0.3s ease;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(-4px);
+        }
+        .correct-answer {
+            background: #10b981 !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+        .wrong-answer {
+            background: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+        }
+        .show-correct {
+            border: 3px solid #10b981 !important;
+            background: #d1fae5 !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-indigo-100 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button onclick="confirmExit()" class="text-gray-600 hover:text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-bold text-gray-800" id="modeTitle">التدريب</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-sm">
+                    <span class="text-gray-600">السؤال</span>
+                    <span class="font-bold text-indigo-600" id="currentQuestion">1</span>
+                    <span class="text-gray-600">من</span>
+                    <span class="font-bold text-gray-800" id="totalQuestions">10</span>
+                </div>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 h-1">
+            <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-1 transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Question Card -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-6">
+            
+            <!-- Subject Badge -->
+            <div class="flex items-center gap-2 mb-4">
+                <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium" id="subjectBadge">الجبر</span>
+                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm" id="difficultyBadge">متوسط</span>
+            </div>
+
+            <!-- Question Text -->
+            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="questionText">
+                السؤال يظهر هنا
+            </h2>
+
+            <!-- Equation Display -->
+            <div class="equation-display" id="equationDisplay">
+                المعادلة
+            </div>
+
+            <!-- Options -->
+            <div class="space-y-3 mb-6" id="optionsContainer">
+                <!-- Options will be inserted here -->
+            </div>
+
+            <!-- Feedback Message -->
+            <div id="feedbackMessage" class="hidden p-4 rounded-lg mb-4">
+                <p class="font-medium text-lg" id="feedbackText"></p>
+                <p class="text-sm mt-2" id="explanationText"></p>
+            </div>
+
+            <!-- Next Button -->
+            <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all">
+                السؤال التالي
+            </button>
+
+        </div>
+
+        <!-- Score Summary (Hidden until end) -->
+        <div id="summaryCard" class="hidden bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 mx-auto bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full flex items-center justify-center text-white text-4xl mb-4">
+                    🎉
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">انتهيت من التدريب</h2>
+                <p class="text-xl text-gray-600" id="summaryMessage">رسالة تحفيزية</p>
+            </div>
+
+            <!-- Score Details -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="text-center p-4 bg-indigo-50 rounded-xl">
+                    <p class="text-sm text-gray-600 mb-1">الأسئلة</p>
+                    <p class="text-3xl font-bold text-indigo-600" id="summaryTotal">0</p>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-xl">
+                    <p class="text-sm text-gray-600 mb-1">صحيحة</p>
+                    <p class="text-3xl font-bold text-green-600" id="summaryCorrect">0</p>
+                </div>
+                <div class="text-center p-4 bg-red-50 rounded-xl">
+                    <p class="text-sm text-gray-600 mb-1">خاطئة</p>
+                    <p class="text-3xl font-bold text-red-600" id="summaryWrong">0</p>
+                </div>
+            </div>
+
+            <!-- Success Rate Circle -->
+            <div class="text-center mb-6">
+                <div class="inline-block">
+                    <div class="relative w-32 h-32">
+                        <svg class="transform -rotate-90 w-32 h-32">
+                            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="8" fill="none"/>
+                            <circle id="successCircle" cx="64" cy="64" r="56" stroke="#10b981" stroke-width="8" fill="none" 
+                                    stroke-dasharray="352" stroke-dashoffset="352" class="transition-all duration-1000"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-3xl font-bold text-gray-800" id="summaryRate">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-4">
+                <a href="practice.html" class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-4 rounded-xl font-bold text-center hover:shadow-lg transition">
+                    تدرب مرة ثانية
+                </a>
+                <a href="dashboard.html" class="bg-white border-2 border-indigo-200 text-indigo-600 py-4 rounded-xl font-bold text-center hover:shadow-lg transition">
+                    العودة للوحة
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="questions_bank.js"></script>
+    <script src="motivations.js"></script>
+
+    <script>
+        // Global variables
+        let currentQuestionIndex = 0;
+        let questions = [];
+        let sessionAttempts = [];
+        let isReviewMode = false;
+        let user = null;
+
+        // Initialize
+        function init() {
+            // Check if user is logged in
+            user = JSON.parse(localStorage.getItem('masari_user') || 'null');
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if review mode
+            isReviewMode = localStorage.getItem('masari_review_mode') === 'true';
+            
+            if (isReviewMode) {
+                questions = getMistakesQuestions();
+                document.getElementById('modeTitle').textContent = 'مراجعة الأخطاء';
+                localStorage.removeItem('masari_review_mode');
+                
+                if (questions.length === 0) {
+                    alert('ما عندك أخطاء لمراجعتها');
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+            } else {
+                questions = getRandomQuestions(10);
+            }
+
+            document.getElementById('totalQuestions').textContent = questions.length;
+            displayQuestion();
+        }
+
+        // Display current question
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('subjectBadge').textContent = question.subject;
+            
+            // Difficulty in Arabic
+            const difficultyMap = {
+                'easy': 'سهل',
+                'medium': 'متوسط',
+                'hard': 'صعب'
+            };
+            document.getElementById('difficultyBadge').textContent = difficultyMap[question.difficulty];
+            
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('equationDisplay').textContent = question.equation;
+
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Display options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = question.options.map((option, index) => `
+                <button 
+                    onclick="selectAnswer(${index})" 
+                    class="option-btn w-full text-right p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition font-medium text-lg"
+                    id="option-${index}"
+                >
+                    ${option}
+                </button>
+            `).join('');
+
+            // Hide feedback and next button
+            document.getElementById('feedbackMessage').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+        }
+
+        // Select answer
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === question.correctAnswer;
+
+            // Disable all options
+            for (let i = 0; i < question.options.length; i++) {
+                const btn = document.getElementById(`option-${i}`);
+                btn.disabled = true;
+                btn.classList.remove('hover:border-indigo-400', 'hover:bg-indigo-50');
+            }
+
+            // Show feedback
+            const selectedBtn = document.getElementById(`option-${selectedIndex}`);
+            const correctBtn = document.getElementById(`option-${question.correctAnswer}`);
+
+            if (isCorrect) {
+                selectedBtn.classList.add('correct-answer');
+                showFeedback(true, question.explanation);
+            } else {
+                selectedBtn.classList.add('wrong-answer');
+                correctBtn.classList.add('show-correct');
+                showFeedback(false, question.explanation);
+                
+                // Save mistake
+                saveMistake(question.id);
+            }
+
+            // Save attempt
+            saveAttempt(question.id, isCorrect);
+
+            // Show next button
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+
+        // Show feedback message
+        function showFeedback(isCorrect, explanation) {
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            const feedbackText = document.getElementById('feedbackText');
+            const explanationText = document.getElementById('explanationText');
+
+            feedbackMessage.classList.remove('hidden');
+            
+            if (isCorrect) {
+                feedbackMessage.className = 'p-4 rounded-lg mb-4 bg-green-50 border-2 border-green-200';
+                feedbackText.textContent = getCorrectAnswerMessage(user.gender);
+                feedbackText.className = 'font-medium text-lg text-green-800';
+            } else {
+                feedbackMessage.className = 'p-4 rounded-lg mb-4 bg-red-50 border-2 border-red-200';
+                feedbackText.textContent = getWrongAnswerMessage(user.gender);
+                feedbackText.className = 'font-medium text-lg text-red-800';
+            }
+
+            explanationText.textContent = 'التوضيح: ' + explanation;
+            explanationText.className = 'text-sm mt-2 text-gray-700';
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex >= questions.length) {
+                showSummary();
+            } else {
+                displayQuestion();
+            }
+        }
+
+        // Show summary
+        function showSummary() {
+            // Hide question card
+            document.querySelector('.bg-white.rounded-2xl.shadow-lg.border.border-gray-100.p-8.mb-6').classList.add('hidden');
+            
+            // Show summary card
+            const summaryCard = document.getElementById('summaryCard');
+            summaryCard.classList.remove('hidden');
+
+            // Calculate stats
+            const total = sessionAttempts.length;
+            const correct = sessionAttempts.filter(a => a.isCorrect).length;
+            const wrong = total - correct;
+            const successRate = Math.round((correct / total) * 100);
+
+            // Update summary
+            document.getElementById('summaryTotal').textContent = total;
+            document.getElementById('summaryCorrect').textContent = correct;
+            document.getElementById('summaryWrong').textContent = wrong;
+            document.getElementById('summaryRate').textContent = successRate + '%';
+
+            // Check if user completed all questions in this section
+            const selectedSection = localStorage.getItem('masari_selected_section');
+            let allQ = [...questionsBank];
+            const saved = localStorage.getItem('masari_custom_questions');
+            if (saved) {
+                try { allQ = JSON.parse(saved); } catch(e) {}
+            }
+            
+            const sectionQuestions = selectedSection ? allQ.filter(q => q.section === selectedSection) : allQ;
+            
+            // Special message if completed all available questions
+            if (total >= sectionQuestions.length) {
+                document.getElementById('summaryMessage').innerHTML = `
+                    <div class="text-center">
+                        <p class="text-2xl font-bold mb-3">🎉 يلّا! خلصت كل الأسئلة المتاحة!</p>
+                        <p class="text-lg">تابعنا، بنضيف أسئلة جديدة قريب 🚀</p>
+                        <p class="text-sm text-gray-600 mt-2">كل التحية لمثابرتك وجهدك!</p>
+                    </div>
+                `;
+            } else {
+                // Regular motivational message
+                document.getElementById('summaryMessage').textContent = getSessionEndMessage(user.gender, successRate);
+            }
+
+            // Animate success circle
+            const circle = document.getElementById('successCircle');
+            const circumference = 2 * Math.PI * 56;
+            const offset = circumference - (successRate / 100) * circumference;
+            
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 200);
+
+            // Change circle color based on performance
+            if (successRate >= 80) {
+                circle.style.stroke = '#10b981'; // green
+            } else if (successRate >= 60) {
+                circle.style.stroke = '#3b82f6'; // blue
+            } else {
+                circle.style.stroke = '#ef4444'; // red
+            }
+        }
+
+        // Save attempt to localStorage
+        function saveAttempt(questionId, isCorrect) {
+            const attempt = {
+                questionId: questionId,
+                isCorrect: isCorrect,
+                timestamp: Date.now()
+            };
+
+            sessionAttempts.push(attempt);
+
+            // Load existing attempts
+            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            attempts.push(attempt);
+            localStorage.setItem('masari_attempts', JSON.stringify(attempts));
+        }
+
+        // Save mistake
+        function saveMistake(questionId) {
+            const mistakes = JSON.parse(localStorage.getItem('masari_mistakes') || '[]');
+            if (!mistakes.includes(questionId)) {
+                mistakes.push(questionId);
+                localStorage.setItem('masari_mistakes', JSON.stringify(mistakes));
+            }
+        }
+
+        // Get random questions (filter by selected section)
+        function getRandomQuestions(count) {
+            const selectedSection = localStorage.getItem('masari_selected_section');
+            
+            // Load all questions
+            let allQ = [...questionsBank];
+            const saved = localStorage.getItem('masari_custom_questions');
+            if (saved) {
+                try {
+                    const customQ = JSON.parse(saved);
+                    allQ = customQ;
+                } catch(e) {}
+            }
+            
+            // Filter by section if selected
+            let filtered = allQ;
+            if (selectedSection) {
+                filtered = allQ.filter(q => q.section === selectedSection);
+            }
+            
+            // If no questions found, show message
+            if (filtered.length === 0) {
+                alert('ما فيه أسئلة في هذا القسم حالياً');
+                window.location.href = 'dashboard.html';
+                return [];
+            }
+            
+            // Shuffle and return
+            const shuffled = filtered.sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, Math.min(count, shuffled.length));
+        }
+
+        // Get mistakes questions
+        function getMistakesQuestions() {
+            const mistakes = JSON.parse(localStorage.getItem('masari_mistakes') || '[]');
+            
+            let allQ = [...questionsBank];
+            const saved = localStorage.getItem('masari_custom_questions');
+            if (saved) {
+                try {
+                    const customQ = JSON.parse(saved);
+                    allQ = customQ;
+                } catch(e) {}
+            }
+            
+            return allQ.filter(q => mistakes.includes(q.id));
+        }
+
+        // Confirm exit
+        function confirmExit() {
+            if (currentQuestionIndex > 0) {
+                if (confirm('متأكد تبي تطلع؟ التقدم ما بينحفظ')) {
+                    window.location.href = 'dashboard.html';
+                }
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // Start
+        init();
+    </script>
+
+</body>
+</html>
