@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <span class="text-3xl">🎓</span>
+                    <h1 class="text-2xl font-bold text-indigo-600">مساري</h1>
+                </div>
+
+                <!-- User Info -->
+                <div class="flex items-center gap-4">
+                    <div class="text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-gradient-to-r from-orange-400 to-orange-600 text-white text-xs px-3 py-1 rounded-full font-bold">مشترك شهري 🔥</span>
+                            <span class="font-bold text-gray-800" id="userName">عبدالله</span>
+                        </div>
+                        <p class="text-xs text-gray-500">عضو مميز</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        <span id="userInitial">ع</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <!-- Welcome Card -->
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-8 mb-8 shadow-2xl">
+            <h2 class="text-3xl font-bold text-white mb-2">أهلاً <span id="displayName">عبدالله</span>!</h2>
+            <p class="text-indigo-100" id="motivationalQuote">استعد لرحلتك نحو التميز والنجاح</p>
+        </div>
+
+        <!-- Stats Cards - الترتيب الصحيح: إجمالي → صحيحة → خاطئة → نسبة -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            
+            <!-- Total Questions - أول واحد على اليمين -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-3xl">📝</span>
+                    <span class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full font-medium">دقيق</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">إجمالي الأسئلة المحلولة</p>
+                <p class="text-4xl font-bold text-gray-800" id="totalQuestions">0</p>
+            </div>
+
+            <!-- Correct Answers - ثاني واحد -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-3xl">✅</span>
+                    <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">صحيحة</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">الإجابات الصحيحة</p>
+                <p class="text-4xl font-bold text-green-500" id="correctAnswers">0</p>
+            </div>
+
+            <!-- Wrong Answers - ثالث واحد -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-3xl">❌</span>
+                    <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-medium">خاطئة</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">الإجابات الخاطئة</p>
+                <p class="text-4xl font-bold text-red-500" id="wrongAnswers">0</p>
+            </div>
+
+            <!-- Success Rate - آخر واحد على اليسار -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-3xl">🎯</span>
+                    <span class="bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full font-medium">نسبة</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">نسبة النجاح</p>
+                <p class="text-4xl font-bold text-indigo-600" id="successRate">0%</p>
+            </div>
+
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg mb-8">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-lg font-bold text-gray-800">تقدمك هذا الأسبوع</h3>
+                <span class="text-gray-600 text-sm"><span id="weeklyCount">0</span> سؤال</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons - الترتيب الصحيح: راجع أخطائك → إحصائياتي → ابدأ التدريب -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Review Mistakes - أول واحد على اليمين -->
+            <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition cursor-pointer border-2 border-red-200" onclick="window.location.href='mistakes.html'">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="bg-white p-3 rounded-xl">
+                        <span class="text-3xl">📖</span>
+                    </div>
+                    <span id="mistakesBadge" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">0</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">راجع أخطائك</h3>
+                <p class="text-gray-600 text-sm">تعلم من الأخطاء السابقة</p>
+            </div>
+
+            <!-- My Statistics - ثاني واحد -->
+            <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition cursor-pointer" onclick="window.location.href='stats.html'">
+                <div class="bg-white p-3 rounded-xl w-fit mb-4">
+                    <span class="text-3xl">📊</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">إحصائياتي</h3>
+                <p class="text-gray-600 text-sm">تحليل تفصيلي لأدائك</p>
+            </div>
+
+            <!-- Start Training - آخر واحد على اليسار -->
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition cursor-pointer" onclick="window.location.href='select-section.html'">
+                <div class="bg-white p-3 rounded-xl w-fit mb-4">
+                    <span class="text-3xl">🚀</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">ابدأ التدريب</h3>
+                <p class="text-indigo-100 text-sm">حل أسئلة جديدة</p>
+            </div>
+
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg">
+            <div class="flex items-center gap-2 mb-6">
+                <span class="text-2xl">📊</span>
+                <h3 class="text-xl font-bold text-gray-800">آخر النشاطات</h3>
+            </div>
+            <div id="recentActivity" class="space-y-3">
+                <p class="text-gray-500 text-center py-8">ابدأ بحل الأسئلة لتظهر نشاطاتك هنا</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Logout Button (Fixed) -->
+    <button 
+        onclick="logOut()"
+        class="fixed bottom-6 left-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl shadow-lg font-bold transition transform hover:scale-105"
+    >
+        تسجيل خروج
+    </button>
+
+    <script>
+        const sb = window.supabase.createClient(
+            'https://czzcmbxejxbotjemyuqf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+        );
+
+        let currentUser = null;
+
+        // عبارات تحفيزية بالعامية السعودية
+        const motivationalQuotes = [
+            'استعد لرحلتك نحو التميز والنجاح',
+            'كل سؤال تحله خطوة أقرب لحلمك',
+            'النجاح ما يجي صدفة، يبغى له جهد وإصرار',
+            'أنت قادر على تحقيق أهدافك، فقط استمر',
+            'الطريق لدرجتك العالية يبدأ من هنا',
+            'ثق بنفسك، أنت أقوى مما تتخيل',
+            'كل يوم تدريب، كل يوم تطور',
+            'حلمك قريب، بس كمّل واجتهد'
+        ];
+
+        async function checkAuth() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = session.user;
+            loadUserData();
+        }
+
+        function loadUserData() {
+            const name = currentUser.user_metadata?.name || 'طالب مساري';
+            const firstName = name.split(' ')[0];
+            const initial = name.charAt(0);
+            
+            document.getElementById('userName').textContent = firstName;
+            document.getElementById('displayName').textContent = firstName;
+            document.getElementById('userInitial').textContent = initial;
+            
+            // عبارة تحفيزية عشوائية
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('motivationalQuote').textContent = randomQuote;
+            
+            loadStats();
+            loadRecentActivity();
+        }
+
+        function loadStats() {
+            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            const total = attempts.length;
+            const correct = attempts.filter(a => a.isCorrect).length;
+            const wrong = total - correct;
+            const successRate = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            document.getElementById('totalQuestions').textContent = total;
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('successRate').textContent = successRate + '%';
+            
+            document.getElementById('weeklyCount').textContent = total;
+            const progressPercent = total > 0 ? Math.min(Math.round((total / 100) * 100), 100) : 0;
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            
+            document.getElementById('mistakesBadge').textContent = wrong;
+        }
+
+        function loadRecentActivity() {
+            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+            const recentDiv = document.getElementById('recentActivity');
+            
+            if (attempts.length === 0) {
+                recentDiv.innerHTML = '<p class="text-gray-500 text-center py-8">ابدأ بحل الأسئلة لتظهر نشاطاتك هنا</p>';
+                return;
+            }
+            
+            const recent = attempts.slice(-5).reverse();
+            recentDiv.innerHTML = recent.map(a => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${a.isCorrect ? '✅' : '❌'}</span>
+                        <div>
+                            <p class="font-medium text-gray-800">${a.subject || 'سؤال'}</p>
+                            <p class="text-xs text-gray-500">${new Date(a.timestamp).toLocaleDateString('ar-SA')}</p>
+                        </div>
+                    </div>
+                    <span class="text-sm ${a.isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">
+                        ${a.isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        async function logOut() {
+            await sb.auth.signOut();
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        checkAuth();
+    </script>
+
+</body>
+</html>
