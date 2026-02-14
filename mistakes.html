@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راجع أخطائك - مساري</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+
+    <!-- Header -->
+    <header class="max-w-4xl mx-auto mb-6">
+        <div class="flex justify-between items-center">
+            <button onclick="goBack()" class="bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition">
+                ← الرجوع للوحة
+            </button>
+            <div class="text-center">
+                <h1 class="text-2xl font-bold text-gray-800">📖 راجع أخطائك</h1>
+                <p class="text-sm text-gray-600">تعلم من الأخطاء السابقة</p>
+            </div>
+            <div class="w-32"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto">
+        
+        <!-- Loading State -->
+        <div id="loadingState" class="bg-white rounded-2xl shadow-xl p-12 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">جاري تحميل أخطائك...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden bg-white rounded-2xl shadow-xl p-12 text-center">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">ما عندك أخطاء!</h2>
+            <p class="text-gray-600 mb-6">ممتاز! كل إجاباتك كانت صحيحة</p>
+            <button onclick="goBack()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition">
+                العودة للوحة التحكم
+            </button>
+        </div>
+
+        <!-- Mistakes List -->
+        <div id="mistakesList" class="hidden space-y-6">
+            <!-- الأخطاء ستظهر هنا -->
+        </div>
+
+    </main>
+
+    <script>
+        const supabaseUrl = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+        const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentUser = null;
+
+        async function checkAuth() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                alert('الرجاء تسجيل الدخول أولاً');
+                window.location.href = 'login.html';
+                return false;
+            }
+            currentUser = session.user;
+            return true;
+        }
+
+        async function loadMistakes() {
+            try {
+                console.log('🔄 جاري تحميل الأخطاء...');
+                
+                // جلب المحاولات الخاطئة
+                const { data: wrongAttempts, error: attemptsError } = await sb
+                    .from('attempts')
+                    .select('question_id, selected_answer, answered_at')
+                    .eq('user_id', currentUser.id)
+                    .eq('is_correct', false)
+                    .order('answered_at', { ascending: false });
+                
+                if (attemptsError) {
+                    console.error('❌ خطأ في جلب المحاولات:', attemptsError);
+                    showError();
+                    return;
+                }
+                
+                console.log('✅ تم جلب', wrongAttempts.length, 'محاولة خاطئة');
+                
+                if (wrongAttempts.length === 0) {
+                    showEmpty();
+                    return;
+                }
+                
+                // جلب تفاصيل الأسئلة
+                const questionIds = [...new Set(wrongAttempts.map(a => a.question_id))];
+                
+                const { data: questions, error: questionsError } = await sb
+                    .from('questions')
+                    .select('*')
+                    .in('id', questionIds);
+                
+                if (questionsError) {
+                    console.error('❌ خطأ في جلب الأسئلة:', questionsError);
+                    showError();
+                    return;
+                }
+                
+                // دمج البيانات
+                const mistakes = wrongAttempts.map(attempt => {
+                    const question = questions.find(q => q.id === attempt.question_id);
+                    return {
+                        ...question,
+                        userAnswer: attempt.selected_answer,
+                        answeredAt: attempt.answered_at
+                    };
+                }).filter(m => m.question_text); // فلترة الأسئلة المحذوفة
+                
+                displayMistakes(mistakes);
+                
+            } catch (err) {
+                console.error('❌ خطأ:', err);
+                showError();
+            }
+        }
+
+        function displayMistakes(mistakes) {
+            const container = document.getElementById('mistakesList');
+            container.innerHTML = '';
+            
+            const sectionNames = {
+                'quant': 'قدرات كمي',
+                'verbal': 'قدرات لفظي',
+                'tahsili': 'تحصيلي'
+            };
+            
+            mistakes.forEach((mistake, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl shadow-lg p-6';
+                
+                const choices = mistake.choices || [];
+                const userAnswerText = choices[mistake.userAnswer] || 'غير محدد';
+                const correctAnswerText = choices[mistake.correct_index] || 'غير محدد';
+                
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full font-bold">
+                                ${sectionNames[mistake.section] || mistake.section}
+                            </span>
+                        </div>
+                        <span class="text-gray-400 text-sm">
+                            ${new Date(mistake.answeredAt).toLocaleDateString('ar-SA')}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        ${index + 1}. ${mistake.question_text}
+                    </h3>
+                    
+                    <div class="space-y-3 mb-4">
+                        ${choices.map((choice, i) => `
+                            <div class="p-3 rounded-lg ${
+                                i === mistake.correct_index ? 'bg-green-50 border-2 border-green-500' : 
+                                i === mistake.userAnswer ? 'bg-red-50 border-2 border-red-500' : 
+                                'bg-gray-50 border border-gray-200'
+                            }">
+                                <div class="flex items-center gap-2">
+                                    ${i === mistake.correct_index ? '✅' : i === mistake.userAnswer ? '❌' : '⭕'}
+                                    <span class="font-medium ${
+                                        i === mistake.correct_index ? 'text-green-700' : 
+                                        i === mistake.userAnswer ? 'text-red-700' : 
+                                        'text-gray-700'
+                                    }">
+                                        ${choice}
+                                    </span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 class="font-bold text-blue-800 mb-2">💡 الشرح:</h4>
+                        <p class="text-blue-700">${mistake.explanation || 'لا يوجد شرح متاح'}</p>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            // إخفاء Loading وإظهار القائمة
+            document.getElementById('loadingState').classList.add('hidden');
+            container.classList.remove('hidden');
+        }
+
+        function showEmpty() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+
+        function showError() {
+            document.getElementById('loadingState').innerHTML = `
+                <div class="text-center">
+                    <div class="text-6xl mb-4">⚠️</div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">حدث خطأ</h2>
+                    <p class="text-gray-600 mb-6">لم نتمكن من تحميل الأخطاء. الرجاء المحاولة لاحقاً.</p>
+                    <button onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition">
+                        إعادة المحاولة
+                    </button>
+                </div>
+            `;
+        }
+
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('📄 صفحة راجع أخطائك جاهزة');
+            
+            const isAuth = await checkAuth();
+            if (!isAuth) return;
+            
+            await loadMistakes();
+        });
+    </script>
+
+</body>
+</html>
