@@ -178,107 +178,162 @@
     >
         تسجيل خروج
     </button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        const sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
+<script>
+    const supabaseUrl = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+    const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let currentUser = null;
+    let currentUser = null;
 
-        // عبارات تحفيزية بالعامية السعودية
-        const motivationalQuotes = [
-            'استعد لرحلتك نحو التميز والنجاح',
-            'كل سؤال تحله خطوة أقرب لحلمك',
-            'النجاح ما يجي صدفة، يبغى له جهد وإصرار',
-            'أنت قادر على تحقيق أهدافك، فقط استمر',
-            'الطريق لدرجتك العالية يبدأ من هنا',
-            'ثق بنفسك، أنت أقوى مما تتخيل',
-            'كل يوم تدريب، كل يوم تطور',
-            'حلمك قريب، بس كمّل واجتهد'
-        ];
+    // عبارات تحفيزية بالعامية السعودية
+    const motivationalQuotes = [
+        'ابدع لنفسك تحو التميز والتطور',
+        'كل سؤال تحله خطوة أقرب لحلمك',
+        'النجاح ما يجي صدفة، يبغى له جهد وإصرار',
+        'أنت قادر على تحقيق أهدافك، فقط استمر',
+        'ثق بنفسك، أنت أقوى مما تتخيل',
+        'كل يوم تدريب، كل يوم تطور',
+        'حلمك قريب، بس كمّل واجتهد',
+        'الطريق لدرجتك العالية يبدأ من هنا'
+    ];
 
-        async function checkAuth() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
-            currentUser = session.user;
-            loadUserData();
-        }
-
-        function loadUserData() {
-            const name = currentUser.user_metadata?.name || 'طالب مساري';
-            const firstName = name.split(' ')[0];
-            const initial = name.charAt(0);
-            
-            document.getElementById('userName').textContent = firstName;
-            document.getElementById('displayName').textContent = firstName;
-            document.getElementById('userInitial').textContent = initial;
-            
-            // عبارة تحفيزية عشوائية
-            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
-            document.getElementById('motivationalQuote').textContent = randomQuote;
-            
-            loadStats();
-            loadRecentActivity();
-        }
-
-        function loadStats() {
-            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
-            const total = attempts.length;
-            const correct = attempts.filter(a => a.isCorrect).length;
-            const wrong = total - correct;
-            const successRate = total > 0 ? Math.round((correct / total) * 100) : 0;
-            
-            document.getElementById('totalQuestions').textContent = total;
-            document.getElementById('correctAnswers').textContent = correct;
-            document.getElementById('wrongAnswers').textContent = wrong;
-            document.getElementById('successRate').textContent = successRate + '%';
-            
-            document.getElementById('weeklyCount').textContent = total;
-            const progressPercent = total > 0 ? Math.min(Math.round((total / 100) * 100), 100) : 0;
-            document.getElementById('progressBar').style.width = progressPercent + '%';
-            
-            document.getElementById('mistakesBadge').textContent = wrong;
-        }
-
-        function loadRecentActivity() {
-            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
-            const recentDiv = document.getElementById('recentActivity');
-            
-            if (attempts.length === 0) {
-                recentDiv.innerHTML = '<p class="text-gray-500 text-center py-8">ابدأ بحل الأسئلة لتظهر نشاطاتك هنا</p>';
-                return;
-            }
-            
-            const recent = attempts.slice(-5).reverse();
-            recentDiv.innerHTML = recent.map(a => `
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">${a.isCorrect ? '✅' : '❌'}</span>
-                        <div>
-                            <p class="font-medium text-gray-800">${a.subject || 'سؤال'}</p>
-                            <p class="text-xs text-gray-500">${new Date(a.timestamp).toLocaleDateString('ar-SA')}</p>
-                        </div>
-                    </div>
-                    <span class="text-sm ${a.isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">
-                        ${a.isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'}
-                    </span>
-                </div>
-            `).join('');
-        }
-
-        async function logOut() {
-            await sb.auth.signOut();
-            localStorage.clear();
+    async function checkAuth() {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
             window.location.href = 'login.html';
+            return false;
         }
+        currentUser = session.user;
+        
+        // عرض اسم المستخدم
+        const { data: profile } = await sb
+            .from('profiles')
+            .select('name')
+            .eq('id', currentUser.id)
+            .single();
+        
+        if (profile) {
+            const userName = profile.name || 'طالب مساري';
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement) {
+                userNameElement.textContent = userName;
+            }
+        }
+        
+        return true;
+    }
 
-        checkAuth();
-    </script>
+    async function loadStats() {
+        try {
+            // عرض عبارة تحفيزية عشوائية
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            const quoteElement = document.getElementById('motivationalQuote');
+            if (quoteElement) {
+                quoteElement.textContent = randomQuote;
+            }
+            
+            // جلب إجمالي المحاولات
+            const { data: allAttempts, error: attemptsError } = await sb
+                .from('attempts')
+                .select('is_correct, question_id, answered_at')
+                .eq('user_id', currentUser.id);
+            
+            if (attemptsError && attemptsError.code !== 'PGRST116') {
+                console.error('❌ خطأ في جلب المحاولات:', attemptsError);
+                return;
+            }
+            
+            // حساب الإحصائيات الإجمالية
+            const totalQuestions = allAttempts ? allAttempts.length : 0;
+            const correctAnswers = allAttempts ? allAttempts.filter(a => a.is_correct).length : 0;
+            const wrongAnswers = totalQuestions - correctAnswers;
+            const successRate = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+            
+            // تحديث الواجهة - الإحصائيات الرئيسية
+            updateElement('totalQuestions', totalQuestions);
+            updateElement('correctAnswers', correctAnswers);
+            updateElement('wrongAnswers', wrongAnswers);
+            updateElement('successRate', successRate + '%');
+            
+            // جلب إحصائيات كل قسم
+            await loadSectionStats('quant');
+            await loadSectionStats('verbal');
+            await loadSectionStats('tahsili');
+            
+            console.log('✅ تم تحميل الإحصائيات بنجاح');
+            
+        } catch (err) {
+            console.error('❌ خطأ:', err);
+        }
+    }
+
+    async function loadSectionStats(section) {
+        try {
+            // جلب IDs الأسئلة من القسم
+            const { data: questions } = await sb
+                .from('questions')
+                .select('id')
+                .eq('section', section);
+            
+            if (!questions || questions.length === 0) {
+                updateElement(`${section}Total`, 0);
+                updateElement(`${section}Correct`, 0);
+                updateElement(`${section}Wrong`, 0);
+                updateElement(`${section}Percentage`, '0%');
+                return;
+            }
+            
+            const questionIds = questions.map(q => q.id);
+            
+            // جلب محاولات هذا القسم
+            const { data: sectionAttempts } = await sb
+                .from('attempts')
+                .select('is_correct')
+                .eq('user_id', currentUser.id)
+                .in('question_id', questionIds);
+            
+            const total = sectionAttempts ? sectionAttempts.length : 0;
+            const correct = sectionAttempts ? sectionAttempts.filter(a => a.is_correct).length : 0;
+            const wrong = total - correct;
+            const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            // تحديث الواجهة
+            updateElement(`${section}Total`, total);
+            updateElement(`${section}Correct`, correct);
+            updateElement(`${section}Wrong`, wrong);
+            updateElement(`${section}Percentage`, percentage + '%');
+            
+        } catch (err) {
+            console.error(`❌ خطأ في تحميل إحصائيات ${section}:`, err);
+        }
+    }
+
+    function updateElement(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+
+    async function logout() {
+        const { error } = await sb.auth.signOut();
+        if (error) {
+            console.error('خطأ في تسجيل الخروج:', error);
+        }
+        window.location.href = 'login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('📄 Dashboard جاهز');
+        
+        const isAuth = await checkAuth();
+        if (!isAuth) return;
+        
+        await loadStats();
+    });
+</script>
 
 </body>
 </html>
