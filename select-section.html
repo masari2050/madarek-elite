@@ -115,3 +115,119 @@
         </div>
 
         <button
+          class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition"
+          id="btn-ach"
+        >
+          ابدأ التدريب
+        </button>
+
+        <div class="mt-3 text-xs text-slate-500" id="status-ach"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ✅ عدّلها إذا مشروعك مختلف
+    const SUPABASE_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    const SUBJECTS = {
+      quant: 'قدرات كمي',
+      verbal: 'قدرات لفظي',
+      ach: 'تحصيلي'
+    };
+
+    const els = {
+      countQuant: document.getElementById('count-quant'),
+      countVerbal: document.getElementById('count-verbal'),
+      countAch: document.getElementById('count-ach'),
+      btnQuant: document.getElementById('btn-quant'),
+      btnVerbal: document.getElementById('btn-verbal'),
+      btnAch: document.getElementById('btn-ach'),
+      stQuant: document.getElementById('status-quant'),
+      stVerbal: document.getElementById('status-verbal'),
+      stAch: document.getElementById('status-ach'),
+    };
+
+    function setStatus(el, msg) { el.textContent = msg || ''; }
+
+    async function requireAuth() {
+      const { data: { session }, error } = await sb.auth.getSession();
+      if (error) console.warn('getSession error:', error);
+      if (!session) window.location.href = 'login.html';
+    }
+
+    async function countBySubject(subjectLabel) {
+      // head:true يرجع count بدون تحميل الصفوف
+      const { count, error } = await sb
+        .from('questions')
+        .select('id', { count: 'exact', head: true })
+        .eq('subject', subjectLabel);
+
+      if (error) throw error;
+      return count || 0;
+    }
+
+    async function loadCounts() {
+      try {
+        setStatus(els.stQuant, 'جاري التحميل...');
+        setStatus(els.stVerbal, 'جاري التحميل...');
+        setStatus(els.stAch, 'جاري التحميل...');
+
+        const [cq, cv, ca] = await Promise.all([
+          countBySubject(SUBJECTS.quant),
+          countBySubject(SUBJECTS.verbal),
+          countBySubject(SUBJECTS.ach),
+        ]);
+
+        els.countQuant.textContent = `${cq} سؤال متاح`;
+        els.countVerbal.textContent = `${cv} سؤال متاح`;
+        els.countAch.textContent = `${ca} سؤال متاح`;
+
+        els.btnQuant.disabled = cq === 0;
+        els.btnVerbal.disabled = cv === 0;
+        els.btnAch.disabled = ca === 0;
+
+        if (cq === 0) els.btnQuant.classList.add('opacity-50','cursor-not-allowed');
+        if (cv === 0) els.btnVerbal.classList.add('opacity-50','cursor-not-allowed');
+        if (ca === 0) els.btnAch.classList.add('opacity-50','cursor-not-allowed');
+
+        setStatus(els.stQuant, cq ? '' : 'لا يوجد أسئلة الآن');
+        setStatus(els.stVerbal, cv ? '' : 'لا يوجد أسئلة الآن');
+        setStatus(els.stAch, ca ? '' : 'لا يوجد أسئلة الآن');
+
+        // تخزين الأرقام للاستخدام إن احتجت بصفحة ثانية
+        localStorage.setItem('masari_counts', JSON.stringify({ cq, cv, ca }));
+
+      } catch (e) {
+        console.error('loadCounts failed:', e);
+        els.countQuant.textContent = 'تعذر التحميل';
+        els.countVerbal.textContent = 'تعذر التحميل';
+        els.countAch.textContent = 'تعذر التحميل';
+        setStatus(els.stQuant, e.message || 'خطأ');
+        setStatus(els.stVerbal, e.message || 'خطأ');
+        setStatus(els.stAch, e.message || 'خطأ');
+      }
+    }
+
+    function startTraining(subjectLabel) {
+      // نخزن نفس النص المطابق لقاعدة البيانات
+      localStorage.setItem('masari_selected_subject', subjectLabel);
+      // نمرره أيضًا في الرابط (أفضل للتتبع)
+      window.location.href = `practice.html?subject=${encodeURIComponent(subjectLabel)}`;
+    }
+
+    els.btnQuant.addEventListener('click', () => startTraining(SUBJECTS.quant));
+    els.btnVerbal.addEventListener('click', () => startTraining(SUBJECTS.verbal));
+    els.btnAch.addEventListener('click', () => startTraining(SUBJECTS.ach));
+
+    (async () => {
+      await requireAuth();
+      await loadCounts();
+    })();
+  </script>
+</body>
+</html>
