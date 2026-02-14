@@ -355,3 +355,29 @@ function getMistakesQuestions() {
 window.questionsBank = questionsBank;
     console.log('✅ تم تحميل بنك الأسئلة:', questionsBank.length, 'سؤال');
 }
+// ========================================
+// تحويل subject إلى section
+// ========================================
+
+// تحويل جميع الأسئلة لإضافة حقل section
+questionsBank.forEach(q => {
+    // تحويل المواضيع إلى أقسام
+    if (q.subject === 'الجبر' || q.subject === 'الأعداد' || q.subject === 'الكسور') {
+        q.section = 'quant'; // قدرات كمي
+    } else if (q.subject === 'النسبة والتناسب' || q.subject === 'الهندسة' || q.subject === 'الإحصاء') {
+        q.section = 'quant'; // قدرات كمي
+    } else if (q.subject === 'مسائل كلامية') {
+        q.section = 'quant'; // قدرات كمي
+    } else {
+        q.section = 'quant'; // افتراضياً قدرات كمي
+    }
+});
+
+// تصدير للـ window
+window.questionsBank = questionsBank;
+
+console.log('✅ تم تحميل بنك الأسئلة بنجاح:', questionsBank.length, 'سؤال');
+console.log('📊 توزيع الأسئلة:');
+console.log('  - قدرات كمي:', questionsBank.filter(q => q.section === 'quant').length);
+console.log('  - قدرات لفظي:', questionsBank.filter(q => q.section === 'verbal').length);
+console.log('  - تحصيلي:', questionsBank.filter(q => q.section === 'tahsili').length);
