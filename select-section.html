@@ -3,268 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختر القسم - مساري</title>
+    <title>اختيار القسم - مساري</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
+        body { font-family: 'Tajawal', sans-serif; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen">
+
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-indigo-100">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <button onclick="history.back()" class="text-gray-600 hover:text-gray-800">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                </button>
-                <h1 class="text-xl font-bold text-gray-800">اختر القسم</h1>
-            </div>
-            <a href="dashboard.html" class="text-sm text-gray-600 hover:text-gray-800">
-                العودة للوحة
-            </a>
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="dashboard.html" class="text-slate-600 hover:text-slate-900 font-medium">← العودة للوحة</a>
+            <h1 class="text-2xl font-extrabold text-slate-900">اختر القسم</h1>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 py-12">
+    <main class="max-w-6xl mx-auto px-4 py-8">
 
-        <!-- Page Title -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-black text-gray-800 mb-3">اختر القسم للتدريب</h1>
-            <p class="text-xl text-gray-600">ابدأ التدريب في القسم اللي تبي تتحسن فيه</p>
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-extrabold text-slate-900 mb-3">اختر القسم للتدريب</h2>
+            <p class="text-slate-600 text-lg">ابدأ التدريب مباشرة حسب القسم</p>
         </div>
 
-        <!-- Sections Grid -->
-        <div class="grid md:grid-cols-3 gap-6 mb-12">
+        <!-- Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            <!-- Quantitative Abilities -->
-            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-indigo-200 hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer group" onclick="selectSection('quantitative')">
+            <!-- Tahsili -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-purple-200">
                 <div class="text-center mb-6">
-                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center text-5xl mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        📊
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">قدرات كمّي</h3>
-                    <p class="text-gray-600">الرياضيات والحساب</p>
-                </div>
-
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الجبر والمعادلات</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الهندسة</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>النسبة والتناسب</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الإحصاء</span>
-                    </div>
-                </div>
-
-                <div class="bg-indigo-50 rounded-lg p-3 text-center" id="quantitativeStatus">
-                    <p class="text-sm text-indigo-700 font-medium">30+ سؤال متنوع</p>
-                </div>
-            </div>
-
-            <!-- Verbal Abilities -->
-            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-green-200 hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer group" onclick="selectSection('verbal')">
-                <div class="text-center mb-6">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-5xl mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        📖
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">قدرات لفظي</h3>
-                    <p class="text-gray-600">اللغة العربية</p>
-                </div>
-
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>التناظر اللفظي</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>إكمال الجمل</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الخطأ السياقي</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الاستيعاب المقروء</span>
-                    </div>
-                </div>
-
-                <div class="bg-green-50 rounded-lg p-3 text-center" id="verbalStatus">
-                    <p class="text-sm text-green-700 font-medium">قريباً</p>
-                </div>
-            </div>
-
-            <!-- Achievement Test -->
-            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-purple-200 hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer group" onclick="selectSection('achievement')">
-                <div class="text-center mb-6">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-violet-500 rounded-2xl flex items-center justify-center text-5xl mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        🎓
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">التحصيلي</h3>
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-violet-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4">🎓</div>
+                    <h3 class="text-3xl font-bold text-gray-800 mb-2">التحصيلي</h3>
                     <p class="text-gray-600">المواد الدراسية</p>
                 </div>
 
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الرياضيات</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الفيزياء</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الكيمياء</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-700">
-                        <span class="text-green-500">✓</span>
-                        <span>الأحياء</span>
-                    </div>
+                <div class="space-y-2 mb-6 text-sm text-gray-700">
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الرياضيات</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الفيزياء</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الكيمياء</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الأحياء</span></div>
                 </div>
 
-                <div class="bg-purple-50 rounded-lg p-3 text-center" id="achievementStatus">
-                    <p class="text-sm text-purple-700 font-medium">قريباً</p>
+                <div id="tahsiliStatus" class="bg-purple-50 rounded-lg p-3 text-center mb-4">
+                    <p class="text-sm text-purple-700 font-semibold">جاري تحميل عدد الأسئلة...</p>
                 </div>
+
+                <button onclick="startTraining('tahsili')"
+                    class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-bold transition">
+                    ابدأ التدريب
+                </button>
+            </div>
+
+            <!-- Verbal -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-green-200">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4">📖</div>
+                    <h3 class="text-3xl font-bold text-gray-800 mb-2">قدرات لفظي</h3>
+                    <p class="text-gray-600">اللغة العربية</p>
+                </div>
+
+                <div class="space-y-2 mb-6 text-sm text-gray-700">
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>التناظر اللفظي</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>إكمال الجمل</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الخطأ السياقي</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الاستيعاب المقروء</span></div>
+                </div>
+
+                <div id="verbalStatus" class="bg-green-50 rounded-lg p-3 text-center mb-4">
+                    <p class="text-sm text-green-700 font-semibold">جاري تحميل عدد الأسئلة...</p>
+                </div>
+
+                <button onclick="startTraining('verbal')"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold transition">
+                    ابدأ التدريب
+                </button>
+            </div>
+
+            <!-- Quant -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-blue-200">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4">📊</div>
+                    <h3 class="text-3xl font-bold text-gray-800 mb-2">قدرات كمي</h3>
+                    <p class="text-gray-600">الرياضيات والحساب</p>
+                </div>
+
+                <div class="space-y-2 mb-6 text-sm text-gray-700">
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الجبر والمعادلات</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الهندسة</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>النسبة والتناسب</span></div>
+                    <div class="flex items-center gap-2"><span class="text-green-500">✓</span><span>الإحصاء</span></div>
+                </div>
+
+                <div id="quantStatus" class="bg-blue-50 rounded-lg p-3 text-center mb-4">
+                    <p class="text-sm text-blue-700 font-semibold">جاري تحميل عدد الأسئلة...</p>
+                </div>
+
+                <button onclick="startTraining('quantitative')"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition">
+                    ابدأ التدريب
+                </button>
             </div>
 
         </div>
-
-        <!-- Quick Stats -->
-        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">إحصائياتك السريعة</h2>
-            
-            <div class="grid grid-cols-3 gap-6">
-                <div class="text-center">
-                    <p class="text-3xl font-bold text-indigo-600" id="quantitativeCount">0</p>
-                    <p class="text-sm text-gray-600 mt-1">قدرات كمي</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-3xl font-bold text-green-600" id="verbalCount">0</p>
-                    <p class="text-sm text-gray-600 mt-1">قدرات لفظي</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-3xl font-bold text-purple-600" id="achievementCount">0</p>
-                    <p class="text-sm text-gray-600 mt-1">تحصيلي</p>
-                </div>
-            </div>
-        </div>
-
     </main>
 
-    <script src="questions_bank.js"></script>
-    <script>
-        // Check if user is logged in
-        const user = JSON.parse(localStorage.getItem('masari_user') || 'null');
-        if (!user) {
-            window.location.href = 'login.html';
-        }
+<script>
+/* ===== Supabase ===== */
+const sb = window.supabase.createClient(
+    'https://czzcmbxejxbotjemyuqf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+);
 
-        // Load user stats
-        function loadStats() {
-            // Load all questions
-            let allQ = [...questionsBank];
-            const saved = localStorage.getItem('masari_custom_questions');
-            if (saved) {
-                try { allQ = JSON.parse(saved); } catch(e) {}
-            }
-            
-            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
-            
-            // Count questions per section
-            const quantitativeCount = allQ.filter(q => q.section === 'quantitative').length;
-            const verbalCount = allQ.filter(q => q.section === 'verbal').length;
-            const achievementCount = allQ.filter(q => q.section === 'achievement').length;
-            
-            document.getElementById('quantitativeCount').textContent = quantitativeCount;
-            document.getElementById('verbalCount').textContent = verbalCount;
-            document.getElementById('achievementCount').textContent = achievementCount;
-            
-            // Update status badges
-            updateSectionStatus('quantitative', quantitativeCount);
-            updateSectionStatus('verbal', verbalCount);
-            updateSectionStatus('achievement', achievementCount);
-        }
+/* ===== Auth Guard ===== */
+async function guardAuth() {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) window.location.href = 'login.html';
+}
 
-        function updateSectionStatus(section, count) {
-            const sectionMap = {
-                'quantitative': 'quantitativeStatus',
-                'verbal': 'verbalStatus',
-                'achievement': 'achievementStatus'
-            };
-            
-            const elementId = sectionMap[section];
-            const element = document.getElementById(elementId);
-            
-            if (count > 0) {
-                // Use full class names for Tailwind
-                let colorClass = '';
-                if (section === 'quantitative') {
-                    colorClass = 'text-indigo-700';
-                } else if (section === 'verbal') {
-                    colorClass = 'text-green-700';
-                } else {
-                    colorClass = 'text-purple-700';
-                }
-                element.innerHTML = `<p class="text-sm ${colorClass} font-medium">${count}+ سؤال متنوع</p>`;
-            } else {
-                element.innerHTML = `<p class="text-sm text-gray-500 font-medium">قريباً</p>`;
-            }
-        }
+/* ===== Load Real Counts ===== */
+/* غيّر اسم العمود section إذا عندك اسم مختلف */
+async function loadCount(sectionName, statusId, colorClass) {
+    const el = document.getElementById(statusId);
 
-        // Select section
-        function selectSection(section) {
-            // ============================================
-            // ✅ Check free trial limit
-            // ============================================
-            const FREE_TRIAL_LIMIT = 10;
-            const subscription = JSON.parse(localStorage.getItem('masari_subscription') || 'null');
-            const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
-            
-            // لو مو مشترك ووصل الحد
-            if ((!subscription || subscription.plan === 'free') && attempts.length >= FREE_TRIAL_LIMIT) {
-                if (confirm('🔒 وصلت للحد الأقصى من الأسئلة المجانية!\n\nتبي تشاهد الباقات؟')) {
-                    window.location.href = 'pricing.html';
-                }
-                return;
-            }
-            
-            // Load all questions
-            let allQ = [...questionsBank];
-            const saved = localStorage.getItem('masari_custom_questions');
-            if (saved) {
-                try { allQ = JSON.parse(saved); } catch(e) {}
-            }
-            
-            const count = allQ.filter(q => q.section === section).length;
-            
-            if (count > 0) {
-                localStorage.setItem('masari_selected_section', section);
-                window.location.href = 'practice.html';
-            } else {
-                alert('هذا القسم قريباً بإذن الله');
-            }
-        }
+    try {
+        const { count, error } = await sb
+            .from('questions')
+            .select('*', { count:'exact', head:true })
+            .eq('section', sectionName);
 
-        loadStats();
-    </script>
+        if (error) throw error;
+
+        el.innerHTML =
+            `<p class="text-sm ${colorClass} font-semibold">${count || 0} سؤال متاح</p>`;
+
+    } catch (e) {
+        el.innerHTML =
+            `<p class="text-sm text-red-600 font-semibold">خطأ في جلب البيانات</p>`;
+    }
+}
+
+/* ===== Start Training ===== */
+function startTraining(sectionName) {
+    localStorage.setItem('masari_selected_section', sectionName);
+    window.location.href = 'practice.html';
+}
+
+/* ===== Init ===== */
+(async function init(){
+    await guardAuth();
+
+    await loadCount('tahsili', 'tahsiliStatus', 'text-purple-700');
+    await loadCount('verbal', 'verbalStatus', 'text-green-700');
+    await loadCount('quantitative', 'quantStatus', 'text-blue-700');
+})();
+</script>
 
 </body>
 </html>
