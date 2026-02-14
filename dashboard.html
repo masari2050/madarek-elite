@@ -2,10 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة التحكم - مساري</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
@@ -13,43 +13,56 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
         
-        /* تحسين العرض للجوال */
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
-            }
-            .stat-card {
-                padding: 1rem;
-            }
-            .stat-number {
-                font-size: 2rem;
-            }
+        .logo-shadow {
+            filter: drop-shadow(0 4px 12px rgba(79, 70, 229, 0.4));
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 4px 12px rgba(79, 70, 229, 0.4)); }
+            50% { filter: drop-shadow(0 8px 20px rgba(79, 70, 229, 0.6)); }
+        }
+        
+        .beta-banner {
+            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #4f46e5 100%);
+            background-size: 200% 100%;
+            animation: gradient-flow 3s ease infinite;
+        }
+        
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
-<body class="min-h-screen pb-24">
+<body class="min-h-screen">
     
+    <!-- Beta Banner -->
+    <div class="beta-banner text-white py-2 px-4 text-center text-sm font-medium">
+        🚀 الموقع في التجربة - ستشاهد قريباً إبداعاً متكاملاً | جاري إضافة الميزات والأسئلة بشكل يومي
+    </div>
+
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
-        <div class="container mx-auto px-4 py-3">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <!-- Logo -->
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">🎓</span>
-                    <h1 class="text-xl md:text-2xl font-bold text-indigo-600">مساري</h1>
+                <!-- Logo - أكبر مع تأثير -->
+                <div class="flex items-center gap-3">
+                    <span class="text-5xl logo-shadow">🎓</span>
+                    <h1 class="text-4xl font-black text-indigo-600 logo-shadow">مساري</h1>
                 </div>
 
                 <!-- User Info -->
                 <div class="flex items-center gap-3">
                     <div class="text-left">
                         <div class="flex items-center gap-2">
-                            <span class="bg-gradient-to-r from-orange-400 to-orange-600 text-white text-xs px-2 py-1 rounded-full font-bold">مشترك شهري 🔥</span>
-                            <span class="font-bold text-gray-800 text-sm md:text-base" id="userName">عبدالله</span>
+                            <span class="bg-gradient-to-r from-orange-400 to-orange-600 text-white text-xs px-3 py-1 rounded-full font-bold">مشترك شهري 🔥</span>
+                            <span class="font-bold text-gray-800" id="userName">عبدالله</span>
                         </div>
                         <p class="text-xs text-gray-500">عضو مميز</p>
                     </div>
-                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
                         <span id="userInitial">ع</span>
                     </div>
                 </div>
@@ -58,121 +71,110 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-4 md:py-6 max-w-6xl">
+    <main class="container mx-auto px-4 py-6 max-w-6xl pb-24">
         
-        <!-- Welcome Card -->
-        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-2xl md:rounded-3xl p-6 md:p-8 mb-4 md:mb-6 shadow-2xl">
-            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">أهلاً <span id="displayName">عبدالله</span>!</h2>
-            <p class="text-indigo-100 text-sm md:text-base" id="motivationalQuote">استعد لرحلتك نحو التميز والنجاح</p>
+        <!-- Welcome Card - محسّن -->
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-6 mb-6 shadow-2xl">
+            <h2 class="text-3xl font-black text-white mb-2">أهلاً <span id="displayName">عبدالله</span></h2>
+            <p class="text-indigo-100 text-lg font-medium" id="motivationalQuote">ثق بنفسك، أنت أقوى مما تتخيل</p>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-grid grid grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
+        <!-- Stats Cards - محسّنة -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             
             <!-- Total Questions -->
-            <div class="stat-card bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl md:text-3xl">📝</span>
-                    <span class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full font-medium hidden md:inline">دقيق</span>
+            <div class="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-4xl">📝</span>
+                    <span class="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full font-medium">دقيق</span>
                 </div>
-                <p class="text-gray-600 text-xs md:text-sm mb-1">إجمالي الأسئلة المحلولة</p>
-                <p class="stat-number text-3xl md:text-4xl font-bold text-gray-800" id="totalQuestions">
-                    <span class="inline-block animate-pulse">...</span>
-                </p>
+                <p class="text-gray-600 text-xs mb-1">إجمالي الأسئلة المحلولة</p>
+                <p class="text-5xl font-black text-gray-800" id="totalQuestions">0</p>
             </div>
 
             <!-- Correct Answers -->
-            <div class="stat-card bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl md:text-3xl">✅</span>
-                    <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium hidden md:inline">صحيحة</span>
+            <div class="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-4xl">✅</span>
+                    <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full font-medium">صحيحة</span>
                 </div>
-                <p class="text-gray-600 text-xs md:text-sm mb-1">الإجابات الصحيحة</p>
-                <p class="stat-number text-3xl md:text-4xl font-bold text-green-500" id="correctAnswers">
-                    <span class="inline-block animate-pulse">...</span>
-                </p>
+                <p class="text-gray-600 text-xs mb-1">الإجابات الصحيحة</p>
+                <p class="text-5xl font-black text-green-500" id="correctAnswers">0</p>
             </div>
 
             <!-- Wrong Answers -->
-            <div class="stat-card bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl md:text-3xl">❌</span>
-                    <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-medium hidden md:inline">خاطئة</span>
+            <div class="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-4xl">❌</span>
+                    <span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-medium">خاطئة</span>
                 </div>
-                <p class="text-gray-600 text-xs md:text-sm mb-1">الإجابات الخاطئة</p>
-                <p class="stat-number text-3xl md:text-4xl font-bold text-red-500" id="wrongAnswers">
-                    <span class="inline-block animate-pulse">...</span>
-                </p>
+                <p class="text-gray-600 text-xs mb-1">الإجابات الخاطئة</p>
+                <p class="text-5xl font-black text-red-500" id="wrongAnswers">0</p>
             </div>
 
             <!-- Success Rate -->
-            <div class="stat-card bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl md:text-3xl">🎯</span>
-                    <span class="bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full font-medium hidden md:inline">نسبة</span>
+            <div class="bg-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-4xl">🎯</span>
+                    <span class="bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full font-medium">نسبة</span>
                 </div>
-                <p class="text-gray-600 text-xs md:text-sm mb-1">نسبة النجاح</p>
-                <p class="stat-number text-3xl md:text-4xl font-bold text-indigo-600" id="successRate">
-                    <span class="inline-block animate-pulse">...</span>
-                </p>
+                <p class="text-gray-600 text-xs mb-1">نسبة النجاح</p>
+                <p class="text-5xl font-black text-indigo-600" id="successRate">0%</p>
             </div>
 
         </div>
 
         <!-- Progress Bar -->
-        <div class="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg mb-4 md:mb-6">
+        <div class="bg-white rounded-2xl p-5 shadow-lg mb-6">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="text-base md:text-lg font-bold text-gray-800">تقدمك هذا الأسبوع</h3>
-                <span class="text-gray-600 text-sm"><span id="weeklyCount">...</span> سؤال</span>
+                <h3 class="text-lg font-bold text-gray-800">تقدمك هذا الأسبوع</h3>
+                <span class="text-gray-600 text-sm"><span id="weeklyCount">0</span> سؤال</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
-                <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 md:h-3 rounded-full transition-all" style="width: 0%"></div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all" style="width: 0%"></div>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
-            <!-- زر 1: ابدأ التدريب -->
-            <a href="select-section.html" class="block bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white p-4 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
-                <div class="flex items-center gap-3 md:gap-4">
-                    <div class="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+            <a href="select-section.html" class="block bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white p-5 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                         </svg>
                     </div>
                     <div class="text-right flex-1">
-                        <h3 class="text-base md:text-lg font-bold">ابدأ التدريب</h3>
-                        <p class="text-xs md:text-sm text-indigo-100">حل أسئلة جديدة</p>
+                        <h3 class="text-lg font-bold">ابدأ التدريب</h3>
+                        <p class="text-sm text-indigo-100">حل أسئلة جديدة</p>
                     </div>
                 </div>
             </a>
 
-            <!-- زر 2: إحصائياتي -->
-            <a href="stats.html" class="block bg-gradient-to-br from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white p-4 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
-                <div class="flex items-center gap-3 md:gap-4">
-                    <div class="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+            <a href="stats.html" class="block bg-gradient-to-br from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white p-5 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
                         </svg>
                     </div>
                     <div class="text-right flex-1">
-                        <h3 class="text-base md:text-lg font-bold">إحصائياتي</h3>
-                        <p class="text-xs md:text-sm text-green-100">تحليل تفصيلي لأدائك</p>
+                        <h3 class="text-lg font-bold">إحصائياتي</h3>
+                        <p class="text-sm text-green-100">تحليل تفصيلي لأدائك</p>
                     </div>
                 </div>
             </a>
 
-            <!-- زر 3: راجع أخطائك -->
-            <a href="mistakes.html" class="block bg-gradient-to-br from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white p-4 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
-                <div class="flex items-center gap-3 md:gap-4">
-                    <div class="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-                        <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+            <a href="mistakes.html" class="block bg-gradient-to-br from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white p-5 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                         </svg>
                     </div>
                     <div class="text-right flex-1">
-                        <h3 class="text-base md:text-lg font-bold">راجع أخطائك</h3>
-                        <p class="text-xs md:text-sm text-red-100">تعلم من الأخطاء السابقة</p>
+                        <h3 class="text-lg font-bold">راجع أخطائك</h3>
+                        <p class="text-sm text-red-100">تعلم من الأخطاء السابقة</p>
                     </div>
                 </div>
             </a>
@@ -191,7 +193,7 @@
 
         <!-- Settings Panel -->
         <div id="settingsPanel" class="hidden bg-white rounded-xl p-4 shadow-lg mb-4">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-4 pb-4 border-b">
                 <div class="flex items-center gap-3">
                     <span class="text-2xl">🔊</span>
                     <div>
@@ -203,6 +205,17 @@
                     <span id="soundDot" class="inline-block h-6 w-6 transform rounded-full bg-white transition translate-x-7"></span>
                 </button>
             </div>
+            
+            <div class="space-y-3">
+                <button class="w-full text-right p-3 rounded-lg hover:bg-gray-50 transition flex items-center gap-3">
+                    <span class="text-xl">👤</span>
+                    <span class="text-gray-700">تعديل الملف الشخصي</span>
+                </button>
+                <button class="w-full text-right p-3 rounded-lg hover:bg-gray-50 transition flex items-center gap-3">
+                    <span class="text-xl">🔐</span>
+                    <span class="text-gray-700">تغيير كلمة المرور</span>
+                </button>
+            </div>
         </div>
 
     </main>
@@ -210,18 +223,10 @@
     <!-- Logout Button -->
     <button 
         onclick="handleLogout()"
-        class="fixed bottom-4 left-4 bg-red-500 hover:bg-red-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl shadow-lg font-bold transition transform hover:scale-105 text-sm md:text-base z-20"
+        class="fixed bottom-6 left-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl shadow-lg font-bold transition transform hover:scale-105 z-50"
     >
         تسجيل خروج
     </button>
-
-    <!-- Audio Elements (Hidden) -->
-    <audio id="correctSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFQxMoePyw2wkBTWM0fPTgjMGHm7A7+OZSBMMV6zn77BdGAg+ltryxnMpBSl+zO/aizsIGGS56+mjUBQLTKXh8L1qIgU2jdT0yoA0Bh9ywfDcmUoTC1ix5vCwXxgIPJjb88p0KwUofsvv3Ik9CBhkvOzoo1MSC0ul4fC9ayMFNo3U9MmBNAYfccHw2phKEwtYsebwsWAZCDyY2/PIdCsFK37M79qKPQgYY7vs6KNTEgtLpeHwvWsjBTWN1PTHgTQGH3HB8NmYShMLWLLm8LFgGQg8mNvzyHQrBSp+zO/aij0IGmS77OijUxILTKXh8LxrIwU2jdT0yoE0Bh9xwfDYmEoTC1iy5vCxYBkIPJfb88h0KwUqfsrv2Yk9CBpku+zoolMSC0ul4fC8ayIFNYzU9MqBNAYfccDw2JdKEwtXsubwsWAZCDyY2/PIdCsFK37M79uKPAgaZLvs6aJTEgtLpOHwvGoiBTWM1PTKgTMGH3HA8NiXShMLV7Lm8LFgGQg8l9vzyHQrBSt+yu/biTwIGmS76+mjUhILSqPh8LxqIgU1jNT0yoEzBh9xwPDYl0kTC1ey5vCxYBkIPJfb88d0KwUrfsrv24k8CBpjuuvpo1ISC0qj4PC8aiIFNYzU9MqBMwYeccDw2JdJEwtXsubwsWAZCDyX2/PIdCsFK37K79qJPAgaY7rs6aNSEgtKo+DwvGoiBTSM1PTKgTMGH3HA8NiXSRMLV7Lm8LBgGQg7l9vzyHQrBSt+yu/aiTwIGmO66+mjUhILSqPg8LxqIgU0jNT0yYEzBh9xv/DYl0kTC1ex5vCwYBkIO5fb88h0KwUrfstv2ok8CBphuevsolgTC0qj3/C9ayMFNIzU9MiBMwYfcL/w2JdJEwpWsubxsWAZCDuX2/PIdCwFK37Kb9qJPAgaYLnr7KJYEwtJot7wu2sjBTOM1PTIgTMGH3C/8NiXSRMKVrHm8bFgGQg7l9n0yHQsBSx+ym/aiTwHGl+56+yiWBMLSaLe8LtrIgUzjNT0yIEzBh9wvu/Yl0kSClawePhxYBkIO5bZ9Mh0LQUsfspv2ok7Bxpfuevsolct}}" type="audio/wav">
-    </audio>
-    <audio id="wrongSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEA IEsAAEBDAQACABAAZGF0YSADAABwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBw=}" type="audio/wav">
-    </audio>
 
     <script>
         const supabaseUrl = 'https://czzcmbxejxbotjemyuqf.supabase.co';
@@ -231,21 +236,22 @@
         let currentUser = null;
         let soundEnabled = true;
 
-        // تحميل إعدادات الصوت من localStorage
+        // تحميل إعدادات الصوت
         const savedSoundSetting = localStorage.getItem('soundEnabled');
         if (savedSoundSetting !== null) {
             soundEnabled = savedSoundSetting === 'true';
             updateSoundUI();
         }
 
+        // عبارات تحفيزية محسّنة (بدون علامات التعجب)
         const motivationalQuotes = [
             'ابدع لنفسك نحو التميز والتطور',
             'كل سؤال تحله خطوة أقرب لحلمك',
-            'النجاح ما يجي صدفة، يبغى له جهد وإصرار',
+            'النجاح يحتاج للجهد والإصرار',
             'أنت قادر على تحقيق أهدافك، فقط استمر',
             'ثق بنفسك، أنت أقوى مما تتخيل',
             'كل يوم تدريب، كل يوم تطور',
-            'حلمك قريب، بس كمّل واجتهد',
+            'حلمك قريب، استمر واجتهد',
             'الطريق لدرجتك العالية يبدأ من هنا'
         ];
 
@@ -283,22 +289,19 @@
                 const { data: { session }, error } = await sb.auth.getSession();
                 
                 if (error || !session) {
-                    console.log('❌ لا توجد جلسة نشطة');
                     window.location.href = 'login.html';
                     return false;
                 }
                 
                 currentUser = session.user;
-                console.log('✅ المستخدم:', currentUser.id);
                 
-                // جلب معلومات المستخدم
-                const { data: profile, error: profileError } = await sb
+                const { data: profile } = await sb
                     .from('profiles')
                     .select('name')
                     .eq('id', currentUser.id)
                     .single();
                 
-                if (!profileError && profile && profile.name) {
+                if (profile && profile.name) {
                     const userName = profile.name;
                     document.getElementById('userName').textContent = userName;
                     document.getElementById('displayName').textContent = userName;
@@ -308,7 +311,7 @@
                 return true;
                 
             } catch (err) {
-                console.error('❌ خطأ في التحقق:', err);
+                console.error('❌ خطأ:', err);
                 window.location.href = 'login.html';
                 return false;
             }
@@ -316,48 +319,39 @@
 
         async function loadStats() {
             try {
-                console.log('🔄 جاري تحميل الإحصائيات...');
-                
                 // عرض عبارة تحفيزية
                 const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
                 document.getElementById('motivationalQuote').textContent = randomQuote;
                 
-                // جلب كل المحاولات
-                const { data: allAttempts, error: attemptsError } = await sb
+                const { data: allAttempts, error } = await sb
                     .from('attempts')
                     .select('is_correct, answered_at')
                     .eq('user_id', currentUser.id);
                 
-                if (attemptsError && attemptsError.code !== 'PGRST116') {
-                    console.error('❌ خطأ:', attemptsError);
+                if (error && error.code !== 'PGRST116') {
+                    console.error('❌ خطأ:', error);
                     return;
                 }
                 
-                console.log('📊 عدد المحاولات:', allAttempts ? allAttempts.length : 0);
+                const totalQuestions = allAttempts ? allAttempts.length : 0;
+                const correctAnswers = allAttempts ? allAttempts.filter(a => a.is_correct).length : 0;
+                const wrongAnswers = totalQuestions - correctAnswers;
+                const successRate = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
                 
-                // حساب الإحصائيات
-                const total = allAttempts ? allAttempts.length : 0;
-                const correct = allAttempts ? allAttempts.filter(a => a.is_correct).length : 0;
-                const wrong = total - correct;
-                const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
+                document.getElementById('totalQuestions').textContent = totalQuestions;
+                document.getElementById('correctAnswers').textContent = correctAnswers;
+                document.getElementById('wrongAnswers').textContent = wrongAnswers;
+                document.getElementById('successRate').textContent = successRate + '%';
                 
-                // تحديث الواجهة
-                document.getElementById('totalQuestions').textContent = total;
-                document.getElementById('correctAnswers').textContent = correct;
-                document.getElementById('wrongAnswers').textContent = wrong;
-                document.getElementById('successRate').textContent = rate + '%';
-                
-                // حساب تقدم الأسبوع
                 const oneWeekAgo = new Date();
                 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                const weekly = allAttempts ? allAttempts.filter(a => new Date(a.answered_at) > oneWeekAgo).length : 0;
+                const weeklyAttempts = allAttempts ? allAttempts.filter(a => new Date(a.answered_at) > oneWeekAgo) : [];
+                const weeklyCount = weeklyAttempts.length;
                 
-                document.getElementById('weeklyCount').textContent = weekly;
+                document.getElementById('weeklyCount').textContent = weeklyCount;
                 
-                const progress = Math.min((weekly / 50) * 100, 100);
-                document.getElementById('progressBar').style.width = progress + '%';
-                
-                console.log('✅ تم تحميل الإحصائيات:', { total, correct, wrong, rate, weekly });
+                const progressPercentage = Math.min((weeklyCount / 50) * 100, 100);
+                document.getElementById('progressBar').style.width = progressPercentage + '%';
                 
             } catch (err) {
                 console.error('❌ خطأ:', err);
@@ -366,33 +360,24 @@
 
         async function handleLogout() {
             try {
-                console.log('🔄 جاري تسجيل الخروج...');
                 const { error } = await sb.auth.signOut();
-                
                 if (error) {
                     console.error('❌ خطأ:', error);
                     alert('حدث خطأ أثناء تسجيل الخروج');
                     return;
                 }
-                
-                console.log('✅ تم تسجيل الخروج');
                 window.location.href = 'login.html';
-                
             } catch (err) {
                 console.error('❌ خطأ:', err);
             }
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('📄 Dashboard جاهز');
-            
             const isAuth = await checkAuth();
             if (!isAuth) return;
-            
             await loadStats();
         });
 
-        // تصدير إعدادات الصوت لاستخدامها في صفحات أخرى
         window.getSoundEnabled = () => soundEnabled;
     </script>
 
