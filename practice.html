@@ -225,8 +225,11 @@
             };
             document.getElementById('difficultyBadge').textContent = difficultyMap[question.difficulty];
             
-            document.getElementById('questionText').textContent = question.question;
-            document.getElementById('equationDisplay').textContent = question.equation;
+        document.getElementById('questionText').textContent =
+  question.question_text || question.question || 'السؤال غير متوفر';
+
+document.getElementById('equationDisplay').textContent =
+  question.equation || question.question_text || '';
 
             // Update progress bar
             const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
