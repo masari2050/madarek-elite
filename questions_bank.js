@@ -1,6 +1,9 @@
 // بنك الأسئلة - معادلات رياضية واضحة
 // ملاحظة: الضرب × بدلاً من x، والقسمة ÷ أو /
-
+// تأكد من عدم وجود تعارض
+if (window.questionsBank) {
+    console.warn('questionsBank already exists - skipping redefinition');
+} else {
 const questionsBank = [
     // القسم الأول: الجبر والمعادلات
     {
@@ -348,4 +351,7 @@ function getQuestionById(id) {
 function getMistakesQuestions() {
     const mistakes = JSON.parse(localStorage.getItem('masari_mistakes') || '[]');
     return mistakes.map(id => getQuestionById(id)).filter(q => q !== undefined);
+}
+window.questionsBank = questionsBank;
+    console.log('✅ تم تحميل بنك الأسئلة:', questionsBank.length, 'سؤال');
 }
