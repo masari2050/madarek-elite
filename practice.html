@@ -27,13 +27,8 @@
       border: 2px solid #e0e7ff;
     }
 
-    .option-btn {
-      transition: all 0.25s ease;
-    }
-
-    .option-btn:hover:not(:disabled) {
-      transform: translateX(-4px);
-    }
+    .option-btn { transition: all 0.25s ease; }
+    .option-btn:hover:not(:disabled) { transform: translateX(-4px); }
 
     .correct-answer {
       background: #10b981 !important;
@@ -122,10 +117,6 @@ let currentQuestionIndex = 0;
 let sessionAttempts = [];
 let user = JSON.parse(localStorage.getItem("masari_user") || "null");
 
-
-// ======================
-// تحويل صيغة السؤال (Mapping)
-// ======================
 function normalizeQuestion(q){
   return {
     id: q.id,
@@ -140,13 +131,8 @@ function normalizeQuestion(q){
   };
 }
 
-
-// ======================
-// تحميل جميع الأسئلة
-// ======================
 function loadAllQuestions(){
   const saved = localStorage.getItem("masari_custom_questions");
-
   if(saved){
     try{
       const arr = JSON.parse(saved);
@@ -155,18 +141,12 @@ function loadAllQuestions(){
       }
     }catch(e){}
   }
-
   if(typeof questionsBank !== "undefined"){
     return questionsBank.map(normalizeQuestion);
   }
-
   return [];
 }
 
-
-// ======================
-// اختيار عشوائي حسب القسم
-// ======================
 function getRandomQuestions(count){
   const selectedSection = localStorage.getItem("masari_selected_section");
   let allQ = loadAllQuestions();
@@ -187,10 +167,6 @@ function getRandomQuestions(count){
   return allQ.slice(0, Math.min(count, allQ.length));
 }
 
-
-// ======================
-// عرض السؤال
-// ======================
 function displayQuestion(){
   const q = questions[currentQuestionIndex];
 
@@ -212,7 +188,6 @@ function displayQuestion(){
   }
 
   const optionsContainer = document.getElementById("optionsContainer");
-
   optionsContainer.innerHTML = q.options.map((o,i)=>`
     <button id="option-${i}"
       onclick="selectAnswer(${i})"
@@ -228,8 +203,6 @@ function displayQuestion(){
   document.getElementById("progressBar").style.width=progress+"%";
 }
 
-
-// ======================
 function selectAnswer(index){
   const q = questions[currentQuestionIndex];
   const isCorrect = index === q.correctIndex;
@@ -262,8 +235,6 @@ function selectAnswer(index){
   document.getElementById("nextBtn").classList.remove("hidden");
 }
 
-
-// ======================
 function nextQuestion(){
   currentQuestionIndex++;
   if(currentQuestionIndex>=questions.length){
@@ -273,14 +244,10 @@ function nextQuestion(){
   displayQuestion();
 }
 
-
-// ======================
 function confirmExit(){
   window.location.href="select-section.html";
 }
 
-
-// ======================
 function init(){
   questions = getRandomQuestions(10);
   if(!questions.length) return;
