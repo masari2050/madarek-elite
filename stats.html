@@ -6,7 +6,10 @@
     <title>إحصائياتي - مساري</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>* { font-family: 'Tajawal', sans-serif; }</style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen">
     
@@ -25,342 +28,258 @@
 
     <main class="max-w-6xl mx-auto px-4 py-8">
         
-        <!-- Overall Stats - محسّنة -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-20">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+            <p class="text-xl text-gray-600">جاري تحميل الإحصائيات...</p>
+        </div>
+
+        <!-- Content (Hidden initially) -->
+        <div id="statsContent" class="hidden">
+            <!-- Overall Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-2">
                         <span class="text-2xl">📝</span>
                     </div>
+                    <p class="text-sm opacity-90 mb-1">إجمالي الأسئلة</p>
+                    <p class="text-4xl font-black" id="totalQuestions">0</p>
                 </div>
-                <p class="text-sm opacity-90 mb-1">إجمالي الأسئلة</p>
-                <p class="text-4xl font-black" id="totalQuestions">0</p>
-            </div>
-            
-            <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                
+                <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-2">
                         <span class="text-2xl">✅</span>
                     </div>
+                    <p class="text-sm opacity-90 mb-1">الإجابات الصحيحة</p>
+                    <p class="text-4xl font-black" id="correctAnswers">0</p>
                 </div>
-                <p class="text-sm opacity-90 mb-1">الإجابات الصحيحة</p>
-                <p class="text-4xl font-black" id="correctAnswers">0</p>
-            </div>
-            
-            <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                
+                <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-2">
                         <span class="text-2xl">❌</span>
                     </div>
+                    <p class="text-sm opacity-90 mb-1">الإجابات الخاطئة</p>
+                    <p class="text-4xl font-black" id="wrongAnswers">0</p>
                 </div>
-                <p class="text-sm opacity-90 mb-1">الإجابات الخاطئة</p>
-                <p class="text-4xl font-black" id="wrongAnswers">0</p>
-            </div>
-            
-            <div class="bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl p-6 text-white shadow-xl">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                
+                <div class="bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl p-6 text-white shadow-xl">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-2">
                         <span class="text-2xl">🎯</span>
                     </div>
-                </div>
-                <p class="text-sm opacity-90 mb-1">نسبة النجاح</p>
-                <p class="text-4xl font-black" id="successRate">0%</p>
-            </div>
-        </div>
-
-        <!-- Section Analysis - محسّنة -->
-        <div class="bg-white rounded-2xl shadow-xl border-2 p-8 mb-8">
-            <h2 class="text-3xl font-black mb-8 text-gray-800">📊 التحليل حسب القسم</h2>
-            
-            <div class="space-y-6">
-                <!-- Quantitative -->
-                <div class="border-3 border-indigo-300 rounded-2xl p-8 bg-gradient-to-br from-indigo-50 to-blue-50">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-14 h-14 bg-indigo-500 rounded-xl flex items-center justify-center text-2xl">📐</div>
-                            <h3 class="text-2xl font-bold text-indigo-900">قدرات كمي</h3>
-                        </div>
-                        <span class="text-4xl font-black text-indigo-600" id="quantRate">0%</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-6 mb-6">
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">إجمالي الأسئلة</p>
-                            <p class="text-3xl font-black text-indigo-700" id="quantTotal">0</p>
-                        </div>
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">الإجابات الصحيحة</p>
-                            <p class="text-3xl font-black text-green-600" id="quantCorrect">0</p>
-                        </div>
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">الإجابات الخاطئة</p>
-                            <p class="text-3xl font-black text-red-600" id="quantWrong">0</p>
-                        </div>
-                    </div>
-                    <div class="bg-gray-200 rounded-full h-4">
-                        <div class="bg-gradient-to-r from-indigo-500 to-blue-500 h-4 rounded-full transition-all duration-1000" id="quantProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <!-- Verbal -->
-                <div class="border-3 border-green-300 rounded-2xl p-8 bg-gradient-to-br from-green-50 to-emerald-50">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center text-2xl">📖</div>
-                            <h3 class="text-2xl font-bold text-green-900">قدرات لفظي</h3>
-                        </div>
-                        <span class="text-4xl font-black text-green-600" id="verbalRate">0%</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-6 mb-6">
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">إجمالي الأسئلة</p>
-                            <p class="text-3xl font-black text-green-700" id="verbalTotal">0</p>
-                        </div>
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">الإجابات الصحيحة</p>
-                            <p class="text-3xl font-black text-green-600" id="verbalCorrect">0</p>
-                        </div>
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">الإجابات الخاطئة</p>
-                            <p class="text-3xl font-black text-red-600" id="verbalWrong">0</p>
-                        </div>
-                    </div>
-                    <div class="bg-gray-200 rounded-full h-4">
-                        <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-4 rounded-full transition-all duration-1000" id="verbalProgress" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <!-- Achievement -->
-                <div class="border-3 border-purple-300 rounded-2xl p-8 bg-gradient-to-br from-purple-50 to-violet-50">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center text-2xl">🎓</div>
-                            <h3 class="text-2xl font-bold text-purple-900">التحصيلي</h3>
-                        </div>
-                        <span class="text-4xl font-black text-purple-600" id="achRate">0%</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-6 mb-6">
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">إجمالي الأسئلة</p>
-                            <p class="text-3xl font-black text-purple-700" id="achTotal">0</p>
-                        </div>
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">الإجابات الصحيحة</p>
-                            <p class="text-3xl font-black text-green-600" id="achCorrect">0</p>
-                        </div>
-                        <div class="text-center bg-white rounded-xl p-4 shadow-sm">
-                            <p class="text-base font-medium text-gray-600 mb-2">الإجابات الخاطئة</p>
-                            <p class="text-3xl font-black text-red-600" id="achWrong">0</p>
-                        </div>
-                    </div>
-                    <div class="bg-gray-200 rounded-full h-4">
-                        <div class="bg-gradient-to-r from-purple-500 to-violet-500 h-4 rounded-full transition-all duration-1000" id="achProgress" style="width: 0%"></div>
-                    </div>
+                    <p class="text-sm opacity-90 mb-1">نسبة النجاح</p>
+                    <p class="text-4xl font-black" id="successRate">0%</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Weakness Analysis - محسّنة -->
-        <div class="bg-white rounded-2xl shadow-xl border-2 p-8 mb-8">
-            <h2 class="text-3xl font-black mb-8 text-gray-800">🎯 نقاط تحتاج تحسين</h2>
-            <div id="weaknessAnalysis">
-                <p class="text-center text-gray-500 py-12 text-lg">لا توجد بيانات كافية للتحليل</p>
+            <!-- Section Analysis -->
+            <div class="bg-white rounded-2xl shadow-xl border-2 p-8 mb-8">
+                <h2 class="text-3xl font-black mb-8 text-gray-800">📊 التحليل حسب القسم</h2>
+                
+                <div class="space-y-6">
+                    <!-- Quantitative -->
+                    <div class="border-3 border-indigo-300 rounded-2xl p-8 bg-gradient-to-br from-indigo-50 to-blue-50">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 bg-indigo-500 rounded-xl flex items-center justify-center text-2xl">📐</div>
+                                <h3 class="text-2xl font-bold text-indigo-900">قدرات كمي</h3>
+                            </div>
+                            <span class="text-4xl font-black text-indigo-600" id="quantRate">0%</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-6 mb-6">
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">إجمالي الأسئلة</p>
+                                <p class="text-3xl font-black text-indigo-700" id="quantTotal">0</p>
+                            </div>
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">الإجابات الصحيحة</p>
+                                <p class="text-3xl font-black text-green-600" id="quantCorrect">0</p>
+                            </div>
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">الإجابات الخاطئة</p>
+                                <p class="text-3xl font-black text-red-600" id="quantWrong">0</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-4">
+                            <div class="bg-gradient-to-r from-indigo-500 to-blue-500 h-4 rounded-full transition-all duration-1000" id="quantProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Verbal -->
+                    <div class="border-3 border-green-300 rounded-2xl p-8 bg-gradient-to-br from-green-50 to-emerald-50">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center text-2xl">📖</div>
+                                <h3 class="text-2xl font-bold text-green-900">قدرات لفظي</h3>
+                            </div>
+                            <span class="text-4xl font-black text-green-600" id="verbalRate">0%</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-6 mb-6">
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">إجمالي الأسئلة</p>
+                                <p class="text-3xl font-black text-green-700" id="verbalTotal">0</p>
+                            </div>
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">الإجابات الصحيحة</p>
+                                <p class="text-3xl font-black text-green-600" id="verbalCorrect">0</p>
+                            </div>
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">الإجابات الخاطئة</p>
+                                <p class="text-3xl font-black text-red-600" id="verbalWrong">0</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-4">
+                            <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-4 rounded-full transition-all duration-1000" id="verbalProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tahsili -->
+                    <div class="border-3 border-purple-300 rounded-2xl p-8 bg-gradient-to-br from-purple-50 to-violet-50">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center text-2xl">🎓</div>
+                                <h3 class="text-2xl font-bold text-purple-900">التحصيلي</h3>
+                            </div>
+                            <span class="text-4xl font-black text-purple-600" id="tahsiliRate">0%</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-6 mb-6">
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">إجمالي الأسئلة</p>
+                                <p class="text-3xl font-black text-purple-700" id="tahsiliTotal">0</p>
+                            </div>
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">الإجابات الصحيحة</p>
+                                <p class="text-3xl font-black text-green-600" id="tahsiliCorrect">0</p>
+                            </div>
+                            <div class="text-center bg-white rounded-xl p-4 shadow-sm">
+                                <p class="text-base font-medium text-gray-600 mb-2">الإجابات الخاطئة</p>
+                                <p class="text-3xl font-black text-red-600" id="tahsiliWrong">0</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-4">
+                            <div class="bg-gradient-to-r from-purple-500 to-violet-500 h-4 rounded-full transition-all duration-1000" id="tahsiliProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Daily Activity - محسّنة -->
-        <div class="bg-white rounded-2xl shadow-xl border-2 p-8">
-            <h2 class="text-3xl font-black mb-8 text-gray-800">📅 النشاط الأسبوعي</h2>
-            <div id="weeklyActivity">
-                <p class="text-center text-gray-500 py-12 text-lg">لا توجد أنشطة هذا الأسبوع</p>
+            <!-- No Data State -->
+            <div id="noDataMessage" class="hidden bg-white rounded-2xl shadow-xl border-2 p-12 text-center">
+                <div class="text-6xl mb-4">📊</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">لا توجد بيانات كافية للتحليل</h2>
+                <p class="text-gray-600 mb-6">حل 12 أسئلة على الأقل من نفس الموضوع لعرض التحليل</p>
+                <a href="select-section.html" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition">
+                    ابدأ التدريب
+                </a>
             </div>
         </div>
 
     </main>
 
-    <script src="questions_bank.js"></script>
     <script>
-        const user = JSON.parse(localStorage.getItem('masari_user') || 'null');
-        if (!user) window.location.href = 'login.html';
+        const supabaseUrl = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+        const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let allQ = [...questionsBank];
-        const saved = localStorage.getItem('masari_custom_questions');
-        if (saved) { try { allQ = JSON.parse(saved); } catch(e) {} }
+        let currentUser = null;
 
-        const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+        async function checkAuth() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            currentUser = session.user;
+            return true;
+        }
 
-        function calculateOverallStats() {
-            const total = attempts.length;
-            const correct = attempts.filter(a => a.isCorrect).length;
+        async function loadStats() {
+            try {
+                console.log('🔄 جاري تحميل الإحصائيات...');
+                
+                // جلب كل المحاولات
+                const { data: attempts, error } = await sb
+                    .from('attempts')
+                    .select('*, questions(section)')
+                    .eq('user_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                console.log('✅ تم جلب', attempts ? attempts.length : 0, 'محاولة');
+                
+                if (!attempts || attempts.length === 0) {
+                    showNoData();
+                    return;
+                }
+                
+                // حساب الإحصائيات الإجمالية
+                const total = attempts.length;
+                const correct = attempts.filter(a => a.is_correct).length;
+                const wrong = total - correct;
+                const rate = Math.round((correct / total) * 100);
+                
+                document.getElementById('totalQuestions').textContent = total;
+                document.getElementById('correctAnswers').textContent = correct;
+                document.getElementById('wrongAnswers').textContent = wrong;
+                document.getElementById('successRate').textContent = rate + '%';
+                
+                // حساب إحصائيات كل قسم
+                calculateSectionStats(attempts, 'quant');
+                calculateSectionStats(attempts, 'verbal');
+                calculateSectionStats(attempts, 'tahsili');
+                
+                // إظهار المحتوى
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('statsContent').classList.remove('hidden');
+                
+            } catch (err) {
+                console.error('❌ خطأ:', err);
+                showError();
+            }
+        }
+
+        function calculateSectionStats(attempts, section) {
+            const sectionAttempts = attempts.filter(a => a.questions && a.questions.section === section);
+            
+            const total = sectionAttempts.length;
+            const correct = sectionAttempts.filter(a => a.is_correct).length;
             const wrong = total - correct;
             const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-            document.getElementById('totalQuestions').textContent = total;
-            document.getElementById('correctAnswers').textContent = correct;
-            document.getElementById('wrongAnswers').textContent = wrong;
-            document.getElementById('successRate').textContent = rate + '%';
+            
+            document.getElementById(`${section}Total`).textContent = total;
+            document.getElementById(`${section}Correct`).textContent = correct;
+            document.getElementById(`${section}Wrong`).textContent = wrong;
+            document.getElementById(`${section}Rate`).textContent = rate + '%';
+            
+            setTimeout(() => {
+                document.getElementById(`${section}Progress`).style.width = rate + '%';
+            }, 300);
         }
 
-        function calculateSectionStats() {
-            const sections = ['quantitative', 'verbal', 'achievement'];
-            const sectionNames = {
-                quantitative: {prefix: 'quant'},
-                verbal: {prefix: 'verbal'},
-                achievement: {prefix: 'ach'}
-            };
-
-            sections.forEach(section => {
-                const sectionQuestions = allQ.filter(q => q.section === section);
-                const sectionQIds = sectionQuestions.map(q => q.id);
-                const sectionAttempts = attempts.filter(a => sectionQIds.includes(a.questionId));
-
-                const total = sectionAttempts.length;
-                const correct = sectionAttempts.filter(a => a.isCorrect).length;
-                const wrong = total - correct;
-                const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-                const prefix = sectionNames[section].prefix;
-                document.getElementById(prefix + 'Total').textContent = total;
-                document.getElementById(prefix + 'Correct').textContent = correct;
-                document.getElementById(prefix + 'Wrong').textContent = wrong;
-                document.getElementById(prefix + 'Rate').textContent = rate + '%';
-                
-                setTimeout(() => {
-                    document.getElementById(prefix + 'Progress').style.width = rate + '%';
-                }, 200);
-            });
+        function showNoData() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('statsContent').classList.remove('hidden');
+            document.getElementById('noDataMessage').classList.remove('hidden');
         }
 
-        function analyzeWeaknesses() {
-            const subjectStats = {};
-
-            attempts.forEach(attempt => {
-                const question = allQ.find(q => q.id === attempt.questionId);
-                if (!question) return;
-
-                const key = question.subject;
-                if (!subjectStats[key]) {
-                    subjectStats[key] = { total: 0, correct: 0, wrong: 0 };
-                }
-
-                subjectStats[key].total++;
-                if (attempt.isCorrect) {
-                    subjectStats[key].correct++;
-                } else {
-                    subjectStats[key].wrong++;
-                }
-            });
-
-            const weaknesses = Object.keys(subjectStats)
-                .map(subject => {
-                    const stats = subjectStats[subject];
-                    const rate = Math.round((stats.correct / stats.total) * 100);
-                    return { subject, ...stats, rate };
-                })
-                .filter(s => s.total >= 2)
-                .sort((a, b) => a.rate - b.rate);
-
-            const container = document.getElementById('weaknessAnalysis');
-            
-            if (weaknesses.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500 py-12 text-lg">لا توجد بيانات كافية للتحليل<br><small class="text-sm">حل 2+ أسئلة من نفس الموضوع لعرض التحليل</small></p>';
-                return;
-            }
-
-            container.innerHTML = weaknesses.map(w => {
-                let colorClass, bgClass, borderClass;
-                if (w.rate >= 70) {
-                    colorClass = 'text-green-700';
-                    bgClass = 'bg-green-50';
-                    borderClass = 'border-green-300';
-                } else if (w.rate >= 50) {
-                    colorClass = 'text-amber-700';
-                    bgClass = 'bg-amber-50';
-                    borderClass = 'border-amber-300';
-                } else {
-                    colorClass = 'text-red-700';
-                    bgClass = 'bg-red-50';
-                    borderClass = 'border-red-300';
-                }
-                
-                return `
-                    <div class="border-2 ${borderClass} rounded-2xl p-6 mb-4 ${bgClass}">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-2xl font-bold ${colorClass}">${w.subject}</h3>
-                            <span class="text-3xl font-black ${colorClass}">${w.rate}%</span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="text-center">
-                                <p class="text-sm text-gray-600 mb-1">الأسئلة</p>
-                                <p class="text-2xl font-bold text-gray-800">${w.total}</p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-sm text-gray-600 mb-1">صحيح</p>
-                                <p class="text-2xl font-bold text-green-600">${w.correct}</p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-sm text-gray-600 mb-1">خطأ</p>
-                                <p class="text-2xl font-bold text-red-600">${w.wrong}</p>
-                            </div>
-                        </div>
-                        <div class="bg-gray-200 rounded-full h-3">
-                            <div class="h-3 rounded-full transition-all duration-1000" style="width: ${w.rate}%; background: ${w.rate >= 70 ? 'linear-gradient(to right, #10b981, #059669)' : w.rate >= 50 ? 'linear-gradient(to right, #f59e0b, #d97706)' : 'linear-gradient(to right, #ef4444, #dc2626)'}"></div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function showWeeklyActivity() {
-            const now = Date.now();
-            const weekAgo = now - (7 * 24 * 60 * 60 * 1000);
-            
-            const weeklyAttempts = attempts.filter(a => a.timestamp && a.timestamp >= weekAgo);
-            
-            if (weeklyAttempts.length === 0) {
-                document.getElementById('weeklyActivity').innerHTML = '<p class="text-center text-gray-500 py-12 text-lg">لا توجد أنشطة هذا الأسبوع<br><small class="text-sm">ابدأ بحل الأسئلة لعرض نشاطك</small></p>';
-                return;
-            }
-
-            const days = {};
-            const daysOfWeek = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-            
-            weeklyAttempts.forEach(a => {
-                const date = new Date(a.timestamp);
-                const dayName = daysOfWeek[date.getDay()];
-                if (!days[dayName]) days[dayName] = 0;
-                days[dayName]++;
-            });
-
-            const maxCount = Math.max(...Object.values(days));
-            
-            const container = document.getElementById('weeklyActivity');
-            container.innerHTML = `
-                <div class="grid grid-cols-7 gap-3 mb-8">
-                    ${daysOfWeek.map(day => {
-                        const count = days[day] || 0;
-                        const height = count > 0 ? Math.max(30, (count / maxCount) * 100) : 0;
-                        return `
-                            <div class="text-center">
-                                <div class="bg-indigo-100 rounded-xl p-4 mb-3 flex items-end justify-center" style="min-height: 120px;">
-                                    <div class="bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-lg w-full flex items-center justify-center transition-all duration-500" style="height: ${height}%;">
-                                        <p class="text-2xl font-black text-white">${count}</p>
-                                    </div>
-                                </div>
-                                <p class="text-sm font-medium text-gray-700">${day}</p>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-                <div class="text-center bg-indigo-50 rounded-xl p-6">
-                    <p class="text-2xl font-bold text-gray-800">إجمالي الأسئلة هذا الأسبوع: <span class="text-indigo-600">${weeklyAttempts.length}</span> سؤال</p>
+        function showError() {
+            document.getElementById('loadingState').innerHTML = `
+                <div class="text-center">
+                    <div class="text-6xl mb-4">⚠️</div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">حدث خطأ</h2>
+                    <p class="text-gray-600 mb-6">لم نتمكن من تحميل الإحصائيات</p>
+                    <button onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition">
+                        إعادة المحاولة
+                    </button>
                 </div>
             `;
         }
 
-        calculateOverallStats();
-        calculateSectionStats();
-        analyzeWeaknesses();
-        showWeeklyActivity();
+        document.addEventListener('DOMContentLoaded', async function() {
+            const isAuth = await checkAuth();
+            if (!isAuth) return;
+            
+            await loadStats();
+        });
     </script>
 </body>
 </html>
