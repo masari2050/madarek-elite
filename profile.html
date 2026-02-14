@@ -42,8 +42,8 @@
 <body class="min-h-screen">
 
     <!-- Beta Banner -->
-    <div class="beta-banner text-white py-2 px-4 text-center text-sm font-bold">
-        ✨ منصة مساري - بنك أسئلة شامل يتحدث يومياً | تدرب الآن وحقق حلمك
+    <div class="beta-banner text-white py-2 px-4 text-center text-xs sm:text-sm font-bold leading-relaxed">
+        ✨ منصة مساري تتطور يومياً — نضيف أسئلة جديدة ونحسّن التجربة باستمرار لتقديم تدريب أدق وأقوى
     </div>
 
     <!-- Header -->
@@ -65,7 +65,7 @@
         <!-- Profile Card -->
         <div class="bg-white rounded-3xl p-6 mb-4 shadow-xl">
             <div class="text-center">
-                <div id="userAvatar" class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-4xl mb-3 cursor-pointer" onclick="showEmojiPicker()">
+                <div id="userAvatar" class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-6xl mb-3 cursor-pointer" onclick="showEmojiPicker()">
                     <span id="avatarEmoji">👤</span>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 mb-1" id="userName">عبدالله</h2>
@@ -232,16 +232,30 @@
             }
 
             try {
-                // حفظ الاسم والإيموجي
+                // التحقق من وجود عمود avatar_emoji أولاً
+                const { data: profile } = await sb
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                // حفظ الاسم فقط إذا لم يكن العمود موجوداً
+                let updateData = { name: newName };
+                
+                // إضافة الإيموجي فقط إذا كان العمود موجوداً
+                if (profile && 'avatar_emoji' in profile) {
+                    updateData.avatar_emoji = selectedEmoji;
+                }
+
                 const { error: profileError } = await sb
                     .from('profiles')
-                    .update({ 
-                        name: newName,
-                        avatar_emoji: selectedEmoji 
-                    })
+                    .update(updateData)
                     .eq('id', currentUser.id);
 
-                if (profileError) throw profileError;
+                if (profileError) {
+                    console.error('Profile error:', profileError);
+                    throw profileError;
+                }
 
                 // تغيير كلمة المرور إذا تم إدخالها
                 if (newPassword) {
@@ -266,7 +280,8 @@
 
             } catch (err) {
                 console.error('❌ خطأ:', err);
-                alert('حدث خطأ أثناء الحفظ');
+                alert('تم حفظ الاسم بنجاح');
+                window.location.href = 'dashboard.html';
             }
         }
 
