@@ -130,9 +130,11 @@
     </div>
   </div>
 
- <script>
+<script>
     // تحميل بنك الأسئلة
     const questionsBank = window.questionsBank || [];
+    
+    console.log('إجمالي الأسئلة:', questionsBank.length);
     
     // دالة لحساب عدد الأسئلة لكل قسم
     function getQuestionCount(section) {
@@ -141,28 +143,50 @@
     }
     
     // تحديث العدادات عند تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function() {
+        // حساب الأعداد
         const verbalCount = getQuestionCount('verbal');
         const quantCount = getQuestionCount('quant');
         const tahsiliCount = getQuestionCount('tahsili');
         
-        console.log('عدد الأسئلة:', { verbal: verbalCount, quant: quantCount, tahsili: tahsiliCount });
+        console.log('عدد أسئلة قدرات لفظي:', verbalCount);
+        console.log('عدد أسئلة قدرات كمي:', quantCount);
+        console.log('عدد أسئلة تحصيلي:', tahsiliCount);
         
-        // تحديث النصوص في الصفحة
-        const verbalElement = document.querySelector('[data-section="verbal"] .question-count');
-        const quantElement = document.querySelector('[data-section="quant"] .question-count');
-        const tahsiliElement = document.querySelector('[data-section="tahsili"] .question-count');
+        // البحث عن العناصر وتحديثها
+        // نبحث عن النصوص اللي فيها "سؤال متاح"
+        const allParagraphs = document.querySelectorAll('p');
         
-        if (verbalElement) verbalElement.textContent = `+${verbalCount} سؤال متنوع`;
-        if (quantElement) quantElement.textContent = `+${quantCount} سؤال متنوع`;
-        if (tahsiliElement) tahsiliElement.textContent = `+${tahsiliCount} سؤال متنوع`;
+        allParagraphs.forEach(p => {
+            const text = p.textContent.trim();
+            
+            // إذا النص يحتوي "سؤال متاح"
+            if (text.includes('سؤال متاح')) {
+                // نشوف وين موقعه في الصفحة
+                const card = p.closest('div');
+                const cardText = card ? card.textContent : '';
+                
+                // إذا الكارت يحتوي "قدرات كمي"
+                if (cardText.includes('قدرات كمي')) {
+                    p.textContent = `+${quantCount} سؤال متنوع`;
+                }
+                // إذا الكارت يحتوي "قدرات لفظي"
+                else if (cardText.includes('قدرات لفظي')) {
+                    p.textContent = `+${verbalCount} سؤال متنوع`;
+                }
+                // إذا الكارت يحتوي "التحصيلي"
+                else if (cardText.includes('التحصيلي')) {
+                    p.textContent = `+${tahsiliCount} سؤال متنوع`;
+                }
+            }
+        });
     });
     
     // دالة بدء التدريب
     function startPractice(section) {
         console.log('القسم المختار:', section);
         
-        // حفظ القسم في الذاكرة
+        // حفظ القسم في localStorage
         localStorage.setItem('masari_selected_section', section);
         
         // التحقق من وجود أسئلة
