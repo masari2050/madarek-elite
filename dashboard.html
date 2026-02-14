@@ -108,40 +108,55 @@
             </div>
         </div>
 
-        <!-- Action Buttons - الترتيب الصحيح: راجع أخطائك → إحصائياتي → ابدأ التدريب -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            
-            <!-- Review Mistakes - أول واحد على اليمين -->
-            <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition cursor-pointer border-2 border-red-200" onclick="window.location.href='mistakes.html'">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="bg-white p-3 rounded-xl">
-                        <span class="text-3xl">📖</span>
-                    </div>
-                    <span id="mistakesBadge" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">0</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">راجع أخطائك</h3>
-                <p class="text-gray-600 text-sm">تعلم من الأخطاء السابقة</p>
-            </div>
+      <!-- ملاحظة: هذا الجزء فقط من dashboard.html -->
+<!-- ابحث عن قسم الأزرار الثلاثة واستبدله بهذا -->
 
-            <!-- My Statistics - ثاني واحد -->
-            <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition cursor-pointer" onclick="window.location.href='stats.html'">
-                <div class="bg-white p-3 rounded-xl w-fit mb-4">
-                    <span class="text-3xl">📊</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">إحصائياتي</h3>
-                <p class="text-gray-600 text-sm">تحليل تفصيلي لأدائك</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- زر 1: ابدأ التدريب (يمين) -->
+    <a href="select-section.html" class="block bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+        <div class="flex items-center gap-4">
+            <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                </svg>
             </div>
-
-            <!-- Start Training - آخر واحد على اليسار -->
-            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition cursor-pointer" onclick="window.location.href='select-section.html'">
-                <div class="bg-white p-3 rounded-xl w-fit mb-4">
-                    <span class="text-3xl">🚀</span>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2">ابدأ التدريب</h3>
-                <p class="text-indigo-100 text-sm">حل أسئلة جديدة</p>
+            <div class="text-right flex-1">
+                <h3 class="text-lg font-bold">ابدأ التدريب</h3>
+                <p class="text-sm text-indigo-100">حل أسئلة جديدة</p>
             </div>
-
         </div>
+    </a>
+
+    <!-- زر 2: إحصائياتي (وسط) -->
+    <a href="stats.html" class="block bg-gradient-to-br from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+        <div class="flex items-center gap-4">
+            <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                </svg>
+            </div>
+            <div class="text-right flex-1">
+                <h3 class="text-lg font-bold">إحصائياتي</h3>
+                <p class="text-sm text-green-100">تحليل تفصيلي لأدائك</p>
+            </div>
+        </div>
+    </a>
+
+    <!-- زر 3: راجع أخطائك (يسار) -->
+    <a href="mistakes.html" class="block bg-gradient-to-br from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+        <div class="flex items-center gap-4">
+            <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="text-right flex-1">
+                <h3 class="text-lg font-bold">راجع أخطائك</h3>
+                <p class="text-sm text-red-100">تعلم من الأخطاء السابقة</p>
+            </div>
+        </div>
+    </a>
+</div>
 
         <!-- Recent Activity -->
         <div class="bg-white rounded-2xl p-6 shadow-lg">
