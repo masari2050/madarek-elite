@@ -5,305 +5,378 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي - مساري</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .beta-banner {
-            background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #4f46e5 100%);
-            background-size: 200% 100%;
-            animation: gradient-flow 3s ease infinite;
-        }
-        @keyframes gradient-flow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
         .emoji-option {
-            font-size: 3rem;
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: all 0.3s;
-            opacity: 0.5;
         }
         .emoji-option:hover {
             transform: scale(1.2);
-            opacity: 1;
         }
         .emoji-option.selected {
-            opacity: 1;
+            background: #667eea;
             transform: scale(1.3);
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+        }
+        .beta-banner {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="bg-gray-50">
 
-    <!-- Beta Banner -->
+    <!-- الشريط العلوي -->
     <div class="beta-banner text-white py-2 px-4 text-center text-xs sm:text-sm font-bold leading-relaxed">
-        ✨ منصة مساري تتطور يومياً — نضيف أسئلة جديدة ونحسّن التجربة باستمرار لتقديم تدريب أدق وأقوى
+        ✨ نعمل خلف الكواليس لتطوير مساري — المزيد من الأسئلة والتحسينات قادمة قريباً
     </div>
 
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center">
-            <button onclick="goBack()" class="text-gray-600 hover:text-gray-800">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
+    <!-- الهيدر -->
+    <header class="gradient-bg text-white py-6">
+        <div class="max-w-4xl mx-auto px-4 flex items-center gap-4">
+            <button onclick="window.location.href='dashboard.html'" class="text-3xl hover:scale-110 transition-transform">
+                ← 
             </button>
-            <h1 class="flex-1 text-center text-xl font-bold text-gray-800">الملف الشخصي</h1>
-            <div class="w-6"></div>
+            <h1 class="text-2xl font-bold">الملف الشخصي</h1>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 py-6">
-        
-        <!-- Profile Card -->
-        <div class="bg-white rounded-3xl p-6 mb-4 shadow-xl">
-            <div class="text-center">
-                <div id="userAvatar" class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-6xl mb-3 cursor-pointer" onclick="showEmojiPicker()">
-                    <span id="avatarEmoji">👤</span>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-1" id="userName">عبدالله</h2>
-                <p class="text-gray-500 text-sm" id="userEmail">loading...</p>
-            </div>
-        </div>
+    <!-- المحتوى -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
 
-        <!-- Settings -->
-        <div class="bg-white rounded-3xl p-4 mb-4 shadow-xl">
+        <!-- رسائل النجاح/الخطأ -->
+        <div id="successMessage" class="hidden mb-4 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm"></div>
+        <div id="errorMessage" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm"></div>
+
+        <!-- بطاقة البروفايل -->
+        <div class="bg-white rounded-3xl shadow-xl p-8 mb-6">
             
-            <!-- Name -->
-            <div class="mb-4 pb-4 border-b">
-                <label class="block text-gray-700 font-bold mb-2">الاسم</label>
-                <input type="text" id="nameInput" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none" placeholder="اسمك">
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4 pb-4 border-b">
-                <label class="block text-gray-700 font-bold mb-2">كلمة المرور الجديدة</label>
-                <input type="password" id="passwordInput" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none mb-2" placeholder="كلمة المرور الجديدة (6 أحرف على الأقل)">
-                <input type="password" id="passwordConfirm" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none" placeholder="تأكيد كلمة المرور">
-            </div>
-
-            <!-- Sound -->
-            <div class="flex items-center justify-between mb-4 pb-4 border-b">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl">🔊</span>
-                    <div>
-                        <p class="font-bold text-gray-800">تأثيرات الصوت</p>
-                        <p class="text-xs text-gray-500">صوت عند الإجابة</p>
-                    </div>
+            <!-- الأيقونة والمعلومات الأساسية -->
+            <div class="text-center mb-8">
+                <div class="w-32 h-32 mx-auto gradient-bg rounded-full flex items-center justify-center text-7xl mb-4" id="mainAvatar">
+                    👤
                 </div>
-                <button onclick="toggleSound()" id="soundToggle" class="relative inline-flex h-8 w-14 items-center rounded-full bg-indigo-600 transition">
-                    <span id="soundDot" class="inline-block h-6 w-6 transform rounded-full bg-white transition translate-x-7"></span>
-                </button>
+                <h2 class="text-2xl font-bold mb-1" id="displayName">مستخدم</h2>
+                <p class="text-gray-600" id="displayEmail">email@example.com</p>
             </div>
 
-            <!-- Save Button -->
-            <button onclick="saveChanges()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 rounded-xl font-bold text-lg transition shadow-lg">
-                حفظ التغييرات
+            <!-- اختيار الإيموجي -->
+            <div class="mb-8">
+                <label class="block text-lg font-bold mb-4">اختر الإيموجي</label>
+                <div class="grid grid-cols-6 gap-3">
+                    <button onclick="selectEmoji('👦')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">👦</button>
+                    <button onclick="selectEmoji('👧')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">👧</button>
+                    <button onclick="selectEmoji('🧑')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">🧑</button>
+                    <button onclick="selectEmoji('👨')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">👨</button>
+                    <button onclick="selectEmoji('👩')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">👩</button>
+                    <button onclick="selectEmoji('🎓')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">🎓</button>
+                    <button onclick="selectEmoji('📚')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">📚</button>
+                    <button onclick="selectEmoji('✨')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">✨</button>
+                    <button onclick="selectEmoji('🌟')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">🌟</button>
+                    <button onclick="selectEmoji('🚀')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">🚀</button>
+                    <button onclick="selectEmoji('🎯')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">🎯</button>
+                    <button onclick="selectEmoji('💪')" class="emoji-option p-4 rounded-xl border-2 border-gray-200 text-4xl hover:border-purple-400">💪</button>
+                </div>
+                <input type="hidden" id="selectedEmoji" value="👤">
+            </div>
+
+            <!-- تعديل الاسم -->
+            <div class="mb-8">
+                <label class="block text-lg font-bold mb-3">الاسم</label>
+                <input 
+                    type="text" 
+                    id="nameInput"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-right focus:outline-none focus:border-purple-500"
+                    placeholder="اسمك"
+                >
+            </div>
+
+            <!-- تغيير كلمة المرور -->
+            <div class="mb-8">
+                <label class="block text-lg font-bold mb-3">كلمة المرور الجديدة (6 أحرف على الأقل)</label>
+                <input 
+                    type="password" 
+                    id="newPassword"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-right focus:outline-none focus:border-purple-500 mb-3"
+                    placeholder="كلمة المرور الجديدة (اتركها فارغة إذا لم ترد التغيير)"
+                >
+                <input 
+                    type="password" 
+                    id="confirmPassword"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-right focus:outline-none focus:border-purple-500"
+                    placeholder="تأكيد كلمة المرور"
+                >
+            </div>
+
+            <!-- تأثيرات الصوت -->
+            <div class="mb-8">
+                <label class="flex items-center justify-between p-4 border border-gray-300 rounded-xl cursor-pointer hover:border-purple-400">
+                    <span class="text-lg font-semibold flex items-center gap-2">
+                        <span>🔊</span>
+                        تأثيرات الصوت
+                    </span>
+                    <div class="relative">
+                        <input type="checkbox" id="soundToggle" class="sr-only" checked>
+                        <div class="block bg-gray-300 w-14 h-8 rounded-full transition" id="soundToggleTrack"></div>
+                        <div class="dot absolute right-1 top-1 bg-white w-6 h-6 rounded-full transition" id="soundToggleDot"></div>
+                    </div>
+                </label>
+                <p class="text-sm text-gray-600 mt-2 mr-1">صوت عند الإجابة (صح أو خطأ)</p>
+            </div>
+
+            <!-- زر حفظ التغييرات -->
+            <button 
+                onclick="saveProfile()"
+                id="saveBtn"
+                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transform hover:scale-105 transition-all"
+            >
+                💾 حفظ التغييرات
             </button>
 
         </div>
 
-        <!-- Logout Button -->
-        <button onclick="handleLogout()" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold transition shadow-lg">
-            تسجيل خروج
+        <!-- زر تسجيل الخروج -->
+        <button 
+            onclick="logout()"
+            class="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg transform hover:scale-105 transition-all"
+        >
+            🚪 تسجيل خروج
         </button>
 
     </main>
 
-    <!-- Emoji Picker Modal -->
-    <div id="emojiModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 max-w-md w-full">
-            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">اختر صورتك الشخصية</h3>
-            <div class="grid grid-cols-4 gap-4 mb-4">
-                <div class="emoji-option" onclick="selectEmoji('👨')">👨</div>
-                <div class="emoji-option" onclick="selectEmoji('👩')">👩</div>
-                <div class="emoji-option" onclick="selectEmoji('🧑')">🧑</div>
-                <div class="emoji-option" onclick="selectEmoji('👨‍🎓')">👨‍🎓</div>
-                <div class="emoji-option" onclick="selectEmoji('👩‍🎓')">👩‍🎓</div>
-                <div class="emoji-option" onclick="selectEmoji('🧑‍🎓')">🧑‍🎓</div>
-                <div class="emoji-option" onclick="selectEmoji('😊')">😊</div>
-                <div class="emoji-option" onclick="selectEmoji('🤓')">🤓</div>
-                <div class="emoji-option" onclick="selectEmoji('🚀')">🚀</div>
-                <div class="emoji-option" onclick="selectEmoji('⭐')">⭐</div>
-                <div class="emoji-option" onclick="selectEmoji('💪')">💪</div>
-                <div class="emoji-option" onclick="selectEmoji('🎯')">🎯</div>
-            </div>
-            <button onclick="closeEmojiPicker()" class="w-full bg-gray-200 hover:bg-gray-300 py-2 rounded-xl font-bold">
-                إلغاء
-            </button>
-        </div>
-    </div>
-
     <script>
-        const supabaseUrl = 'https://czzcmbxejxbotjemyuqf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
-        const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // ============================================
+        // 🔧 إعداد Supabase
+        // ============================================
+        const SUPABASE_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg4MTYwNzcsImV4cCI6MjA1NDM5MjA3N30.ssII2KdmOcz1n-L3fo_tGdtHKBnPxLmEcJpWGBJBxDE';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentUser = null;
-        let soundEnabled = true;
-        let selectedEmoji = '👤';
+        let currentProfile = null;
 
-        async function checkAuth() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return false;
-            }
-            currentUser = session.user;
-            return true;
-        }
-
-        async function loadProfile() {
-            document.getElementById('userEmail').textContent = currentUser.email;
-            
-            const { data: profile } = await sb
-                .from('profiles')
-                .select('name, avatar_emoji')
-                .eq('id', currentUser.id)
-                .single();
-            
-            if (profile) {
-                document.getElementById('userName').textContent = profile.name || 'مستخدم';
-                document.getElementById('nameInput').value = profile.name || '';
-                if (profile.avatar_emoji) {
-                    selectedEmoji = profile.avatar_emoji;
-                    document.getElementById('avatarEmoji').textContent = selectedEmoji;
-                }
-            }
-
-            const savedSound = localStorage.getItem('soundEnabled');
-            if (savedSound !== null) {
-                soundEnabled = savedSound === 'true';
-                updateSoundUI();
-            }
-        }
-
-        function showEmojiPicker() {
-            document.getElementById('emojiModal').classList.remove('hidden');
-        }
-
-        function closeEmojiPicker() {
-            document.getElementById('emojiModal').classList.add('hidden');
-        }
-
+        // ============================================
+        // 🎨 اختيار الإيموجي
+        // ============================================
         function selectEmoji(emoji) {
-            selectedEmoji = emoji;
-            document.getElementById('avatarEmoji').textContent = emoji;
-            closeEmojiPicker();
+            // إزالة selected من الكل
+            document.querySelectorAll('.emoji-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // إضافة selected للمختار
+            event.target.classList.add('selected');
+            
+            // تحديث القيمة
+            document.getElementById('selectedEmoji').value = emoji;
+            document.getElementById('mainAvatar').textContent = emoji;
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            localStorage.setItem('soundEnabled', soundEnabled);
-            updateSoundUI();
-        }
-
-        function updateSoundUI() {
-            const toggle = document.getElementById('soundToggle');
-            const dot = document.getElementById('soundDot');
-            if (soundEnabled) {
-                toggle.classList.remove('bg-gray-400');
-                toggle.classList.add('bg-indigo-600');
-                dot.classList.remove('translate-x-1');
-                dot.classList.add('translate-x-7');
+        // ============================================
+        // 🔊 تبديل الصوت
+        // ============================================
+        document.getElementById('soundToggle').addEventListener('change', function() {
+            const track = document.getElementById('soundToggleTrack');
+            const dot = document.getElementById('soundToggleDot');
+            
+            if (this.checked) {
+                track.classList.remove('bg-gray-300');
+                track.classList.add('bg-purple-600');
+                dot.classList.remove('right-1');
+                dot.classList.add('right-7');
             } else {
-                toggle.classList.remove('bg-indigo-600');
-                toggle.classList.add('bg-gray-400');
-                dot.classList.remove('translate-x-7');
-                dot.classList.add('translate-x-1');
+                track.classList.add('bg-gray-300');
+                track.classList.remove('bg-purple-600');
+                dot.classList.add('right-1');
+                dot.classList.remove('right-7');
             }
+        });
+
+        // ============================================
+        // ⚠️ عرض الرسائل
+        // ============================================
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                successDiv.classList.add('hidden');
+            }, 3000);
         }
 
-        async function saveChanges() {
-            const newName = document.getElementById('nameInput').value.trim();
-            const newPassword = document.getElementById('passwordInput').value;
-            const confirmPassword = document.getElementById('passwordConfirm').value;
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
+        }
 
-            if (!newName) {
-                alert('الرجاء إدخال الاسم');
-                return;
-            }
-
+        // ============================================
+        // 📥 تحميل البيانات الحالية
+        // ============================================
+        async function loadCurrentData() {
             try {
-                // التحقق من وجود عمود avatar_emoji أولاً
-                const { data: profile } = await sb
+                // التحقق من المستخدم
+                const { data: { user }, error: userError } = await supabase.auth.getUser();
+                
+                if (userError || !user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                currentUser = user;
+                
+                // جلب البروفايل
+                const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('id', currentUser.id)
+                    .eq('id', user.id)
                     .single();
-
-                // حفظ الاسم فقط إذا لم يكن العمود موجوداً
-                let updateData = { name: newName };
                 
-                // إضافة الإيموجي فقط إذا كان العمود موجوداً
-                if (profile && 'avatar_emoji' in profile) {
-                    updateData.avatar_emoji = selectedEmoji;
-                }
-
-                const { error: profileError } = await sb
-                    .from('profiles')
-                    .update(updateData)
-                    .eq('id', currentUser.id);
-
                 if (profileError) {
-                    console.error('Profile error:', profileError);
-                    throw profileError;
+                    console.error('❌ خطأ في جلب البروفايل:', profileError);
+                    return;
                 }
-
-                // تغيير كلمة المرور إذا تم إدخالها
-                if (newPassword) {
-                    if (newPassword.length < 6) {
-                        alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-                        return;
+                
+                currentProfile = profile;
+                console.log('✅ البروفايل الحالي:', profile);
+                
+                // عرض البيانات
+                document.getElementById('displayName').textContent = profile.name || 'مستخدم';
+                document.getElementById('displayEmail').textContent = user.email;
+                document.getElementById('nameInput').value = profile.name || '';
+                document.getElementById('mainAvatar').textContent = profile.avatar_emoji || '👤';
+                document.getElementById('selectedEmoji').value = profile.avatar_emoji || '👤';
+                
+                // تحديد الإيموجي الحالي
+                document.querySelectorAll('.emoji-option').forEach(btn => {
+                    if (btn.textContent.trim() === profile.avatar_emoji) {
+                        btn.classList.add('selected');
                     }
-                    if (newPassword !== confirmPassword) {
-                        alert('كلمات المرور غير متطابقة');
-                        return;
-                    }
-
-                    const { error: passwordError } = await sb.auth.updateUser({ 
-                        password: newPassword 
-                    });
-
-                    if (passwordError) throw passwordError;
-                }
-
-                alert('✅ تم حفظ التغييرات بنجاح');
-                window.location.href = 'dashboard.html';
-
+                });
+                
             } catch (err) {
                 console.error('❌ خطأ:', err);
-                alert('تم حفظ الاسم بنجاح');
-                window.location.href = 'dashboard.html';
             }
         }
 
-        async function handleLogout() {
-            if (!confirm('هل تريد تسجيل الخروج؟')) return;
+        // ============================================
+        // 💾 حفظ التغييرات
+        // ============================================
+        async function saveProfile() {
+            const saveBtn = document.getElementById('saveBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '⏳ جاري الحفظ...';
             
             try {
-                await sb.auth.signOut();
-                window.location.href = 'login.html';
+                const newName = document.getElementById('nameInput').value.trim();
+                const newEmoji = document.getElementById('selectedEmoji').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // التحقق من كلمة المرور إذا تم إدخالها
+                if (newPassword || confirmPassword) {
+                    if (newPassword !== confirmPassword) {
+                        showError('⚠️ كلمات المرور غير متطابقة');
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = originalText;
+                        return;
+                    }
+                    
+                    if (newPassword.length < 6) {
+                        showError('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = originalText;
+                        return;
+                    }
+                    
+                    // تحديث كلمة المرور
+                    const { error: passwordError } = await supabase.auth.updateUser({
+                        password: newPassword
+                    });
+                    
+                    if (passwordError) {
+                        showError('⚠️ فشل تحديث كلمة المرور');
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = originalText;
+                        return;
+                    }
+                }
+                
+                // تحديث البروفايل (الاسم والإيموجي فقط إذا تم تغييرهما)
+                const updates = {};
+                
+                if (newName && newName !== currentProfile.name) {
+                    updates.name = newName;
+                }
+                
+                if (newEmoji !== currentProfile.avatar_emoji) {
+                    updates.avatar_emoji = newEmoji;
+                }
+                
+                // تحديث البيانات في Supabase فقط إذا كان هناك تغييرات
+                if (Object.keys(updates).length > 0) {
+                    const { error: updateError } = await supabase
+                        .from('profiles')
+                        .update(updates)
+                        .eq('id', currentUser.id);
+                    
+                    if (updateError) {
+                        console.error('❌ خطأ في التحديث:', updateError);
+                        showError('⚠️ حدث خطأ في الحفظ');
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = originalText;
+                        return;
+                    }
+                }
+                
+                // نجح الحفظ
+                showSuccess('✅ تم حفظ التغييرات بنجاح');
+                saveBtn.innerHTML = '✅ تم الحفظ';
+                
+                setTimeout(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                    
+                    // إعادة تحميل البيانات
+                    loadCurrentData();
+                }, 1500);
+                
             } catch (err) {
                 console.error('❌ خطأ:', err);
+                showError('⚠️ حدث خطأ غير متوقع');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
             }
         }
 
-        function goBack() {
-            window.location.href = 'dashboard.html';
+        // ============================================
+        // 🚪 تسجيل الخروج
+        // ============================================
+        async function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                await supabase.auth.signOut();
+                window.location.href = 'login.html';
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', async function() {
-            const isAuth = await checkAuth();
-            if (isAuth) await loadProfile();
-        });
+        // ============================================
+        // 🚀 تهيئة الصفحة
+        // ============================================
+        loadCurrentData();
     </script>
 
 </body>
