@@ -2,76 +2,101 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سياسة الاشتراكات - مساري</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>* { font-family: 'Tajawal', sans-serif; }</style>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}.delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}
+    </style>
 </head>
-<body class="bg-gray-50">
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-xl font-bold text-indigo-600">مساري</a>
-            <a href="index.html" class="text-gray-600 hover:text-indigo-600">← العودة</a>
+<body class="text-white" style="font-family:'Tajawal',sans-serif">
+
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between animate-in delay-1">
+        <a href="index.html" class="flex items-center gap-2 text-purple-300/70 hover:text-white transition text-sm">
+            <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            <span>الرئيسية</span>
+        </a>
+        <div class="flex items-center gap-2">
+            <span class="text-xl">🎓</span>
+            <span class="font-black text-lg bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent">مساري</span>
         </div>
-    </header>
-    <main class="max-w-4xl mx-auto px-4 py-12">
-        <div class="bg-white rounded-xl shadow-sm p-8">
-            <h1 class="text-3xl font-bold mb-6">سياسة الاشتراكات</h1>
-            
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold mb-4">أنواع الاشتراكات</h2>
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div class="border-2 border-indigo-300 rounded-lg p-6 bg-indigo-50">
-                        <h3 class="font-bold text-xl mb-2">💎 الاشتراك الشهري</h3>
-                        <p class="text-gray-700 mb-2">29 ريال/شهر</p>
-                        <p class="text-sm text-gray-600">يتجدد تلقائياً كل شهر</p>
+        <div class="w-16"></div>
+    </div>
+
+    <main class="max-w-3xl mx-auto px-4 pb-12">
+        <div class="text-center mb-8 animate-in delay-1">
+            <h1 class="text-3xl font-black mb-2">سياسة الاشتراكات</h1>
+            <p class="text-purple-300/50 text-sm">كل اللي تحتاج تعرفه عن اشتراكك</p>
+        </div>
+
+        <div class="space-y-4 animate-in delay-2">
+            <!-- Plans -->
+            <div class="card-glass p-5">
+                <h2 class="font-bold text-base mb-4">أنواع الاشتراكات</h2>
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <div class="p-4 rounded-xl" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">
+                        <h3 class="font-bold text-sm text-indigo-300 mb-1">📅 الاشتراك الشهري</h3>
+                        <p class="text-2xl font-black mb-0.5">29 <span class="text-sm text-purple-300/40">ريال/شهر</span></p>
+                        <p class="text-purple-300/40 text-xs">يتجدد تلقائياً كل شهر</p>
                     </div>
-                    <div class="border-2 border-yellow-300 rounded-lg p-6 bg-yellow-50">
-                        <h3 class="font-bold text-xl mb-2">👑 الاشتراك السنوي</h3>
-                        <p class="text-gray-700 mb-2">228 ريال/سنة</p>
-                        <p class="text-sm text-gray-600">وفّر 120 ريال (34%)</p>
+                    <div class="p-4 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
+                        <h3 class="font-bold text-sm text-emerald-300 mb-1">💎 الاشتراك السنوي</h3>
+                        <p class="text-2xl font-black mb-0.5">228 <span class="text-sm text-purple-300/40">ريال/سنة</span></p>
+                        <p class="text-purple-300/40 text-xs">وفّر 120 ريال (34%)</p>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold mb-4">التجديد التلقائي</h2>
-                <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
-                    <p class="text-gray-700 leading-relaxed mb-3">
-                        الاشتراكات تتجدد تلقائياً في نهاية كل فترة اشتراك. سيتم خصم المبلغ من وسيلة الدفع المسجلة.
-                    </p>
-                    <p class="text-gray-700">يمكنك إيقاف التجديد التلقائي في أي وقت من إعدادات حسابك.</p>
+            <!-- Auto Renewal -->
+            <div class="card-glass p-5">
+                <h2 class="font-bold text-base mb-3">التجديد التلقائي</h2>
+                <p class="text-purple-200/60 text-sm leading-relaxed mb-2">الاشتراكات تتجدد تلقائياً في نهاية كل فترة. يتم الخصم من وسيلة الدفع المسجلة.</p>
+                <p class="text-purple-200/60 text-sm">تقدر توقف التجديد التلقائي بأي وقت من إعدادات حسابك.</p>
+            </div>
+
+            <!-- Upgrade -->
+            <div class="card-glass p-5">
+                <h2 class="font-bold text-base mb-3">الترقية والتخفيض</h2>
+                <div class="space-y-2 text-purple-200/60 text-sm">
+                    <p>• <span class="text-white font-medium">الترقية:</span> تقدر ترقّي من الشهري للسنوي بأي وقت مع احتساب المبلغ المدفوع.</p>
+                    <p>• <span class="text-white font-medium">التخفيض:</span> لو خفّضت من السنوي للشهري، التغيير يطبّق بالفترة الجاية.</p>
                 </div>
-            </section>
+            </div>
 
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold mb-4">الترقية والتخفيض</h2>
-                <ul class="space-y-3 text-gray-700">
-                    <li>• <strong>الترقية:</strong> يمكنك الترقية من الشهري للسنوي في أي وقت مع احتساب المبلغ المدفوع</li>
-                    <li>• <strong>التخفيض:</strong> عند التخفيض من السنوي للشهري، سيطبق التغيير في الفترة التالية</li>
-                </ul>
-            </section>
+            <!-- Cancellation -->
+            <div class="card-glass p-5">
+                <h2 class="font-bold text-base mb-3">إلغاء الاشتراك</h2>
+                <p class="text-purple-200/60 text-sm mb-3">لما تلغي اشتراكك:</p>
+                <div class="space-y-1.5 text-sm">
+                    <p class="text-green-400/80">✓ تحتفظ بالوصول حتى نهاية الفترة المدفوعة</p>
+                    <p class="text-green-400/80">✓ ما يتجدد الاشتراك تلقائياً</p>
+                    <p class="text-green-400/80">✓ تقدر ترجع تشترك بأي وقت</p>
+                    <p class="text-green-400/80">✓ إحصائياتك وتقدمك يبقون محفوظين</p>
+                </div>
+            </div>
 
-            <section class="mb-8">
-                <h2 class="text-2xl font-bold mb-4">إلغاء الاشتراك</h2>
-                <p class="text-gray-700 mb-3">عند إلغاء اشتراكك:</p>
-                <ul class="space-y-2 text-gray-700">
-                    <li>✓ ستحتفظ بالوصول حتى نهاية الفترة المدفوعة</li>
-                    <li>✓ لن يتم تجديد الاشتراك تلقائياً</li>
-                    <li>✓ يمكنك إعادة الاشتراك في أي وقت</li>
-                </ul>
-            </section>
-
-            <section class="bg-green-50 rounded-lg p-6">
-                <h3 class="font-bold mb-2">كيفية إلغاء الاشتراك</h3>
-                <p class="text-gray-700 text-sm">
-                    لوحة التحكم ← الإعدادات ← الاشتراكات ← إلغاء الاشتراك
-                </p>
-            </section>
+            <!-- How to cancel -->
+            <div class="card-glass p-5">
+                <h2 class="font-bold text-base mb-3">كيف ألغي الاشتراك؟</h2>
+                <div class="flex items-center gap-2 text-sm text-purple-200/60">
+                    <span class="text-purple-300">لوحة التحكم</span><span class="text-purple-300/20">←</span>
+                    <span class="text-purple-300">الإعدادات</span><span class="text-purple-300/20">←</span>
+                    <span class="text-purple-300">الاشتراكات</span><span class="text-purple-300/20">←</span>
+                    <span class="text-white font-bold">إلغاء الاشتراك</span>
+                </div>
+            </div>
         </div>
     </main>
-    <footer class="bg-gray-100 border-t mt-12 py-8 text-center text-gray-600 text-sm">
-        <p>© 2026 مساري - جميع الحقوق محفوظة</p>
+
+    <footer class="border-t border-purple-500/10 mt-8">
+        <div class="max-w-3xl mx-auto px-4 py-6 text-center">
+            <p class="text-purple-300/20 text-xs">© 2026 مساري — جميع الحقوق محفوظة</p>
+        </div>
     </footer>
 </body>
 </html>
