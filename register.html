@@ -5,273 +5,346 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إنشاء حساب - مساري</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
-            font-family: 'Tajawal', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .gender-btn {
+            transition: all 0.3s ease;
+        }
+        .gender-btn.active {
+            background: white;
+            color: #667eea;
+            transform: scale(1.05);
+        }
+        .error-message {
+            animation: shake 0.3s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
+    <!-- البطاقة الرئيسية -->
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
         
-        <!-- Logo -->
-        <div class="text-center mb-6">
-            <div class="text-5xl mb-3">🎓</div>
-            <h1 class="text-3xl font-black text-gray-800 mb-2">مرحباً بك في مساري</h1>
+        <!-- الأيقونة والترحيب -->
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4">🎓</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">مرحباً بك في مساري</h1>
             <p class="text-gray-600">أنشئ حسابك وابدأ رحلتك نحو التميز</p>
         </div>
 
-        <!-- Form -->
-        <form id="signupForm" class="space-y-4">
+        <!-- رسائل الخطأ -->
+        <div id="errorMessage" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm error-message">
+        </div>
+
+        <!-- نموذج التسجيل -->
+        <form id="registerForm" class="space-y-5">
             
-            <!-- Name -->
+            <!-- الاسم الكامل -->
             <div>
-                <label class="block text-gray-700 font-bold mb-2 text-right">الاسم الكامل</label>
+                <label class="block text-gray-700 font-semibold mb-2">الاسم الكامل</label>
                 <input 
                     type="text" 
                     id="name" 
                     required
-                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none text-right"
-                    placeholder="أدخل اسمك الكامل"
+                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl text-right"
+                    placeholder="رعد"
                 >
             </div>
 
-            <!-- Email -->
+            <!-- البريد الإلكتروني -->
             <div>
-                <label class="block text-gray-700 font-bold mb-2 text-right">البريد الإلكتروني</label>
+                <label class="block text-gray-700 font-semibold mb-2">البريد الإلكتروني</label>
                 <input 
                     type="email" 
                     id="email" 
                     required
-                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none text-right"
-                    placeholder="example@email.com"
+                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl text-right"
+                    placeholder="raghad1@gmail.com"
+                    dir="ltr"
+                    style="text-align: left;"
                 >
             </div>
 
-            <!-- Password -->
+            <!-- كلمة المرور -->
             <div>
-                <label class="block text-gray-700 font-bold mb-2 text-right">كلمة المرور</label>
+                <label class="block text-gray-700 font-semibold mb-2">كلمة المرور</label>
                 <div class="relative">
                     <input 
                         type="password" 
                         id="password" 
                         required
-                        minlength="6"
-                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none text-right"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl text-right pr-12"
                         placeholder="••••••"
                     >
-                    <button type="button" onclick="togglePassword('password')" class="absolute left-3 top-1/2 -translate-y-1/2 text-2xl">
+                    <button 
+                        type="button" 
+                        onclick="togglePassword('password')"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
                         👁️
                     </button>
                 </div>
             </div>
 
-            <!-- Confirm Password -->
+            <!-- تأكيد كلمة المرور -->
             <div>
-                <label class="block text-gray-700 font-bold mb-2 text-right">تأكيد كلمة المرور</label>
+                <label class="block text-gray-700 font-semibold mb-2">تأكيد كلمة المرور</label>
                 <div class="relative">
                     <input 
                         type="password" 
                         id="confirmPassword" 
                         required
-                        minlength="6"
-                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none text-right"
+                        class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl text-right pr-12"
                         placeholder="••••••"
                     >
-                    <button type="button" onclick="togglePassword('confirmPassword')" class="absolute left-3 top-1/2 -translate-y-1/2 text-2xl">
+                    <button 
+                        type="button" 
+                        onclick="togglePassword('confirmPassword')"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
                         👁️
                     </button>
                 </div>
             </div>
 
-            <!-- Gender -->
+            <!-- اختيار الجنس -->
             <div>
-                <label class="block text-gray-700 font-bold mb-3 text-right">الجنس</label>
+                <label class="block text-gray-700 font-semibold mb-3">الجنس</label>
                 <div class="grid grid-cols-2 gap-3">
                     <button 
-                        type="button" 
-                        onclick="selectGender('male')" 
-                        id="maleBtn"
-                        class="gender-btn py-3 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-indigo-700 font-bold transition"
+                        type="button"
+                        onclick="selectGender('female')"
+                        class="gender-btn py-3 px-4 border-2 border-pink-300 rounded-xl font-semibold text-pink-600 hover:bg-pink-50"
+                        id="femaleBtn"
                     >
-                        ذكر 🧑
+                        👧 أنثى
                     </button>
                     <button 
-                        type="button" 
-                        onclick="selectGender('female')" 
-                        id="femaleBtn"
-                        class="gender-btn py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold transition"
+                        type="button"
+                        onclick="selectGender('male')"
+                        class="gender-btn active py-3 px-4 border-2 border-blue-300 rounded-xl font-semibold"
+                        id="maleBtn"
                     >
-                        أنثى 👩
+                        👦 ذكر
                     </button>
                 </div>
+                <input type="hidden" id="gender" value="male">
             </div>
 
-            <!-- Terms Checkbox -->
-            <div class="bg-gray-50 rounded-xl p-4">
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input 
-                        type="checkbox" 
-                        id="termsCheckbox" 
-                        required
-                        class="w-5 h-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    >
-                    <span class="text-sm text-gray-700 leading-relaxed">
-                        أوافق على 
-                        <a href="terms.html" target="_blank" class="text-indigo-600 font-bold underline">شروط الاستخدام</a>
-                        و
-                        <a href="privacy.html" target="_blank" class="text-indigo-600 font-bold underline">سياسة الخصوصية</a>
-                    </span>
+            <!-- الموافقة على الشروط -->
+            <div class="flex items-start gap-3">
+                <input 
+                    type="checkbox" 
+                    id="terms" 
+                    required
+                    class="mt-1 w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                >
+                <label for="terms" class="text-sm text-gray-700 leading-relaxed cursor-pointer">
+                    أوافق على 
+                    <a href="terms.html" target="_blank" class="text-purple-600 hover:underline font-semibold">شروط الاستخدام</a> 
+                    و 
+                    <a href="privacy.html" target="_blank" class="text-purple-600 hover:underline font-semibold">سياسة الخصوصية</a>
                 </label>
             </div>
 
-            <!-- Error Message -->
-            <div id="errorMessage" class="hidden bg-red-50 border-2 border-red-200 rounded-xl p-3 text-red-700 text-sm text-center"></div>
-
-            <!-- Submit Button -->
+            <!-- زر إنشاء الحساب -->
             <button 
                 type="submit"
-                class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-lg transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 id="submitBtn"
+                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
                 🚀 إنشاء الحساب
             </button>
 
         </form>
 
-        <!-- Login Link -->
-        <p class="text-center mt-6 text-gray-600">
-            عندك حساب؟ 
-            <a href="login.html" class="text-indigo-600 font-bold">سجّل دخول</a>
-        </p>
+        <!-- رابط تسجيل الدخول -->
+        <div class="text-center mt-6">
+            <p class="text-gray-600">
+                عندك حساب؟ 
+                <a href="login.html" class="text-purple-600 hover:underline font-semibold">سجّل دخول</a>
+            </p>
+        </div>
 
     </div>
 
     <script>
-        const supabaseUrl = 'https://czzcmbxejxbotjemyuqf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
-        const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // ============================================
+        // 🔧 إعداد Supabase
+        // ============================================
+        const SUPABASE_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg4MTYwNzcsImV4cCI6MjA1NDM5MjA3N30.ssII2KdmOcz1n-L3fo_tGdtHKBnPxLmEcJpWGBJBxDE';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let selectedGender = 'male';
-
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            input.type = input.type === 'password' ? 'text' : 'password';
+        // ============================================
+        // 👁️ إظهار/إخفاء كلمة المرور
+        // ============================================
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
         }
 
+        // ============================================
+        // 🎨 اختيار الجنس
+        // ============================================
         function selectGender(gender) {
-            selectedGender = gender;
+            document.getElementById('gender').value = gender;
+            
             const maleBtn = document.getElementById('maleBtn');
             const femaleBtn = document.getElementById('femaleBtn');
-
+            
             if (gender === 'male') {
-                maleBtn.className = 'gender-btn py-3 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-indigo-700 font-bold transition';
-                femaleBtn.className = 'gender-btn py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold transition';
+                maleBtn.classList.add('active');
+                femaleBtn.classList.remove('active');
             } else {
-                femaleBtn.className = 'gender-btn py-3 rounded-xl border-2 border-pink-500 bg-pink-50 text-pink-700 font-bold transition';
-                maleBtn.className = 'gender-btn py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold transition';
+                femaleBtn.classList.add('active');
+                maleBtn.classList.remove('active');
             }
         }
 
+        // ============================================
+        // ⚠️ عرض رسائل الخطأ
+        // ============================================
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.textContent = message;
             errorDiv.classList.remove('hidden');
-            setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+            
+            // إخفاء الرسالة بعد 5 ثواني
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
         }
 
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        // ============================================
+        // 📝 معالجة التسجيل
+        // ============================================
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            // جمع البيانات
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const termsAccepted = document.getElementById('termsCheckbox').checked;
+            const gender = document.getElementById('gender').value;
+            const termsAccepted = document.getElementById('terms').checked;
 
-            if (!name || !email || !password) {
-                showError('الرجاء ملء جميع الحقول');
-                return;
-            }
-
-            if (password.length < 6) {
-                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showError('كلمات المرور غير متطابقة');
-                return;
-            }
-
+            // ============================================
+            // ✅ التحقق من البيانات
+            // ============================================
+            
+            // التحقق من الموافقة على الشروط
             if (!termsAccepted) {
-                showError('يجب الموافقة على الشروط والأحكام');
+                showError('⚠️ يجب الموافقة على الشروط والأحكام للمتابعة');
                 return;
             }
 
-            const submitBtn = document.getElementById('submitBtn');
+            // التحقق من تطابق كلمات المرور
+            if (password !== confirmPassword) {
+                showError('⚠️ كلمات المرور غير متطابقة');
+                return;
+            }
+
+            // التحقق من قوة كلمة المرور
+            if (password.length < 6) {
+                showError('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            // ============================================
+            // 🚀 بدء عملية التسجيل
+            // ============================================
+            
             submitBtn.disabled = true;
-            submitBtn.textContent = 'جاري الإنشاء...';
+            submitBtn.innerHTML = '⏳ جاري إنشاء الحساب...';
 
             try {
-                const { data: authData, error: authError } = await sb.auth.signUp({
+                // التسجيل في Supabase
+                const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
+                    options: {
+                        data: {
+                            name: name,
+                            gender: gender
+                        }
+                    }
                 });
 
-                if (authError) {
-                    if (authError.message.includes('already registered') || authError.message.includes('already been registered')) {
-                        throw new Error('هذا البريد الإلكتروني مسجل مسبقاً');
+                if (error) {
+                    // معالجة الأخطاء المختلفة
+                    if (error.message.includes('already registered')) {
+                        showError('⚠️ هذا البريد الإلكتروني مسجل مسبقاً');
+                    } else if (error.message.includes('Invalid email')) {
+                        showError('⚠️ البريد الإلكتروني غير صحيح');
+                    } else if (error.message.includes('Password')) {
+                        showError('⚠️ كلمة المرور ضعيفة جداً');
+                    } else {
+                        showError('⚠️ حدث خطأ: ' + error.message);
                     }
-                    throw authError;
+                    
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                    return;
                 }
 
-                if (authData.user) {
-                    try {
-                        const { error: profileError } = await sb
-                            .from('profiles')
-                            .insert({
-                                id: authData.user.id,
-                                name: name,
-                                gender: selectedGender
-                            });
-
-                        if (profileError) {
-                            console.error('Profile error:', profileError);
-                        }
-                    } catch (profileErr) {
-                        console.error('Profile creation error:', profileErr);
-                    }
-
-                    alert('✅ تم إنشاء الحساب بنجاح!');
+                // ============================================
+                // ✅ نجح التسجيل
+                // ============================================
+                
+                console.log('✅ تم التسجيل بنجاح:', data);
+                
+                // التوجه للوحة التحكم
+                submitBtn.innerHTML = '✅ تم بنجاح! جاري التحويل...';
+                
+                setTimeout(() => {
                     window.location.href = 'dashboard.html';
-                }
+                }, 1500);
 
             } catch (err) {
-                console.error('Error:', err);
-                let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
+                console.error('❌ خطأ غير متوقع:', err);
+                showError('⚠️ حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى');
                 
-                if (err.message) {
-                    if (err.message.includes('already registered') || err.message.includes('already been registered')) {
-                        errorMessage = 'هذا البريد الإلكتروني مسجل مسبقاً';
-                    } else if (err.message.includes('Invalid email')) {
-                        errorMessage = 'البريد الإلكتروني غير صحيح';
-                    } else if (err.message.includes('Password')) {
-                        errorMessage = 'كلمة المرور ضعيفة جداً';
-                    } else if (err.message !== 'حدث خطأ أثناء إنشاء الحساب') {
-                        errorMessage = err.message;
-                    }
-                }
-                
-                showError(errorMessage);
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 إنشاء الحساب';
+                submitBtn.innerHTML = originalText;
             }
         });
+
+        // ============================================
+        // 🔒 التحقق من المستخدم المسجل مسبقاً
+        // ============================================
+        async function checkExistingUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (user) {
+                // المستخدم مسجل دخول بالفعل
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // التحقق عند تحميل الصفحة
+        checkExistingUser();
     </script>
 
 </body>
