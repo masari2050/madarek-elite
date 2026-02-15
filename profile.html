@@ -207,18 +207,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================================
-        // EXACT same pattern as dashboard.html
-        // ============================================================
+        // Same pattern as dashboard.html & login.html
         const sb = window.supabase.createClient(
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg4MTYwNzcsImV4cCI6MjA1NDM5MjA3N30.ssII2KdmOcz1n-L3fo_tGdtHKBnPxLmEcJpWGBJBxDE'
         );
 
         let currentUser = null;
-        let profileName = '';
+        let currentName = '';
 
-        // ============ Toast ============
         function showToast(msg, icon) {
             document.getElementById('toast-msg').textContent = msg;
             document.getElementById('toast-icon').textContent = icon || '✅';
@@ -226,7 +223,6 @@
             setTimeout(function() { document.getElementById('toast').classList.remove('show'); }, 3000);
         }
 
-        // ============ Password Toggle ============
         function togglePwVis(id, btn) {
             const inp = document.getElementById(id);
             if (inp.type === 'password') {
@@ -238,7 +234,6 @@
             }
         }
 
-        // ============ Sound Toggle ============
         function initSoundToggle() {
             const on = localStorage.getItem('soundEnabled') !== 'false';
             const toggle = document.getElementById('sound-toggle');
@@ -259,7 +254,11 @@
         }
 
         // ============================================================
-        // checkAuth() — COPIED from dashboard.html pattern exactly
+        // checkAuth — matches dashboard.html pattern
+        // NAME SOURCE PRIORITY:
+        //   1. profiles table (name column) — set by DB trigger on signup
+        //   2. user_metadata.name — set during signUp({options:{data:{name}}})
+        //   3. email prefix as last fallback
         // ============================================================
         async function checkAuth() {
             try {
@@ -272,7 +271,7 @@
 
                 currentUser = session.user;
 
-                // Email from session
+                // Email
                 document.getElementById('user-email-display').textContent = currentUser.email || '';
                 document.getElementById('email-readonly').textContent = currentUser.email || '';
 
@@ -285,40 +284,57 @@
                     } catch(e) {}
                 }
 
-                // Profile — EXACT same query as dashboard.html
-                const { data: profile } = await sb
-                    .from('profiles')
-                    .select('name, avatar_emoji')
-                    .eq('id', currentUser.id)
-                    .single();
+                // === Get name: try profiles table first (same as dashboard) ===
+                let displayName = '';
 
-                if (profile && profile.name) {
-                    profileName = profile.name;
-                    document.getElementById('user-name-display').textContent = profile.name;
-                    document.getElementById('input-name').value = profile.name;
-                } else {
-                    document.getElementById('user-name-display').textContent = currentUser.email.split('@')[0];
+                try {
+                    const { data: profile } = await sb
+                        .from('profiles')
+                        .select('name, avatar_emoji')
+                        .eq('id', currentUser.id)
+                        .single();
+
+                    if (profile && profile.name) {
+                        displayName = profile.name;
+                    }
+                    if (profile && profile.avatar_emoji) {
+                        document.getElementById('user-avatar').textContent = profile.avatar_emoji;
+                    }
+                } catch(e) {
+                    console.warn('Profile table read failed:', e);
                 }
 
-                if (profile && profile.avatar_emoji) {
-                    document.getElementById('user-avatar').textContent = profile.avatar_emoji;
+                // === Fallback: user_metadata.name (set during registration) ===
+                if (!displayName && currentUser.user_metadata && currentUser.user_metadata.name) {
+                    displayName = currentUser.user_metadata.name;
                 }
 
-                // Sound
+                // === Last fallback: email prefix ===
+                if (!displayName) {
+                    displayName = currentUser.email ? currentUser.email.split('@')[0] : '';
+                }
+
+                currentName = displayName;
+                document.getElementById('user-name-display').textContent = displayName;
+                document.getElementById('input-name').value = displayName;
+
                 initSoundToggle();
 
-                // Show content
                 document.getElementById('loading-state').classList.add('hidden');
                 document.getElementById('profile-content').classList.remove('hidden');
 
             } catch (err) {
                 console.error('checkAuth error:', err);
                 window.location.href = 'login.html';
-                return;
             }
         }
 
-        // ============ Save Changes ============
+        // ============================================================
+        // saveChanges — updates name via auth.updateUser (same mechanism
+        // as registration: options.data.name → user_metadata → trigger → profiles)
+        // This WORKS because auth.updateUser is an auth API call,
+        // NOT a direct profiles table write (which RLS blocks)
+        // ============================================================
         async function saveChanges() {
             const btn = document.getElementById('btn-save');
             if (btn.disabled) return;
@@ -332,7 +348,7 @@
                 const confirmPassword = document.getElementById('input-password-confirm').value;
                 let changed = false;
 
-                // Validate password first
+                // Validate password
                 if (newPassword) {
                     if (newPassword.length < 6) {
                         showToast('كلمة المرور لازم تكون 6 أحرف على الأقل', '⚠️');
@@ -344,38 +360,46 @@
                     }
                 }
 
-                // Update name — use upsert to handle both insert and update cases
-                if (newName && newName !== profileName) {
-                    const { error: nameErr } = await sb
-                        .from('profiles')
-                        .upsert({
-                            id: currentUser.id,
-                            name: newName
-                        }, { onConflict: 'id' });
+                // Build the updateUser payload
+                // This updates BOTH password AND user_metadata.name in one call
+                // The DB trigger will sync name to profiles table automatically
+                const updatePayload = {};
 
-                    if (nameErr) {
-                        console.error('Name update error:', nameErr);
-                        showToast('فشل تحديث الاسم: ' + nameErr.message, '❌');
-                        resetSave(); return;
-                    }
-                    profileName = newName;
-                    document.getElementById('user-name-display').textContent = newName;
+                if (newName && newName !== currentName) {
+                    updatePayload.data = { name: newName };
                     changed = true;
                 }
 
-                // Update password
                 if (newPassword) {
-                    const { error: passErr } = await sb.auth.updateUser({ password: newPassword });
-                    if (passErr) {
-                        showToast('فشل تحديث كلمة المرور: ' + passErr.message, '❌');
-                        resetSave(); return;
-                    }
-                    document.getElementById('input-password').value = '';
-                    document.getElementById('input-password-confirm').value = '';
+                    updatePayload.password = newPassword;
                     changed = true;
                 }
 
-                showToast(changed ? 'تم حفظ التغييرات بنجاح' : 'ما في تغييرات جديدة', changed ? '✅' : 'ℹ️');
+                if (changed) {
+                    const { data, error: updateErr } = await sb.auth.updateUser(updatePayload);
+
+                    if (updateErr) {
+                        console.error('updateUser error:', updateErr);
+                        showToast('فشل الحفظ: ' + updateErr.message, '❌');
+                        resetSave(); return;
+                    }
+
+                    // Update display
+                    if (newName && newName !== currentName) {
+                        currentName = newName;
+                        document.getElementById('user-name-display').textContent = newName;
+                    }
+
+                    if (newPassword) {
+                        document.getElementById('input-password').value = '';
+                        document.getElementById('input-password-confirm').value = '';
+                    }
+
+                    showToast('تم حفظ التغييرات بنجاح', '✅');
+                } else {
+                    showToast('ما في تغييرات جديدة', 'ℹ️');
+                }
+
             } catch (err) {
                 console.error('Save error:', err);
                 showToast('حدث خطأ أثناء الحفظ', '❌');
@@ -389,9 +413,7 @@
             document.getElementById('save-spinner').classList.add('hidden');
         }
 
-        // ============================================================
-        // handleLogout() — same name as dashboard.html
-        // ============================================================
+        // handleLogout — same as dashboard.html
         async function handleLogout() {
             const btn = document.getElementById('btn-logout');
             if (btn.disabled) return;
@@ -412,7 +434,7 @@
             }
         }
 
-        // ============ Init ============
+        // Init
         checkAuth();
     </script>
 </body>
