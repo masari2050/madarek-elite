@@ -4,156 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قريباً - مساري</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        .animate-fadeInUp { animation: fadeInUp 1s ease-out; }
-        .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-400 { animation-delay: 0.4s; }
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh;overflow-x:hidden}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes glow{0%,100%{box-shadow:0 0 30px rgba(139,92,246,0.3)}50%{box-shadow:0 0 60px rgba(139,92,246,0.6)}}
+        @keyframes orbit{0%{transform:rotate(0deg) translateX(120px) rotate(0deg)}100%{transform:rotate(360deg) translateX(120px) rotate(-360deg)}}
+        @keyframes spin-slow{to{transform:rotate(360deg)}}
+        .float{animation:float 3s ease-in-out infinite}
+        .animate-in{animation:fadeUp .7s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.35s;opacity:0}.delay-4{animation-delay:.5s;opacity:0}.delay-5{animation-delay:.65s;opacity:0}
+        .glow-ring{animation:glow 3s ease-in-out infinite}
+        .orbit-dot{animation:orbit 8s linear infinite;position:absolute;width:8px;height:8px;border-radius:50%;background:#8b5cf6}
+        .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
+        .feature-card{transition:all .3s ease}.feature-card:hover{transform:translateY(-4px);background:rgba(255,255,255,0.08)}
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 min-h-screen overflow-y-auto relative">
-    
-    <!-- Animated Background -->
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-20 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
-        <div class="absolute bottom-20 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 1s;"></div>
-        <div class="absolute top-1/2 left-1/2 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-float" style="animation-delay: 2s;"></div>
+<body class="text-white">
+
+    <!-- Orbs Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-20 right-10 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl float"></div>
+        <div class="absolute bottom-20 left-10 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl float" style="animation-delay:1.5s"></div>
     </div>
 
-    <!-- Main Content -->
     <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
-        <div class="max-w-5xl w-full text-center">
-            
-            <!-- Logo -->
-            <div class="animate-fadeInUp mb-8">
-                <h1 class="text-6xl md:text-8xl font-black text-white mb-4 animate-pulse-slow">
-                    مساري
-                </h1>
-                <div class="h-2 w-32 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto rounded-full"></div>
+        <div class="max-w-3xl w-full text-center">
+
+            <!-- Rocket with orbit -->
+            <div class="animate-in delay-1 mb-8 relative inline-block">
+                <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto glow-ring" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.2));border:2px solid rgba(139,92,246,0.3)">
+                    <span class="text-6xl float">🚀</span>
+                </div>
+                <div class="orbit-dot" style="top:50%;left:50%;margin-top:-4px;margin-left:-4px"></div>
+                <div class="orbit-dot" style="top:50%;left:50%;margin-top:-4px;margin-left:-4px;animation-delay:-4s;background:#6366f1"></div>
             </div>
 
-            <!-- Main Message -->
-            <div class="animate-fadeInUp delay-100 mb-12">
-                <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-                    قادم بطريقة
-                    <span class="block gradient-text text-5xl md:text-7xl mt-2">
-                        جديدة ومختلفة
-                    </span>
-                </h2>
-                <p class="text-xl md:text-2xl text-purple-200 max-w-3xl mx-auto leading-relaxed">
-                    نحضّر لك تجربة تعليمية لم تشهدها من قبل<br>
-                    <span class="text-white font-bold">استعد لمستوى جديد من التميز</span>
+            <!-- Title -->
+            <div class="animate-in delay-2 mb-4">
+                <h1 class="text-5xl sm:text-6xl font-black mb-3">قريباً</h1>
+                <p class="text-xl font-bold text-yellow-300">👊 شي جديد في الطريق</p>
+            </div>
+
+            <!-- Description -->
+            <div class="animate-in delay-3 mb-10">
+                <p class="text-purple-200/70 text-base max-w-lg mx-auto leading-relaxed">
+                    نجهّز لك تجربة تعليمية ما مرّت عليك قبل — أسلوب جديد ومختلف عشان تستعد لاختبارات القدرات والتحصيلي بأفضل طريقة
                 </p>
             </div>
 
-            <!-- Features Preview -->
-            <div class="animate-fadeInUp delay-200 grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:scale-105 transition-all">
-                    <div class="text-5xl mb-3 animate-float">🎯</div>
-                    <h3 class="text-xl font-bold text-white mb-2">تحليل ذكي</h3>
-                    <p class="text-purple-200 text-sm">تقنيات متقدمة لفهم أعمق</p>
+            <!-- Features -->
+            <div class="animate-in delay-4 grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10 max-w-2xl mx-auto">
+                <div class="feature-card card-glass p-5 text-center">
+                    <span class="text-3xl block mb-2 float">⚡</span>
+                    <h3 class="text-sm font-bold mb-1">تجربة سلسة</h3>
+                    <p class="text-purple-300/40 text-xs">واجهة حديثة وسهلة</p>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:scale-105 transition-all">
-                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 0.5s;">📊</div>
-                    <h3 class="text-xl font-bold text-white mb-2">محتوى شامل</h3>
-                    <p class="text-purple-200 text-sm">تغطية كاملة ومتجددة</p>
+                <div class="feature-card card-glass p-5 text-center">
+                    <span class="text-3xl block mb-2 float" style="animation-delay:.5s">🎯</span>
+                    <h3 class="text-sm font-bold mb-1">تحليل دقيق</h3>
+                    <p class="text-purple-300/40 text-xs">تتبع تقدمك ونقاط قوتك</p>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:scale-105 transition-all">
-                    <div class="text-5xl mb-3 animate-float" style="animation-delay: 1s;">⚡</div>
-                    <h3 class="text-xl font-bold text-white mb-2">سرعة وكفاءة</h3>
-                    <p class="text-purple-200 text-sm">وصول سريع ونتائج فورية</p>
-                </div>
-            </div>
-
-            <!-- Countdown Badge -->
-            <div class="animate-fadeInUp delay-300 mb-12">
-                <div class="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-full px-8 py-4 shadow-2xl animate-pulse-slow">
-                    <p class="text-white font-black text-2xl md:text-3xl">
-                        🚀 قريباً جداً
-                    </p>
+                <div class="feature-card card-glass p-5 text-center">
+                    <span class="text-3xl block mb-2 float" style="animation-delay:1s">📚</span>
+                    <h3 class="text-sm font-bold mb-1">محتوى شامل</h3>
+                    <p class="text-purple-300/40 text-xs">أسئلة متنوعة ومحدّثة</p>
                 </div>
             </div>
 
-            <!-- Notification Form -->
-            <div class="animate-fadeInUp delay-400 max-w-md mx-auto mb-12">
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                    <h3 class="text-xl font-bold text-white mb-4">تبي تكون أول من يعرف؟</h3>
-                    <form class="flex flex-col md:flex-row gap-3">
-                        <input 
-                            type="email" 
-                            placeholder="بريدك الإلكتروني"
-                            class="flex-1 px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                        >
-                        <button 
-                            type="submit"
-                            class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:shadow-xl transition-all hover:scale-105"
-                        >
-                            أعلمني
-                        </button>
-                    </form>
-                    <p class="text-purple-200 text-xs mt-3">سنرسل لك إشعار فور الإطلاق</p>
-                </div>
+            <!-- CTA -->
+            <div class="animate-in delay-5 mb-10">
+                <a href="index.html" class="inline-block px-8 py-3.5 rounded-xl font-bold text-sm text-white transition hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+                    ارجع للصفحة الرئيسية
+                </a>
             </div>
 
             <!-- Supervisor -->
-            <div class="animate-fadeInUp delay-400">
-                <p class="text-purple-300 text-sm mb-2">بإشراف</p>
-                <p class="text-white font-bold text-xl">الأستاذ / عبدالله الزهراني</p>
+            <div class="animate-in delay-5">
+                <p class="text-purple-300/30 text-xs mb-1">بإشراف</p>
+                <p class="font-bold text-sm">الأستاذ / عبدالله الزهراني</p>
             </div>
-
-            <!-- Social Links -->
-            <div class="animate-fadeInUp delay-400 mt-12">
-                <p class="text-purple-300 text-sm mb-4">تابعنا</p>
-                <div class="flex justify-center gap-6">
-                    <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl hover:scale-110 transition-all border border-white/20">
-                        𝕏
-                    </a>
-                    <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl hover:scale-110 transition-all border border-white/20">
-                        📱
-                    </a>
-                    <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl hover:scale-110 transition-all border border-white/20">
-                        ✉️
-                    </a>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="relative z-10 pb-4 text-center">
-        <p class="text-purple-300 text-sm">© 2026 مساري - جميع الحقوق محفوظة</p>
+    <div class="relative z-10 pb-6 text-center">
+        <p class="text-purple-300/20 text-xs">© 2026 مساري — جميع الحقوق محفوظة</p>
     </div>
-
 </body>
 </html>
