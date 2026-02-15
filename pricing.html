@@ -463,7 +463,7 @@
                         var{data:{session}}=await sb.auth.getSession();
                         if(session){
                             await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);
-                            document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="sections.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
+                            document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
                         } else {
                             document.getElementById('couponMsg').innerHTML='✓ '+discountText+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>';
                         }
