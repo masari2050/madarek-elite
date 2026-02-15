@@ -11,909 +11,333 @@
         body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
         .glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1rem}
         .sidebar{background:rgba(255,255,255,0.03);border-left:1px solid rgba(255,255,255,0.06);min-height:100vh;width:240px;position:fixed;top:0;right:0;z-index:40;overflow-y:auto}
-        .sidebar-link{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:.75rem;font-size:.9rem;font-weight:700;color:rgba(196,181,253,0.5);transition:all .2s;cursor:pointer;margin:3px 10px}
-        .sidebar-link:hover{background:rgba(255,255,255,0.05);color:rgba(196,181,253,0.8)}
-        .sidebar-link.active{background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)}
-        .main-content{margin-right:240px;padding:28px;min-height:100vh}
-        .input-dark{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;padding:.75rem 1rem;color:#fff;width:100%;font-size:.95rem;transition:all .2s}
-        .input-dark:focus{outline:none;border-color:rgba(139,92,246,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
-        .input-dark::placeholder{color:rgba(255,255,255,0.2)}
-        .input-dark option{background:#1a1145;color:#fff}
-        .btn-p{background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:10px 24px;border-radius:.75rem;font-weight:700;font-size:.9rem;color:#fff;transition:all .2s;border:none;cursor:pointer}
-        .btn-p:hover{box-shadow:0 8px 25px rgba(99,102,241,0.3);transform:translateY(-1px)}
-        .btn-d{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.2);color:#f87171;padding:8px 16px;border-radius:.75rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
-        .btn-d:hover{background:rgba(239,68,68,0.25)}
-        .btn-s{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#c4b5fd;padding:8px 16px;border-radius:.75rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
-        .btn-s:hover{background:rgba(255,255,255,0.1)}
-        .stat-card{transition:all .3s}.stat-card:hover{transform:translateY(-3px)}
-        .table-row{border-bottom:1px solid rgba(255,255,255,0.04);transition:background .2s}
-        .table-row:hover{background:rgba(255,255,255,0.03)}
-        .badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:.8rem;font-weight:700}
-        .badge-free{background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2)}
-        .badge-monthly{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
-        .badge-yearly{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
-        .badge-admin{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
-        .tab-section{display:none}.tab-section.active{display:block}
-        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:12px;font-size:.95rem;font-weight:700;z-index:999;animation:slideD .4s ease}
-        .toast-ok{background:linear-gradient(135deg,#10b981,#14b8a6);color:#fff}
-        .toast-err{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
-        @keyframes slideD{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
-        .modal-box{background:linear-gradient(135deg,#1a1145,#1e1550);border:1px solid rgba(139,92,246,0.2);border-radius:1.25rem;padding:28px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto}
-        .rank-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:.75rem;transition:background .2s}
-        .rank-row:hover{background:rgba(255,255,255,0.03)}
-        .rank-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0}
-        @media(max-width:768px){.sidebar{display:none}.main-content{margin-right:0;padding:16px}}
+        .sb-link{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:.75rem;font-size:.9rem;font-weight:700;color:rgba(196,181,253,0.5);transition:all .2s;cursor:pointer;margin:3px 10px}
+        .sb-link:hover{background:rgba(255,255,255,0.05);color:rgba(196,181,253,0.8)}
+        .sb-link.on{background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)}
+        .mc{margin-right:240px;padding:28px;min-height:100vh}
+        .inp{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;padding:.75rem 1rem;color:#fff;width:100%;font-size:.95rem;transition:all .2s}
+        .inp:focus{outline:none;border-color:rgba(139,92,246,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
+        .inp::placeholder{color:rgba(255,255,255,0.2)}
+        .inp option{background:#1a1145;color:#fff}
+        .bp{background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:10px 24px;border-radius:.75rem;font-weight:700;font-size:.9rem;color:#fff;transition:all .2s;border:none;cursor:pointer}
+        .bp:hover{box-shadow:0 8px 25px rgba(99,102,241,0.3);transform:translateY(-1px)}
+        .bd{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.2);color:#f87171;padding:8px 16px;border-radius:.75rem;font-size:.85rem;font-weight:600;cursor:pointer}
+        .bs{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#c4b5fd;padding:8px 16px;border-radius:.75rem;font-size:.85rem;font-weight:600;cursor:pointer}
+        .sc{transition:all .3s}.sc:hover{transform:translateY(-3px)}
+        .tr{border-bottom:1px solid rgba(255,255,255,0.04)}.tr:hover{background:rgba(255,255,255,0.03)}
+        .bg{display:inline-block;padding:3px 12px;border-radius:999px;font-size:.8rem;font-weight:700}
+        .bg-f{background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2)}
+        .bg-m{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
+        .bg-y{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+        .bg-a{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+        .tab{display:none}.tab.on{display:block}
+        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:12px;font-size:.95rem;font-weight:700;z-index:999;animation:sd .4s ease}
+        .tok{background:linear-gradient(135deg,#10b981,#14b8a6);color:#fff}
+        .ter{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+        @keyframes sd{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .mbg{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+        .mbox{background:linear-gradient(135deg,#1a1145,#1e1550);border:1px solid rgba(139,92,246,0.2);border-radius:1.25rem;padding:28px;width:100%;max-width:540px;max-height:85vh;overflow-y:auto}
+        .rr{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:.75rem}.rr:hover{background:rgba(255,255,255,0.03)}
+        .rn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0}
+        @media(max-width:768px){.sidebar{display:none}.mc{margin-right:0;padding:16px}}
     </style>
 </head>
 <body class="text-white">
-    <div id="toast" class="toast hidden"></div>
+<div id="toast" class="toast hidden"></div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="p-4 mb-2">
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-xl">🎓</span>
-                <span class="text-lg font-black bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent">مساري</span>
-            </div>
-            <p class="text-[10px] text-purple-300/30">لوحة الإدارة</p>
-        </div>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="p-4 mb-2"><div class="flex items-center gap-2 mb-1"><span class="text-xl">🎓</span><span class="text-lg font-black bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent">مساري</span></div><p class="text-[10px] text-purple-300/30">لوحة الإدارة</p></div>
+    <div class="sb-link on" data-tab="overview"><span>📊</span><span>نظرة عامة</span></div>
+    <div class="sb-link" data-tab="questions"><span>📝</span><span>الأسئلة</span></div>
+    <div class="sb-link" data-tab="users"><span>👥</span><span>الأعضاء</span></div>
+    <div class="sb-link" data-tab="coupons"><span>🎟️</span><span>الكوبونات</span></div>
+    <div class="sb-link" data-tab="finance"><span>💰</span><span>المالية</span></div>
+    <div class="sb-link" data-tab="reports"><span>🚩</span><span>البلاغات</span></div>
+    <div class="sb-link" data-tab="staff"><span>🔑</span><span>الموظفين</span></div>
+    <div class="sb-link" data-tab="settings"><span>⚙️</span><span>الإعدادات</span></div>
+    <div class="mt-4 p-4 border-t border-purple-500/10"><div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div></div>
+</aside>
 
-        <div class="sidebar-link active" onclick="switchTab('overview')">
-            <span>📊</span><span>نظرة عامة</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('questions')">
-            <span>📝</span><span>الأسئلة</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('users')">
-            <span>👥</span><span>الأعضاء</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('coupons')">
-            <span>🎟️</span><span>الكوبونات</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('finance')">
-            <span>💰</span><span>المالية</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('reports')">
-            <span>🚩</span><span>البلاغات</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('staff')">
-            <span>🔑</span><span>الموظفين</span>
-        </div>
-        <div class="sidebar-link" onclick="switchTab('settings')">
-            <span>⚙️</span><span>الإعدادات</span>
-        </div>
+<!-- Main -->
+<div class="mc">
 
-        <div class="mt-auto p-4 border-t border-purple-500/10 mt-4">
-            <button onclick="logout()" class="sidebar-link w-full" style="color:#f87171">
-                <span>🚪</span><span>تسجيل خروج</span>
-            </button>
-        </div>
-    </aside>
-
-    <!-- Main -->
-    <div class="main-content">
-
-        <!-- ══════════════ نظرة عامة ══════════════ -->
-        <div id="tab-overview" class="tab-section active">
-            <h2 class="text-2xl font-black mb-6">📊 نظرة عامة</h2>
-
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card glass p-5 text-center">
-                    <p class="text-purple-300/50 text-sm mb-1">إجمالي الأسئلة</p>
-                    <p class="text-4xl font-black text-indigo-400" id="ov-questions">-</p>
-                </div>
-                <div class="stat-card glass p-5 text-center">
-                    <p class="text-purple-300/50 text-sm mb-1">الأعضاء</p>
-                    <p class="text-4xl font-black text-emerald-400" id="ov-users">-</p>
-                </div>
-                <div class="stat-card glass p-5 text-center">
-                    <p class="text-purple-300/50 text-sm mb-1">إجمالي المحاولات</p>
-                    <p class="text-4xl font-black text-purple-400" id="ov-attempts">-</p>
-                </div>
-                <div class="stat-card glass p-5 text-center">
-                    <p class="text-purple-300/50 text-sm mb-1">البلاغات</p>
-                    <p class="text-4xl font-black text-red-400" id="ov-reports">-</p>
-                </div>
-            </div>
-
-            <!-- Row 2: Sections + Hardest -->
-            <div class="grid lg:grid-cols-2 gap-4 mb-6">
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">📝 الأسئلة حسب القسم</h3>
-                    <div class="space-y-3" id="ov-sections"></div>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">🔥 أكثر سؤال يغلطون فيه</h3>
-                    <div id="ov-hardest" class="text-purple-300/50 text-sm">جاري التحميل...</div>
-                </div>
-            </div>
-
-            <!-- Row 3: Leaderboards -->
-            <div class="grid lg:grid-cols-3 gap-4 mb-6">
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">🏆 أكثر حلولاً</h3>
-                    <div id="ov-top-solvers" class="space-y-1 text-sm text-purple-300/50">جاري التحميل...</div>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">🎯 أعلى نسبة صح</h3>
-                    <div id="ov-top-accuracy" class="space-y-1 text-sm text-purple-300/50">جاري التحميل...</div>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">⚡ أنشط الأعضاء (آخر 7 أيام)</h3>
-                    <div id="ov-top-active" class="space-y-1 text-sm text-purple-300/50">جاري التحميل...</div>
-                </div>
-            </div>
-
-            <!-- Row 4: Success Rate + New Members -->
-            <div class="grid lg:grid-cols-2 gap-4">
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">📈 نسبة النجاح العامة</h3>
-                    <div id="ov-success-rate" class="text-center">
-                        <p class="text-5xl font-black text-emerald-400" id="ov-rate-num">-</p>
-                        <p class="text-purple-300/40 text-sm mt-1">من إجمالي المحاولات</p>
-                    </div>
-                </div>
-                <div class="glass p-6">
-                    <h3 class="font-bold text-base mb-4">🆕 أحدث الأعضاء</h3>
-                    <div id="ov-new-members" class="space-y-1 text-sm text-purple-300/50">جاري التحميل...</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ══════════════ الأسئلة ══════════════ -->
-        <div id="tab-questions" class="tab-section">
-            <div class="flex items-center justify-between mb-5">
-                <h2 class="text-xl font-black">📝 إدارة الأسئلة</h2>
-                <button class="btn-p" onclick="openQuestionModal()">+ إضافة سؤال</button>
-            </div>
-            <div class="flex gap-2 mb-4">
-                <select id="q-filter" class="input-dark" style="max-width:160px" onchange="loadQuestions()">
-                    <option value="all">كل الأقسام</option>
-                    <option value="quant">كمي</option>
-                    <option value="verbal">لفظي</option>
-                    <option value="tahsili">تحصيلي</option>
-                </select>
-                <input type="text" id="q-search" class="input-dark" placeholder="بحث في الأسئلة..." oninput="loadQuestions()">
-            </div>
-            <div id="questions-list" class="space-y-2"></div>
-        </div>
-
-        <!-- ══════════════ الأعضاء ══════════════ -->
-        <div id="tab-users" class="tab-section">
-            <h2 class="text-xl font-black mb-5">👥 إدارة الأعضاء</h2>
-            <input type="text" id="u-search" class="input-dark mb-4" placeholder="بحث بالاسم أو الإيميل..." oninput="loadUsers()">
-            <div class="glass overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead><tr class="border-b border-purple-500/10">
-                        <th class="text-right p-3 text-purple-300/40 text-xs">العضو</th>
-                        <th class="text-right p-3 text-purple-300/40 text-xs">الإيميل</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الاشتراك</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">التسجيل</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">إجراء</th>
-                    </tr></thead>
-                    <tbody id="users-list"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ══════════════ الكوبونات ══════════════ -->
-        <div id="tab-coupons" class="tab-section">
-            <div class="flex items-center justify-between mb-5">
-                <h2 class="text-xl font-black">🎟️ إدارة الكوبونات</h2>
-                <button class="btn-p" onclick="openCouponModal()">+ كوبون جديد</button>
-            </div>
-            <div class="glass overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead><tr class="border-b border-purple-500/10">
-                        <th class="text-right p-3 text-purple-300/40 text-xs">الكود</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الخصم</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الاستخدامات</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الحد الأقصى</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الحالة</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">إجراء</th>
-                    </tr></thead>
-                    <tbody id="coupons-list"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ══════════════ المالية ══════════════ -->
-        <div id="tab-finance" class="tab-section">
-            <h2 class="text-xl font-black mb-5">💰 المالية والاشتراكات</h2>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-                <div class="stat-card glass p-4 text-center">
-                    <p class="text-purple-300/40 text-xs mb-1">مشتركين فعالين</p>
-                    <p class="text-2xl font-black text-emerald-400" id="fin-active">-</p>
-                </div>
-                <div class="stat-card glass p-4 text-center">
-                    <p class="text-purple-300/40 text-xs mb-1">شهري</p>
-                    <p class="text-2xl font-black text-indigo-400" id="fin-monthly">-</p>
-                </div>
-                <div class="stat-card glass p-4 text-center">
-                    <p class="text-purple-300/40 text-xs mb-1">سنوي</p>
-                    <p class="text-2xl font-black text-purple-400" id="fin-yearly">-</p>
-                </div>
-                <div class="stat-card glass p-4 text-center">
-                    <p class="text-purple-300/40 text-xs mb-1">مجاني</p>
-                    <p class="text-2xl font-black text-yellow-400" id="fin-free">-</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ══════════════ البلاغات ══════════════ -->
-        <div id="tab-reports" class="tab-section">
-            <h2 class="text-xl font-black mb-5">🚩 بلاغات الأسئلة</h2>
-            <div id="reports-list" class="space-y-2"></div>
-        </div>
-
-        <!-- ══════════════ الموظفين ══════════════ -->
-        <div id="tab-staff" class="tab-section">
-            <div class="flex items-center justify-between mb-5">
-                <h2 class="text-xl font-black">🔑 إدارة الموظفين والصلاحيات</h2>
-                <button class="btn-p" onclick="openStaffModal()">+ إضافة موظف</button>
-            </div>
-            <div class="glass overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead><tr class="border-b border-purple-500/10">
-                        <th class="text-right p-3 text-purple-300/40 text-xs">الاسم</th>
-                        <th class="text-right p-3 text-purple-300/40 text-xs">الإيميل</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الدور</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">الصلاحيات</th>
-                        <th class="text-center p-3 text-purple-300/40 text-xs">إجراء</th>
-                    </tr></thead>
-                    <tbody id="staff-list"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ══════════════ الإعدادات ══════════════ -->
-        <div id="tab-settings" class="tab-section">
-            <h2 class="text-xl font-black mb-5">⚙️ إعدادات الموقع</h2>
-
-            <!-- Banner Text -->
-            <div class="glass p-5 mb-4">
-                <h3 class="font-bold text-sm mb-3">📢 نص البانر العلوي</h3>
-                <p class="text-purple-300/30 text-xs mb-2">هذا النص يظهر في الشريط المتحرك أعلى كل الصفحات</p>
-                <textarea id="set-banner" class="input-dark" rows="2" placeholder="نص البانر..."></textarea>
-                <button class="btn-p mt-2" onclick="saveSetting('banner_text', document.getElementById('set-banner').value)">حفظ</button>
-            </div>
-
-            <!-- Colors -->
-            <div class="glass p-5 mb-4">
-                <h3 class="font-bold text-sm mb-3">🎨 ثيم الألوان</h3>
-                <p class="text-purple-300/30 text-xs mb-3">اختر نمط الألوان للمنصة</p>
-                <div class="flex gap-3 flex-wrap">
-                    <label class="cursor-pointer">
-                        <input type="radio" name="theme" value="purple" class="hidden peer" checked>
-                        <div class="peer-checked:ring-2 peer-checked:ring-purple-400 w-12 h-12 rounded-xl" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"></div>
-                        <p class="text-[10px] text-center text-purple-300/40 mt-1">بنفسجي</p>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="theme" value="blue" class="hidden peer">
-                        <div class="peer-checked:ring-2 peer-checked:ring-blue-400 w-12 h-12 rounded-xl" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)"></div>
-                        <p class="text-[10px] text-center text-purple-300/40 mt-1">أزرق</p>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="theme" value="green" class="hidden peer">
-                        <div class="peer-checked:ring-2 peer-checked:ring-emerald-400 w-12 h-12 rounded-xl" style="background:linear-gradient(135deg,#10b981,#059669)"></div>
-                        <p class="text-[10px] text-center text-purple-300/40 mt-1">أخضر</p>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="theme" value="rose" class="hidden peer">
-                        <div class="peer-checked:ring-2 peer-checked:ring-pink-400 w-12 h-12 rounded-xl" style="background:linear-gradient(135deg,#ec4899,#be185d)"></div>
-                        <p class="text-[10px] text-center text-purple-300/40 mt-1">وردي</p>
-                    </label>
-                </div>
-                <button class="btn-p mt-3" onclick="saveTheme()">حفظ الثيم</button>
-            </div>
-
-            <!-- Pricing -->
-            <div class="glass p-6 mb-4">
-                <h3 class="font-bold text-base mb-4">💰 أسعار الاشتراكات</h3>
-                <p class="text-purple-300/30 text-xs mb-4">حط السعر الأصلي والسعر المخفّض — لو السعر المخفّض أقل بيظهر خط على الأصلي</p>
-
-                <!-- Monthly -->
-                <div class="mb-4 p-4 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)">
-                    <p class="text-indigo-400 font-bold text-sm mb-2">📅 الاشتراك الشهري</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-purple-300/40 text-xs mb-1 block">السعر الأصلي (ريال)</label>
-                            <input type="number" id="set-price-monthly-orig" class="input-dark" value="39">
-                        </div>
-                        <div>
-                            <label class="text-purple-300/40 text-xs mb-1 block">السعر الحالي (ريال)</label>
-                            <input type="number" id="set-price-monthly" class="input-dark" value="29">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Yearly -->
-                <div class="mb-4 p-4 rounded-xl" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.1)">
-                    <p class="text-emerald-400 font-bold text-sm mb-2">💎 الاشتراك السنوي</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-purple-300/40 text-xs mb-1 block">السعر الأصلي (ريال)</label>
-                            <input type="number" id="set-price-yearly-orig" class="input-dark" value="348">
-                        </div>
-                        <div>
-                            <label class="text-purple-300/40 text-xs mb-1 block">السعر الحالي (ريال)</label>
-                            <input type="number" id="set-price-yearly" class="input-dark" value="228">
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn-p" onclick="savePricing()">💾 حفظ الأسعار</button>
-            </div>
-
-            <!-- Free Limit -->
-            <div class="glass p-5">
-                <h3 class="font-bold text-sm mb-3">🆓 حد الأسئلة المجانية</h3>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">عدد الأسئلة المجانية</label>
-                    <input type="number" id="set-free-limit" class="input-dark" value="10" style="max-width:120px">
-                </div>
-                <button class="btn-p mt-2" onclick="saveSetting('free_limit', document.getElementById('set-free-limit').value)">حفظ</button>
-            </div>
-        </div>
+<!-- ═══ نظرة عامة ═══ -->
+<div id="t-overview" class="tab on">
+    <h2 class="text-2xl font-black mb-6">📊 نظرة عامة</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">إجمالي الأسئلة</p><p class="text-4xl font-black text-indigo-400" id="s-q">-</p></div>
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">الأعضاء</p><p class="text-4xl font-black text-emerald-400" id="s-u">-</p></div>
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">إجمالي المحاولات</p><p class="text-4xl font-black text-purple-400" id="s-a">-</p></div>
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">البلاغات</p><p class="text-4xl font-black text-red-400" id="s-r">-</p></div>
     </div>
-
-    <!-- ══════════════ Modals ══════════════ -->
-
-    <!-- Question Modal -->
-    <div id="questionModal" class="modal-bg hidden">
-        <div class="modal-box">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-base" id="qModalTitle">إضافة سؤال</h3>
-                <button onclick="closeModal('questionModal')" class="text-purple-300/30 hover:text-white text-lg">✕</button>
-            </div>
-            <input type="hidden" id="qm-id">
-            <div class="space-y-3">
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">القسم</label>
-                    <select id="qm-section" class="input-dark">
-                        <option value="quant">قدرات كمي</option>
-                        <option value="verbal">قدرات لفظي</option>
-                        <option value="tahsili">التحصيلي</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">نص السؤال</label>
-                    <textarea id="qm-text" class="input-dark" rows="3" placeholder="اكتب السؤال هنا..."></textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="text-purple-300/40 text-xs mb-1 block">الخيار 1</label><input id="qm-c0" class="input-dark" placeholder="الخيار الأول"></div>
-                    <div><label class="text-purple-300/40 text-xs mb-1 block">الخيار 2</label><input id="qm-c1" class="input-dark" placeholder="الخيار الثاني"></div>
-                    <div><label class="text-purple-300/40 text-xs mb-1 block">الخيار 3</label><input id="qm-c2" class="input-dark" placeholder="الخيار الثالث"></div>
-                    <div><label class="text-purple-300/40 text-xs mb-1 block">الخيار 4</label><input id="qm-c3" class="input-dark" placeholder="الخيار الرابع"></div>
-                </div>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">الإجابة الصحيحة</label>
-                    <select id="qm-correct" class="input-dark">
-                        <option value="0">الخيار 1</option>
-                        <option value="1">الخيار 2</option>
-                        <option value="2">الخيار 3</option>
-                        <option value="3">الخيار 4</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">الشرح</label>
-                    <textarea id="qm-explanation" class="input-dark" rows="3" placeholder="شرح الإجابة الصحيحة..."></textarea>
-                </div>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">رابط الصورة (اختياري)</label>
-                    <input id="qm-image" class="input-dark" placeholder="https://...">
-                </div>
-                <button class="btn-p w-full" onclick="saveQuestion()">💾 حفظ السؤال</button>
-            </div>
-        </div>
+    <div class="grid lg:grid-cols-2 gap-4 mb-6">
+        <div class="glass p-6"><h3 class="font-bold text-base mb-4">📝 الأسئلة حسب القسم</h3><div id="d-sec" class="space-y-3"></div></div>
+        <div class="glass p-6"><h3 class="font-bold text-base mb-4">🔥 أكثر سؤال يغلطون فيه</h3><div id="d-hard" class="text-purple-300/50">جاري التحميل...</div></div>
     </div>
-
-    <!-- User Edit Modal -->
-    <div id="userModal" class="modal-bg hidden">
-        <div class="modal-box">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-base">تعديل بيانات العضو</h3>
-                <button onclick="closeModal('userModal')" class="text-purple-300/30 hover:text-white text-lg">✕</button>
-            </div>
-            <input type="hidden" id="um-id">
-            <div class="space-y-3">
-                <div><label class="text-purple-300/40 text-xs mb-1 block">الاسم</label><input id="um-name" class="input-dark"></div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">الإيميل</label><input id="um-email" class="input-dark" disabled></div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">الاشتراك</label>
-                    <select id="um-sub" class="input-dark">
-                        <option value="free">مجاني</option>
-                        <option value="monthly">شهري</option>
-                        <option value="yearly">سنوي</option>
-                    </select>
-                </div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">الدور</label>
-                    <select id="um-role" class="input-dark">
-                        <option value="user">مستخدم</option>
-                        <option value="admin">أدمن</option>
-                    </select>
-                </div>
-                <button class="btn-p w-full" onclick="saveUser()">💾 حفظ التعديلات</button>
-            </div>
-        </div>
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+        <div class="glass p-6"><h3 class="font-bold text-base mb-4">🏆 أكثر حلولاً</h3><div id="d-top"></div></div>
+        <div class="glass p-6"><h3 class="font-bold text-base mb-4">🎯 أعلى نسبة صح</h3><div id="d-acc"></div></div>
+        <div class="glass p-6"><h3 class="font-bold text-base mb-4">⚡ أنشط (آخر 7 أيام)</h3><div id="d-act"></div></div>
     </div>
-
-    <!-- Coupon Modal -->
-    <div id="couponModal" class="modal-bg hidden">
-        <div class="modal-box">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-base">إضافة كوبون</h3>
-                <button onclick="closeModal('couponModal')" class="text-purple-300/30 hover:text-white text-lg">✕</button>
-            </div>
-            <div class="space-y-3">
-                <div><label class="text-purple-300/40 text-xs mb-1 block">كود الكوبون</label><input id="cm-code" class="input-dark" placeholder="MASARI50" style="text-transform:uppercase"></div>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">نوع الخصم</label>
-                    <select id="cm-type" class="input-dark">
-                        <option value="percentage">نسبة مئوية (%)</option>
-                        <option value="fixed">مبلغ ثابت (ريال)</option>
-                    </select>
-                </div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">قيمة الخصم</label><input type="number" id="cm-value" class="input-dark" placeholder="50"></div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">الحد الأقصى للاستخدام</label><input type="number" id="cm-max" class="input-dark" placeholder="100" value="100"></div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">تاريخ الانتهاء</label><input type="date" id="cm-expires" class="input-dark"></div>
-                <button class="btn-p w-full" onclick="saveCoupon()">💾 إنشاء الكوبون</button>
-            </div>
-        </div>
+    <div class="grid lg:grid-cols-2 gap-4">
+        <div class="glass p-6 text-center"><h3 class="font-bold text-base mb-4">📈 نسبة النجاح العامة</h3><p class="text-5xl font-black text-emerald-400" id="d-rate">-</p><p class="text-purple-300/40 text-sm mt-1">من إجمالي المحاولات</p></div>
+        <div class="glass p-6"><h3 class="font-bold text-base mb-4">🆕 أحدث الأعضاء</h3><div id="d-new"></div></div>
     </div>
+</div>
 
-    <!-- Staff Modal -->
-    <div id="staffModal" class="modal-bg hidden">
-        <div class="modal-box">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-base">إضافة موظف</h3>
-                <button onclick="closeModal('staffModal')" class="text-purple-300/30 hover:text-white text-lg">✕</button>
-            </div>
-            <div class="space-y-3">
-                <div><label class="text-purple-300/40 text-xs mb-1 block">إيميل الموظف (حساب موجود)</label><input id="sm-email" class="input-dark" placeholder="staff@masari.sa"></div>
-                <div><label class="text-purple-300/40 text-xs mb-1 block">المسمى الوظيفي</label><input id="sm-title" class="input-dark" placeholder="مدير المحتوى"></div>
-                <div>
-                    <label class="text-purple-300/40 text-xs mb-1 block">الصلاحيات</label>
-                    <div class="space-y-2 mt-1">
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="sp-questions" checked><span class="text-purple-200/70">إدارة الأسئلة</span></label>
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="sp-users"><span class="text-purple-200/70">إدارة الأعضاء</span></label>
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="sp-coupons"><span class="text-purple-200/70">إدارة الكوبونات</span></label>
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="sp-finance"><span class="text-purple-200/70">المالية</span></label>
-                        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="sp-settings"><span class="text-purple-200/70">الإعدادات</span></label>
-                    </div>
-                </div>
-                <button class="btn-p w-full" onclick="saveStaff()">💾 إضافة الموظف</button>
-            </div>
-        </div>
+<!-- ═══ الأسئلة ═══ -->
+<div id="t-questions" class="tab">
+    <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">📝 إدارة الأسئلة</h2><button class="bp" onclick="openQM()">+ إضافة سؤال</button></div>
+    <div class="flex gap-2 mb-4">
+        <select id="qf" class="inp" style="max-width:160px" onchange="loadQ()"><option value="all">كل الأقسام</option><option value="quant">كمي</option><option value="verbal">لفظي</option><option value="tahsili">تحصيلي</option></select>
+        <input type="text" id="qs" class="inp" placeholder="بحث في الأسئلة..." oninput="loadQ()">
     </div>
+    <div id="q-list" class="space-y-2"></div>
+</div>
 
-    <!-- ══════════════ Scripts ══════════════ -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
-        let currentAdmin = null;
+<!-- ═══ الأعضاء ═══ -->
+<div id="t-users" class="tab">
+    <h2 class="text-2xl font-black mb-5">👥 إدارة الأعضاء</h2>
+    <input type="text" id="us" class="inp mb-4" placeholder="بحث بالاسم أو الإيميل..." oninput="loadU()">
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50 text-sm">العضو</th><th class="text-right p-3 text-purple-300/50 text-sm">الإيميل</th><th class="text-center p-3 text-purple-300/50 text-sm">الاشتراك</th><th class="text-center p-3 text-purple-300/50 text-sm">التسجيل</th><th class="text-center p-3 text-purple-300/50 text-sm">إجراء</th></tr></thead><tbody id="u-list"></tbody></table></div>
+</div>
 
-        // ═══ Auth ═══
-        async function checkAdmin() {
-            var { data: { session } } = await sb.auth.getSession();
-            if (!session) { window.location.href = 'admin-login.html'; return; }
-            var { data: profile } = await sb.from('profiles').select('role, full_name').eq('id', session.user.id).single();
-            if (!profile || profile.role !== 'admin') {
-                window.location.href = 'admin-login.html';
-                return;
-            }
-            currentAdmin = { id: session.user.id, ...profile };
-            loadOverview();
-        }
+<!-- ═══ الكوبونات ═══ -->
+<div id="t-coupons" class="tab">
+    <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🎟️ الكوبونات</h2><button class="bp" onclick="$('couponM').classList.remove('hidden')">+ كوبون جديد</button></div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الكود</th><th class="text-center p-3 text-purple-300/50">الخصم</th><th class="text-center p-3 text-purple-300/50">الاستخدامات</th><th class="text-center p-3 text-purple-300/50">الحد</th><th class="text-center p-3 text-purple-300/50">الحالة</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="c-list"></tbody></table></div>
+</div>
 
-        function logout() { sb.auth.signOut().then(function(){ window.location.href = 'login.html'; }); }
+<!-- ═══ المالية ═══ -->
+<div id="t-finance" class="tab">
+    <h2 class="text-2xl font-black mb-5">💰 المالية</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">مشتركين فعالين</p><p class="text-4xl font-black text-emerald-400" id="f-a">-</p></div>
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">شهري</p><p class="text-4xl font-black text-indigo-400" id="f-m">-</p></div>
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">سنوي</p><p class="text-4xl font-black text-purple-400" id="f-y">-</p></div>
+        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">مجاني</p><p class="text-4xl font-black text-yellow-400" id="f-f">-</p></div>
+    </div>
+</div>
 
-        // ═══ Tab Switching ═══
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-section').forEach(function(s){ s.classList.remove('active'); });
-            document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); });
-            document.getElementById('tab-' + tab).classList.add('active');
-            event.currentTarget.classList.add('active');
-            if (tab === 'overview') loadOverview();
-            if (tab === 'questions') loadQuestions();
-            if (tab === 'users') loadUsers();
-            if (tab === 'coupons') loadCoupons();
-            if (tab === 'finance') loadFinance();
-            if (tab === 'reports') loadReports();
-            if (tab === 'staff') loadStaff();
-            if (tab === 'settings') loadSettings();
-        }
+<!-- ═══ البلاغات ═══ -->
+<div id="t-reports" class="tab"><h2 class="text-2xl font-black mb-5">🚩 البلاغات</h2><div id="r-list" class="space-y-2"></div></div>
 
-        // ═══ Toast ═══
-        function toast(msg, ok) {
-            var t = document.getElementById('toast');
-            t.textContent = msg; t.className = 'toast ' + (ok ? 'toast-ok' : 'toast-err');
-            setTimeout(function(){ t.classList.add('hidden'); }, 3000);
-        }
+<!-- ═══ الموظفين ═══ -->
+<div id="t-staff" class="tab">
+    <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🔑 الموظفين</h2><button class="bp" onclick="$('staffM').classList.remove('hidden')">+ إضافة موظف</button></div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الاسم</th><th class="text-right p-3 text-purple-300/50">الإيميل</th><th class="text-center p-3 text-purple-300/50">الدور</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="st-list"></tbody></table></div>
+</div>
 
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+<!-- ═══ الإعدادات ═══ -->
+<div id="t-settings" class="tab">
+    <h2 class="text-2xl font-black mb-5">⚙️ إعدادات الموقع</h2>
+    <div class="glass p-6 mb-4"><h3 class="font-bold text-base mb-3">📢 نص البانر العلوي</h3><textarea id="st-ban" class="inp" rows="2"></textarea><button class="bp mt-2" onclick="saveSt('banner_text',$('st-ban').value)">حفظ</button></div>
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">💰 الأسعار والخصومات</h3>
+        <p class="text-purple-300/30 text-xs mb-4">حط السعر الأصلي والحالي — لو الحالي أقل بيظهر خط على الأصلي في صفحة الباقات</p>
+        <div class="mb-4 p-4 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)"><p class="text-indigo-400 font-bold text-sm mb-2">📅 الشهري</p><div class="grid grid-cols-2 gap-3"><div><label class="text-purple-300/40 text-xs mb-1 block">الأصلي</label><input type="number" id="st-mo" class="inp" value="39"></div><div><label class="text-purple-300/40 text-xs mb-1 block">الحالي</label><input type="number" id="st-m" class="inp" value="29"></div></div></div>
+        <div class="mb-4 p-4 rounded-xl" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.1)"><p class="text-emerald-400 font-bold text-sm mb-2">💎 السنوي</p><div class="grid grid-cols-2 gap-3"><div><label class="text-purple-300/40 text-xs mb-1 block">الأصلي</label><input type="number" id="st-yo" class="inp" value="348"></div><div><label class="text-purple-300/40 text-xs mb-1 block">الحالي</label><input type="number" id="st-y" class="inp" value="228"></div></div></div>
+        <button class="bp" onclick="savePrice()">💾 حفظ الأسعار</button>
+    </div>
+    <div class="glass p-6 mb-4"><h3 class="font-bold text-base mb-3">🆓 حد الأسئلة المجانية</h3><input type="number" id="st-fl" class="inp" value="10" style="max-width:120px"><button class="bp mt-2" onclick="saveSt('free_limit',$('st-fl').value)">حفظ</button></div>
+</div>
 
-        // ═══════════════════════════════════
-        //  نظرة عامة
-        // ═══════════════════════════════════
-        async function loadOverview() {
-            var { data: q } = await sb.from('questions').select('section');
-            var { data: u } = await sb.from('profiles').select('id, full_name, email, avatar_emoji, created_at');
-            var { data: a } = await sb.from('attempts').select('id, user_id, is_correct, created_at');
-            var { data: r } = await sb.from('reports').select('id');
+</div><!-- end mc -->
 
-            document.getElementById('ov-questions').textContent = q ? q.length : 0;
-            document.getElementById('ov-users').textContent = u ? u.length : 0;
-            document.getElementById('ov-attempts').textContent = a ? a.length : 0;
-            document.getElementById('ov-reports').textContent = r ? r.length : 0;
+<!-- ═══ Question Modal ═══ -->
+<div id="questionM" class="mbg hidden"><div class="mbox">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg" id="qmT">إضافة سؤال</h3><button onclick="$('questionM').classList.add('hidden')" class="text-purple-300/30 hover:text-white text-lg">✕</button></div>
+    <input type="hidden" id="qm-id">
+    <div class="space-y-3">
+        <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الرئيسي</label><select id="qm-sec" class="inp" onchange="updateSubSec()"><option value="quant">قدرات كمي</option><option value="verbal">قدرات لفظي</option><option value="tahsili">التحصيلي</option></select></div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الفرعي</label><select id="qm-sub" class="inp"></select></div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">نص السؤال</label><textarea id="qm-txt" class="inp" rows="3"></textarea></div>
+        <div class="grid grid-cols-2 gap-2"><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 1</label><input id="qm-c0" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 2</label><input id="qm-c1" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 3</label><input id="qm-c2" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 4</label><input id="qm-c3" class="inp"></div></div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الإجابة الصحيحة</label><select id="qm-cor" class="inp"><option value="0">خيار 1</option><option value="1">خيار 2</option><option value="2">خيار 3</option><option value="3">خيار 4</option></select></div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الشرح</label><textarea id="qm-exp" class="inp" rows="3"></textarea></div>
+        <button class="bp w-full" onclick="saveQ2()">💾 حفظ السؤال</button>
+    </div>
+</div></div>
 
-            // Section breakdown
-            if (q) {
-                var counts = { quant: 0, verbal: 0, tahsili: 0 };
-                q.forEach(function(x) { if (counts[x.section] !== undefined) counts[x.section]++; });
-                var names = { quant: 'قدرات كمي', verbal: 'قدرات لفظي', tahsili: 'التحصيلي' };
-                var colors = { quant: '#6366f1', verbal: '#10b981', tahsili: '#8b5cf6' };
-                var total = q.length || 1;
-                var html = '';
-                for (var k in counts) {
-                    var pct = Math.round((counts[k] / total) * 100);
-                    html += '<div class="flex items-center justify-between text-sm mb-1"><span class="text-purple-200/70">' + names[k] + '</span><span class="font-bold text-white">' + counts[k] + '</span></div>';
-                    html += '<div class="h-2 rounded-full mb-3" style="background:rgba(255,255,255,0.06)"><div class="h-full rounded-full" style="width:' + pct + '%;background:' + colors[k] + '"></div></div>';
-                }
-                document.getElementById('ov-sections').innerHTML = html;
-            }
+<!-- ═══ User Modal ═══ -->
+<div id="userM" class="mbg hidden"><div class="mbox">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">تعديل العضو</h3><button onclick="$('userM').classList.add('hidden')" class="text-purple-300/30 hover:text-white text-lg">✕</button></div>
+    <input type="hidden" id="um-id">
+    <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">الاسم</label><input id="um-n" class="inp"></div><div><label class="text-purple-300/50 text-sm mb-1 block">الإيميل</label><input id="um-e" class="inp" disabled></div><div><label class="text-purple-300/50 text-sm mb-1 block">الاشتراك</label><select id="um-s" class="inp"><option value="free">مجاني</option><option value="monthly">شهري</option><option value="yearly">سنوي</option></select></div><div><label class="text-purple-300/50 text-sm mb-1 block">الدور</label><select id="um-r" class="inp"><option value="user">مستخدم</option><option value="admin">أدمن</option></select></div><button class="bp w-full" onclick="saveU2()">💾 حفظ</button></div>
+</div></div>
 
-            // Hardest question
-            if (a && a.length > 0) {
-                var wrongA = a.filter(function(x){ return !x.is_correct; });
-                if (wrongA.length > 0) {
-                    var freq = {};
-                    wrongA.forEach(function(x) { freq[x.question_id] = (freq[x.question_id] || 0) + 1; });
-                    var hardestId = Object.keys(freq).sort(function(a,b) { return freq[b] - freq[a]; })[0];
-                    var { data: hq } = await sb.from('questions').select('question_text, section').eq('id', hardestId).single();
-                    if (hq) {
-                        var sn = { quant: 'كمي', verbal: 'لفظي', tahsili: 'تحصيلي' };
-                        document.getElementById('ov-hardest').innerHTML = '<span class="badge badge-' + (hq.section === 'quant' ? 'monthly' : hq.section === 'verbal' ? 'yearly' : 'free') + ' mb-2">' + (sn[hq.section] || '') + '</span><p class="text-white text-base mt-2">' + hq.question_text.substring(0, 120) + '</p><p class="text-red-400 text-sm mt-2 font-bold">🔴 ' + freq[hardestId] + ' خطأ</p>';
-                    }
-                } else {
-                    document.getElementById('ov-hardest').innerHTML = '<p class="text-purple-300/40 text-base">ما فيه أخطاء بعد</p>';
-                }
+<!-- ═══ Coupon Modal ═══ -->
+<div id="couponM" class="mbg hidden"><div class="mbox">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">كوبون جديد</h3><button onclick="$('couponM').classList.add('hidden')" class="text-purple-300/30 hover:text-white text-lg">✕</button></div>
+    <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">الكود</label><input id="cm-c" class="inp" style="text-transform:uppercase"></div><div><label class="text-purple-300/50 text-sm mb-1 block">نوع الخصم</label><select id="cm-t" class="inp"><option value="percentage">نسبة %</option><option value="fixed">مبلغ ثابت</option></select></div><div><label class="text-purple-300/50 text-sm mb-1 block">القيمة</label><input type="number" id="cm-v" class="inp"></div><div><label class="text-purple-300/50 text-sm mb-1 block">الحد الأقصى</label><input type="number" id="cm-x" class="inp" value="100"></div><div><label class="text-purple-300/50 text-sm mb-1 block">ينتهي</label><input type="date" id="cm-e" class="inp"></div><button class="bp w-full" onclick="saveC2()">💾 إنشاء</button></div>
+</div></div>
 
-                // ═══ Success Rate ═══
-                var correct = a.filter(function(x){ return x.is_correct; }).length;
-                var rate = Math.round((correct / a.length) * 100);
-                document.getElementById('ov-rate-num').textContent = rate + '%';
+<!-- ═══ Staff Modal ═══ -->
+<div id="staffM" class="mbg hidden"><div class="mbox">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">إضافة موظف</h3><button onclick="$('staffM').classList.add('hidden')" class="text-purple-300/30 hover:text-white text-lg">✕</button></div>
+    <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">إيميل الموظف</label><input id="sm-e" class="inp"></div><button class="bp w-full" onclick="saveSt2()">💾 إضافة كأدمن</button></div>
+</div></div>
 
-                // ═══ Top Solvers (most attempts) ═══
-                var userAttempts = {};
-                a.forEach(function(x) {
-                    if (!userAttempts[x.user_id]) userAttempts[x.user_id] = { total: 0, correct: 0 };
-                    userAttempts[x.user_id].total++;
-                    if (x.is_correct) userAttempts[x.user_id].correct++;
-                });
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+var me=null;
+function $(id){return document.getElementById(id)}
 
-                var userMap = {};
-                if (u) u.forEach(function(x) { userMap[x.id] = x; });
+// Sub-sections map
+var subSections={
+    quant:['الجبر والمعادلات','النسبة والتناسب','الهندسة','الإحصاء','الأعداد','التحليل'],
+    verbal:['التناظر اللفظي','إكمال الجمل','الاستيعاب المقروء','الخطأ السياقي'],
+    tahsili:['الرياضيات','الفيزياء','الكيمياء','الأحياء','اللغة الإنجليزية']
+};
+function updateSubSec(){
+    var sec=$('qm-sec').value;var opts=subSections[sec]||[];
+    $('qm-sub').innerHTML=opts.map(function(o){return'<option value="'+o+'">'+o+'</option>'}).join('');
+}
 
-                // Top Solvers
-                var topSolvers = Object.keys(userAttempts).sort(function(a,b){ return userAttempts[b].total - userAttempts[a].total; }).slice(0, 5);
-                var rankColors = ['#fbbf24','#c0c0c0','#cd7f32','#818cf8','#818cf8'];
-                var rankBg = ['rgba(251,191,36,0.15)','rgba(192,192,192,0.1)','rgba(205,127,50,0.1)','rgba(129,140,248,0.08)','rgba(129,140,248,0.08)'];
-                var html = '';
-                topSolvers.forEach(function(uid, i){
-                    var user = userMap[uid] || {};
-                    html += '<div class="rank-row"><div class="rank-num" style="background:' + rankBg[i] + ';color:' + rankColors[i] + '">' + (i+1) + '</div><div class="flex-1"><p class="text-white font-bold text-sm">' + (user.full_name || 'مجهول') + '</p><p class="text-purple-300/30 text-xs">' + (user.email || '') + '</p></div><div class="text-left"><p class="text-lg font-black text-indigo-400">' + userAttempts[uid].total + '</p><p class="text-purple-300/30 text-[10px]">محاولة</p></div></div>';
-                });
-                document.getElementById('ov-top-solvers').innerHTML = html || '<p class="text-purple-300/30">لا توجد بيانات</p>';
+// Auth
+async function init(){
+    var{data:{session}}=await sb.auth.getSession();
+    if(!session){location.href='admin-login.html';return}
+    var{data:p}=await sb.from('profiles').select('role,full_name').eq('id',session.user.id).single();
+    if(!p||p.role!=='admin'){location.href='admin-login.html';return}
+    me={id:session.user.id,...p};loadOV();
+}
 
-                // Top Accuracy (min 5 attempts)
-                var topAcc = Object.keys(userAttempts).filter(function(uid){ return userAttempts[uid].total >= 3; }).sort(function(a,b){
-                    return (userAttempts[b].correct / userAttempts[b].total) - (userAttempts[a].correct / userAttempts[a].total);
-                }).slice(0, 5);
-                html = '';
-                topAcc.forEach(function(uid, i){
-                    var user = userMap[uid] || {};
-                    var pct = Math.round((userAttempts[uid].correct / userAttempts[uid].total) * 100);
-                    html += '<div class="rank-row"><div class="rank-num" style="background:' + rankBg[i] + ';color:' + rankColors[i] + '">' + (i+1) + '</div><div class="flex-1"><p class="text-white font-bold text-sm">' + (user.full_name || 'مجهول') + '</p><p class="text-purple-300/30 text-xs">' + userAttempts[uid].correct + '/' + userAttempts[uid].total + ' صح</p></div><div class="text-left"><p class="text-lg font-black text-emerald-400">' + pct + '%</p></div></div>';
-                });
-                document.getElementById('ov-top-accuracy').innerHTML = html || '<p class="text-purple-300/30">لا توجد بيانات كافية</p>';
+// Tabs
+document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
+    el.addEventListener('click',function(){
+        var t=this.dataset.tab;
+        document.querySelectorAll('.tab').forEach(function(s){s.classList.remove('on')});
+        document.querySelectorAll('.sb-link').forEach(function(l){l.classList.remove('on')});
+        $('t-'+t).classList.add('on');this.classList.add('on');
+        if(t==='overview')loadOV();if(t==='questions')loadQ();if(t==='users')loadU();
+        if(t==='coupons')loadC();if(t==='finance')loadF();if(t==='reports')loadR();
+        if(t==='staff')loadST();if(t==='settings')loadSet();
+    });
+});
 
-                // Most Active (last 7 days)
-                var weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
-                var recentAttempts = {};
-                a.forEach(function(x){
-                    if (new Date(x.created_at) >= weekAgo) {
-                        recentAttempts[x.user_id] = (recentAttempts[x.user_id] || 0) + 1;
-                    }
-                });
-                var topActive = Object.keys(recentAttempts).sort(function(a,b){ return recentAttempts[b] - recentAttempts[a]; }).slice(0, 5);
-                html = '';
-                topActive.forEach(function(uid, i){
-                    var user = userMap[uid] || {};
-                    html += '<div class="rank-row"><div class="rank-num" style="background:' + rankBg[i] + ';color:' + rankColors[i] + '">' + (i+1) + '</div><div class="flex-1"><p class="text-white font-bold text-sm">' + (user.full_name || 'مجهول') + '</p></div><div class="text-left"><p class="text-lg font-black text-purple-400">' + recentAttempts[uid] + '</p><p class="text-purple-300/30 text-[10px]">هالأسبوع</p></div></div>';
-                });
-                document.getElementById('ov-top-active').innerHTML = html || '<p class="text-purple-300/30">لا يوجد نشاط هالأسبوع</p>';
+function toast(m,ok){var t=$('toast');t.textContent=m;t.className='toast '+(ok?'tok':'ter');setTimeout(function(){t.classList.add('hidden')},3000)}
 
-            } else {
-                document.getElementById('ov-hardest').innerHTML = '<p class="text-purple-300/40 text-base">ما فيه محاولات بعد</p>';
-                document.getElementById('ov-rate-num').textContent = '-';
-                document.getElementById('ov-top-solvers').innerHTML = '<p class="text-purple-300/30">لا توجد بيانات</p>';
-                document.getElementById('ov-top-accuracy').innerHTML = '<p class="text-purple-300/30">لا توجد بيانات</p>';
-                document.getElementById('ov-top-active').innerHTML = '<p class="text-purple-300/30">لا توجد بيانات</p>';
-            }
+// ═══ OVERVIEW ═══
+async function loadOV(){
+    var{data:q}=await sb.from('questions').select('section,sub_section');
+    var{data:u}=await sb.from('profiles').select('id,full_name,email,avatar_emoji,created_at');
+    var{data:a}=await sb.from('attempts').select('id,user_id,is_correct,question_id,created_at');
+    var{data:r}=await sb.from('reports').select('id');
+    $('s-q').textContent=q?q.length:0;$('s-u').textContent=u?u.length:0;
+    $('s-a').textContent=a?a.length:0;$('s-r').textContent=r?r.length:0;
 
-            // ═══ New Members ═══
-            if (u && u.length > 0) {
-                var sorted = u.sort(function(a,b){ return new Date(b.created_at) - new Date(a.created_at); }).slice(0, 5);
-                var html = '';
-                sorted.forEach(function(m){
-                    var d = m.created_at ? new Date(m.created_at).toLocaleDateString('ar-SA') : '';
-                    html += '<div class="rank-row"><span class="text-lg">' + (m.avatar_emoji || '👤') + '</span><div class="flex-1"><p class="text-white font-bold text-sm">' + (m.full_name || '—') + '</p><p class="text-purple-300/30 text-xs">' + (m.email || '') + '</p></div><p class="text-purple-300/30 text-xs">' + d + '</p></div>';
-                });
-                document.getElementById('ov-new-members').innerHTML = html;
-            }
-        }
+    if(q){var c={quant:0,verbal:0,tahsili:0};q.forEach(function(x){if(c[x.section]!==undefined)c[x.section]++});
+    var nm={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'التحصيلي'},cl={quant:'#6366f1',verbal:'#10b981',tahsili:'#8b5cf6'},tot=q.length||1,h='';
+    for(var k in c){var p=Math.round(c[k]/tot*100);h+='<div class="flex items-center justify-between text-sm mb-1"><span class="text-purple-200/70">'+nm[k]+'</span><span class="font-bold text-white">'+c[k]+'</span></div><div class="h-2 rounded-full mb-3" style="background:rgba(255,255,255,0.06)"><div class="h-full rounded-full" style="width:'+p+'%;background:'+cl[k]+'"></div></div>'}
+    $('d-sec').innerHTML=h}
 
-        // ═══════════════════════════════════
-        //  الأسئلة
-        // ═══════════════════════════════════
-        async function loadQuestions() {
-            var filter = document.getElementById('q-filter').value;
-            var search = document.getElementById('q-search').value.trim().toLowerCase();
-            var query = sb.from('questions').select('*').order('created_at', { ascending: false });
-            if (filter !== 'all') query = query.eq('section', filter);
-            var { data } = await query;
-            if (!data) data = [];
-            if (search) data = data.filter(function(q) { return q.question_text.toLowerCase().includes(search); });
+    if(!a||!a.length){$('d-hard').innerHTML='<p class="text-purple-300/40">ما فيه محاولات بعد</p>';$('d-rate').textContent='-';$('d-top').innerHTML=$('d-acc').innerHTML=$('d-act').innerHTML=$('d-new').innerHTML='<p class="text-purple-300/30">لا توجد بيانات</p>';
+    if(u&&u.length){var nh='';u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p></div><p class="text-purple-300/30 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'});$('d-new').innerHTML=nh}
+    return}
 
-            var sn = { quant: 'كمي', verbal: 'لفظي', tahsili: 'تحصيلي' };
-            var html = '';
-            data.forEach(function(q) {
-                html += '<div class="glass p-4 table-row"><div class="flex items-start justify-between gap-3"><div class="flex-1"><span class="badge badge-' + (q.section === 'quant' ? 'monthly' : q.section === 'verbal' ? 'yearly' : 'free') + ' mb-1">' + (sn[q.section] || '') + '</span><p class="text-sm text-white leading-relaxed">' + q.question_text.substring(0, 100) + (q.question_text.length > 100 ? '...' : '') + '</p></div><div class="flex gap-1 flex-shrink-0"><button class="btn-s" onclick="editQuestion(\'' + q.id + '\')">✏️</button><button class="btn-d" onclick="deleteQuestion(\'' + q.id + '\')">🗑️</button></div></div></div>';
-            });
-            document.getElementById('questions-list').innerHTML = html || '<p class="text-purple-300/30 text-sm text-center py-8">لا توجد أسئلة</p>';
-        }
+    // Hardest
+    var wr=a.filter(function(x){return!x.is_correct}),fr={};
+    wr.forEach(function(x){fr[x.question_id]=(fr[x.question_id]||0)+1});
+    if(Object.keys(fr).length){var hid=Object.keys(fr).sort(function(a,b){return fr[b]-fr[a]})[0];
+    var{data:hq}=await sb.from('questions').select('question_text,section').eq('id',hid).single();
+    if(hq){var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};$('d-hard').innerHTML='<span class="bg bg-m mb-2">'+(sn[hq.section]||'')+'</span><p class="text-white text-base mt-2">'+hq.question_text.substring(0,120)+'</p><p class="text-red-400 text-sm mt-2 font-bold">🔴 '+fr[hid]+' خطأ</p>'}}
+    else $('d-hard').innerHTML='<p class="text-purple-300/40">ما فيه أخطاء</p>';
 
-        function openQuestionModal(q) {
-            document.getElementById('qModalTitle').textContent = q ? 'تعديل السؤال' : 'إضافة سؤال';
-            document.getElementById('qm-id').value = q ? q.id : '';
-            document.getElementById('qm-section').value = q ? q.section : 'quant';
-            document.getElementById('qm-text').value = q ? q.question_text : '';
-            var c = q ? (q.choices || []) : [];
-            for (var i = 0; i < 4; i++) document.getElementById('qm-c' + i).value = c[i] || '';
-            document.getElementById('qm-correct').value = q ? q.correct_index : '0';
-            document.getElementById('qm-explanation').value = q ? (q.explanation || '') : '';
-            document.getElementById('qm-image').value = q ? (q.image_url || '') : '';
-            document.getElementById('questionModal').classList.remove('hidden');
-        }
+    // Rate
+    var cor=a.filter(function(x){return x.is_correct}).length;$('d-rate').textContent=Math.round(cor/a.length*100)+'%';
 
-        async function editQuestion(id) {
-            var { data } = await sb.from('questions').select('*').eq('id', id).single();
-            if (data) openQuestionModal(data);
-        }
+    // User map
+    var um={};if(u)u.forEach(function(x){um[x.id]=x});
+    var ua={};a.forEach(function(x){if(!ua[x.user_id])ua[x.user_id]={t:0,c:0};ua[x.user_id].t++;if(x.is_correct)ua[x.user_id].c++});
+    var rc=['#fbbf24','#c0c0c0','#cd7f32','#818cf8','#818cf8'],rb=['rgba(251,191,36,0.15)','rgba(192,192,192,0.1)','rgba(205,127,50,0.1)','rgba(129,140,248,0.08)','rgba(129,140,248,0.08)'];
 
-        async function saveQuestion() {
-            var id = document.getElementById('qm-id').value;
-            var obj = {
-                section: document.getElementById('qm-section').value,
-                question_text: document.getElementById('qm-text').value,
-                choices: [document.getElementById('qm-c0').value, document.getElementById('qm-c1').value, document.getElementById('qm-c2').value, document.getElementById('qm-c3').value],
-                correct_index: parseInt(document.getElementById('qm-correct').value),
-                explanation: document.getElementById('qm-explanation').value
-            };
-            var imgUrl = document.getElementById('qm-image').value;
-            if (imgUrl) obj.image_url = imgUrl;
-            };
-            if (!obj.question_text || !obj.choices[0]) { toast('املأ الحقول المطلوبة', false); return; }
+    function rank(arr,el,valFn,lblFn){var h='';arr.forEach(function(uid,i){var usr=um[uid]||{};h+='<div class="rr"><div class="rn" style="background:'+rb[i]+';color:'+rc[i]+'">'+(i+1)+'</div><div class="flex-1"><p class="text-white font-bold text-sm">'+(usr.full_name||'مجهول')+'</p></div><div class="text-left">'+valFn(uid)+'</div></div>'});el.innerHTML=h||'<p class="text-purple-300/30">لا توجد بيانات</p>'}
 
-            if (id) {
-                var { error } = await sb.from('questions').update(obj).eq('id', id);
-                if (error) { toast('خطأ: ' + error.message, false); return; }
-                toast('تم تحديث السؤال', true);
-            } else {
-                var { error } = await sb.from('questions').insert(obj);
-                if (error) { toast('خطأ: ' + error.message, false); return; }
-                toast('تم إضافة السؤال', true);
-            }
-            closeModal('questionModal');
-            loadQuestions();
-        }
+    rank(Object.keys(ua).sort(function(a,b){return ua[b].t-ua[a].t}).slice(0,5),$('d-top'),function(uid){return'<p class="text-lg font-black text-indigo-400">'+ua[uid].t+'</p><p class="text-purple-300/30 text-[10px]">محاولة</p>'});
+    rank(Object.keys(ua).filter(function(uid){return ua[uid].t>=3}).sort(function(a,b){return ua[b].c/ua[b].t-ua[a].c/ua[a].t}).slice(0,5),$('d-acc'),function(uid){return'<p class="text-lg font-black text-emerald-400">'+Math.round(ua[uid].c/ua[uid].t*100)+'%</p>'});
 
-        async function deleteQuestion(id) {
-            if (!confirm('متأكد تبي تحذف هالسؤال؟')) return;
-            await sb.from('attempts').delete().eq('question_id', id);
-            await sb.from('reports').delete().eq('question_id', id);
-            var { error } = await sb.from('questions').delete().eq('id', id);
-            if (error) toast('خطأ بالحذف', false);
-            else { toast('تم الحذف', true); loadQuestions(); }
-        }
+    var wa=new Date();wa.setDate(wa.getDate()-7);var ra={};a.forEach(function(x){if(new Date(x.created_at)>=wa)ra[x.user_id]=(ra[x.user_id]||0)+1});
+    rank(Object.keys(ra).sort(function(a,b){return ra[b]-ra[a]}).slice(0,5),$('d-act'),function(uid){return'<p class="text-lg font-black text-purple-400">'+ra[uid]+'</p><p class="text-purple-300/30 text-[10px]">هالأسبوع</p>'});
 
-        // ═══════════════════════════════════
-        //  الأعضاء
-        // ═══════════════════════════════════
-        async function loadUsers() {
-            var search = (document.getElementById('u-search').value || '').trim().toLowerCase();
-            var { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
-            if (!data) data = [];
-            if (search) data = data.filter(function(u) { return (u.full_name || '').toLowerCase().includes(search) || (u.email || '').toLowerCase().includes(search); });
-            var html = '';
-            data.forEach(function(u) {
-                var badge = u.subscription_type === 'monthly' ? 'badge-monthly' : u.subscription_type === 'yearly' ? 'badge-yearly' : 'badge-free';
-                var label = u.subscription_type === 'monthly' ? 'شهري' : u.subscription_type === 'yearly' ? 'سنوي' : 'مجاني';
-                html += '<tr class="table-row"><td class="p-3"><div class="flex items-center gap-2"><span class="text-lg">' + (u.avatar_emoji || '👤') + '</span><span class="text-sm font-medium">' + (u.full_name || '—') + '</span>' + (u.role === 'admin' ? '<span class="badge badge-admin">أدمن</span>' : '') + '</div></td><td class="p-3 text-purple-300/40 text-xs">' + (u.email || '') + '</td><td class="p-3 text-center"><span class="badge ' + badge + '">' + label + '</span></td><td class="p-3 text-center text-purple-300/30 text-xs">' + (u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : '') + '</td><td class="p-3 text-center"><button class="btn-s" onclick="editUser(\'' + u.id + '\')">✏️</button></td></tr>';
-            });
-            document.getElementById('users-list').innerHTML = html;
-        }
+    if(u&&u.length){var nh='';u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p><p class="text-purple-300/30 text-xs">'+(m.email||'')+'</p></div><p class="text-purple-300/30 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'});$('d-new').innerHTML=nh}
+}
 
-        async function editUser(id) {
-            var { data } = await sb.from('profiles').select('*').eq('id', id).single();
-            if (!data) return;
-            document.getElementById('um-id').value = data.id;
-            document.getElementById('um-name').value = data.full_name || '';
-            document.getElementById('um-email').value = data.email || '';
-            document.getElementById('um-sub').value = data.subscription_type || 'free';
-            document.getElementById('um-role').value = data.role || 'user';
-            document.getElementById('userModal').classList.remove('hidden');
-        }
+// ═══ QUESTIONS ═══
+async function loadQ(){
+    var f=$('qf').value,s=$('qs').value.trim().toLowerCase(),qr=sb.from('questions').select('*').order('created_at',{ascending:false});
+    if(f!=='all')qr=qr.eq('section',f);var{data}=await qr;if(!data)data=[];
+    if(s)data=data.filter(function(q){return q.question_text.toLowerCase().includes(s)});
+    var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'},h='';
+    data.forEach(function(q){
+        h+='<div class="glass p-4"><div class="flex items-start justify-between gap-3"><div class="flex-1"><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+' mb-1">'+(sn[q.section]||'')+'</span>'+(q.sub_section?'<span class="text-purple-300/30 text-xs mr-2">'+q.sub_section+'</span>':'')+'<p class="text-sm text-white leading-relaxed mt-1">'+q.question_text.substring(0,100)+(q.question_text.length>100?'...':'')+'</p></div><div class="flex gap-1 flex-shrink-0"><button class="bs" onclick="editQ(\''+q.id+'\')">✏️</button><button class="bd" onclick="delQ(\''+q.id+'\')">🗑️</button></div></div></div>'
+    });$('q-list').innerHTML=h||'<p class="text-purple-300/30 text-center py-8">لا توجد أسئلة</p>'
+}
 
-        async function saveUser() {
-            var id = document.getElementById('um-id').value;
-            var { error } = await sb.from('profiles').update({
-                full_name: document.getElementById('um-name').value,
-                subscription_type: document.getElementById('um-sub').value,
-                role: document.getElementById('um-role').value
-            }).eq('id', id);
-            if (error) toast('خطأ', false);
-            else { toast('تم التحديث', true); closeModal('userModal'); loadUsers(); }
-        }
+function openQM(q){
+    $('qmT').textContent=q?'تعديل السؤال':'إضافة سؤال';$('qm-id').value=q?q.id:'';
+    $('qm-sec').value=q?q.section:'quant';updateSubSec();
+    if(q&&q.sub_section)$('qm-sub').value=q.sub_section;
+    $('qm-txt').value=q?q.question_text:'';
+    var c=q?(q.choices||[]):[];for(var i=0;i<4;i++)$('qm-c'+i).value=c[i]||'';
+    $('qm-cor').value=q?q.correct_index:'0';$('qm-exp').value=q?(q.explanation||''):'';
+    $('questionM').classList.remove('hidden')
+}
+async function editQ(id){var{data}=await sb.from('questions').select('*').eq('id',id).single();if(data)openQM(data)}
+async function saveQ2(){
+    var id=$('qm-id').value,obj={section:$('qm-sec').value,sub_section:$('qm-sub').value,question_text:$('qm-txt').value,choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],correct_index:parseInt($('qm-cor').value),explanation:$('qm-exp').value};
+    if(!obj.question_text||!obj.choices[0]){toast('املأ الحقول',false);return}
+    var{error}=id?await sb.from('questions').update(obj).eq('id',id):await sb.from('questions').insert(obj);
+    if(error){toast('خطأ: '+error.message,false);return}
+    toast(id?'تم التحديث':'تم الإضافة',true);$('questionM').classList.add('hidden');loadQ()
+}
+async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);toast('تم الحذف',true);loadQ()}
 
-        // ═══════════════════════════════════
-        //  الكوبونات
-        // ═══════════════════════════════════
-        async function loadCoupons() {
-            var { data } = await sb.from('coupons').select('*').order('created_at', { ascending: false });
-            if (!data || data.length === 0) { document.getElementById('coupons-list').innerHTML = '<tr><td colspan="6" class="p-6 text-center text-purple-300/30 text-sm">لا توجد كوبونات</td></tr>'; return; }
-            var html = '';
-            data.forEach(function(c) {
-                var active = !c.expires_at || new Date(c.expires_at) > new Date();
-                html += '<tr class="table-row"><td class="p-3 font-bold text-sm text-indigo-300">' + c.code + '</td><td class="p-3 text-center text-sm">' + c.discount_value + (c.discount_type === 'percentage' ? '%' : ' ريال') + '</td><td class="p-3 text-center text-sm font-bold">' + (c.used_count || 0) + '</td><td class="p-3 text-center text-sm text-purple-300/40">' + (c.max_uses || '∞') + '</td><td class="p-3 text-center"><span class="badge ' + (active ? 'badge-yearly' : 'badge-free') + '">' + (active ? 'فعّال' : 'منتهي') + '</span></td><td class="p-3 text-center"><button class="btn-d" onclick="deleteCoupon(\'' + c.id + '\')">🗑️</button></td></tr>';
-            });
-            document.getElementById('coupons-list').innerHTML = html;
-        }
+// ═══ USERS ═══
+async function loadU(){
+    var s=($('us').value||'').trim().toLowerCase();var{data}=await sb.from('profiles').select('*').order('created_at',{ascending:false});if(!data)data=[];
+    if(s)data=data.filter(function(u){return(u.full_name||'').toLowerCase().includes(s)||(u.email||'').toLowerCase().includes(s)});
+    var h='';data.forEach(function(u){var bg=u.subscription_type==='monthly'?'bg-m':u.subscription_type==='yearly'?'bg-y':'bg-f',lb=u.subscription_type==='monthly'?'شهري':u.subscription_type==='yearly'?'سنوي':'مجاني';
+    h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+(u.full_name||'—')+'</span>'+(u.role==='admin'?'<span class="bg bg-a">أدمن</span>':'')+'</div></td><td class="p-3 text-purple-300/40 text-sm">'+(u.email||'')+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span></td><td class="p-3 text-center text-purple-300/30 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+u.id+'\')">✏️</button></td></tr>'});
+    $('u-list').innerHTML=h
+}
+async function editU(id){var{data}=await sb.from('profiles').select('*').eq('id',id).single();if(!data)return;$('um-id').value=data.id;$('um-n').value=data.full_name||'';$('um-e').value=data.email||'';$('um-s').value=data.subscription_type||'free';$('um-r').value=data.role||'user';$('userM').classList.remove('hidden')}
+async function saveU2(){var{error}=await sb.from('profiles').update({full_name:$('um-n').value,subscription_type:$('um-s').value,role:$('um-r').value}).eq('id',$('um-id').value);if(error)toast('خطأ',false);else{toast('تم',true);$('userM').classList.add('hidden');loadU()}}
 
-        function openCouponModal() { document.getElementById('couponModal').classList.remove('hidden'); }
+// ═══ COUPONS ═══
+async function loadC(){var{data}=await sb.from('coupons').select('*').order('created_at',{ascending:false});if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="6" class="p-6 text-center text-purple-300/30">لا توجد كوبونات</td></tr>';return}
+var h='';data.forEach(function(c){var ok=!c.expires_at||new Date(c.expires_at)>new Date();h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300">'+c.code+'</td><td class="p-3 text-center">'+c.discount_value+(c.discount_type==='percentage'?'%':' ر')+'</td><td class="p-3 text-center font-bold">'+(c.used_count||0)+'</td><td class="p-3 text-center text-purple-300/40">'+(c.max_uses||'∞')+'</td><td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td><td class="p-3 text-center"><button class="bd" onclick="delC(\''+c.id+'\')">🗑️</button></td></tr>'});$('c-list').innerHTML=h}
+async function saveC2(){var obj={code:$('cm-c').value.toUpperCase().trim(),discount_type:$('cm-t').value,discount_value:parseFloat($('cm-v').value),max_uses:parseInt($('cm-x').value)||100,used_count:0,expires_at:$('cm-e').value||null};if(!obj.code||!obj.discount_value){toast('املأ الحقول',false);return}var{error}=await sb.from('coupons').insert(obj);if(error)toast('خطأ: '+error.message,false);else{toast('تم',true);$('couponM').classList.add('hidden');loadC()}}
+async function delC(id){if(!confirm('حذف؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
 
-        async function saveCoupon() {
-            var obj = {
-                code: document.getElementById('cm-code').value.toUpperCase().trim(),
-                discount_type: document.getElementById('cm-type').value,
-                discount_value: parseFloat(document.getElementById('cm-value').value),
-                max_uses: parseInt(document.getElementById('cm-max').value) || 100,
-                used_count: 0,
-                expires_at: document.getElementById('cm-expires').value || null
-            };
-            if (!obj.code || !obj.discount_value) { toast('املأ الحقول', false); return; }
-            var { error } = await sb.from('coupons').insert(obj);
-            if (error) toast('خطأ: ' + error.message, false);
-            else { toast('تم إنشاء الكوبون', true); closeModal('couponModal'); loadCoupons(); }
-        }
+// ═══ FINANCE ═══
+async function loadF(){var{data}=await sb.from('profiles').select('subscription_type');if(!data)return;var m=data.filter(function(u){return u.subscription_type==='monthly'}).length,y=data.filter(function(u){return u.subscription_type==='yearly'}).length,f=data.filter(function(u){return!u.subscription_type||u.subscription_type==='free'}).length;$('f-a').textContent=m+y;$('f-m').textContent=m;$('f-y').textContent=y;$('f-f').textContent=f}
 
-        async function deleteCoupon(id) {
-            if (!confirm('متأكد تحذف الكوبون؟')) return;
-            await sb.from('coupons').delete().eq('id', id);
-            toast('تم الحذف', true); loadCoupons();
-        }
+// ═══ REPORTS ═══
+async function loadR(){var{data}=await sb.from('reports').select('*,questions(question_text,section)').order('reported_at',{ascending:false});if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-300/30">ما فيه بلاغات</div>';return}var h='';data.forEach(function(r){h+='<div class="glass p-4"><div class="flex items-start justify-between"><div><p class="text-white text-sm">'+(r.questions?r.questions.question_text.substring(0,80)+'...':'محذوف')+'</p><p class="text-purple-300/40 text-xs mt-1">السبب: '+(r.reason||'-')+'</p></div><button class="bd" onclick="delR(\''+r.id+'\')">✕</button></div></div>'});$('r-list').innerHTML=h}
+async function delR(id){await sb.from('reports').delete().eq('id',id);toast('تم',true);loadR()}
 
-        // ═══════════════════════════════════
-        //  المالية
-        // ═══════════════════════════════════
-        async function loadFinance() {
-            var { data } = await sb.from('profiles').select('subscription_type');
-            if (!data) return;
-            var m = data.filter(function(u){ return u.subscription_type === 'monthly'; }).length;
-            var y = data.filter(function(u){ return u.subscription_type === 'yearly'; }).length;
-            var f = data.filter(function(u){ return !u.subscription_type || u.subscription_type === 'free'; }).length;
-            document.getElementById('fin-active').textContent = m + y;
-            document.getElementById('fin-monthly').textContent = m;
-            document.getElementById('fin-yearly').textContent = y;
-            document.getElementById('fin-free').textContent = f;
-        }
+// ═══ STAFF ═══
+async function loadST(){var{data}=await sb.from('profiles').select('*').eq('role','admin');if(!data)data=[];var h='';data.forEach(function(s){h+='<tr class="tr"><td class="p-3 font-bold">'+(s.full_name||'—')+'</td><td class="p-3 text-purple-300/40">'+(s.email||'')+'</td><td class="p-3 text-center"><span class="bg bg-a">أدمن</span></td><td class="p-3 text-center">'+(s.id!==me.id?'<button class="bd" onclick="rmST(\''+s.id+'\')">إزالة</button>':'<span class="text-purple-300/20 text-xs">أنت</span>')+'</td></tr>'});$('st-list').innerHTML=h}
+async function saveSt2(){var e=$('sm-e').value.trim();if(!e){toast('أدخل الإيميل',false);return}var{data:u}=await sb.from('profiles').select('id').eq('email',e).single();if(!u){toast('ما لقينا حساب',false);return}await sb.from('profiles').update({role:'admin'}).eq('id',u.id);toast('تم',true);$('staffM').classList.add('hidden');loadST()}
+async function rmST(id){if(!confirm('متأكد؟'))return;await sb.from('profiles').update({role:'user'}).eq('id',id);toast('تم',true);loadST()}
 
-        // ═══════════════════════════════════
-        //  البلاغات
-        // ═══════════════════════════════════
-        async function loadReports() {
-            var { data } = await sb.from('reports').select('*, questions(question_text, section)').order('reported_at', { ascending: false });
-            if (!data || data.length === 0) { document.getElementById('reports-list').innerHTML = '<div class="glass p-8 text-center text-purple-300/30 text-sm">ما فيه بلاغات</div>'; return; }
-            var html = '';
-            data.forEach(function(r) {
-                html += '<div class="glass p-4"><div class="flex items-start justify-between gap-3"><div><p class="text-sm text-white mb-1">' + (r.questions ? r.questions.question_text.substring(0,80) + '...' : 'سؤال محذوف') + '</p><p class="text-purple-300/40 text-xs">السبب: ' + (r.reason || 'ما حدد') + '</p><p class="text-purple-300/20 text-xs mt-1">' + new Date(r.reported_at).toLocaleDateString('ar-SA') + '</p></div><button class="btn-d flex-shrink-0" onclick="deleteReport(\'' + r.id + '\')">✕</button></div></div>';
-            });
-            document.getElementById('reports-list').innerHTML = html;
-        }
+// ═══ SETTINGS ═══
+async function loadSet(){var{data}=await sb.from('site_settings').select('*');if(data)data.forEach(function(s){
+    if(s.key==='banner_text')$('st-ban').value=s.value||'';
+    if(s.key==='free_limit')$('st-fl').value=s.value||'10';
+    if(s.key==='price_monthly')$('st-m').value=s.value||'29';
+    if(s.key==='price_yearly')$('st-y').value=s.value||'228';
+    if(s.key==='price_monthly_orig')$('st-mo').value=s.value||'39';
+    if(s.key==='price_yearly_orig')$('st-yo').value=s.value||'348';
+})}
+async function saveSt(k,v){var{data:e}=await sb.from('site_settings').select('id').eq('key',k).single();if(e)await sb.from('site_settings').update({value:v}).eq('key',k);else await sb.from('site_settings').insert({key:k,value:v});toast('تم الحفظ',true)}
+function savePrice(){saveSt('price_monthly',$('st-m').value);saveSt('price_yearly',$('st-y').value);saveSt('price_monthly_orig',$('st-mo').value);saveSt('price_yearly_orig',$('st-yo').value)}
 
-        async function deleteReport(id) { await sb.from('reports').delete().eq('id', id); toast('تم حذف البلاغ', true); loadReports(); }
-
-        // ═══════════════════════════════════
-        //  الموظفين
-        // ═══════════════════════════════════
-        async function loadStaff() {
-            var { data } = await sb.from('profiles').select('*').eq('role', 'admin');
-            if (!data) data = [];
-            var html = '';
-            data.forEach(function(s) {
-                html += '<tr class="table-row"><td class="p-3 text-sm font-medium">' + (s.full_name || '—') + '</td><td class="p-3 text-purple-300/40 text-xs">' + (s.email || '') + '</td><td class="p-3 text-center"><span class="badge badge-admin">أدمن</span></td><td class="p-3 text-center text-purple-300/30 text-xs">كامل</td><td class="p-3 text-center">' + (s.id !== currentAdmin.id ? '<button class="btn-d" onclick="removeStaff(\'' + s.id + '\')">إزالة</button>' : '<span class="text-purple-300/20 text-xs">أنت</span>') + '</td></tr>';
-            });
-            document.getElementById('staff-list').innerHTML = html;
-        }
-
-        function openStaffModal() { document.getElementById('staffModal').classList.remove('hidden'); }
-
-        async function saveStaff() {
-            var email = document.getElementById('sm-email').value.trim();
-            if (!email) { toast('أدخل الإيميل', false); return; }
-            var { data: user } = await sb.from('profiles').select('id').eq('email', email).single();
-            if (!user) { toast('ما لقينا حساب بهالإيميل', false); return; }
-            var { error } = await sb.from('profiles').update({ role: 'admin' }).eq('id', user.id);
-            if (error) toast('خطأ', false);
-            else { toast('تم إضافة الموظف كأدمن', true); closeModal('staffModal'); loadStaff(); }
-        }
-
-        async function removeStaff(id) {
-            if (!confirm('متأكد تشيل صلاحيات الأدمن؟')) return;
-            await sb.from('profiles').update({ role: 'user' }).eq('id', id);
-            toast('تم إزالة الصلاحيات', true); loadStaff();
-        }
-
-        // ═══════════════════════════════════
-        //  الإعدادات
-        // ═══════════════════════════════════
-        async function loadSettings() {
-            var { data } = await sb.from('site_settings').select('*');
-            if (data) {
-                data.forEach(function(s) {
-                    if (s.key === 'banner_text') document.getElementById('set-banner').value = s.value || '';
-                    if (s.key === 'free_limit') document.getElementById('set-free-limit').value = s.value || '10';
-                    if (s.key === 'price_monthly') document.getElementById('set-price-monthly').value = s.value || '29';
-                    if (s.key === 'price_yearly') document.getElementById('set-price-yearly').value = s.value || '228';
-                    if (s.key === 'price_monthly_orig') document.getElementById('set-price-monthly-orig').value = s.value || '39';
-                    if (s.key === 'price_yearly_orig') document.getElementById('set-price-yearly-orig').value = s.value || '348';
-                    if (s.key === 'theme') {
-                        var r = document.querySelector('input[name="theme"][value="' + s.value + '"]');
-                        if (r) r.checked = true;
-                    }
-                });
-            }
-        }
-
-        async function saveSetting(key, value) {
-            var { data: existing } = await sb.from('site_settings').select('id').eq('key', key).single();
-            if (existing) {
-                await sb.from('site_settings').update({ value: value }).eq('key', key);
-            } else {
-                await sb.from('site_settings').insert({ key: key, value: value });
-            }
-            toast('تم الحفظ', true);
-        }
-
-        function saveTheme() {
-            var v = document.querySelector('input[name="theme"]:checked');
-            if (v) saveSetting('theme', v.value);
-        }
-
-        function savePricing() {
-            saveSetting('price_monthly', document.getElementById('set-price-monthly').value);
-            saveSetting('price_yearly', document.getElementById('set-price-yearly').value);
-            saveSetting('price_monthly_orig', document.getElementById('set-price-monthly-orig').value);
-            saveSetting('price_yearly_orig', document.getElementById('set-price-yearly-orig').value);
-        }
-
-        // ═══ Init ═══
-        document.addEventListener('DOMContentLoaded', checkAdmin);
-    </script>
+updateSubSec();
+document.addEventListener('DOMContentLoaded',init);
+</script>
 </body>
 </html>
