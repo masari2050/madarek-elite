@@ -88,9 +88,7 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
         }
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        .btn-primary:active { transform: translateY(0); }
         .btn-primary:disabled {
             opacity: 0.7;
             cursor: not-allowed;
@@ -107,9 +105,7 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
         }
-        .btn-danger:active {
-            transform: translateY(0);
-        }
+        .btn-danger:active { transform: translateY(0); }
         .btn-danger:disabled {
             opacity: 0.7;
             cursor: not-allowed;
@@ -133,7 +129,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Loading Spinner */
+        /* Spinner */
         .spinner {
             width: 20px;
             height: 20px;
@@ -144,28 +140,21 @@
             display: inline-block;
             vertical-align: middle;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Animate in */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-in {
-            animation: fadeUp 0.5s ease forwards;
-        }
+        .animate-in { animation: fadeUp 0.5s ease forwards; }
         .delay-1 { animation-delay: 0.1s; opacity: 0; }
         .delay-2 { animation-delay: 0.2s; opacity: 0; }
         .delay-3 { animation-delay: 0.3s; opacity: 0; }
         .delay-4 { animation-delay: 0.4s; opacity: 0; }
 
         /* Marquee */
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-        }
+        .marquee-container { overflow: hidden; white-space: nowrap; }
         .marquee-text {
             display: inline-block;
             animation: marquee 25s linear infinite;
@@ -181,10 +170,8 @@
             box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
         }
 
-        /* Password eye toggle */
-        .password-wrapper {
-            position: relative;
-        }
+        /* Password toggle */
+        .password-wrapper { position: relative; }
         .password-toggle {
             position: absolute;
             left: 12px;
@@ -197,20 +184,12 @@
             border: none;
             padding: 4px;
         }
-        .password-toggle:hover {
-            color: rgba(255,255,255,0.7);
-        }
-
-        /* Date style */
-        .join-date {
-            color: rgba(167, 139, 250, 0.5);
-            font-size: 0.75rem;
-        }
+        .password-toggle:hover { color: rgba(255,255,255,0.7); }
     </style>
 </head>
 <body class="font-tajawal text-white">
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div id="toast" class="toast">
         <div class="bg-gray-800/95 border border-gray-600/50 rounded-2xl px-6 py-3.5 shadow-2xl flex items-center gap-3 backdrop-blur-sm">
             <span id="toast-icon" class="text-xl">✅</span>
@@ -242,13 +221,13 @@
     <!-- Main Content -->
     <div class="max-w-2xl mx-auto px-4 pb-12">
 
-        <!-- Loading State -->
+        <!-- Loading -->
         <div id="loading-state" class="flex flex-col items-center justify-center py-20">
             <div class="spinner" style="width:40px;height:40px;border-width:3px;"></div>
             <p class="text-purple-300/70 mt-4 text-sm">جاري تحميل البيانات...</p>
         </div>
 
-        <!-- Profile Content (hidden until loaded) -->
+        <!-- Profile Content -->
         <div id="profile-content" class="hidden">
 
             <!-- Avatar & Info -->
@@ -258,50 +237,40 @@
                 </div>
                 <h2 id="user-name-display" class="text-2xl font-bold mb-1">...</h2>
                 <p id="user-email-display" class="text-purple-300/70 text-sm mb-1">...</p>
-                <p id="user-join-date" class="join-date"></p>
+                <p id="user-join-date" class="text-purple-300/30 text-xs"></p>
             </div>
 
-            <!-- Personal Info Card -->
+            <!-- Personal Info -->
             <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2">
                     <span class="text-lg">👤</span>
                     المعلومات الشخصية
                 </h3>
-
                 <div class="space-y-4">
-                    <!-- Name -->
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">الاسم</label>
                         <input type="text" id="input-name" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="اسمك هنا...">
                     </div>
-
-                    <!-- Email (read-only) -->
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">البريد الإلكتروني</label>
-                        <div class="input-field w-full rounded-xl px-4 py-3 text-sm opacity-60 cursor-not-allowed select-all" id="email-readonly" dir="ltr" style="text-align:right;">
-                            ...
-                        </div>
+                        <div class="input-field w-full rounded-xl px-4 py-3 text-sm opacity-60 cursor-not-allowed select-all" id="email-readonly" dir="ltr" style="text-align:right;">...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Change Password Card -->
+            <!-- Password -->
             <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2">
                     <span class="text-lg">🔒</span>
                     تغيير كلمة المرور
                 </h3>
-
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">كلمة المرور الجديدة</label>
                         <div class="password-wrapper">
                             <input type="password" id="input-password" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="اتركها فارغة إذا ما تبي تغيّر" dir="ltr" style="text-align:right;">
-                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('input-password', this)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password', this)">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             </button>
                         </div>
                     </div>
@@ -309,25 +278,20 @@
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">تأكيد كلمة المرور</label>
                         <div class="password-wrapper">
                             <input type="password" id="input-password-confirm" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="أعد كتابة كلمة المرور الجديدة" dir="ltr" style="text-align:right;">
-                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('input-password-confirm', this)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password-confirm', this)">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Settings Card -->
+            <!-- Settings -->
             <div class="animate-in delay-3 card-glow rounded-2xl p-6 mb-6">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2">
                     <span class="text-lg">⚙️</span>
                     الإعدادات
                 </h3>
-
-                <!-- Sound Toggle -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <span class="text-xl" id="sound-icon">🔊</span>
@@ -340,24 +304,19 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Buttons -->
             <div class="animate-in delay-4 space-y-3">
-                <!-- Save Button -->
                 <button type="button" id="btn-save" onclick="saveChanges()" class="btn-primary w-full rounded-xl py-3.5 text-sm font-bold text-white">
                     <span id="save-text">💾 حفظ التغييرات</span>
                     <span id="save-spinner" class="hidden"><span class="spinner"></span> جاري الحفظ...</span>
                 </button>
-
-                <!-- Logout Button -->
                 <button type="button" id="btn-logout" onclick="logoutUser()" class="btn-danger w-full rounded-xl py-3.5 text-sm font-bold text-white">
                     <span id="logout-text">🚪 تسجيل الخروج</span>
                     <span id="logout-spinner" class="hidden"><span class="spinner"></span> جاري الخروج...</span>
                 </button>
             </div>
 
-            <!-- App Version -->
             <p class="text-center text-purple-300/30 text-xs mt-8">مساري v1.0</p>
-
         </div>
     </div>
 
@@ -366,61 +325,53 @@
 
     <script>
         // ============================================================
-        // IMPORTANT: use "sb" not "supabase" to avoid conflict
-        // with the global window.supabase from the SDK
-        // (same pattern used in login.html, dashboard.html, etc.)
+        // Use "sb" — same as login.html & dashboard.html
+        // Use getSession() — same as dashboard.html (NOT getUser)
         // ============================================================
         const sb = window.supabase.createClient(
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg4MTYwNzcsImV4cCI6MjA1NDM5MjA3N30.ssII2KdmOcz1n-L3fo_tGdtHKBnPxLmEcJpWGBJBxDE'
         );
 
-        // ============ State ============
         let currentUser = null;
         let currentProfile = null;
 
         // ============ Toast ============
-        function showToast(message, icon = '✅') {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = message;
+        function showToast(msg, icon) {
+            icon = icon || '✅';
+            document.getElementById('toast-msg').textContent = msg;
             document.getElementById('toast-icon').textContent = icon;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            document.getElementById('toast').classList.add('show');
+            setTimeout(function() {
+                document.getElementById('toast').classList.remove('show');
+            }, 3000);
         }
 
-        // ============ Password Visibility ============
-        function togglePasswordVisibility(inputId, btn) {
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';
+        // ============ Password Toggle ============
+        function togglePwVis(id, btn) {
+            var inp = document.getElementById(id);
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';
             } else {
-                input.type = 'password';
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
+                inp.type = 'password';
+                btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
             }
         }
 
         // ============ Sound Toggle ============
         function initSoundToggle() {
-            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-            const toggle = document.getElementById('sound-toggle');
-            const icon = document.getElementById('sound-icon');
-
-            if (soundEnabled) {
-                toggle.classList.add('active');
-                icon.textContent = '🔊';
-            } else {
-                toggle.classList.remove('active');
-                icon.textContent = '🔇';
-            }
+            var on = localStorage.getItem('soundEnabled') !== 'false';
+            var toggle = document.getElementById('sound-toggle');
+            var icon = document.getElementById('sound-icon');
+            if (on) { toggle.classList.add('active'); icon.textContent = '🔊'; }
+            else { toggle.classList.remove('active'); icon.textContent = '🔇'; }
         }
 
         function toggleSound() {
-            const toggle = document.getElementById('sound-toggle');
-            const icon = document.getElementById('sound-icon');
-            const isActive = toggle.classList.contains('active');
-
-            if (isActive) {
+            var toggle = document.getElementById('sound-toggle');
+            var icon = document.getElementById('sound-icon');
+            if (toggle.classList.contains('active')) {
                 toggle.classList.remove('active');
                 icon.textContent = '🔇';
                 localStorage.setItem('soundEnabled', 'false');
@@ -437,73 +388,71 @@
         function formatDate(dateStr) {
             if (!dateStr) return '';
             try {
-                const d = new Date(dateStr);
-                const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+                var d = new Date(dateStr);
+                var months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
                 return 'عضو منذ ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-            } catch(e) {
-                return '';
-            }
+            } catch(e) { return ''; }
         }
 
         // ============ Load Profile ============
+        // Uses getSession() — SAME pattern as dashboard.html
         async function loadProfile() {
             try {
-                // Get current auth user
-                const { data: { user }, error: authError } = await sb.auth.getUser();
+                var result = await sb.auth.getSession();
+                var session = result.data.session;
+                var error = result.error;
 
-                if (authError || !user) {
-                    console.error('Auth error:', authError);
+                if (error || !session) {
+                    console.error('Session error:', error);
                     window.location.href = 'login.html';
                     return;
                 }
 
-                currentUser = user;
+                currentUser = session.user;
 
-                // Display email immediately from auth
-                const email = user.email || 'غير متوفر';
+                // Email from session.user
+                var email = currentUser.email || 'غير متوفر';
                 document.getElementById('user-email-display').textContent = email;
                 document.getElementById('email-readonly').textContent = email;
 
-                // Show join date
-                if (user.created_at) {
-                    document.getElementById('user-join-date').textContent = formatDate(user.created_at);
+                // Join date
+                if (currentUser.created_at) {
+                    document.getElementById('user-join-date').textContent = formatDate(currentUser.created_at);
                 }
 
-                // Get profile from profiles table
-                const { data: profile, error: profileError } = await sb
+                // Profile from DB — same select as dashboard
+                var profileResult = await sb
                     .from('profiles')
-                    .select('*')
-                    .eq('id', user.id)
+                    .select('name, avatar_emoji')
+                    .eq('id', currentUser.id)
                     .single();
+
+                var profile = profileResult.data;
+                var profileError = profileResult.error;
 
                 if (profile) {
                     currentProfile = profile;
-                    const name = profile.name || 'مستخدم مساري';
+                    var name = profile.name || 'مستخدم مساري';
                     document.getElementById('user-name-display').textContent = name;
                     document.getElementById('input-name').value = profile.name || '';
 
                     if (profile.avatar_emoji) {
                         document.getElementById('user-avatar').textContent = profile.avatar_emoji;
                     }
-
-                    // Use profile created_at if auth doesn't have it
-                    if (!user.created_at && profile.created_at) {
-                        document.getElementById('user-join-date').textContent = formatDate(profile.created_at);
-                    }
                 } else {
                     document.getElementById('user-name-display').textContent = 'مستخدم مساري';
-                    console.warn('Profile not found, profileError:', profileError);
+                    if (profileError) console.warn('Profile error:', profileError.message);
                 }
 
-                // Init sound toggle
+                // Sound toggle
                 initSoundToggle();
 
-                // Show content, hide loading
+                // Show content
                 document.getElementById('loading-state').classList.add('hidden');
                 document.getElementById('profile-content').classList.remove('hidden');
 
             } catch (err) {
-                console.error('Error loading profile:', err);
+                console.error('Load error:', err);
                 showToast('حدث خطأ في تحميل البيانات', '❌');
                 document.getElementById('loading-state').innerHTML = '<p class="text-red-400 text-sm">حدث خطأ في تحميل البيانات</p><a href="dashboard.html" class="text-purple-400 text-sm mt-3 underline block">العودة للرئيسية</a>';
             }
@@ -511,50 +460,42 @@
 
         // ============ Save Changes ============
         async function saveChanges() {
-            const btn = document.getElementById('btn-save');
-            const saveText = document.getElementById('save-text');
-            const saveSpinner = document.getElementById('save-spinner');
-
-            // Prevent double-click
+            var btn = document.getElementById('btn-save');
             if (btn.disabled) return;
-
-            // Disable button & show spinner
             btn.disabled = true;
-            saveText.classList.add('hidden');
-            saveSpinner.classList.remove('hidden');
+            document.getElementById('save-text').classList.add('hidden');
+            document.getElementById('save-spinner').classList.remove('hidden');
 
             try {
-                const newName = document.getElementById('input-name').value.trim();
-                const newPassword = document.getElementById('input-password').value;
-                const confirmPassword = document.getElementById('input-password-confirm').value;
+                var newName = document.getElementById('input-name').value.trim();
+                var newPassword = document.getElementById('input-password').value;
+                var confirmPassword = document.getElementById('input-password-confirm').value;
+                var hasChanges = false;
 
-                let hasChanges = false;
-
-                // Validate password first (before making any changes)
+                // Validate password first
                 if (newPassword) {
                     if (newPassword.length < 6) {
                         showToast('كلمة المرور لازم تكون 6 أحرف على الأقل', '⚠️');
-                        resetSaveButton();
+                        resetSaveBtn();
                         return;
                     }
                     if (newPassword !== confirmPassword) {
                         showToast('كلمات المرور ما تتطابق', '⚠️');
-                        resetSaveButton();
+                        resetSaveBtn();
                         return;
                     }
                 }
 
-                // Update name in profiles table
-                if (newName && newName !== (currentProfile?.name || '')) {
-                    const { error: nameError } = await sb
+                // Update name
+                if (newName && newName !== (currentProfile ? currentProfile.name : '')) {
+                    var nameResult = await sb
                         .from('profiles')
                         .update({ name: newName })
                         .eq('id', currentUser.id);
 
-                    if (nameError) {
-                        throw new Error('فشل تحديث الاسم: ' + nameError.message);
+                    if (nameResult.error) {
+                        throw new Error('فشل تحديث الاسم: ' + nameResult.error.message);
                     }
-
                     document.getElementById('user-name-display').textContent = newName;
                     if (currentProfile) currentProfile.name = newName;
                     hasChanges = true;
@@ -562,82 +503,58 @@
 
                 // Update password
                 if (newPassword) {
-                    const { error: passError } = await sb.auth.updateUser({
-                        password: newPassword
-                    });
-
-                    if (passError) {
-                        throw new Error('فشل تحديث كلمة المرور: ' + passError.message);
+                    var passResult = await sb.auth.updateUser({ password: newPassword });
+                    if (passResult.error) {
+                        throw new Error('فشل تحديث كلمة المرور: ' + passResult.error.message);
                     }
-
-                    // Clear fields
                     document.getElementById('input-password').value = '';
                     document.getElementById('input-password-confirm').value = '';
                     hasChanges = true;
                 }
 
-                if (hasChanges) {
-                    showToast('تم حفظ التغييرات بنجاح', '✅');
-                } else {
-                    showToast('ما في تغييرات جديدة', 'ℹ️');
-                }
+                showToast(hasChanges ? 'تم حفظ التغييرات بنجاح' : 'ما في تغييرات جديدة', hasChanges ? '✅' : 'ℹ️');
 
             } catch (err) {
                 console.error('Save error:', err);
                 showToast(err.message || 'حدث خطأ أثناء الحفظ', '❌');
-            } finally {
-                resetSaveButton();
             }
+            resetSaveBtn();
         }
 
-        function resetSaveButton() {
-            const btn = document.getElementById('btn-save');
-            const saveText = document.getElementById('save-text');
-            const saveSpinner = document.getElementById('save-spinner');
-            btn.disabled = false;
-            saveText.classList.remove('hidden');
-            saveSpinner.classList.add('hidden');
+        function resetSaveBtn() {
+            document.getElementById('btn-save').disabled = false;
+            document.getElementById('save-text').classList.remove('hidden');
+            document.getElementById('save-spinner').classList.add('hidden');
         }
 
         // ============ Logout ============
         async function logoutUser() {
-            const btn = document.getElementById('btn-logout');
-            const logoutText = document.getElementById('logout-text');
-            const logoutSpinner = document.getElementById('logout-spinner');
-
-            // Prevent double-click
+            var btn = document.getElementById('btn-logout');
             if (btn.disabled) return;
-
             btn.disabled = true;
-            logoutText.classList.add('hidden');
-            logoutSpinner.classList.remove('hidden');
+            document.getElementById('logout-text').classList.add('hidden');
+            document.getElementById('logout-spinner').classList.remove('hidden');
 
             try {
-                const { error } = await sb.auth.signOut();
-
-                if (error) {
-                    throw error;
-                }
+                var result = await sb.auth.signOut();
+                if (result.error) throw result.error;
 
                 showToast('تم تسجيل الخروج', '👋');
-
-                // Redirect after short delay
-                setTimeout(() => {
+                setTimeout(function() {
                     window.location.href = 'login.html';
                 }, 800);
 
             } catch (err) {
                 console.error('Logout error:', err);
                 showToast('حدث خطأ أثناء تسجيل الخروج', '❌');
-
                 btn.disabled = false;
-                logoutText.classList.remove('hidden');
-                logoutSpinner.classList.add('hidden');
+                document.getElementById('logout-text').classList.remove('hidden');
+                document.getElementById('logout-spinner').classList.add('hidden');
             }
         }
 
         // ============ Init ============
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             loadProfile();
         });
     </script>
