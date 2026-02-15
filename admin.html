@@ -187,6 +187,12 @@
 <div id="staffM" class="mbg hidden"><div class="mbox">
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">إضافة موظف</h3><button onclick="$('staffM').classList.add('hidden')" class="text-purple-300/30 hover:text-white text-lg">✕</button></div>
     <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">إيميل الموظف</label><input id="sm-e" class="inp"></div><button class="bp w-full" onclick="saveSt2()">💾 إضافة كأدمن</button></div>
+<!-- ═══ Preview Modal ═══ -->
+<div id="previewM" class="mbg hidden"><div class="mbox" style="max-width:420px">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">👁️ معاينة السؤال</h3><button onclick="$('previewM').classList.add('hidden')" class="text-purple-300/30 hover:text-white text-lg">✕</button></div>
+    <div id="pv-body" class="space-y-3"></div>
+</div></div>
+
 </div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -283,7 +289,7 @@ async function loadQ(){
     var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'},h='';
     data.forEach(function(q){
         var img=q.image_url?'<img src="'+q.image_url+'" class="w-16 h-16 rounded-lg object-cover ml-2 flex-shrink-0">':'';
-        h+='<div class="glass p-4"><div class="flex items-start justify-between gap-3"><div class="flex-1 flex gap-3">'+img+'<div><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'">'+(sn[q.section]||'')+'</span>'+(q.sub_section?'<span class="text-purple-300/30 text-xs mr-2">'+q.sub_section+'</span>':'')+'<p class="text-sm text-white leading-relaxed mt-1">'+(q.question_text||'سؤال بالصورة').substring(0,100)+'</p></div></div><div class="flex gap-1 flex-shrink-0"><button class="bs" onclick="editQ(\''+q.id+'\')">✏️</button><button class="bd" onclick="delQ(\''+q.id+'\')">🗑️</button></div></div></div>'
+        h+='<div class="glass p-4"><div class="flex items-start justify-between gap-3"><div class="flex-1 flex gap-3">'+img+'<div><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'">'+(sn[q.section]||'')+'</span>'+(q.sub_section?'<span class="text-purple-300/30 text-xs mr-2">'+q.sub_section+'</span>':'')+'<p class="text-sm text-white leading-relaxed mt-1">'+(q.question_text||'سؤال بالصورة').substring(0,100)+'</p></div></div><div class="flex gap-1 flex-shrink-0"><button class="bs" onclick="previewQ(\''+q.id+'\')" title="معاينة">👁️</button><button class="bs" onclick="editQ(\''+q.id+'\')">✏️</button><button class="bd" onclick="delQ(\''+q.id+'\')">🗑️</button></div></div></div>'
     });$('q-list').innerHTML=h||'<p class="text-purple-300/30 text-center py-8">لا توجد أسئلة</p>'
 }
 
@@ -304,14 +310,48 @@ function clearImg(){$('qm-preview').classList.add('hidden');$('qm-img').value=''
 
 async function editQ(id){var{data}=await sb.from('questions').select('*').eq('id',id).single();if(data)openQM(data)}
 
+async function previewQ(id){
+    var{data:q}=await sb.from('questions').select('*').eq('id',id).single();
+    if(!q)return;
+    var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
+    var h='<div class="text-center"><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'">'+(sn[q.section]||'')+'</span>'+(q.sub_section?' <span class="text-purple-300/40 text-xs">'+q.sub_section+'</span>':'')+'</div>';
+    if(q.image_url)h+='<div class="rounded-xl overflow-hidden" style="background:rgba(255,255,255,0.95);padding:8px"><img src="'+q.image_url+'" class="w-full rounded-lg"></div>';
+    if(q.question_text&&q.question_text!=='سؤال بالصورة')h+='<p class="text-white text-center text-base font-bold">'+q.question_text+'</p>';
+    var choices=q.choices||[];
+    var letters=['أ','ب','ج','د'];
+    choices.forEach(function(c,i){
+        var isCorrect=i===q.correct_index;
+        h+='<div class="flex items-center gap-3 p-3 rounded-xl" style="background:'+(isCorrect?'rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3)':'rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)')+'"><span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0" style="background:'+(isCorrect?'#10b981':'rgba(99,102,241,0.3)')+';color:#fff">'+letters[i]+'</span><span class="text-white text-sm '+(isCorrect?'font-bold':'')+'">'+(c||'—')+'</span>'+(isCorrect?' <span class="text-emerald-400 text-xs mr-auto">✓</span>':'')+'</div>';
+    });
+    if(q.explanation)h+='<div class="p-3 rounded-xl" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15)"><p class="text-yellow-200/70 text-xs font-bold mb-1">💡 الشرح</p><p class="text-purple-200/60 text-sm">'+q.explanation+'</p></div>';
+    $('pv-body').innerHTML=h;$('previewM').classList.remove('hidden');
+}
+
 async function uploadImg(){
     var file=$('qm-file').files[0];
     if(!file)return $('qm-img').value||null;
-    var ext=file.name.split('.').pop();var name='q_'+Date.now()+'.'+ext;
-    var{data,error}=await sb.storage.from('question-images').upload(name,file,{cacheControl:'3600',upsert:false});
-    if(error){toast('خطأ رفع الصورة: '+error.message,false);return null}
-    var{data:pub}=sb.storage.from('question-images').getPublicUrl(name);
-    return pub.publicUrl;
+    // جرّب رفع على Storage أول
+    try{
+        var ext=file.name.split('.').pop();var name='q_'+Date.now()+'.'+ext;
+        var{data,error}=await sb.storage.from('question-images').upload(name,file,{cacheControl:'3600',upsert:false});
+        if(error){
+            // لو ما فيه bucket — حوّل الصورة لـ base64 وخزّنها كـ data URL
+            return await new Promise(function(resolve){
+                var reader=new FileReader();
+                reader.onload=function(e){resolve(e.target.result)};
+                reader.readAsDataURL(file);
+            });
+        }
+        var{data:pub}=sb.storage.from('question-images').getPublicUrl(name);
+        return pub.publicUrl;
+    }catch(e){
+        // Fallback to base64
+        return await new Promise(function(resolve){
+            var reader=new FileReader();
+            reader.onload=function(e){resolve(e.target.result)};
+            reader.readAsDataURL(file);
+        });
+    }
 }
 
 async function saveQ2(){
@@ -324,9 +364,9 @@ async function saveQ2(){
         question_text:$('qm-txt').value||'سؤال بالصورة',
         choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],
         correct_index:parseInt($('qm-cor').value),
-        explanation:$('qm-exp').value
+        explanation:$('qm-exp').value,
+        image_url:imgUrl||null
     };
-    if(imgUrl)obj.image_url=imgUrl;
     if(!obj.choices[0]){toast('املأ الخيارات',false);return}
     var{error}=id?await sb.from('questions').update(obj).eq('id',id):await sb.from('questions').insert(obj);
     if(error){toast('خطأ: '+error.message,false);return}
