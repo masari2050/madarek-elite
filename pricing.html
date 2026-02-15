@@ -328,6 +328,27 @@
             </div>
         </div>
 
+        <!-- Coupon Section -->
+        <div class="animate-in delay-5 mb-12">
+            <div class="card-glass p-6 max-w-md mx-auto text-center">
+                <span class="text-2xl block mb-2">🎟️</span>
+                <h3 class="font-bold text-base mb-1">عندك كوبون خصم؟</h3>
+                <p class="text-purple-300/40 text-xs mb-4">أدخل الكود وشوف الخصم قبل ما تشترك</p>
+                <div class="flex gap-2">
+                    <input type="text" id="couponInput" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;text-transform:uppercase" placeholder="أدخل الكود هنا">
+                    <button onclick="applyCoupon()" id="couponBtn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">تحقق</button>
+                </div>
+                <div id="couponResult" class="mt-3 hidden">
+                    <div id="couponSuccess" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399">
+                        <span id="couponMsg"></span>
+                    </div>
+                    <div id="couponError" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171">
+                        <span id="couponErrMsg"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- CTA -->
         <div class="animate-in delay-5 text-center">
             <a href="register.html" class="inline-block px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-purple-500/20 transition">
@@ -345,7 +366,13 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        var sb = window.supabase.createClient(
+            'https://czzcmbxejxbotjemyuqf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+        );
+
         function subscribe(plan) {
             window.location.href = 'register.html';
         }
@@ -353,6 +380,58 @@
         function toggleFaq(el) {
             el.classList.toggle('open');
         }
+
+        async function applyCoupon() {
+            var code = document.getElementById('couponInput').value.trim().toUpperCase();
+            if (!code) return;
+
+            var btn = document.getElementById('couponBtn');
+            btn.textContent = '...';
+            btn.disabled = true;
+
+            document.getElementById('couponResult').classList.remove('hidden');
+            document.getElementById('couponSuccess').classList.add('hidden');
+            document.getElementById('couponError').classList.add('hidden');
+
+            try {
+                var { data, error } = await sb.from('coupons').select('*').eq('code', code).single();
+
+                if (error || !data) {
+                    document.getElementById('couponErrMsg').textContent = 'الكود غير صحيح أو غير موجود';
+                    document.getElementById('couponError').classList.remove('hidden');
+                } else if (data.expires_at && new Date(data.expires_at) < new Date()) {
+                    document.getElementById('couponErrMsg').textContent = 'هالكوبون منتهي الصلاحية';
+                    document.getElementById('couponError').classList.remove('hidden');
+                } else if (data.max_uses && data.used_count >= data.max_uses) {
+                    document.getElementById('couponErrMsg').textContent = 'هالكوبون وصل الحد الأقصى للاستخدام';
+                    document.getElementById('couponError').classList.remove('hidden');
+                } else {
+                    var discountText = data.discount_type === 'percentage'
+                        ? 'خصم ' + data.discount_value + '% على اشتراكك'
+                        : 'خصم ' + data.discount_value + ' ريال على اشتراكك';
+                    document.getElementById('couponMsg').textContent = '✓ ' + discountText;
+                    document.getElementById('couponSuccess').classList.remove('hidden');
+
+                    // حفظ الكوبون في localStorage عشان يُطبّق لاحقاً عند الدفع
+                    localStorage.setItem('masari_coupon', JSON.stringify({
+                        code: data.code,
+                        type: data.discount_type,
+                        value: data.discount_value
+                    }));
+                }
+            } catch(e) {
+                document.getElementById('couponErrMsg').textContent = 'حدث خطأ، حاول مرة ثانية';
+                document.getElementById('couponError').classList.remove('hidden');
+            }
+
+            btn.textContent = 'تحقق';
+            btn.disabled = false;
+        }
+
+        // Enter key
+        document.getElementById('couponInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') applyCoupon();
+        });
     </script>
 </body>
 </html>
