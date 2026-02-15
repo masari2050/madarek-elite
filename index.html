@@ -3,253 +3,394 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساري - منصة تعليمية</title>
+    <title>مساري — منصتك للقدرات والتحصيلي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
+        *{font-family:'Tajawal',sans-serif;scroll-behavior:smooth}
+        body{background:#0d0825;overflow-x:hidden}
+
+        /* Hero gradient */
+        .hero-bg{
+            background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 25%,#1e1550 50%,#151040 75%,#0d0825 100%);
+            position:relative;overflow:hidden;
+        }
+        .hero-bg::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,0.12) 0%,transparent 65%);border-radius:50%}
+        .hero-bg::after{content:'';position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,0.1) 0%,transparent 65%);border-radius:50%}
+
+        /* Glass Card */
+        .glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
+
+        /* Floating Elements */
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @keyframes float2{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+        @keyframes pulse-soft{0%,100%{opacity:1}50%{opacity:.6}}
+        @keyframes orbit{0%{transform:rotate(0deg) translateX(80px) rotate(0deg)}100%{transform:rotate(360deg) translateX(80px) rotate(-360deg)}}
+        @keyframes count-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .float{animation:float 4s ease-in-out infinite}
+        .float2{animation:float2 5s ease-in-out infinite}
+        .pulse-soft{animation:pulse-soft 3s ease-in-out infinite}
+
+        /* Scroll Animations */
+        .reveal{opacity:0;transform:translateY(30px);transition:all .6s ease}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+
+        /* Feature Cards */
+        .feature-card{transition:all .3s ease;position:relative;overflow:hidden}
+        .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+        .feature-card:hover{transform:translateY(-6px);background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15)}
+        .feature-card:hover::before{opacity:1}
+
+        /* Buttons */
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 30px rgba(99,102,241,0.3);transition:all .3s}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
+        .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);transition:all .3s}
+        .btn-ghost:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
+
+        /* Stat Counter */
+        .stat-glow{position:relative}
+        .stat-glow::after{content:'';position:absolute;inset:-2px;border-radius:1rem;opacity:0;transition:opacity .3s}
+        .stat-glow:hover::after{opacity:1}
+
+        /* Nav */
+        .nav-glass{background:rgba(13,8,37,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
+        .nav-scrolled{box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+
+        /* Testimonial */
+        .testimonial{background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.08));border:1px solid rgba(139,92,246,0.15)}
+
+        /* CTA */
+        .cta-section{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border:1px solid rgba(139,92,246,0.2);position:relative;overflow:hidden}
+        .cta-section::before{content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);border-radius:50%}
+        .cta-section::after{content:'';position:absolute;bottom:-40%;left:-10%;width:250px;height:250px;background:radial-gradient(circle,rgba(99,102,241,0.1),transparent 70%);border-radius:50%}
+
+        /* Marquee */
+        .marquee-container{overflow:hidden;white-space:nowrap}
+        .marquee-text{display:inline-block;animation:marquee 30s linear infinite}
+        @keyframes marquee{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+        /* Section divider */
+        .section-line{width:60px;height:3px;border-radius:999px;background:linear-gradient(90deg,#6366f1,#8b5cf6);margin:0 auto}
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 min-h-screen">
+<body class="text-white" style="font-family:'Tajawal',sans-serif">
 
-    <!-- Header -->
-    <header class="container mx-auto px-4 py-6">
-        <nav class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="text-5xl">🎓</div>
-                <h1 class="text-5xl font-black bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                    مساري
-                </h1>
+    <!-- Nav -->
+    <nav id="mainNav" class="nav-glass fixed top-0 left-0 right-0 z-50 transition-all">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <span class="text-2xl">🎓</span>
+                <div>
+                    <span class="text-xl font-black bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent">مساري</span>
+                    <span class="block text-[9px] text-purple-300/40 font-medium -mt-1">القدرات · التحصيلي · قياس</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="pricing.html" class="hidden sm:block px-3 py-1.5 text-purple-300/60 hover:text-white text-sm transition">الباقات</a>
+                <a href="login.html" class="px-3 py-1.5 text-purple-300/60 hover:text-white text-sm transition">دخول</a>
+                <a href="register.html" class="btn-primary px-5 py-2 rounded-xl text-sm font-bold">ابدأ مجاناً</a>
             </div>
-            <div class="flex gap-3">
-                <a href="pricing.html" class="px-6 py-2 text-indigo-600 font-medium hover:text-indigo-800 transition">
-                    الأسعار
-                </a>
-                <a href="login.html" class="px-6 py-2 text-indigo-600 font-medium hover:text-indigo-800 transition">
-                    تسجيل دخول
-                </a>
-                <a href="register.html" class="px-6 py-2 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg transition">
-                    إنشاء حساب
-                </a>
-            </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-    <!-- Hero Section -->
-    <main class="container mx-auto px-4 py-12">
-        <div class="max-w-6xl mx-auto">
-            
-            <!-- Main Hero Card -->
-            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12">
-                <div class="grid md:grid-cols-2 gap-8 items-center">
-                    <!-- Left Side - Text -->
-                    <div class="p-12">
-                        <div class="inline-block px-4 py-2 bg-indigo-100 rounded-full text-indigo-700 text-sm font-medium mb-4">
-                            🎓 منصة تعليمية سعودية
-                        </div>
-                        <h2 class="text-5xl font-black text-gray-800 mb-4 leading-tight">
-                            طريقك نحو
-                            <span class="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent block">
-                                التميز والنجاح
-                            </span>
-                        </h2>
-                        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                            استعد لاختبارات القدرات والتحصيلي مع منصة مساري - بنك أسئلة شامل، رسائل تحفيزية، ومتابعة دقيقة لتقدمك
-                        </p>
-                        <div class="flex flex-wrap gap-4">
-                            <a href="coming-soon.html" class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all hover:scale-105 inline-flex items-center gap-2 animate-pulse">
-                                <span>🚀 قريباً</span>
-                                <span>←</span>
-                            </a>
-                            <a href="coming-soon.html" class="px-8 py-4 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-lg hover:bg-indigo-100 transition">
-                                اعرف المزيد
-                            </a>
-                        </div>
-                        
-                        <!-- Stats -->
-                        <div class="grid grid-cols-3 gap-6 mt-8 pt-8 border-t border-gray-200">
-                            <div>
-                                <p class="text-3xl font-bold text-indigo-600">30+</p>
-                                <p class="text-sm text-gray-600">سؤال متنوع</p>
-                            </div>
-                            <div>
-                                <p class="text-3xl font-bold text-blue-600">7</p>
-                                <p class="text-sm text-gray-600">مواضيع مختلفة</p>
-                            </div>
-                            <div>
-                                <p class="text-3xl font-bold text-green-600">100%</p>
-                                <p class="text-sm text-gray-600">مجاني بالكامل</p>
-                            </div>
-                        </div>
+    <!-- Hero -->
+    <section class="hero-bg pt-28 pb-16 sm:pt-36 sm:pb-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <!-- Text -->
+                <div class="reveal visible">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:#4ade80">
+                        <span class="w-1.5 h-1.5 bg-green-400 rounded-full pulse-soft"></span>
+                        ابدأ مجاناً — بدون بطاقة
                     </div>
-                    
-                    <!-- Right Side - Visual -->
-                    <div class="bg-gradient-to-br from-indigo-500 to-blue-500 p-12 h-full flex items-center justify-center">
-                        <div class="text-center text-white">
-                            <div class="text-8xl mb-6">📚</div>
-                            <h3 class="text-2xl font-bold mb-2">ابدأ رحلتك اليوم</h3>
-                            <p class="text-indigo-100">أكثر من 1000 طالب وطالبة يستخدمون مساري</p>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-5">
+                        طريقك نحو
+                        <span class="block bg-gradient-to-l from-purple-300 via-indigo-300 to-blue-300 bg-clip-text text-transparent">التميز والنجاح</span>
+                    </h1>
+                    <p class="text-purple-200/60 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
+                        استعد لاختبارات القدرات والتحصيلي مع بنك أسئلة شامل، إحصائيات دقيقة، ورسائل تحفيزية بلهجتك
+                    </p>
+                    <div class="flex flex-wrap gap-3 mb-10">
+                        <a href="register.html" class="btn-primary px-7 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
+                            ابدأ مجاناً الحين
+                            <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </a>
+                        <a href="pricing.html" class="btn-ghost px-7 py-3.5 rounded-xl font-bold text-sm">شوف الباقات</a>
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="flex gap-5">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white" id="liveQuestions">130+</p>
+                            <p class="text-purple-300/40 text-xs">سؤال متنوع</p>
+                        </div>
+                        <div class="w-px bg-purple-500/20"></div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white">3</p>
+                            <p class="text-purple-300/40 text-xs">أقسام رئيسية</p>
+                        </div>
+                        <div class="w-px bg-purple-500/20"></div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white">0 ريال</p>
+                            <p class="text-purple-300/40 text-xs">للتجربة الأولى</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        <!-- Features -->
-        <div id="features" class="mb-16">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-black text-gray-800 mb-3">لماذا مساري؟</h2>
-                <p class="text-xl text-gray-600">كل ما تحتاجه للتفوق في الاختبارات</p>
-            </div>
-            
-            <div class="grid md:grid-cols-3 gap-6">
-            
-            <!-- Feature 1 -->
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl flex items-center justify-center text-3xl mb-5">
-                    📚
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3">بنك أسئلة شامل</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    30+ سؤال في 7 مواضيع مختلفة مع شرح تفصيلي ومعادلات واضحة
-                </p>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-3xl mb-5">
-                    📊
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3">إحصائيات دقيقة</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    تتبع تقدمك بدقة واعرف نقاط قوتك وضعفك مع رسوم بيانية واضحة
-                </p>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center text-3xl mb-5">
-                    💪
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3">رسائل تحفيزية</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    رسائل بلهجة سعودية مخصصة حسب جنسك ومستوى أدائك ترفع همتك
-                </p>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center text-3xl mb-5">
-                    🎯
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3">مراجعة الأخطاء</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    راجع أخطاءك السابقة تلقائياً وتعلم منها بطريقة فعالة
-                </p>
-            </div>
-
-            <!-- Feature 5 -->
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-500 rounded-2xl flex items-center justify-center text-3xl mb-5">
-                    ⚡
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3">واجهة سهلة</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    تصميم عصري وبسيط يركز على تجربة المستخدم بدون تعقيد
-                </p>
-            </div>
-
-            <!-- Feature 6 -->
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center text-3xl mb-5">
-                    🚀
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-3">تدريب مستمر</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    تمرن في أي وقت ومن أي مكان بدون قيود أو اشتراكات
-                </p>
-            </div>
-
-        </div>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-3xl p-12 text-center text-white shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-full opacity-10">
-                <div class="absolute top-10 right-10 w-32 h-32 bg-white rounded-full"></div>
-                <div class="absolute bottom-10 left-10 w-24 h-24 bg-white rounded-full"></div>
-                <div class="absolute top-1/2 left-1/2 w-40 h-40 bg-white rounded-full"></div>
-            </div>
-            <div class="relative z-10">
-                <h2 class="text-4xl md:text-5xl font-black mb-4">جاهز للبدء؟</h2>
-                <p class="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
-                    انضم لآلاف الطلاب اللي حققوا أهدافهم وتميزوا في اختباراتهم
-                </p>
-                <div class="flex flex-wrap gap-4 justify-center">
-                    <a href="register.html" class="inline-block px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg hover:shadow-2xl transition-all hover:scale-105">
-                        ابدأ رحلتك الآن
-                    </a>
-                    <a href="login.html" class="inline-block px-10 py-4 bg-transparent border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-indigo-600 transition-all">
-                        عندك حساب؟ سجل دخول
-                    </a>
+                <!-- Visual -->
+                <div class="hidden md:flex items-center justify-center relative">
+                    <!-- Floating Cards -->
+                    <div class="relative w-80 h-80">
+                        <!-- Main Circle -->
+                        <div class="absolute inset-8 rounded-3xl flex items-center justify-center" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border:1px solid rgba(139,92,246,0.2)">
+                            <div class="text-center">
+                                <span class="text-7xl block mb-2 float">🎓</span>
+                                <p class="text-sm font-bold text-purple-200/80">جاهز تبدأ؟</p>
+                            </div>
+                        </div>
+                        <!-- Floating Badges -->
+                        <div class="absolute top-0 right-0 glass px-3 py-2 text-xs font-bold float" style="animation-delay:.5s">
+                            <span class="text-green-400">✓</span> قدرات كمي
+                        </div>
+                        <div class="absolute bottom-8 right-0 glass px-3 py-2 text-xs font-bold float2">
+                            <span class="text-emerald-400">✓</span> قدرات لفظي
+                        </div>
+                        <div class="absolute top-12 left-0 glass px-3 py-2 text-xs font-bold float" style="animation-delay:1s">
+                            <span class="text-purple-400">✓</span> التحصيلي
+                        </div>
+                        <div class="absolute bottom-0 left-4 glass px-3 py-2 text-xs font-bold float2" style="animation-delay:.3s">
+                            📊 إحصائيات فورية
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        
+    </section>
+
+    <!-- Trusted By Banner -->
+    <section class="border-y border-purple-500/10 py-6">
+        <div class="max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-center">
+            <p class="text-purple-300/25 text-xs">مصمم خصيصاً لاختبارات:</p>
+            <div class="flex items-center gap-2"><span class="text-lg">📐</span><span class="text-purple-300/40 text-sm font-bold">القدرات الكمي</span></div>
+            <div class="flex items-center gap-2"><span class="text-lg">📖</span><span class="text-purple-300/40 text-sm font-bold">القدرات اللفظي</span></div>
+            <div class="flex items-center gap-2"><span class="text-lg">🎓</span><span class="text-purple-300/40 text-sm font-bold">التحصيلي</span></div>
+            <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span class="text-purple-300/40 text-sm font-bold">هيئة تقويم التعليم</span></div>
         </div>
-    </main>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">ليش مساري؟</h2>
+                <p class="text-purple-300/50 text-sm">كل اللي تحتاجه عشان تتفوق في اختبارات قياس</p>
+                <div class="section-line mt-4"></div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="reveal feature-card glass p-6" style="--delay:.1s"><div class="feature-card::before" style="background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">📚</div>
+                    <h3 class="text-base font-bold mb-2">بنك أسئلة شامل</h3>
+                    <p class="text-purple-300/40 text-sm leading-relaxed">أسئلة متنوعة لكل الأقسام مع شرح تفصيلي خطوة بخطوة ومعادلات واضحة</p>
+                </div>
+                <div class="reveal feature-card glass p-6" style="--delay:.15s">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:linear-gradient(135deg,#10b981,#14b8a6)">📊</div>
+                    <h3 class="text-base font-bold mb-2">إحصائيات دقيقة</h3>
+                    <p class="text-purple-300/40 text-sm leading-relaxed">تتبع تقدمك بدقة واعرف نقاط قوتك وضعفك في كل قسم على حدة</p>
+                </div>
+                <div class="reveal feature-card glass p-6" style="--delay:.2s">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:linear-gradient(135deg,#f59e0b,#f97316)">💪</div>
+                    <h3 class="text-base font-bold mb-2">رسائل تحفيزية</h3>
+                    <p class="text-purple-300/40 text-sm leading-relaxed">رسائل بالعامية السعودية مخصصة حسب جنسك ومستوى أدائك ترفع همتك</p>
+                </div>
+                <div class="reveal feature-card glass p-6" style="--delay:.25s">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:linear-gradient(135deg,#ef4444,#ec4899)">🎯</div>
+                    <h3 class="text-base font-bold mb-2">مراجعة الأخطاء</h3>
+                    <p class="text-purple-300/40 text-sm leading-relaxed">راجع كل أخطائك السابقة مع الشرح المفصّل وتعلم منها بطريقة فعالة</p>
+                </div>
+                <div class="reveal feature-card glass p-6" style="--delay:.3s">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:linear-gradient(135deg,#8b5cf6,#a855f7)">⏱️</div>
+                    <h3 class="text-base font-bold mb-2">مؤقت ذكي</h3>
+                    <p class="text-purple-300/40 text-sm leading-relaxed">60 ثانية لكل سؤال — نفس ضغط الاختبار الحقيقي عشان تتعود على الوقت</p>
+                </div>
+                <div class="reveal feature-card glass p-6" style="--delay:.35s">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">📱</div>
+                    <h3 class="text-base font-bold mb-2">يشتغل من أي مكان</h3>
+                    <p class="text-purple-300/40 text-sm leading-relaxed">جوال أو لابتوب أو آيباد — تدرّب وين ما كنت بدون ما تحتاج تحمل شي</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#1a1145,#0d0825)">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">كيف تبدأ؟</h2>
+                <p class="text-purple-300/50 text-sm">ثلاث خطوات بس وتبدأ رحلتك</p>
+                <div class="section-line mt-4"></div>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-5">
+                <div class="reveal text-center">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border:1px solid rgba(99,102,241,0.2)">
+                        <span>1️⃣</span>
+                    </div>
+                    <h3 class="font-bold text-sm mb-1">سجّل حسابك</h3>
+                    <p class="text-purple-300/40 text-xs">حساب مجاني بثوانٍ — بريد إلكتروني وكلمة مرور بس</p>
+                </div>
+                <div class="reveal text-center" style="transition-delay:.1s">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(20,184,166,0.15));border:1px solid rgba(16,185,129,0.2)">
+                        <span>2️⃣</span>
+                    </div>
+                    <h3 class="font-bold text-sm mb-1">اختر القسم</h3>
+                    <p class="text-purple-300/40 text-xs">كمي أو لفظي أو تحصيلي — حسب اللي تبي تتدرب عليه</p>
+                </div>
+                <div class="reveal text-center" style="transition-delay:.2s">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(139,92,246,0.15));border:1px solid rgba(168,85,247,0.2)">
+                        <span>3️⃣</span>
+                    </div>
+                    <h3 class="font-bold text-sm mb-1">ابدأ حل</h3>
+                    <p class="text-purple-300/40 text-xs">10 أسئلة عشوائية مع تايمر وشرح فوري — وبتشوف نتيجتك</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Preview -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-10 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">خطط بسيطة وواضحة</h2>
+                <p class="text-purple-300/50 text-sm">ابدأ مجاناً وارتقِ لما تحتاج أكثر</p>
+                <div class="section-line mt-4"></div>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4 reveal">
+                <!-- Free -->
+                <div class="glass p-6 text-center">
+                    <span class="text-3xl block mb-2">🆓</span>
+                    <h3 class="font-bold mb-1">مجاني</h3>
+                    <p class="text-3xl font-black mb-1">0 <span class="text-sm text-purple-300/40">ريال</span></p>
+                    <p class="text-purple-300/30 text-xs mb-4">10 أسئلة مجانية</p>
+                    <a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center">ابدأ الآن</a>
+                </div>
+                <!-- Monthly -->
+                <div class="glass p-6 text-center relative" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">الأكثر شعبية</div>
+                    <span class="text-3xl block mb-2 mt-1">📅</span>
+                    <h3 class="font-bold mb-1">شهري</h3>
+                    <p class="text-3xl font-black text-indigo-400 mb-1">29 <span class="text-sm text-purple-300/40">ريال</span></p>
+                    <p class="text-purple-300/30 text-xs mb-4">أسئلة غير محدودة</p>
+                    <a href="register.html" class="btn-primary block w-full py-2.5 rounded-xl text-sm font-bold text-center">اشترك</a>
+                </div>
+                <!-- Yearly -->
+                <div class="glass p-6 text-center">
+                    <span class="text-3xl block mb-2">💎</span>
+                    <h3 class="font-bold mb-1">سنوي</h3>
+                    <p class="text-3xl font-black text-emerald-400 mb-1">19 <span class="text-sm text-purple-300/40">ريال/شهر</span></p>
+                    <p class="text-purple-300/30 text-xs mb-4">وفّر 120 ريال</p>
+                    <a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center" style="border-color:rgba(16,185,129,0.3);color:#34d399">اشترك</a>
+                </div>
+            </div>
+
+            <div class="text-center mt-6 reveal">
+                <a href="pricing.html" class="text-indigo-400/70 text-sm hover:text-indigo-300 transition">شوف المقارنة الكاملة ←</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 sm:py-20" style="background:#0d0825">
+        <div class="max-w-3xl mx-auto px-4">
+            <div class="reveal cta-section rounded-3xl p-8 sm:p-12 text-center relative z-10">
+                <span class="text-5xl block mb-4">🚀</span>
+                <h2 class="text-3xl sm:text-4xl font-black mb-3 relative z-10">جاهز تبدأ رحلتك؟</h2>
+                <p class="text-purple-200/50 text-sm mb-8 max-w-md mx-auto relative z-10">سجّل الحين مجاناً وابدأ حل أسئلة القدرات والتحصيلي — بدون بطاقة ولا التزام</p>
+                <div class="flex flex-wrap gap-3 justify-center relative z-10">
+                    <a href="register.html" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm">ابدأ مجاناً الحين</a>
+                    <a href="login.html" class="btn-ghost px-8 py-3.5 rounded-xl font-bold text-sm">عندك حساب؟ ادخل</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-100 border-t border-gray-200 mt-20">
-        <div class="container mx-auto px-4 py-12">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-                <!-- About -->
+    <footer class="border-t border-purple-500/10" style="background:#0a0620">
+        <div class="max-w-6xl mx-auto px-4 py-10">
+            <div class="grid sm:grid-cols-4 gap-8 mb-8">
                 <div>
-                    <h3 class="font-bold text-gray-800 mb-4">عن مساري</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        منصة تعليمية سعودية لتحضير طلاب وطالبات المملكة لاختبارات القدرات والتحصيلي
-                    </p>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xl">🎓</span>
+                        <span class="font-black text-lg bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent">مساري</span>
+                    </div>
+                    <p class="text-purple-300/30 text-xs leading-relaxed">منصة تعليمية سعودية لتحضير الطلاب والطالبات لاختبارات القدرات والتحصيلي</p>
                 </div>
-
-                <!-- Quick Links -->
                 <div>
-                    <h3 class="font-bold text-gray-800 mb-4">روابط سريعة</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="pricing.html" class="text-gray-600 hover:text-indigo-600 transition">الباقات والأسعار</a></li>
-                        <li><a href="register.html" class="text-gray-600 hover:text-indigo-600 transition">إنشاء حساب</a></li>
-                        <li><a href="login.html" class="text-gray-600 hover:text-indigo-600 transition">تسجيل الدخول</a></li>
-                    </ul>
+                    <h4 class="font-bold text-sm text-purple-300/60 mb-3">روابط سريعة</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <a href="pricing.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">الباقات والأسعار</a>
+                        <a href="register.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">إنشاء حساب</a>
+                        <a href="login.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">تسجيل الدخول</a>
+                    </div>
                 </div>
-
-                <!-- Legal -->
                 <div>
-                    <h3 class="font-bold text-gray-800 mb-4">السياسات</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="privacy.html" class="text-gray-600 hover:text-indigo-600 transition">سياسة الخصوصية</a></li>
-                        <li><a href="terms.html" class="text-gray-600 hover:text-indigo-600 transition">شروط الاستخدام</a></li>
-                        
-                        <li><a href="subscription-policy.html" class="text-gray-600 hover:text-indigo-600 transition">سياسة الاشتراكات</a></li>
-                    </ul>
+                    <h4 class="font-bold text-sm text-purple-300/60 mb-3">السياسات</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <a href="privacy.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">سياسة الخصوصية</a>
+                        <a href="terms.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">شروط الاستخدام</a>
+                        <a href="subscription-policy.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">سياسة الاشتراكات</a>
+                    </div>
                 </div>
-
-                <!-- Contact -->
                 <div>
-                    <h3 class="font-bold text-gray-800 mb-4">تواصل معنا</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="contact.html" class="text-gray-600 hover:text-indigo-600 transition">الدعم الفني</a></li>
-                        <li class="text-gray-600"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc8f898c8c938e88bc919d8f9d8e95d28f9d">[email&#160;protected]</a></li>
-                    </ul>
+                    <h4 class="font-bold text-sm text-purple-300/60 mb-3">تواصل معنا</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <a href="contact.html" class="block text-purple-300/30 hover:text-purple-300/60 transition">الدعم الفني</a>
+                        <p class="text-purple-300/30">support@masari.sa</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="border-t border-gray-300 pt-8 text-center">
-                <p class="text-gray-600 text-sm mb-2">© 2026 مساري - جميع الحقوق محفوظة</p>
-                <p class="text-gray-500 text-xs">
-                    نسعى لتقديم أفضل المحتوى التعليمي من مصادر موثوقة. ننصح بالتحقق من مصادر متعددة للحصول على أفضل النتائج.
-                </p>
+            <div class="border-t border-purple-500/10 pt-6 text-center">
+                <p class="text-purple-300/20 text-xs">© 2026 مساري — جميع الحقوق محفوظة</p>
             </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // === Live question count ===
+        (async function(){
+            try {
+                var sb = window.supabase.createClient(
+                    'https://czzcmbxejxbotjemyuqf.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+                );
+                var { data } = await sb.from('questions').select('id');
+                if (data && data.length > 0) {
+                    document.getElementById('liveQuestions').textContent = data.length + '+';
+                }
+            } catch(e){}
+        })();
+
+        // === Scroll reveal ===
+        var reveals = document.querySelectorAll('.reveal');
+        var observer = new IntersectionObserver(function(entries){
+            entries.forEach(function(entry){
+                if(entry.isIntersecting){
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(function(el){ observer.observe(el); });
+
+        // === Nav scroll effect ===
+        window.addEventListener('scroll', function(){
+            var nav = document.getElementById('mainNav');
+            if(window.scrollY > 50) nav.classList.add('nav-scrolled');
+            else nav.classList.remove('nav-scrolled');
+        });
+    </script>
 </body>
 </html>
