@@ -23,228 +23,123 @@
             background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%);
             min-height: 100vh;
         }
-
-        /* Toggle Switch */
         .toggle-switch {
-            position: relative;
-            width: 52px;
-            height: 28px;
-            background: #374151;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            flex-shrink: 0;
+            position: relative; width: 52px; height: 28px;
+            background: #374151; border-radius: 9999px;
+            cursor: pointer; transition: background 0.3s ease; flex-shrink: 0;
         }
-        .toggle-switch.active {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-        }
+        .toggle-switch.active { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
         .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            right: 3px;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            content: ''; position: absolute; top: 3px; right: 3px;
+            width: 22px; height: 22px; background: white; border-radius: 50%;
+            transition: transform 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        .toggle-switch.active::after {
-            transform: translateX(-24px);
-        }
-
-        /* Card Glow */
+        .toggle-switch.active::after { transform: translateX(-24px); }
         .card-glow {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
             backdrop-filter: blur(20px);
         }
-
-        /* Input Focus */
         .input-field {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white; transition: all 0.3s ease;
         }
         .input-field:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-            background: rgba(255, 255, 255, 0.1);
+            outline: none; border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+            background: rgba(255,255,255,0.1);
         }
-        .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.35);
-        }
-
-        /* Buttons */
+        .input-field::placeholder { color: rgba(255,255,255,0.35); }
         .btn-primary {
             background: linear-gradient(135deg, #8b5cf6, #6366f1, #4f46e5);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            transition: all 0.3s ease; cursor: pointer;
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,92,246,0.4); }
         .btn-primary:active { transform: translateY(0); }
-        .btn-primary:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
         .btn-danger {
             background: linear-gradient(135deg, #ef4444, #dc2626);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            transition: all 0.3s ease; cursor: pointer;
         }
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-        }
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239,68,68,0.3); }
         .btn-danger:active { transform: translateY(0); }
-        .btn-danger:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Toast */
+        .btn-danger:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
         .toast {
-            position: fixed;
-            top: 80px;
-            left: 50%;
+            position: fixed; top: 80px; left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            z-index: 1000;
-            pointer-events: none;
+            opacity: 0; transition: all 0.4s ease; z-index: 1000; pointer-events: none;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Spinner */
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .spinner {
-            width: 20px;
-            height: 20px;
+            width: 20px; height: 20px;
             border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
+            border-top-color: white; border-radius: 50%;
             animation: spin 0.6s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
+            display: inline-block; vertical-align: middle;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Animate in */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-in { animation: fadeUp 0.5s ease forwards; }
         .delay-1 { animation-delay: 0.1s; opacity: 0; }
         .delay-2 { animation-delay: 0.2s; opacity: 0; }
         .delay-3 { animation-delay: 0.3s; opacity: 0; }
         .delay-4 { animation-delay: 0.4s; opacity: 0; }
-
-        /* Marquee */
         .marquee-container { overflow: hidden; white-space: nowrap; }
-        .marquee-text {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Avatar circle */
-        .avatar-circle {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
-        }
-
-        /* Password toggle */
+        .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .avatar-circle { background: linear-gradient(135deg, #8b5cf6, #6366f1); box-shadow: 0 0 30px rgba(139,92,246,0.3); }
         .password-wrapper { position: relative; }
         .password-toggle {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: rgba(255,255,255,0.4);
-            transition: color 0.2s;
-            background: none;
-            border: none;
-            padding: 4px;
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: rgba(255,255,255,0.4); transition: color 0.2s;
+            background: none; border: none; padding: 4px;
         }
         .password-toggle:hover { color: rgba(255,255,255,0.7); }
     </style>
 </head>
 <body class="font-tajawal text-white">
-
-    <!-- Toast -->
     <div id="toast" class="toast">
         <div class="bg-gray-800/95 border border-gray-600/50 rounded-2xl px-6 py-3.5 shadow-2xl flex items-center gap-3 backdrop-blur-sm">
             <span id="toast-icon" class="text-xl">✅</span>
-            <span id="toast-msg" class="text-sm font-medium">تم الحفظ بنجاح</span>
+            <span id="toast-msg" class="text-sm font-medium"></span>
         </div>
     </div>
 
-    <!-- Top Banner -->
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
         <div class="marquee-container py-2.5">
-            <span class="marquee-text text-sm text-purple-200/90">
-                ✨ نعمل خلف الكواليس لتطوير مساري — المزيد من الأسئلة والتحسينات قادمة قريباً ✨
-            </span>
+            <span class="marquee-text text-sm text-purple-200/90">✨ نعمل خلف الكواليس لتطوير مساري — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
         </div>
     </div>
 
-    <!-- Header -->
     <div class="px-4 py-4 flex items-center justify-between max-w-2xl mx-auto">
         <a href="dashboard.html" class="flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             <span class="text-sm font-medium">الرئيسية</span>
         </a>
         <h1 class="text-lg font-bold">الملف الشخصي</h1>
         <div class="w-16"></div>
     </div>
 
-    <!-- Main Content -->
     <div class="max-w-2xl mx-auto px-4 pb-12">
-
-        <!-- Loading -->
         <div id="loading-state" class="flex flex-col items-center justify-center py-20">
             <div class="spinner" style="width:40px;height:40px;border-width:3px;"></div>
             <p class="text-purple-300/70 mt-4 text-sm">جاري تحميل البيانات...</p>
         </div>
 
-        <!-- Profile Content -->
         <div id="profile-content" class="hidden">
-
-            <!-- Avatar & Info -->
             <div class="animate-in delay-1 flex flex-col items-center mb-8">
                 <div class="avatar-circle w-24 h-24 rounded-full flex items-center justify-center text-4xl mb-4">
                     <span id="user-avatar">👤</span>
                 </div>
-                <h2 id="user-name-display" class="text-2xl font-bold mb-1">...</h2>
-                <p id="user-email-display" class="text-purple-300/70 text-sm mb-1">...</p>
+                <h2 id="user-name-display" class="text-2xl font-bold mb-1"></h2>
+                <p id="user-email-display" class="text-purple-300/70 text-sm mb-1"></p>
                 <p id="user-join-date" class="text-purple-300/30 text-xs"></p>
             </div>
 
-            <!-- Personal Info -->
             <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2">
-                    <span class="text-lg">👤</span>
-                    المعلومات الشخصية
+                    <span class="text-lg">👤</span> المعلومات الشخصية
                 </h3>
                 <div class="space-y-4">
                     <div>
@@ -253,44 +148,36 @@
                     </div>
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">البريد الإلكتروني</label>
-                        <div class="input-field w-full rounded-xl px-4 py-3 text-sm opacity-60 cursor-not-allowed select-all" id="email-readonly" dir="ltr" style="text-align:right;">...</div>
+                        <div class="input-field w-full rounded-xl px-4 py-3 text-sm opacity-60 cursor-not-allowed select-all" id="email-readonly" dir="ltr" style="text-align:right;"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Password -->
             <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2">
-                    <span class="text-lg">🔒</span>
-                    تغيير كلمة المرور
+                    <span class="text-lg">🔒</span> تغيير كلمة المرور
                 </h3>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">كلمة المرور الجديدة</label>
                         <div class="password-wrapper">
                             <input type="password" id="input-password" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="اتركها فارغة إذا ما تبي تغيّر" dir="ltr" style="text-align:right;">
-                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password', this)">
-                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password', this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">تأكيد كلمة المرور</label>
                         <div class="password-wrapper">
                             <input type="password" id="input-password-confirm" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="أعد كتابة كلمة المرور الجديدة" dir="ltr" style="text-align:right;">
-                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password-confirm', this)">
-                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password-confirm', this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Settings -->
             <div class="animate-in delay-3 card-glow rounded-2xl p-6 mb-6">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2">
-                    <span class="text-lg">⚙️</span>
-                    الإعدادات
+                    <span class="text-lg">⚙️</span> الإعدادات
                 </h3>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -304,29 +191,24 @@
                 </div>
             </div>
 
-            <!-- Buttons -->
             <div class="animate-in delay-4 space-y-3">
                 <button type="button" id="btn-save" onclick="saveChanges()" class="btn-primary w-full rounded-xl py-3.5 text-sm font-bold text-white">
                     <span id="save-text">💾 حفظ التغييرات</span>
                     <span id="save-spinner" class="hidden"><span class="spinner"></span> جاري الحفظ...</span>
                 </button>
-                <button type="button" id="btn-logout" onclick="logoutUser()" class="btn-danger w-full rounded-xl py-3.5 text-sm font-bold text-white">
+                <button type="button" id="btn-logout" onclick="handleLogout()" class="btn-danger w-full rounded-xl py-3.5 text-sm font-bold text-white">
                     <span id="logout-text">🚪 تسجيل الخروج</span>
                     <span id="logout-spinner" class="hidden"><span class="spinner"></span> جاري الخروج...</span>
                 </button>
             </div>
-
             <p class="text-center text-purple-300/30 text-xs mt-8">مساري v1.0</p>
         </div>
     </div>
 
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
         // ============================================================
-        // Use "sb" — same as login.html & dashboard.html
-        // Use getSession() — same as dashboard.html (NOT getUser)
+        // EXACT same pattern as dashboard.html
         // ============================================================
         const sb = window.supabase.createClient(
             'https://czzcmbxejxbotjemyuqf.supabase.co',
@@ -334,22 +216,19 @@
         );
 
         let currentUser = null;
-        let currentProfile = null;
+        let profileName = '';
 
         // ============ Toast ============
         function showToast(msg, icon) {
-            icon = icon || '✅';
             document.getElementById('toast-msg').textContent = msg;
-            document.getElementById('toast-icon').textContent = icon;
+            document.getElementById('toast-icon').textContent = icon || '✅';
             document.getElementById('toast').classList.add('show');
-            setTimeout(function() {
-                document.getElementById('toast').classList.remove('show');
-            }, 3000);
+            setTimeout(function() { document.getElementById('toast').classList.remove('show'); }, 3000);
         }
 
         // ============ Password Toggle ============
         function togglePwVis(id, btn) {
-            var inp = document.getElementById(id);
+            const inp = document.getElementById(id);
             if (inp.type === 'password') {
                 inp.type = 'text';
                 btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';
@@ -361,90 +240,71 @@
 
         // ============ Sound Toggle ============
         function initSoundToggle() {
-            var on = localStorage.getItem('soundEnabled') !== 'false';
-            var toggle = document.getElementById('sound-toggle');
-            var icon = document.getElementById('sound-icon');
+            const on = localStorage.getItem('soundEnabled') !== 'false';
+            const toggle = document.getElementById('sound-toggle');
+            const icon = document.getElementById('sound-icon');
             if (on) { toggle.classList.add('active'); icon.textContent = '🔊'; }
             else { toggle.classList.remove('active'); icon.textContent = '🔇'; }
         }
-
         function toggleSound() {
-            var toggle = document.getElementById('sound-toggle');
-            var icon = document.getElementById('sound-icon');
+            const toggle = document.getElementById('sound-toggle');
+            const icon = document.getElementById('sound-icon');
             if (toggle.classList.contains('active')) {
-                toggle.classList.remove('active');
-                icon.textContent = '🔇';
-                localStorage.setItem('soundEnabled', 'false');
-                showToast('تم إيقاف الصوت', '🔇');
+                toggle.classList.remove('active'); icon.textContent = '🔇';
+                localStorage.setItem('soundEnabled', 'false'); showToast('تم إيقاف الصوت', '🔇');
             } else {
-                toggle.classList.add('active');
-                icon.textContent = '🔊';
-                localStorage.setItem('soundEnabled', 'true');
-                showToast('تم تفعيل الصوت', '🔊');
+                toggle.classList.add('active'); icon.textContent = '🔊';
+                localStorage.setItem('soundEnabled', 'true'); showToast('تم تفعيل الصوت', '🔊');
             }
         }
 
-        // ============ Format Date ============
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
+        // ============================================================
+        // checkAuth() — COPIED from dashboard.html pattern exactly
+        // ============================================================
+        async function checkAuth() {
             try {
-                var d = new Date(dateStr);
-                var months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-                return 'عضو منذ ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-            } catch(e) { return ''; }
-        }
-
-        // ============ Load Profile ============
-        // Uses getSession() — SAME pattern as dashboard.html
-        async function loadProfile() {
-            try {
-                var result = await sb.auth.getSession();
-                var session = result.data.session;
-                var error = result.error;
+                const { data: { session }, error } = await sb.auth.getSession();
 
                 if (error || !session) {
-                    console.error('Session error:', error);
                     window.location.href = 'login.html';
                     return;
                 }
 
                 currentUser = session.user;
 
-                // Email from session.user
-                var email = currentUser.email || 'غير متوفر';
-                document.getElementById('user-email-display').textContent = email;
-                document.getElementById('email-readonly').textContent = email;
+                // Email from session
+                document.getElementById('user-email-display').textContent = currentUser.email || '';
+                document.getElementById('email-readonly').textContent = currentUser.email || '';
 
                 // Join date
                 if (currentUser.created_at) {
-                    document.getElementById('user-join-date').textContent = formatDate(currentUser.created_at);
+                    try {
+                        const d = new Date(currentUser.created_at);
+                        const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+                        document.getElementById('user-join-date').textContent = 'عضو منذ ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+                    } catch(e) {}
                 }
 
-                // Profile from DB — same select as dashboard
-                var profileResult = await sb
+                // Profile — EXACT same query as dashboard.html
+                const { data: profile } = await sb
                     .from('profiles')
                     .select('name, avatar_emoji')
                     .eq('id', currentUser.id)
                     .single();
 
-                var profile = profileResult.data;
-                var profileError = profileResult.error;
-
-                if (profile) {
-                    currentProfile = profile;
-                    var name = profile.name || 'مستخدم مساري';
-                    document.getElementById('user-name-display').textContent = name;
-                    document.getElementById('input-name').value = profile.name || '';
-
-                    if (profile.avatar_emoji) {
-                        document.getElementById('user-avatar').textContent = profile.avatar_emoji;
-                    }
+                if (profile && profile.name) {
+                    profileName = profile.name;
+                    document.getElementById('user-name-display').textContent = profile.name;
+                    document.getElementById('input-name').value = profile.name;
                 } else {
-                    document.getElementById('user-name-display').textContent = 'مستخدم مساري';
-                    if (profileError) console.warn('Profile error:', profileError.message);
+                    document.getElementById('user-name-display').textContent = currentUser.email.split('@')[0];
                 }
 
-                // Sound toggle
+                if (profile && profile.avatar_emoji) {
+                    document.getElementById('user-avatar').textContent = profile.avatar_emoji;
+                }
+
+                // Sound
                 initSoundToggle();
 
                 // Show content
@@ -452,101 +312,100 @@
                 document.getElementById('profile-content').classList.remove('hidden');
 
             } catch (err) {
-                console.error('Load error:', err);
-                showToast('حدث خطأ في تحميل البيانات', '❌');
-                document.getElementById('loading-state').innerHTML = '<p class="text-red-400 text-sm">حدث خطأ في تحميل البيانات</p><a href="dashboard.html" class="text-purple-400 text-sm mt-3 underline block">العودة للرئيسية</a>';
+                console.error('checkAuth error:', err);
+                window.location.href = 'login.html';
+                return;
             }
         }
 
         // ============ Save Changes ============
         async function saveChanges() {
-            var btn = document.getElementById('btn-save');
+            const btn = document.getElementById('btn-save');
             if (btn.disabled) return;
             btn.disabled = true;
             document.getElementById('save-text').classList.add('hidden');
             document.getElementById('save-spinner').classList.remove('hidden');
 
             try {
-                var newName = document.getElementById('input-name').value.trim();
-                var newPassword = document.getElementById('input-password').value;
-                var confirmPassword = document.getElementById('input-password-confirm').value;
-                var hasChanges = false;
+                const newName = document.getElementById('input-name').value.trim();
+                const newPassword = document.getElementById('input-password').value;
+                const confirmPassword = document.getElementById('input-password-confirm').value;
+                let changed = false;
 
                 // Validate password first
                 if (newPassword) {
                     if (newPassword.length < 6) {
                         showToast('كلمة المرور لازم تكون 6 أحرف على الأقل', '⚠️');
-                        resetSaveBtn();
-                        return;
+                        resetSave(); return;
                     }
                     if (newPassword !== confirmPassword) {
                         showToast('كلمات المرور ما تتطابق', '⚠️');
-                        resetSaveBtn();
-                        return;
+                        resetSave(); return;
                     }
                 }
 
-                // Update name
-                if (newName && newName !== (currentProfile ? currentProfile.name : '')) {
-                    var nameResult = await sb
+                // Update name — use upsert to handle both insert and update cases
+                if (newName && newName !== profileName) {
+                    const { error: nameErr } = await sb
                         .from('profiles')
-                        .update({ name: newName })
-                        .eq('id', currentUser.id);
+                        .upsert({
+                            id: currentUser.id,
+                            name: newName
+                        }, { onConflict: 'id' });
 
-                    if (nameResult.error) {
-                        throw new Error('فشل تحديث الاسم: ' + nameResult.error.message);
+                    if (nameErr) {
+                        console.error('Name update error:', nameErr);
+                        showToast('فشل تحديث الاسم: ' + nameErr.message, '❌');
+                        resetSave(); return;
                     }
+                    profileName = newName;
                     document.getElementById('user-name-display').textContent = newName;
-                    if (currentProfile) currentProfile.name = newName;
-                    hasChanges = true;
+                    changed = true;
                 }
 
                 // Update password
                 if (newPassword) {
-                    var passResult = await sb.auth.updateUser({ password: newPassword });
-                    if (passResult.error) {
-                        throw new Error('فشل تحديث كلمة المرور: ' + passResult.error.message);
+                    const { error: passErr } = await sb.auth.updateUser({ password: newPassword });
+                    if (passErr) {
+                        showToast('فشل تحديث كلمة المرور: ' + passErr.message, '❌');
+                        resetSave(); return;
                     }
                     document.getElementById('input-password').value = '';
                     document.getElementById('input-password-confirm').value = '';
-                    hasChanges = true;
+                    changed = true;
                 }
 
-                showToast(hasChanges ? 'تم حفظ التغييرات بنجاح' : 'ما في تغييرات جديدة', hasChanges ? '✅' : 'ℹ️');
-
+                showToast(changed ? 'تم حفظ التغييرات بنجاح' : 'ما في تغييرات جديدة', changed ? '✅' : 'ℹ️');
             } catch (err) {
                 console.error('Save error:', err);
-                showToast(err.message || 'حدث خطأ أثناء الحفظ', '❌');
+                showToast('حدث خطأ أثناء الحفظ', '❌');
             }
-            resetSaveBtn();
+            resetSave();
         }
 
-        function resetSaveBtn() {
+        function resetSave() {
             document.getElementById('btn-save').disabled = false;
             document.getElementById('save-text').classList.remove('hidden');
             document.getElementById('save-spinner').classList.add('hidden');
         }
 
-        // ============ Logout ============
-        async function logoutUser() {
-            var btn = document.getElementById('btn-logout');
+        // ============================================================
+        // handleLogout() — same name as dashboard.html
+        // ============================================================
+        async function handleLogout() {
+            const btn = document.getElementById('btn-logout');
             if (btn.disabled) return;
             btn.disabled = true;
             document.getElementById('logout-text').classList.add('hidden');
             document.getElementById('logout-spinner').classList.remove('hidden');
 
             try {
-                var result = await sb.auth.signOut();
-                if (result.error) throw result.error;
-
+                await sb.auth.signOut();
                 showToast('تم تسجيل الخروج', '👋');
-                setTimeout(function() {
-                    window.location.href = 'login.html';
-                }, 800);
-
+                setTimeout(function() { window.location.href = 'login.html'; }, 800);
             } catch (err) {
                 console.error('Logout error:', err);
-                showToast('حدث خطأ أثناء تسجيل الخروج', '❌');
+                showToast('حدث خطأ', '❌');
                 btn.disabled = false;
                 document.getElementById('logout-text').classList.remove('hidden');
                 document.getElementById('logout-spinner').classList.add('hidden');
@@ -554,9 +413,7 @@
         }
 
         // ============ Init ============
-        document.addEventListener('DOMContentLoaded', function() {
-            loadProfile();
-        });
+        checkAuth();
     </script>
 </body>
 </html>
