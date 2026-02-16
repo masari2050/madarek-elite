@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - مساري</title>
+    <title>تسجيل الدخول - خوارز</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -88,7 +88,7 @@
         (async function() {
             var { data: { session } } = await sb.auth.getSession();
             if (session) {
-                localStorage.setItem('masari_user', JSON.stringify({ id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || '' }));
+                localStorage.setItem('khawariz_user', JSON.stringify({ id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || '' }));
                 window.location.href = 'dashboard.html';
             }
         })();
@@ -103,7 +103,7 @@
             try {
                 var { data, error } = await sb.auth.signInWithPassword({ email: em, password: p });
                 if (error) throw error;
-                localStorage.setItem('masari_user', JSON.stringify({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name || '' }));
+                localStorage.setItem('khawariz_user', JSON.stringify({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name || '' }));
                 window.location.href = 'dashboard.html';
             } catch (error) {
                 var msg = 'حدث خطأ غير متوقع';

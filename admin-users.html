@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المستخدمين - مساري</title>
+    <title>إدارة المستخدمين - خوارز</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>* { font-family: 'Tajawal', sans-serif; }</style>
@@ -187,7 +187,7 @@
 
     <script>
         // Check admin
-        const currentUser = JSON.parse(localStorage.getItem('masari_user') || 'null');
+        const currentUser = JSON.parse(localStorage.getItem('khawariz_user') || 'null');
         if (!currentUser || currentUser.role !== 'admin') {
             alert('غير مصرح لك بالدخول');
             window.location.href = 'login.html';
@@ -196,7 +196,7 @@
         document.getElementById('adminName').textContent = currentUser.name;
 
         // Load users
-        let users = JSON.parse(localStorage.getItem('masari_all_users') || '[]');
+        let users = JSON.parse(localStorage.getItem('khawariz_all_users') || '[]');
         let currentFilter = 'all';
         let editingUserId = null;
 
@@ -213,7 +213,7 @@
                     createdAt: Date.now()
                 }
             ];
-            localStorage.setItem('masari_all_users', JSON.stringify(users));
+            localStorage.setItem('khawariz_all_users', JSON.stringify(users));
         }
 
         function loadStats() {
@@ -325,7 +325,7 @@
             if (!confirm('متأكد من حذف هذا المستخدم؟')) return;
 
             users = users.filter(u => u.id !== userId);
-            localStorage.setItem('masari_all_users', JSON.stringify(users));
+            localStorage.setItem('khawariz_all_users', JSON.stringify(users));
             loadStats();
             loadUsers();
         }
@@ -366,7 +366,7 @@
                 users.push(newUser);
             }
 
-            localStorage.setItem('masari_all_users', JSON.stringify(users));
+            localStorage.setItem('khawariz_all_users', JSON.stringify(users));
             closeUserModal();
             loadStats();
             loadUsers();

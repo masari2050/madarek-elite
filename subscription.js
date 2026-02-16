@@ -1,11 +1,11 @@
-// نظام إدارة الاشتراكات - مساري
+// نظام إدارة الاشتراكات - خوارز
 
 // الحد المجاني
 const FREE_LIMIT = 10;
 
 // التحقق من حالة الاشتراك
 function getSubscriptionStatus() {
-    const subscription = JSON.parse(localStorage.getItem('masari_subscription') || 'null');
+    const subscription = JSON.parse(localStorage.getItem('khawariz_subscription') || 'null');
     
     if (!subscription) {
         return {
@@ -35,7 +35,7 @@ function getRemainingFreeAttempts() {
     }
     
     // حساب المحاولات المستخدمة
-    const attempts = JSON.parse(localStorage.getItem('masari_attempts') || '[]');
+    const attempts = JSON.parse(localStorage.getItem('khawariz_attempts') || '[]');
     const used = attempts.length;
     const remaining = Math.max(0, FREE_LIMIT - used);
     
