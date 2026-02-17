@@ -378,14 +378,11 @@
                     return false;
                 }
 
-               var requestedCount = parseInt(localStorage.getItem('khawariz_question_count')) || 10;
-
-currentQuestions = shuffleArray(questions).slice(0, requestedCount);
-
-```
-
-
+                // ✅ التعديل: قراءة عدد الأسئلة والوقت من localStorage
+                var requestedCount = parseInt(localStorage.getItem('khawariz_question_count')) || 10;
+                currentQuestions = shuffleArray(questions).slice(0, requestedCount);
                 timeRemaining = parseInt(localStorage.getItem('khawariz_time_seconds')) || (currentQuestions.length * SECONDS_PER_QUESTION);
+
                 startTimer();
                 await createSession(selectedSection);
 
