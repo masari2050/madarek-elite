@@ -7,150 +7,74 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: { extend: { fontFamily: { tajawal: ['Tajawal', 'sans-serif'] } } }
-        }
+        tailwind.config = { theme: { extend: { fontFamily: { tajawal: ['Tajawal', 'sans-serif'] } } } }
     </script>
     <style>
         * { font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%);
-            min-height: 100vh;
-        }
-
-        /* Section Cards */
-        .section-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-            border-radius: 1.5rem;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .section-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 4px;
-            border-radius: 1.5rem 1.5rem 0 0;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
+        body { background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%); min-height: 100vh; }
+        
+        .section-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); border-radius: 1.5rem; transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .section-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 1.5rem 1.5rem 0 0; opacity: 0; transition: opacity 0.4s ease; }
         .section-card:hover::before { opacity: 1; }
-        .section-card:hover {
-            background: rgba(255,255,255,0.07);
-            border-color: rgba(255,255,255,0.15);
-            transform: translateY(-6px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        }
-
-        /* Card Color Themes */
+        .section-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        
         .card-quant::before { background: linear-gradient(90deg, #3b82f6, #6366f1); }
         .card-quant:hover { border-color: rgba(59,130,246,0.3); box-shadow: 0 20px 60px rgba(59,130,246,0.15); }
         .card-verbal::before { background: linear-gradient(90deg, #10b981, #14b8a6); }
         .card-verbal:hover { border-color: rgba(16,185,129,0.3); box-shadow: 0 20px 60px rgba(16,185,129,0.15); }
         .card-tahsili::before { background: linear-gradient(90deg, #a855f7, #8b5cf6); }
         .card-tahsili:hover { border-color: rgba(168,85,247,0.3); box-shadow: 0 20px 60px rgba(168,85,247,0.15); }
-
-        /* Icon Circle */
-        .icon-circle {
-            width: 56px; height: 56px;
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
+        
+        .icon-circle { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
         .icon-quant { background: linear-gradient(135deg, #3b82f6, #6366f1); }
         .icon-verbal { background: linear-gradient(135deg, #10b981, #14b8a6); }
         .icon-tahsili { background: linear-gradient(135deg, #a855f7, #8b5cf6); }
-
-        /* Subject Tags */
-        .subject-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
+        
+        .subject-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 500; }
         .tag-quant { background: rgba(59,130,246,0.1); color: #93c5fd; }
         .tag-verbal { background: rgba(16,185,129,0.1); color: #6ee7b7; }
         .tag-tahsili { background: rgba(168,85,247,0.1); color: #d8b4fe; }
-
-        /* Count Badge */
-        .count-badge {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        /* Start Button */
-        .btn-start {
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-start::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            transition: left 0.5s ease;
-        }
+        
+        .count-badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px; text-align: center; }
+        
+        .btn-start { width: 100%; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; color: white; cursor: pointer; transition: all 0.3s ease; border: none; position: relative; overflow: hidden; }
+        .btn-start::before { content: ''; position: absolute; top: 0; left: -100%; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transition: left 0.5s ease; }
         .btn-start:hover::before { left: 100%; }
         .btn-start:hover { transform: translateY(-2px); }
-        .btn-start:active { transform: translateY(0); }
         .btn-start:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
         .btn-quant { background: linear-gradient(135deg, #3b82f6, #6366f1); box-shadow: 0 8px 25px rgba(59,130,246,0.25); }
-        .btn-quant:hover { box-shadow: 0 12px 35px rgba(59,130,246,0.35); }
         .btn-verbal { background: linear-gradient(135deg, #10b981, #14b8a6); box-shadow: 0 8px 25px rgba(16,185,129,0.25); }
-        .btn-verbal:hover { box-shadow: 0 12px 35px rgba(16,185,129,0.35); }
         .btn-tahsili { background: linear-gradient(135deg, #a855f7, #8b5cf6); box-shadow: 0 8px 25px rgba(168,85,247,0.25); }
-        .btn-tahsili:hover { box-shadow: 0 12px 35px rgba(168,85,247,0.35); }
-
-        /* Animations */
+        
         @keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
         .animate-in { animation: fadeUp 0.5s ease forwards; }
         .delay-1 { animation-delay: 0.1s; opacity: 0; }
         .delay-2 { animation-delay: 0.2s; opacity: 0; }
         .delay-3 { animation-delay: 0.3s; opacity: 0; }
         .delay-4 { animation-delay: 0.4s; opacity: 0; }
-
-        /* Marquee */
+        
         .marquee-container { overflow: hidden; white-space: nowrap; }
         .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        /* Loading shimmer for counts */
-        .shimmer {
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        
+        /* ===== MODAL ===== */
+        .modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-card { width: 100%; max-width: 440px; background: linear-gradient(135deg, #1a1145, #1e1550, #0f0a2e); border: 1px solid rgba(139,92,246,0.25); border-radius: 1.5rem; padding: 28px; position: relative; overflow: hidden; }
+        .modal-card::before { content: ''; position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%); pointer-events: none; }
+        
+        /* Count Option Buttons */
+        .count-option { padding: 12px 8px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: pointer; transition: all 0.2s ease; text-align: center; flex: 1; }
+        .count-option:hover { border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.1); }
+        .count-option.active { border-color: #8b5cf6; background: rgba(139,92,246,0.2); box-shadow: 0 0 20px rgba(139,92,246,0.15); }
+        .count-option .num { font-size: 1.5rem; font-weight: 900; display: block; }
+        .count-option .label { font-size: 0.65rem; color: rgba(196,181,253,0.6); display: block; margin-top: 2px; }
+        
+        /* Time display */
+        .time-display { background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 12px; text-align: center; }
+        
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-animate { animation: modalIn 0.3s ease forwards; }
+    </style>
 </head>
 <body class="font-tajawal text-white">
 
@@ -173,23 +97,21 @@
 
     <!-- Page Content -->
     <div class="max-w-5xl mx-auto px-4 pb-12">
-
         <!-- Title -->
         <div class="animate-in delay-1 text-center mb-10">
             <h2 class="text-3xl sm:text-4xl font-black mb-2">اختر القسم للتدريب</h2>
-            <p class="text-purple-200/70 text-sm">ابدأ التدريب مباشرة حسب القسم اللي تبيه</p>
-<div class="mt-3 flex items-center justify-center gap-2">
-    <span class="relative flex h-2 w-2">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-    </span>
-    <p class="text-green-400/80 text-xs font-medium">نضيف أسئلة جديدة كل أسبوع</p>
-</div>
+            <p class="text-purple-200/70 text-sm">اختر القسم وعدد الأسئلة اللي تبيها</p>
+            <div class="mt-3 flex items-center justify-center gap-2">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <p class="text-green-400/80 text-xs font-medium">نضيف أسئلة جديدة كل أسبوع</p>
+            </div>
         </div>
 
         <!-- Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
             <!-- قدرات كمي -->
             <div class="animate-in delay-2 section-card card-quant p-6">
                 <div class="flex items-center gap-4 mb-5">
@@ -199,20 +121,17 @@
                         <p class="text-purple-200/70 text-xs">الرياضيات والحساب</p>
                     </div>
                 </div>
-
                 <div class="flex flex-wrap gap-1.5 mb-5">
                     <span class="subject-tag tag-quant">✓ الجبر والمعادلات</span>
                     <span class="subject-tag tag-quant">✓ الهندسة</span>
                     <span class="subject-tag tag-quant">✓ النسبة والتناسب</span>
                     <span class="subject-tag tag-quant">✓ الإحصاء</span>
                 </div>
-
                 <div class="count-badge mb-4">
                     <span class="text-2xl font-black text-blue-400" id="quantCount">—</span>
                     <span class="text-purple-200/70 text-xs block">سؤال متاح</span>
                 </div>
-
-                <button id="quantBtn" class="btn-start btn-quant" onclick="startTraining('quant')">
+                <button id="quantBtn" class="btn-start btn-quant" onclick="openModal('quant')">
                     ابدأ التدريب
                 </button>
             </div>
@@ -226,20 +145,17 @@
                         <p class="text-purple-200/70 text-xs">اللغة العربية</p>
                     </div>
                 </div>
-
                 <div class="flex flex-wrap gap-1.5 mb-5">
                     <span class="subject-tag tag-verbal">✓ التناظر اللفظي</span>
                     <span class="subject-tag tag-verbal">✓ إكمال الجمل</span>
                     <span class="subject-tag tag-verbal">✓ الخطأ السياقي</span>
                     <span class="subject-tag tag-verbal">✓ الاستيعاب المقروء</span>
                 </div>
-
                 <div class="count-badge mb-4">
                     <span class="text-2xl font-black text-emerald-400" id="verbalCount">—</span>
                     <span class="text-purple-200/70 text-xs block">سؤال متاح</span>
                 </div>
-
-                <button id="verbalBtn" class="btn-start btn-verbal" onclick="startTraining('verbal')">
+                <button id="verbalBtn" class="btn-start btn-verbal" onclick="openModal('verbal')">
                     ابدأ التدريب
                 </button>
             </div>
@@ -253,26 +169,86 @@
                         <p class="text-purple-200/70 text-xs">المواد الدراسية</p>
                     </div>
                 </div>
-
                 <div class="flex flex-wrap gap-1.5 mb-5">
                     <span class="subject-tag tag-tahsili">✓ الرياضيات</span>
                     <span class="subject-tag tag-tahsili">✓ الفيزياء</span>
                     <span class="subject-tag tag-tahsili">✓ الكيمياء</span>
                     <span class="subject-tag tag-tahsili">✓ الأحياء</span>
                 </div>
-
                 <div class="count-badge mb-4">
                     <span class="text-2xl font-black text-purple-400" id="tahsiliCount">—</span>
                     <span class="text-purple-200/70 text-xs block">سؤال متاح</span>
                 </div>
-
-                <button id="tahsiliBtn" class="btn-start btn-tahsili" onclick="startTraining('tahsili')">
+                <button id="tahsiliBtn" class="btn-start btn-tahsili" onclick="openModal('tahsili')">
                     ابدأ التدريب
                 </button>
             </div>
         </div>
 
         <p class="text-center text-purple-200/50 text-xs mt-10">خوارز v1.0</p>
+    </div>
+
+    <!-- ===== TRAINING OPTIONS MODAL ===== -->
+    <div id="trainingModal" class="modal-overlay hidden">
+        <div class="modal-card modal-animate relative z-10">
+            <!-- Close -->
+            <button onclick="closeModal()" class="absolute top-4 left-4 text-purple-300/40 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <span id="modalIcon" class="text-4xl block mb-2">📊</span>
+                <h3 id="modalTitle" class="text-xl font-black">قدرات كمي</h3>
+                <p class="text-purple-200/50 text-xs mt-1">حدد إعدادات التدريب</p>
+            </div>
+
+            <!-- Question Count -->
+            <div class="mb-5">
+                <label class="text-purple-200/70 text-xs font-medium block mb-3">عدد الأسئلة</label>
+                <div class="flex gap-2">
+                    <div class="count-option" data-count="10" onclick="selectCount(10)">
+                        <span class="num text-purple-300">10</span>
+                        <span class="label">سريع</span>
+                    </div>
+                    <div class="count-option" data-count="20" onclick="selectCount(20)">
+                        <span class="num text-purple-300">20</span>
+                        <span class="label">متوسط</span>
+                    </div>
+                    <div class="count-option" data-count="30" onclick="selectCount(30)">
+                        <span class="num text-purple-300">30</span>
+                        <span class="label">مكثّف</span>
+                    </div>
+                    <div class="count-option" data-count="50" onclick="selectCount(50)">
+                        <span class="num text-purple-300">50</span>
+                        <span class="label">ماراثون</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Display -->
+            <div class="time-display mb-6">
+                <div class="flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                    <span class="text-indigo-300 text-sm font-bold">الوقت:</span>
+                    <span id="timePreview" class="text-white font-black text-lg">10 دقائق</span>
+                </div>
+                <p class="text-purple-200/40 text-[10px] mt-1">دقيقة واحدة لكل سؤال — مثل الاختبار الحقيقي</p>
+            </div>
+
+            <!-- Available count warning -->
+            <div id="countWarning" class="hidden text-center mb-4">
+                <p class="text-yellow-400/80 text-xs">⚠️ عدد الأسئلة المتاحة: <span id="availableNum">0</span> سؤال فقط</p>
+            </div>
+
+            <!-- Start Button -->
+            <button id="modalStartBtn" onclick="startFromModal()" class="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:translate-y-[-2px]" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow: 0 8px 25px rgba(99,102,241,0.3);">
+                🚀 ابدأ التدريب
+            </button>
+
+            <!-- Quick tip -->
+            <p class="text-center text-purple-200/30 text-[10px] mt-4">💡 الأسئلة تجي عشوائية من بنك الأسئلة</p>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -282,34 +258,125 @@
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
 
+        let questionCounts = { quant: 0, verbal: 0, tahsili: 0 };
+        let selectedSection = '';
+        let selectedCount = 10;
+
+        const sectionMeta = {
+            quant:   { name: 'قدرات كمي',   icon: '📊', color: '#3b82f6' },
+            verbal:  { name: 'قدرات لفظي',  icon: '📖', color: '#10b981' },
+            tahsili: { name: 'التحصيلي',    icon: '🎓', color: '#a855f7' }
+        };
+
+        // Load question counts
         async function loadQuestionCounts() {
             try {
-                const { data: questions, error } = await sb
-                    .from('questions')
-                    .select('section');
+                const { data: questions, error } = await sb.from('questions').select('section');
+                if (error) return;
 
-                if (error) { console.error('Error:', error); return; }
+                questionCounts.quant = questions.filter(q => q.section === 'quant').length;
+                questionCounts.verbal = questions.filter(q => q.section === 'verbal').length;
+                questionCounts.tahsili = questions.filter(q => q.section === 'tahsili').length;
 
-                const quantCount = questions.filter(function(q) { return q.section === 'quant'; }).length;
-                const verbalCount = questions.filter(function(q) { return q.section === 'verbal'; }).length;
-                const tahsiliCount = questions.filter(function(q) { return q.section === 'tahsili'; }).length;
+                document.getElementById('quantCount').textContent = questionCounts.quant;
+                document.getElementById('verbalCount').textContent = questionCounts.verbal;
+                document.getElementById('tahsiliCount').textContent = questionCounts.tahsili;
 
-                document.getElementById('quantCount').textContent = quantCount;
-                document.getElementById('verbalCount').textContent = verbalCount;
-                document.getElementById('tahsiliCount').textContent = tahsiliCount;
-
-                document.getElementById('quantBtn').disabled = (quantCount === 0);
-                document.getElementById('verbalBtn').disabled = (verbalCount === 0);
-                document.getElementById('tahsiliBtn').disabled = (tahsiliCount === 0);
+                document.getElementById('quantBtn').disabled = (questionCounts.quant === 0);
+                document.getElementById('verbalBtn').disabled = (questionCounts.verbal === 0);
+                document.getElementById('tahsiliBtn').disabled = (questionCounts.tahsili === 0);
             } catch (err) {
                 console.error('Error:', err);
             }
         }
 
-        function startTraining(section) {
-            localStorage.setItem('khawariz_selected_section', section);
+        // Open modal
+        function openModal(section) {
+            selectedSection = section;
+            const meta = sectionMeta[section];
+            
+            document.getElementById('modalIcon').textContent = meta.icon;
+            document.getElementById('modalTitle').textContent = meta.name;
+            
+            // Reset to 10
+            selectCount(10);
+            
+            // Show warning if not enough questions
+            checkAvailableCount();
+            
+            document.getElementById('trainingModal').classList.remove('hidden');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('trainingModal').classList.add('hidden');
+        }
+
+        // Close on overlay click
+        document.getElementById('trainingModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Select question count
+        function selectCount(count) {
+            selectedCount = count;
+            
+            // Update active state
+            document.querySelectorAll('.count-option').forEach(function(el) {
+                el.classList.remove('active');
+                if (parseInt(el.dataset.count) === count) {
+                    el.classList.add('active');
+                }
+            });
+            
+            // Update time preview
+            var timeText = count + ' دقيقة';
+            if (count >= 60) {
+                var hrs = Math.floor(count / 60);
+                var mins = count % 60;
+                timeText = hrs + ' ساعة';
+                if (mins > 0) timeText += ' و ' + mins + ' دقيقة';
+            }
+            document.getElementById('timePreview').textContent = timeText;
+            
+            checkAvailableCount();
+        }
+
+        // Check if enough questions available
+        function checkAvailableCount() {
+            var available = questionCounts[selectedSection] || 0;
+            var warning = document.getElementById('countWarning');
+            
+            if (selectedCount > available && available > 0) {
+                document.getElementById('availableNum').textContent = available;
+                warning.classList.remove('hidden');
+            } else {
+                warning.classList.add('hidden');
+            }
+        }
+
+        // Start training
+        function startFromModal() {
+            var available = questionCounts[selectedSection] || 0;
+            var actualCount = Math.min(selectedCount, available);
+            
+            if (actualCount === 0) {
+                alert('ما فيه أسئلة متاحة لهذا القسم');
+                return;
+            }
+            
+            // Save settings to localStorage
+            localStorage.setItem('khawariz_selected_section', selectedSection);
+            localStorage.setItem('khawariz_question_count', actualCount);
+            localStorage.setItem('khawariz_time_seconds', actualCount * 60);
+            
             window.location.href = 'practice.html';
         }
+
+        // ESC to close
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
 
         window.addEventListener('DOMContentLoaded', function() {
             loadQuestionCounts();
