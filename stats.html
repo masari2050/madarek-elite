@@ -1,214 +1,424 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إحصائياتي - خوارز</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
-    <style>
-        *{font-family:'Tajawal',sans-serif}
-        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
-        .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
-        .stat-card{transition:all .3s ease}.stat-card:hover{transform:translateY(-3px)}
-        .progress-track{background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden;height:8px}
-        .progress-fill{border-radius:999px;transition:width 1.2s cubic-bezier(.4,0,.2,1);position:relative}
-        .progress-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);animation:shimmer 2s infinite}
-        @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-        .section-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:1.25rem;transition:all .3s ease;position:relative;overflow:hidden}
-        .section-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
-        .section-card:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1)}.section-card:hover::before{opacity:1}
-        .sec-quant::before{background:linear-gradient(90deg,#3b82f6,#6366f1)}.sec-verbal::before{background:linear-gradient(90deg,#10b981,#14b8a6)}.sec-tahsili::before{background:linear-gradient(90deg,#a855f7,#8b5cf6)}
-        .mini-stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:.75rem;padding:12px;text-align:center}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .animate-in{animation:fadeUp .5s ease forwards}.delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.15s;opacity:0}.delay-3{animation-delay:.2s;opacity:0}.delay-4{animation-delay:.3s;opacity:0}.delay-5{animation-delay:.4s;opacity:0}
-        .spinner-lg{width:40px;height:40px;border:3px solid rgba(139,92,246,0.2);border-top-color:#8b5cf6;border-radius:50%;animation:spin .7s linear infinite}
-        @keyframes spin{to{transform:rotate(360deg)}}
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إحصائياتي — خوارز</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+    * { font-family: 'Tajawal', sans-serif; }
+    body { background: #0f0c29; min-height: 100vh; }
+
+    .glass {
+        background: rgba(255,255,255,0.07);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .progress-bar {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.1);
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 1s ease;
+    }
+
+    .topic-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .topic-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(139,92,246,0.3);
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .loading-pulse { animation: pulse 1.5s infinite; }
+
+    .ai-report {
+        background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15));
+        border: 1px solid rgba(139,92,246,0.3);
+    }
+
+    .section-tab { transition: all 0.2s; }
+    .section-tab.active {
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        color: white;
+    }
+
+    .streak-badge {
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 </style>
 </head>
-<body class="font-tajawal text-white">
+<body>
 
-    <!-- Header -->
-    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between animate-in delay-1">
-        <a href="dashboard.html" class="flex items-center gap-2 text-purple-300/70 hover:text-white transition text-sm">
-            <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            <span>الرئيسية</span>
+<!-- Header -->
+<div class="sticky top-0 z-50 glass border-b border-white/10">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            رجوع
         </a>
-        <h1 class="text-lg font-bold">📊 إحصائياتي</h1>
-        <div class="w-16"></div>
+        <span class="text-white font-bold text-lg">📊 إحصائياتي</span>
+        <button onclick="generateAIReport()" id="aiBtn"
+            class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5">
+            <span>✨</span> تقرير ذكي
+        </button>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 py-6" id="mainContent">
+    <!-- Loading -->
+    <div id="loadingState" class="text-center py-20">
+        <div class="text-white/50 loading-pulse text-lg">جاري تحميل إحصائياتك...</div>
     </div>
 
-    <main class="max-w-4xl mx-auto px-4 pb-12">
+    <!-- Content (hidden until loaded) -->
+    <div id="statsContent" class="hidden space-y-6">
 
-        <!-- Loading -->
-        <div id="loadingState" class="flex flex-col items-center justify-center py-20">
-            <div class="spinner-lg mb-4"></div>
-            <p class="text-purple-300/50 text-sm">جاري تحميل الإحصائيات...</p>
-        </div>
-
-        <!-- Content -->
-        <div id="statsContent" class="hidden">
-
-            <!-- Overall Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 animate-in delay-2">
-                <div class="stat-card card-glass p-4 text-center">
-                    <span class="text-2xl mb-1 block">📝</span>
-                    <p class="text-purple-200/70 text-xs mb-0.5">إجمالي الأسئلة</p>
-                    <p class="text-2xl font-black" id="totalQuestions">0</p>
-                </div>
-                <div class="stat-card card-glass p-4 text-center">
-                    <span class="text-2xl mb-1 block">✅</span>
-                    <p class="text-purple-200/70 text-xs mb-0.5">الصحيحة</p>
-                    <p class="text-2xl font-black text-green-400" id="correctAnswers">0</p>
-                </div>
-                <div class="stat-card card-glass p-4 text-center">
-                    <span class="text-2xl mb-1 block">❌</span>
-                    <p class="text-purple-200/70 text-xs mb-0.5">الخاطئة</p>
-                    <p class="text-2xl font-black text-red-400" id="wrongAnswers">0</p>
-                </div>
-                <div class="stat-card card-glass p-4 text-center">
-                    <span class="text-2xl mb-1 block">🎯</span>
-                    <p class="text-purple-200/70 text-xs mb-0.5">نسبة النجاح</p>
-                    <p class="text-2xl font-black text-purple-300" id="successRate">0%</p>
-                </div>
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 fade-in">
+            <div class="glass rounded-2xl p-4 text-center">
+                <div class="text-3xl font-black text-white" id="totalAnswered">0</div>
+                <div class="text-white/50 text-xs mt-1">سؤال حُلّ</div>
             </div>
-
-            <!-- Section Analysis -->
-            <h2 class="text-lg font-bold mb-4 animate-in delay-3">التحليل حسب القسم</h2>
-
-            <div class="space-y-4">
-                <!-- Quant -->
-                <div class="animate-in delay-3 section-card sec-quant p-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">📐</div>
-                            <h3 class="text-base font-bold">قدرات كمي</h3>
-                        </div>
-                        <span class="text-2xl font-black text-blue-400" id="quantRate">0%</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">الإجمالي</p><p class="text-lg font-black text-blue-300" id="quantTotal">0</p></div>
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">صحيحة</p><p class="text-lg font-black text-green-400" id="quantCorrect">0</p></div>
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">خاطئة</p><p class="text-lg font-black text-red-400" id="quantWrong">0</p></div>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill h-full" id="quantProgress" style="width:0%;background:linear-gradient(90deg,#3b82f6,#6366f1)"></div></div>
-                </div>
-
-                <!-- Verbal -->
-                <div class="animate-in delay-4 section-card sec-verbal p-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:linear-gradient(135deg,#10b981,#14b8a6)">📖</div>
-                            <h3 class="text-base font-bold">قدرات لفظي</h3>
-                        </div>
-                        <span class="text-2xl font-black text-emerald-400" id="verbalRate">0%</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">الإجمالي</p><p class="text-lg font-black text-emerald-300" id="verbalTotal">0</p></div>
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">صحيحة</p><p class="text-lg font-black text-green-400" id="verbalCorrect">0</p></div>
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">خاطئة</p><p class="text-lg font-black text-red-400" id="verbalWrong">0</p></div>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill h-full" id="verbalProgress" style="width:0%;background:linear-gradient(90deg,#10b981,#14b8a6)"></div></div>
-                </div>
-
-                <!-- Tahsili -->
-                <div class="animate-in delay-5 section-card sec-tahsili p-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:linear-gradient(135deg,#a855f7,#8b5cf6)">🎓</div>
-                            <h3 class="text-base font-bold">التحصيلي</h3>
-                        </div>
-                        <span class="text-2xl font-black text-purple-400" id="tahsiliRate">0%</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">الإجمالي</p><p class="text-lg font-black text-purple-300" id="tahsiliTotal">0</p></div>
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">صحيحة</p><p class="text-lg font-black text-green-400" id="tahsiliCorrect">0</p></div>
-                        <div class="mini-stat"><p class="text-purple-200/60 text-xs">خاطئة</p><p class="text-lg font-black text-red-400" id="tahsiliWrong">0</p></div>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill h-full" id="tahsiliProgress" style="width:0%;background:linear-gradient(90deg,#a855f7,#8b5cf6)"></div></div>
-                </div>
+            <div class="glass rounded-2xl p-4 text-center">
+                <div class="text-3xl font-black text-green-400" id="overallAccuracy">0%</div>
+                <div class="text-white/50 text-xs mt-1">نسبة الصح</div>
             </div>
-
-            <!-- No Data -->
-            <div id="noDataMessage" class="hidden card-glass p-10 text-center mt-6">
-                <span class="text-5xl block mb-3">📝</span>
-                <h2 class="text-xl font-bold mb-2">ما بدأت بعد!</h2>
-                <p class="text-purple-200/70 text-sm mb-5">ابدأ حل الأسئلة عشان تشوف إحصائياتك هنا</p>
-                <a href="select-section.html" class="inline-block px-6 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">ابدأ التدريب</a>
+            <div class="glass rounded-2xl p-4 text-center">
+                <div class="text-3xl font-black text-yellow-400" id="bestTopic">—</div>
+                <div class="text-white/50 text-xs mt-1">أقوى موضوع</div>
+            </div>
+            <div class="glass rounded-2xl p-4 text-center">
+                <div class="text-3xl font-black text-red-400" id="weakestTopic">—</div>
+                <div class="text-white/50 text-xs mt-1">يحتاج تركيز</div>
             </div>
         </div>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
-        let currentUser = null;
+        <!-- Section Tabs -->
+        <div class="flex gap-2 fade-in">
+            <button onclick="showSection('all')" class="section-tab active px-4 py-2 rounded-full text-sm font-bold text-white/70 glass" id="tab-all">الكل</button>
+            <button onclick="showSection('quant')" class="section-tab px-4 py-2 rounded-full text-sm font-bold text-white/70 glass" id="tab-quant">⚡ كمي</button>
+            <button onclick="showSection('verbal')" class="section-tab px-4 py-2 rounded-full text-sm font-bold text-white/70 glass" id="tab-verbal">📖 لفظي</button>
+            <button onclick="showSection('tahsili')" class="section-tab px-4 py-2 rounded-full text-sm font-bold text-white/70 glass" id="tab-tahsili">🎓 تحصيلي</button>
+        </div>
 
-        async function checkAuth() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (!session) { window.location.href = 'login.html'; return false; }
-            currentUser = session.user;
-            return true;
+        <!-- Topics Grid -->
+        <div id="topicsGrid" class="space-y-3 fade-in"></div>
+
+        <!-- AI Report Section -->
+        <div id="aiReportSection" class="hidden fade-in">
+            <div class="ai-report rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">🤖</span>
+                    <div>
+                        <div class="text-white font-bold text-lg">تقريرك الذكي</div>
+                        <div class="text-white/50 text-xs">تحليل مخصص بناءً على أدائك</div>
+                    </div>
+                </div>
+                <div id="aiReportContent" class="text-white/80 leading-loose text-sm whitespace-pre-wrap"></div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="glass rounded-2xl p-5 fade-in">
+            <div class="text-white font-bold mb-4 flex items-center gap-2">
+                <span>🕐</span> آخر النشاطات
+            </div>
+            <div id="recentActivity" class="space-y-2"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const sb = window.supabase.createClient(
+    'https://czzcmbxejxbotjemyuqf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+);
+
+const topicNames = {
+    // كمي
+    algebra: 'جبر', arithmetic: 'حساب', geometry: 'هندسة', statistics: 'إحصاء',
+    // لفظي
+    analogy: 'تناظر لفظي', comprehension: 'استيعاب مقروء', sentence_completion: 'إكمال جمل',
+    // تحصيلي
+    biology: 'أحياء', chemistry: 'كيمياء', physics: 'فيزياء', math: 'رياضيات'
+};
+
+const topicIcons = {
+    algebra: '🔢', arithmetic: '➕', geometry: '📐', statistics: '📊',
+    analogy: '🔗', comprehension: '📚', sentence_completion: '✍️',
+    biology: '🧬', chemistry: '⚗️', physics: '⚡', math: '📐'
+};
+
+const sectionNames = { quant: 'كمي', verbal: 'لفظي', tahsili: 'تحصيلي' };
+
+let allData = [];
+let currentSection = 'all';
+
+async function loadStats() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    const userId = session.user.id;
+
+    // جلب كل الإجابات مع معلومات السؤال
+    const { data: attempts } = await sb.from('attempts')
+        .select('*, questions(section, topic)')
+        .eq('user_id', userId)
+        .order('answered_at', { ascending: false });
+
+    if (!attempts || attempts.length === 0) {
+        document.getElementById('loadingState').innerHTML = `
+            <div class="text-white/40 text-center py-20">
+                <div class="text-5xl mb-4">📭</div>
+                <div class="text-lg">ما حليت أسئلة بعد!</div>
+                <a href="select-section.html" class="mt-4 inline-block bg-purple-600 text-white px-6 py-2 rounded-full text-sm">ابدأ التدريب</a>
+            </div>`;
+        return;
+    }
+
+    allData = attempts;
+    renderStats(attempts);
+
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('statsContent').classList.remove('hidden');
+}
+
+function renderStats(data) {
+    // Summary
+    const total = data.length;
+    const correct = data.filter(a => a.is_correct).length;
+    const accuracy = total > 0 ? Math.round(correct / total * 100) : 0;
+
+    document.getElementById('totalAnswered').textContent = total.toLocaleString('ar');
+    document.getElementById('overallAccuracy').textContent = accuracy + '%';
+
+    // حساب أداء كل موضوع
+    const topicStats = {};
+    data.forEach(a => {
+        if (!a.questions) return;
+        const key = `${a.questions.section}__${a.questions.topic}`;
+        if (!topicStats[key]) topicStats[key] = { total: 0, correct: 0, section: a.questions.section, topic: a.questions.topic };
+        topicStats[key].total++;
+        if (a.is_correct) topicStats[key].correct++;
+    });
+
+    // أقوى وأضعف موضوع
+    const topicArr = Object.values(topicStats).filter(t => t.total >= 3);
+    if (topicArr.length > 0) {
+        topicArr.sort((a, b) => (b.correct/b.total) - (a.correct/a.total));
+        const best = topicArr[0];
+        const worst = topicArr[topicArr.length - 1];
+        document.getElementById('bestTopic').textContent = topicIcons[best.topic] || '⭐';
+        document.getElementById('bestTopic').parentElement.querySelector('.text-white\\/50').textContent = topicNames[best.topic] || best.topic;
+        document.getElementById('weakestTopic').textContent = topicIcons[worst.topic] || '⚠️';
+        document.getElementById('weakestTopic').parentElement.querySelector('.text-white\\/50').textContent = topicNames[worst.topic] || worst.topic;
+    }
+
+    renderTopicsGrid(topicStats);
+    renderRecentActivity(data.slice(0, 10));
+}
+
+function renderTopicsGrid(topicStats) {
+    const grid = document.getElementById('topicsGrid');
+    grid.innerHTML = '';
+
+    // فلترة حسب القسم المختار
+    const filtered = Object.values(topicStats).filter(t =>
+        currentSection === 'all' || t.section === currentSection
+    );
+
+    // ترتيب حسب نسبة الصح
+    filtered.sort((a, b) => {
+        const aRate = a.total > 0 ? a.correct / a.total : 0;
+        const bRate = b.total > 0 ? b.correct / b.total : 0;
+        return bRate - aRate;
+    });
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="text-white/40 text-center py-8">لا توجد بيانات لهذا القسم بعد</div>';
+        return;
+    }
+
+    // تجميع حسب القسم
+    const sections = [...new Set(filtered.map(t => t.section))];
+    sections.forEach(section => {
+        const sectionTopics = filtered.filter(t => t.section === section);
+        if (sectionTopics.length === 0) return;
+
+        if (currentSection === 'all') {
+            const sectionHeader = document.createElement('div');
+            sectionHeader.className = 'text-white/50 text-sm font-bold pt-2';
+            sectionHeader.textContent = `— ${sectionNames[section] || section} —`;
+            grid.appendChild(sectionHeader);
         }
 
-        async function loadStats() {
-            try {
-                const { data: attempts, error } = await sb.from('attempts').select('*, questions(section)').eq('user_id', currentUser.id);
-                if (error) throw error;
-                if (!attempts || attempts.length === 0) { showNoData(); return; }
+        sectionTopics.forEach((t, i) => {
+            const accuracy = t.total > 0 ? Math.round(t.correct / t.total * 100) : 0;
+            const color = accuracy >= 75 ? '#22c55e' : accuracy >= 50 ? '#f59e0b' : '#ef4444';
+            const label = accuracy >= 75 ? '✅ ممتاز' : accuracy >= 50 ? '⚡ متوسط' : '⚠️ يحتاج مراجعة';
 
-                const total = attempts.length;
-                const correct = attempts.filter(a => a.is_correct).length;
-                document.getElementById('totalQuestions').textContent = total;
-                document.getElementById('correctAnswers').textContent = correct;
-                document.getElementById('wrongAnswers').textContent = total - correct;
-                document.getElementById('successRate').textContent = Math.round((correct / total) * 100) + '%';
-
-                calcSection(attempts, 'quant');
-                calcSection(attempts, 'verbal');
-                calcSection(attempts, 'tahsili');
-
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('statsContent').classList.remove('hidden');
-            } catch (err) {
-                console.error(err);
-                document.getElementById('loadingState').innerHTML = '<div class="text-center"><span class="text-5xl block mb-3">⚠️</span><p class="text-purple-300/50 text-sm">حدث خطأ — <a href="" class="underline">حاول مرة ثانية</a></p></div>';
-            }
-        }
-
-        function calcSection(attempts, section) {
-            const sa = attempts.filter(a => a.questions && a.questions.section === section);
-            const t = sa.length, c = sa.filter(a => a.is_correct).length, r = t > 0 ? Math.round((c/t)*100) : 0;
-            document.getElementById(section+'Total').textContent = t;
-            document.getElementById(section+'Correct').textContent = c;
-            document.getElementById(section+'Wrong').textContent = t - c;
-            document.getElementById(section+'Rate').textContent = r + '%';
-            setTimeout(function() { document.getElementById(section+'Progress').style.width = r + '%'; }, 400);
-        }
-
-        function showNoData() {
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('statsContent').classList.remove('hidden');
-            document.getElementById('noDataMessage').classList.remove('hidden');
-        }
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            const ok = await checkAuth();
-            if (ok) await loadStats();
+            const card = document.createElement('div');
+            card.className = 'topic-card glass rounded-xl p-4';
+            card.style.animationDelay = `${i * 0.05}s`;
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${topicIcons[t.topic] || '📌'}</span>
+                        <div>
+                            <div class="text-white font-bold">${topicNames[t.topic] || t.topic}</div>
+                            <div class="text-white/40 text-xs">${t.total} سؤال</div>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-black text-xl" style="color:${color}">${accuracy}%</div>
+                        <div class="text-xs" style="color:${color}">${label}</div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${accuracy}%; background: linear-gradient(90deg, ${color}99, ${color})"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-xs text-white/40">
+                    <span>✅ ${t.correct} صح</span>
+                    <span>❌ ${t.total - t.correct} خطأ</span>
+                </div>
+            `;
+            grid.appendChild(card);
         });
-    </script>
+    });
+}
+
+function renderRecentActivity(data) {
+    const container = document.getElementById('recentActivity');
+    container.innerHTML = '';
+
+    const sectionEmojis = { quant: '⚡', verbal: '📖', tahsili: '🎓' };
+
+    data.forEach(a => {
+        if (!a.questions) return;
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between py-2 border-b border-white/5';
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span>${a.is_correct ? '✅' : '❌'}</span>
+                <span class="text-xs text-white/50">${sectionEmojis[a.questions.section] || ''} ${topicNames[a.questions.topic] || a.questions.topic || '—'}</span>
+            </div>
+            <span class="text-white/30 text-xs">${formatDate(a.answered_at)}</span>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function showSection(section) {
+    currentSection = section;
+    document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`tab-${section}`).classList.add('active');
+
+    const topicStats = {};
+    allData.forEach(a => {
+        if (!a.questions) return;
+        const key = `${a.questions.section}__${a.questions.topic}`;
+        if (!topicStats[key]) topicStats[key] = { total: 0, correct: 0, section: a.questions.section, topic: a.questions.topic };
+        topicStats[key].total++;
+        if (a.is_correct) topicStats[key].correct++;
+    });
+    renderTopicsGrid(topicStats);
+}
+
+async function generateAIReport() {
+    const btn = document.getElementById('aiBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ يحلل...';
+
+    const section = document.getElementById('aiReportSection');
+    const content = document.getElementById('aiReportContent');
+    section.classList.remove('hidden');
+    content.textContent = 'جاري توليد تقريرك الشخصي...';
+    section.scrollIntoView({ behavior: 'smooth' });
+
+    // تجميع ملخص الأداء
+    const topicStats = {};
+    allData.forEach(a => {
+        if (!a.questions) return;
+        const key = a.questions.topic || 'unknown';
+        if (!topicStats[key]) topicStats[key] = { total: 0, correct: 0, section: a.questions.section };
+        topicStats[key].total++;
+        if (a.is_correct) topicStats[key].correct++;
+    });
+
+    const summary = Object.entries(topicStats).map(([topic, s]) => {
+        const acc = Math.round(s.correct / s.total * 100);
+        return `${topicNames[topic] || topic} (${s.section}): ${s.correct}/${s.total} صح = ${acc}%`;
+    }).join('\n');
+
+    const total = allData.length;
+    const correct = allData.filter(a => a.is_correct).length;
+    const overall = Math.round(correct / total * 100);
+
+    const prompt = `أنت مساعد تعليمي متخصص في اختبارات قياس السعودية (قدرات وتحصيل).
+
+بيانات الطالب:
+- إجمالي الأسئلة: ${total}
+- نسبة الصح الكلية: ${overall}%
+
+تفاصيل الأداء حسب الموضوع:
+${summary}
+
+اكتب تقريراً شخصياً مختصراً (10-15 سطر) باللغة العربية يتضمن:
+1. تقييم عام لأداء الطالب
+2. أبرز نقاط القوة (المواضيع اللي فوق 70%)
+3. المواضيع الأكثر إلحاحاً للمراجعة (أقل من 50%)
+4. خطة عملية مختصرة (3 خطوات)
+5. جملة تحفيزية في النهاية
+
+استخدم أسلوباً ودياً وداعماً مع الحفاظ على الدقة.`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                messages: [{ role: 'user', content: prompt }]
+            })
+        });
+        const data = await res.json();
+        const text = data.content?.[0]?.text || 'تعذر توليد التقرير';
+        content.textContent = text;
+    } catch (e) {
+        content.textContent = 'تعذر الاتصال. تأكد من الاتصال بالإنترنت.';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<span>✨</span> تقرير ذكي';
+}
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.floor((now - d) / 1000);
+    if (diff < 60) return 'الآن';
+    if (diff < 3600) return `${Math.floor(diff/60)} د`;
+    if (diff < 86400) return `${Math.floor(diff/3600)} س`;
+    return `${Math.floor(diff/86400)} ي`;
+}
+
+loadStats();
+</script>
 </body>
 </html>
