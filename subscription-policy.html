@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سياسة الاشتراكات - خوارز</title>
+    <title>سياسة الاشتراكات - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -12,28 +12,35 @@
         .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
         @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-in{animation:fadeUp .5s ease forwards}.delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:6px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+    </style>
 </head>
-<body class="text-white" style="font-family:'Tajawal',sans-serif">
+<body class="text-white">
 
     <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between animate-in delay-1">
         <a href="index.html" class="flex items-center gap-2 text-purple-300/70 hover:text-white transition text-sm">
             <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             <span>الرئيسية</span>
         </a>
-        <div class="flex items-center gap-2">
-            <div class="kh-logo"><span class="kh-kha" style="font-size:24px">خـ</span><span class="kh-ar" style="font-size:24px">ـوارز</span><div class="kh-en-wrap" style="margin-top:0px"><div class="kh-en-line kh-en-line-r"></div><span class="kh-en" style="font-size:7px">KHAWARIZ</span><div class="kh-en-line kh-en-line-l"></div></div></div>
-            <div class="kh-logo"><span class="kh-kha" style="font-size:20px">خـ</span><span class="kh-ar" style="font-size:20px">ـوارز</span><div class="kh-en-wrap" style="margin-top:1px"><div class="kh-en-line kh-en-line-r" style="width:10px"></div><span class="kh-en" style="font-size:6px;letter-spacing:3px">KHAWARIZ</span><div class="kh-en-line kh-en-line-l" style="width:10px"></div></div></div>
-        </div>
+        <a href="index.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="17" height="17" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <span class="name">مدارك النخبة</span>
+        </a>
         <div class="w-16"></div>
     </div>
 
@@ -44,31 +51,29 @@
         </div>
 
         <div class="space-y-4 animate-in delay-2">
-            <!-- Plans -->
+
             <div class="card-glass p-5">
                 <h2 class="font-bold text-base mb-4">أنواع الاشتراكات</h2>
                 <div class="grid sm:grid-cols-2 gap-3">
                     <div class="p-4 rounded-xl" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">
                         <h3 class="font-bold text-sm text-indigo-300 mb-1">📅 الاشتراك الشهري</h3>
                         <p class="text-2xl font-black mb-0.5">29 <span class="text-sm text-purple-200/70">ريال/شهر</span></p>
-                        <p class="text-purple-200/70 text-xs">يتجدد تلقائياً كل شهر</p>
+                        <p class="text-purple-200/60 text-xs">يتجدد تلقائياً كل شهر</p>
                     </div>
                     <div class="p-4 rounded-xl" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
                         <h3 class="font-bold text-sm text-emerald-300 mb-1">💎 الاشتراك السنوي</h3>
                         <p class="text-2xl font-black mb-0.5">228 <span class="text-sm text-purple-200/70">ريال/سنة</span></p>
-                        <p class="text-purple-200/70 text-xs">وفّر 120 ريال (34%)</p>
+                        <p class="text-purple-200/60 text-xs">وفّر 120 ريال (34%)</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Auto Renewal -->
             <div class="card-glass p-5">
                 <h2 class="font-bold text-base mb-3">التجديد التلقائي</h2>
                 <p class="text-purple-200/60 text-sm leading-relaxed mb-2">الاشتراكات تتجدد تلقائياً في نهاية كل فترة. يتم الخصم من وسيلة الدفع المسجلة.</p>
                 <p class="text-purple-200/60 text-sm">تقدر توقف التجديد التلقائي بأي وقت من إعدادات حسابك.</p>
             </div>
 
-            <!-- Upgrade -->
             <div class="card-glass p-5">
                 <h2 class="font-bold text-base mb-3">الترقية والتخفيض</h2>
                 <div class="space-y-2 text-purple-200/60 text-sm">
@@ -77,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- Cancellation -->
             <div class="card-glass p-5">
                 <h2 class="font-bold text-base mb-3">إلغاء الاشتراك</h2>
                 <p class="text-purple-200/60 text-sm mb-3">لما تلغي اشتراكك:</p>
@@ -89,22 +93,26 @@
                 </div>
             </div>
 
-            <!-- How to cancel -->
             <div class="card-glass p-5">
                 <h2 class="font-bold text-base mb-3">كيف ألغي الاشتراك؟</h2>
-                <div class="flex items-center gap-2 text-sm text-purple-200/60">
+                <div class="flex items-center gap-2 text-sm text-purple-200/60 flex-wrap">
                     <span class="text-purple-300">لوحة التحكم</span><span class="text-purple-200/50">←</span>
                     <span class="text-purple-300">الإعدادات</span><span class="text-purple-200/50">←</span>
                     <span class="text-purple-300">الاشتراكات</span><span class="text-purple-200/50">←</span>
                     <span class="text-white font-bold">إلغاء الاشتراك</span>
                 </div>
             </div>
+
+            <div class="card-glass p-5 text-center" style="background:rgba(99,102,241,0.06);border-color:rgba(99,102,241,0.2)">
+                <p class="text-purple-200/60 text-sm mb-2">تواصل معنا</p>
+                <a href="mailto:support@madarekelite.sa" class="text-indigo-400 hover:text-indigo-300 font-bold text-sm transition">support@madarekelite.sa</a>
+            </div>
         </div>
     </main>
 
     <footer class="border-t border-purple-500/10 mt-8">
         <div class="max-w-3xl mx-auto px-4 py-6 text-center">
-            <p class="text-purple-200/50 text-xs">© 2026 خوارز — جميع الحقوق محفوظة</p>
+            <p class="text-purple-200/40 text-xs">© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
         </div>
     </footer>
 </body>
