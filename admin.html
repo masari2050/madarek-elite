@@ -40,6 +40,25 @@
         .rr{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:.75rem}.rr:hover{background:rgba(255,255,255,0.03)}
         .rn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0}
         @media(max-width:768px){.sidebar{display:none}.mc{margin-right:0;padding:16px}}
+        /* ── Permissions System ── */
+        .perm-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:.875rem;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;transition:all .2s}
+        .perm-card:hover{background:rgba(255,255,255,0.055);border-color:rgba(139,92,246,0.2)}
+        .perm-card.disabled{opacity:.35;pointer-events:none}
+        .toggle-wrap{position:relative;width:50px;height:28px;flex-shrink:0}
+        .toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+        .toggle-track{position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:28px;cursor:pointer;transition:.3s;border:1px solid rgba(255,255,255,0.08)}
+        .toggle-track:before{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;top:2px;right:2px;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+        .toggle-wrap input:checked+.toggle-track{background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:transparent}
+        .toggle-wrap input:checked+.toggle-track:before{transform:translateX(-22px)}
+        .role-box{border:2px solid transparent;border-radius:1rem;padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+        .role-box.admin-box{background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.15)}
+        .role-box.admin-box.selected{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.5)}
+        .role-box.staff-box{background:rgba(139,92,246,0.05);border-color:rgba(139,92,246,0.15)}
+        .role-box.staff-box.selected{background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.5)}
+        .badge-admin{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25);padding:2px 10px;border-radius:999px;font-size:.75rem;font-weight:700;display:inline-block}
+        .badge-staff{background:rgba(139,92,246,0.12);color:#c4b5fd;border:1px solid rgba(139,92,246,0.25);padding:2px 10px;border-radius:999px;font-size:.75rem;font-weight:700;display:inline-block}
+        .perm-preview{display:inline-flex;gap:4px;flex-wrap:wrap;justify-content:center}
+
         /* Madarek Logo */
         @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
@@ -76,13 +95,13 @@
         <p class="text-[10px] text-purple-200/50 mr-1">لوحة الإدارة</p>
     </div>
     <div class="sb-link on" data-tab="overview"><span>📊</span><span>نظرة عامة</span></div>
-    <div class="sb-link" data-tab="questions"><span>📝</span><span>الأسئلة</span></div>
-    <div class="sb-link" data-tab="users"><span>👥</span><span>الأعضاء</span></div>
-    <div class="sb-link" data-tab="coupons"><span>🎟️</span><span>الكوبونات</span></div>
-    <div class="sb-link" data-tab="finance"><span>💰</span><span>المالية</span></div>
-    <div class="sb-link" data-tab="reports"><span>🚩</span><span>البلاغات</span></div>
-    <div class="sb-link" data-tab="staff"><span>🔑</span><span>الموظفين</span></div>
-    <div class="sb-link" data-tab="settings"><span>⚙️</span><span>الإعدادات</span></div>
+    <div class="sb-link" data-tab="questions" data-perm="questions"><span>📝</span><span>الأسئلة</span></div>
+    <div class="sb-link" data-tab="users" data-perm="users"><span>👥</span><span>الأعضاء</span></div>
+    <div class="sb-link" data-tab="coupons" data-perm="coupons"><span>🎟️</span><span>الكوبونات</span></div>
+    <div class="sb-link" data-tab="finance" data-perm="finance"><span>💰</span><span>المالية</span></div>
+    <div class="sb-link" data-tab="reports" data-perm="reports"><span>🚩</span><span>البلاغات</span></div>
+    <div class="sb-link" data-tab="staff" data-perm="staff"><span>🔑</span><span>الموظفين</span></div>
+    <div class="sb-link" data-tab="settings" data-perm="settings"><span>⚙️</span><span>الإعدادات</span></div>
     <div class="mt-4 p-4 border-t border-purple-500/10">
         <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
     </div>
@@ -154,8 +173,8 @@
 
 <!-- ═══ الموظفين ═══ -->
 <div id="t-staff" class="tab">
-    <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🔑 الموظفين</h2><button class="bp" onclick="$('staffM').classList.remove('hidden')">+ إضافة موظف</button></div>
-    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الاسم</th><th class="text-right p-3 text-purple-300/50">الإيميل</th><th class="text-center p-3 text-purple-300/50">الدور</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="st-list"></tbody></table></div>
+    <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🔑 الموظفين</h2><button class="bp" onclick="openStaffModal()">+ إضافة موظف</button></div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الاسم</th><th class="text-right p-3 text-purple-300/50">الإيميل</th><th class="text-center p-3 text-purple-300/50">الدور</th><th class="text-center p-3 text-purple-300/50">الصلاحيات</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="st-list"></tbody></table></div>
 </div>
 
 <!-- ═══ الإعدادات ═══ -->
@@ -220,10 +239,49 @@
     </div>
 </div></div>
 
-<!-- ═══ Staff Modal ═══ -->
-<div id="staffM" class="mbg hidden"><div class="mbox">
-    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">إضافة موظف</h3><button onclick="$('staffM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
-    <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">إيميل الموظف</label><input id="sm-e" class="inp"></div><button class="bp w-full" onclick="saveSt2()">💾 إضافة كأدمن</button></div>
+<!-- ═══ Staff Modal — نظام الصلاحيات ═══ -->
+<div id="staffM" class="mbg hidden"><div class="mbox" style="max-width:560px">
+    <div class="flex items-center justify-between mb-5">
+        <h3 class="font-bold text-lg" id="staffM-title">إضافة موظف</h3>
+        <button onclick="closeStaffModal()" class="text-purple-200/60 hover:text-white text-lg">✕</button>
+    </div>
+    <input type="hidden" id="sm-uid">
+
+    <!-- إيميل -->
+    <div class="mb-5">
+        <label class="text-purple-300/50 text-sm mb-1 block">إيميل الموظف</label>
+        <input id="sm-e" class="inp" placeholder="example@email.com">
+    </div>
+
+    <!-- نوع الوصول -->
+    <div class="mb-5">
+        <label class="text-purple-300/50 text-sm mb-3 block">نوع الوصول</label>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="role-box admin-box" id="role-admin-box" onclick="selectStaffRole('admin')">
+                <div class="text-2xl mb-1">👑</div>
+                <div class="font-bold text-white text-sm">أدمن كامل</div>
+                <div class="text-red-400/70 text-xs mt-1">صلاحية على كل شيء</div>
+            </div>
+            <div class="role-box staff-box selected" id="role-staff-box" onclick="selectStaffRole('staff')">
+                <div class="text-2xl mb-1">👤</div>
+                <div class="font-bold text-white text-sm">موظف</div>
+                <div class="text-purple-400/70 text-xs mt-1">صلاحيات مخصصة</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الصلاحيات -->
+    <div id="sm-perms">
+        <label class="text-purple-300/50 text-sm mb-3 block">الصلاحيات</label>
+        <div class="perm-card"><div><p class="font-bold text-white text-sm">📝 الأسئلة</p><p class="text-purple-200/50 text-xs mt-0.5">إضافة وتعديل وحذف الأسئلة</p></div><label class="toggle-wrap"><input type="checkbox" id="perm-questions" checked><span class="toggle-track"></span></label></div>
+        <div class="perm-card"><div><p class="font-bold text-white text-sm">👥 الأعضاء</p><p class="text-purple-200/50 text-xs mt-0.5">عرض وتعديل بيانات الأعضاء</p></div><label class="toggle-wrap"><input type="checkbox" id="perm-users"><span class="toggle-track"></span></label></div>
+        <div class="perm-card"><div><p class="font-bold text-white text-sm">💰 المالية</p><p class="text-purple-200/50 text-xs mt-0.5">عرض الإحصائيات المالية</p></div><label class="toggle-wrap"><input type="checkbox" id="perm-finance"><span class="toggle-track"></span></label></div>
+        <div class="perm-card"><div><p class="font-bold text-white text-sm">🎟️ الكوبونات</p><p class="text-purple-200/50 text-xs mt-0.5">إنشاء وإدارة الكوبونات</p></div><label class="toggle-wrap"><input type="checkbox" id="perm-coupons"><span class="toggle-track"></span></label></div>
+        <div class="perm-card"><div><p class="font-bold text-white text-sm">🚩 البلاغات</p><p class="text-purple-200/50 text-xs mt-0.5">مراجعة ومعالجة البلاغات</p></div><label class="toggle-wrap"><input type="checkbox" id="perm-reports" checked><span class="toggle-track"></span></label></div>
+        <div class="perm-card"><div><p class="font-bold text-white text-sm">⚙️ الإعدادات</p><p class="text-purple-200/50 text-xs mt-0.5">تعديل إعدادات الموقع والأسعار</p></div><label class="toggle-wrap"><input type="checkbox" id="perm-settings"><span class="toggle-track"></span></label></div>
+    </div>
+
+    <button class="bp w-full mt-5" onclick="saveStaff2()">💾 حفظ</button>
 </div></div>
 
 <!-- ═══ Preview Modal ═══ -->
@@ -248,17 +306,38 @@ function updateSubSec(){
     $('qm-sub').innerHTML=opts.map(function(o){return'<option value="'+o+'">'+o+'</option>'}).join('');
 }
 
+var myPerms=null; // null = أدمن كامل
+
 async function init(){
     var{data:{session}}=await sb.auth.getSession();
     if(!session){location.href='admin-login.html';return}
-    var{data:p}=await sb.from('profiles').select('role,full_name').eq('id',session.user.id).single();
-    if(!p||p.role!=='admin'){location.href='admin-login.html';return}
-    me={id:session.user.id,...p};loadOV();
+    var{data:p}=await sb.from('profiles').select('role,full_name,permissions').eq('id',session.user.id).single();
+    if(!p||(p.role!=='admin'&&p.role!=='staff')){location.href='admin-login.html';return}
+    me={id:session.user.id,...p};
+    if(p.role==='staff'&&p.permissions){
+        myPerms=typeof p.permissions==='string'?JSON.parse(p.permissions):p.permissions;
+    }
+    applyPerms();
+    loadOV();
+}
+
+function hasPerm(perm){
+    if(!me)return false;
+    if(me.role==='admin')return true;
+    return myPerms&&myPerms[perm]===true;
+}
+
+function applyPerms(){
+    document.querySelectorAll('.sb-link[data-perm]').forEach(function(el){
+        el.style.display=hasPerm(el.dataset.perm)?'':'none';
+    });
 }
 
 document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
     el.addEventListener('click',function(){
         var t=this.dataset.tab;
+        var perm=this.dataset.perm;
+        if(perm&&!hasPerm(perm)){toast('ما عندك صلاحية للوصول لهذا القسم',false);return}
         document.querySelectorAll('.tab').forEach(function(s){s.classList.remove('on')});
         document.querySelectorAll('.sb-link').forEach(function(l){l.classList.remove('on')});
         $('t-'+t).classList.add('on');this.classList.add('on');
