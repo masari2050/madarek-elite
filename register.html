@@ -3,183 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب - خوارز</title>
+    <title>إنشاء حساب - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { tajawal: ['Tajawal', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%);
-            min-height: 100vh;
-        }
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .card-glow{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px)}
+        .input-field{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:white;transition:all .3s ease}
+        .input-field:focus{outline:none;border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,0.2);background:rgba(255,255,255,0.1)}
+        .input-field::placeholder{color:rgba(255,255,255,0.3)}
+        .gender-btn{transition:all .3s ease;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);cursor:pointer}
+        .gender-btn:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.08)}
+        .gender-btn.male-active{border-color:#3b82f6;background:rgba(59,130,246,0.15);color:#93c5fd;box-shadow:0 0 25px rgba(59,130,246,0.2)}
+        .gender-btn.female-active{border-color:#ec4899;background:rgba(236,72,153,0.15);color:#f9a8d4;box-shadow:0 0 25px rgba(236,72,153,0.2)}
+        .btn-submit{background:linear-gradient(135deg,#8b5cf6,#6366f1,#4f46e5);transition:all .3s ease;cursor:pointer}
+        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(139,92,246,0.4)}
+        .btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        .password-wrapper{position:relative}
+        .password-toggle{position:absolute;left:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,0.35);transition:color .2s;background:none;border:none;padding:4px}
+        .password-toggle:hover{color:rgba(255,255,255,0.7)}
+        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);opacity:0;transition:all .4s ease;z-index:1000;pointer-events:none}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .6s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}
+        .marquee-container{overflow:hidden;white-space:nowrap}
+        .marquee-text{display:inline-block;animation:marquee 25s linear infinite}
+        @keyframes marquee{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        .custom-checkbox{width:20px;height:20px;accent-color:#8b5cf6;cursor:pointer}
+        .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.15;pointer-events:none}
+        .orb-1{width:300px;height:300px;background:#8b5cf6;top:-100px;right:-100px}
+        .orb-2{width:250px;height:250px;background:#6366f1;bottom:-80px;left:-80px}
 
-        .card-glow {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-        }
-
-        .input-field {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: white;
-            transition: all 0.3s ease;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
-            background: rgba(255,255,255,0.1);
-        }
-        .input-field::placeholder { color: rgba(255,255,255,0.3); }
-
-        /* Gender Buttons */
-        .gender-btn {
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.5);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .gender-btn:hover {
-            border-color: rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.08);
-        }
-        .gender-btn.male-active {
-            border-color: #3b82f6;
-            background: rgba(59,130,246,0.15);
-            color: #93c5fd;
-            box-shadow: 0 0 25px rgba(59,130,246,0.2);
-        }
-        .gender-btn.female-active {
-            border-color: #ec4899;
-            background: rgba(236,72,153,0.15);
-            color: #f9a8d4;
-            box-shadow: 0 0 25px rgba(236,72,153,0.2);
-        }
-
-        /* Submit Button */
-        .btn-submit {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1, #4f46e5);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(139,92,246,0.4);
-        }
-        .btn-submit:active { transform: translateY(0); }
-        .btn-submit:disabled {
-            opacity: 0.6; cursor: not-allowed;
-            transform: none !important; box-shadow: none !important;
-        }
-
-        /* Password toggle */
-        .password-wrapper { position: relative; }
-        .password-toggle {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: rgba(255,255,255,0.35); transition: color 0.2s;
-            background: none; border: none; padding: 4px;
-        }
-        .password-toggle:hover { color: rgba(255,255,255,0.7); }
-
-        /* Toast */
-        .toast {
-            position: fixed; top: 20px; left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            opacity: 0; transition: all 0.4s ease; z-index: 1000; pointer-events: none;
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        /* Spinner */
-        .spinner {
-            width: 20px; height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white; border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-            display: inline-block; vertical-align: middle;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Animations */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(25px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-in { animation: fadeUp 0.6s ease forwards; }
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .delay-4 { animation-delay: 0.4s; opacity: 0; }
-        .delay-5 { animation-delay: 0.5s; opacity: 0; }
-
-        /* Marquee */
-        .marquee-container { overflow: hidden; white-space: nowrap; }
-        .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        /* Checkbox */
-        .custom-checkbox {
-            width: 20px; height: 20px;
-            accent-color: #8b5cf6;
-            cursor: pointer;
-        }
-
-        /* Logo pulse */
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .logo-icon { animation: logoPulse 3s ease-in-out infinite; }
-
-        /* Floating orbs background */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.15;
-            pointer-events: none;
-        }
-        .orb-1 {
-            width: 300px; height: 300px;
-            background: #8b5cf6;
-            top: -100px; right: -100px;
-        }
-        .orb-2 {
-            width: 250px; height: 250px;
-            background: #6366f1;
-            bottom: -80px; left: -80px;
-        }
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+    </style>
 </head>
 <body class="font-tajawal text-white">
-    <!-- Background Orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <!-- Toast -->
     <div id="toast" class="toast">
         <div class="bg-gray-800/95 border border-gray-600/50 rounded-2xl px-6 py-3.5 shadow-2xl flex items-center gap-3 backdrop-blur-sm">
             <span id="toast-icon" class="text-xl">✅</span>
@@ -187,237 +55,103 @@
         </div>
     </div>
 
-    <!-- Top Banner -->
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
         <div class="marquee-container py-2.5">
-            <span class="marquee-text text-sm text-purple-200/90">✨ نعمل خلف الكواليس لتطوير خوارز — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
+            <span class="marquee-text text-sm text-purple-200/90">✨ مدارك النخبة تتطور يومياً — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="max-w-md mx-auto px-4 py-8">
 
         <!-- Logo & Welcome -->
-        <div class="animate-in delay-1 text-center mb-8">
-            <div class="kh-logo"><span class="kh-kha" style="font-size:36px">خـ</span><span class="kh-ar" style="font-size:36px">ـوارز</span><div class="kh-en-wrap" style="margin-top:2px"><div class="kh-en-line kh-en-line-r" style="width:20px;height:1.5px"></div><span class="kh-en" style="font-size:9px;letter-spacing:5px">KHAWARIZ</span><div class="kh-en-line kh-en-line-l" style="width:20px;height:1.5px"></div></div></div>
-            <h1 class="text-3xl font-black mb-2">مرحباً بك في خوارز</h1>
-            <p class="text-purple-300/70 text-sm">أنشئ حسابك وابدأ رحلتك نحو التميز</p>
+        <div class="animate-in delay-1 flex flex-col items-center mb-8">
+            <a href="index.html" class="flex flex-col items-center gap-3 mb-5" style="text-decoration:none">
+                <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite">
+                    <div style="position:absolute;inset:3px;border-radius:14px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite"></div>
+                    <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1">مدارك النخبة</div>
+                    <div style="font-family:'Tajawal',sans-serif;font-size:10px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:2px">حيث يُصنع التميّز</div>
+                </div>
+            </a>
+            <h1 class="text-2xl font-black mb-1">مرحباً بك في مدارك</h1>
+            <p class="text-purple-300/60 text-sm">أنشئ حسابك وابدأ رحلتك نحو التميز</p>
         </div>
 
         <!-- Form Card -->
         <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
 
-            <!-- الاسم الكامل -->
             <div class="mb-5">
                 <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">الاسم الكامل</label>
                 <input type="text" id="name" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="مثال: محمد أحمد">
             </div>
 
-            <!-- البريد الإلكتروني -->
             <div class="mb-5">
                 <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">البريد الإلكتروني</label>
                 <input type="email" id="email" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="example@gmail.com" dir="ltr" style="text-align:right;">
             </div>
 
-            <!-- كلمة المرور -->
             <div class="mb-5">
                 <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">كلمة المرور</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="6 أحرف على الأقل" dir="ltr" style="text-align:right;">
-                    <button type="button" class="password-toggle" onclick="togglePw('password', this)">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    </button>
+                    <button type="button" class="password-toggle" onclick="togglePw('password',this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                 </div>
             </div>
 
-            <!-- تأكيد كلمة المرور -->
             <div class="mb-5">
                 <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">تأكيد كلمة المرور</label>
                 <div class="password-wrapper">
                     <input type="password" id="confirmPassword" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="أعد كتابة كلمة المرور" dir="ltr" style="text-align:right;">
-                    <button type="button" class="password-toggle" onclick="togglePw('confirmPassword', this)">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    </button>
+                    <button type="button" class="password-toggle" onclick="togglePw('confirmPassword',this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                 </div>
             </div>
 
-            <!-- اختيار الجنس -->
             <div class="mb-5">
                 <label class="block text-xs text-purple-300/60 mb-2 font-medium">الجنس</label>
                 <div class="grid grid-cols-2 gap-3">
-                    <!-- ذكر — اليمين (RTL) -->
-                    <button type="button" id="maleBtn" onclick="selectGender('male')" class="gender-btn male-active rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2">
-                        <span>👦</span>
-                        <span>ذكر</span>
-                    </button>
-                    <!-- أنثى — اليسار (RTL) -->
-                    <button type="button" id="femaleBtn" onclick="selectGender('female')" class="gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2">
-                        <span>👧</span>
-                        <span>أنثى</span>
-                    </button>
+                    <button type="button" id="maleBtn" onclick="selectGender('male')" class="gender-btn male-active rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2"><span>👦</span><span>ذكر</span></button>
+                    <button type="button" id="femaleBtn" onclick="selectGender('female')" class="gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2"><span>👧</span><span>أنثى</span></button>
                 </div>
                 <input type="hidden" id="gender" value="male">
             </div>
 
-            <!-- الموافقة على الشروط -->
             <div class="flex items-start gap-3 mb-6">
                 <input type="checkbox" id="terms" class="custom-checkbox mt-0.5 flex-shrink-0">
                 <label for="terms" class="text-xs text-purple-300/70 leading-relaxed cursor-pointer">
-                    أوافق على
-                    <a href="terms.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">شروط الاستخدام</a>
-                    و
-                    <a href="privacy.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">سياسة الخصوصية</a>
+                    أوافق على <a href="terms.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">شروط الاستخدام</a> و <a href="privacy.html" target="_blank" class="text-purple-400 hover:text-purple-300 underline">سياسة الخصوصية</a>
                 </label>
             </div>
 
-            <!-- زر إنشاء الحساب -->
             <button type="button" id="submitBtn" onclick="handleRegister()" class="btn-submit w-full rounded-xl py-3.5 text-sm font-bold text-white">
                 <span id="submit-text">🚀 إنشاء الحساب</span>
                 <span id="submit-spinner" class="hidden"><span class="spinner"></span> جاري إنشاء الحساب...</span>
             </button>
         </div>
 
-        <!-- رابط تسجيل الدخول -->
         <div class="animate-in delay-3 text-center">
-            <p class="text-purple-300/50 text-sm">
-                عندك حساب؟
-                <a href="login.html" class="text-purple-400 hover:text-purple-300 font-bold underline">سجّل دخول</a>
-            </p>
+            <p class="text-purple-300/50 text-sm">عندك حساب؟ <a href="login.html" class="text-purple-400 hover:text-purple-300 font-bold underline">سجّل دخول</a></p>
         </div>
 
-        <p class="text-center text-purple-200/50 text-xs mt-8">خوارز v1.0</p>
+        <p class="text-center text-purple-200/30 text-xs mt-8">مدارك النخبة v1.0</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================================
-        // Use "sb" to avoid conflict with Supabase SDK global
-        // ============================================================
-        const sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
-
-        // ============ Toast ============
-        function showToast(msg, icon) {
-            document.getElementById('toast-msg').textContent = msg;
-            document.getElementById('toast-icon').textContent = icon || '✅';
-            document.getElementById('toast').classList.add('show');
-            setTimeout(function() { document.getElementById('toast').classList.remove('show'); }, 4000);
-        }
-
-        // ============ Password Toggle ============
-        function togglePw(id, btn) {
-            const inp = document.getElementById(id);
-            if (inp.type === 'password') {
-                inp.type = 'text';
-                btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';
-            } else {
-                inp.type = 'password';
-                btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
-            }
-        }
-
-        // ============ Gender Selection ============
-        function selectGender(gender) {
-            document.getElementById('gender').value = gender;
-            const maleBtn = document.getElementById('maleBtn');
-            const femaleBtn = document.getElementById('femaleBtn');
-
-            // Reset both
-            maleBtn.className = 'gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2';
-            femaleBtn.className = 'gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2';
-
-            if (gender === 'male') {
-                maleBtn.classList.add('male-active');
-            } else {
-                femaleBtn.classList.add('female-active');
-            }
-        }
-
-        // ============ Register ============
-        async function handleRegister() {
-            const btn = document.getElementById('submitBtn');
-            if (btn.disabled) return;
-
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const gender = document.getElementById('gender').value;
-            const terms = document.getElementById('terms').checked;
-
-            // Validations
-            if (!name) { showToast('ادخل اسمك الكامل', '⚠️'); return; }
-            if (!email) { showToast('ادخل بريدك الإلكتروني', '⚠️'); return; }
-            if (!password) { showToast('ادخل كلمة المرور', '⚠️'); return; }
-            if (password.length < 6) { showToast('كلمة المرور لازم تكون 6 أحرف على الأقل', '⚠️'); return; }
-            if (password !== confirmPassword) { showToast('كلمات المرور ما تتطابق', '⚠️'); return; }
-            if (!terms) { showToast('لازم توافق على الشروط والأحكام', '⚠️'); return; }
-
-            // Start
-            btn.disabled = true;
-            document.getElementById('submit-text').classList.add('hidden');
-            document.getElementById('submit-spinner').classList.remove('hidden');
-
-            try {
-                const { data, error } = await sb.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            name: name,
-                            gender: gender
-                        }
-                    }
-                });
-
-                if (error) {
-                    if (error.message.includes('already registered')) {
-                        showToast('هذا البريد الإلكتروني مسجل مسبقاً', '⚠️');
-                    } else if (error.message.includes('Invalid email')) {
-                        showToast('البريد الإلكتروني غير صحيح', '⚠️');
-                    } else if (error.message.includes('Password')) {
-                        showToast('كلمة المرور ضعيفة جداً', '⚠️');
-                    } else {
-                        showToast('حدث خطأ: ' + error.message, '❌');
-                    }
-                    resetBtn(); return;
-                }
-
-                // Success
-                showToast('تم إنشاء الحساب بنجاح!', '🎉');
-                document.getElementById('submit-text').textContent = '✅ تم بنجاح! جاري التحويل...';
-                document.getElementById('submit-text').classList.remove('hidden');
-                document.getElementById('submit-spinner').classList.add('hidden');
-
-                setTimeout(function() {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-
-            } catch (err) {
-                console.error('Register error:', err);
-                showToast('حدث خطأ غير متوقع', '❌');
-                resetBtn();
-            }
-        }
-
-        function resetBtn() {
-            document.getElementById('submitBtn').disabled = false;
-            document.getElementById('submit-text').classList.remove('hidden');
-            document.getElementById('submit-spinner').classList.add('hidden');
-        }
-
-        // ============ Check existing user ============
-        async function checkExisting() {
-            try {
-                const { data: { session } } = await sb.auth.getSession();
-                if (session) {
-                    window.location.href = 'dashboard.html';
-                }
-            } catch(e) {}
-        }
-        checkExisting();
+        const sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+        function showToast(msg,icon){document.getElementById('toast-msg').textContent=msg;document.getElementById('toast-icon').textContent=icon||'✅';document.getElementById('toast').classList.add('show');setTimeout(function(){document.getElementById('toast').classList.remove('show')},4000)}
+        function togglePw(id,btn){const inp=document.getElementById(id);if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>'}else{inp.type='password';btn.innerHTML='<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>'}}
+        function selectGender(g){document.getElementById('gender').value=g;const m=document.getElementById('maleBtn'),f=document.getElementById('femaleBtn');m.className='gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2';f.className='gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2';if(g==='male')m.classList.add('male-active');else f.classList.add('female-active')}
+        async function handleRegister(){const btn=document.getElementById('submitBtn');if(btn.disabled)return;const name=document.getElementById('name').value.trim(),email=document.getElementById('email').value.trim(),pw=document.getElementById('password').value,cpw=document.getElementById('confirmPassword').value,gender=document.getElementById('gender').value,terms=document.getElementById('terms').checked;if(!name){showToast('ادخل اسمك الكامل','⚠️');return}if(!email){showToast('ادخل بريدك الإلكتروني','⚠️');return}if(!pw){showToast('ادخل كلمة المرور','⚠️');return}if(pw.length<6){showToast('كلمة المرور لازم تكون 6 أحرف على الأقل','⚠️');return}if(pw!==cpw){showToast('كلمات المرور ما تتطابق','⚠️');return}if(!terms){showToast('لازم توافق على الشروط والأحكام','⚠️');return}btn.disabled=true;document.getElementById('submit-text').classList.add('hidden');document.getElementById('submit-spinner').classList.remove('hidden');try{const{data,error}=await sb.auth.signUp({email,password:pw,options:{data:{name,gender}}});if(error){if(error.message.includes('already registered'))showToast('هذا البريد الإلكتروني مسجل مسبقاً','⚠️');else if(error.message.includes('Invalid email'))showToast('البريد الإلكتروني غير صحيح','⚠️');else showToast('حدث خطأ: '+error.message,'❌');resetBtn();return}showToast('تم إنشاء الحساب بنجاح!','🎉');document.getElementById('submit-text').textContent='✅ تم بنجاح! جاري التحويل...';document.getElementById('submit-text').classList.remove('hidden');document.getElementById('submit-spinner').classList.add('hidden');setTimeout(function(){window.location.href='dashboard.html'},1500)}catch(err){showToast('حدث خطأ غير متوقع','❌');resetBtn()}}
+        function resetBtn(){document.getElementById('submitBtn').disabled=false;document.getElementById('submit-text').classList.remove('hidden');document.getElementById('submit-spinner').classList.add('hidden')}
+        (async function(){try{const{data:{session}}=await sb.auth.getSession();if(session)window.location.href='dashboard.html'}catch(e){}})();
     </script>
 </body>
 </html>
