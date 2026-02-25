@@ -3,143 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الأسعار - خوارز</title>
+    <title>الأسعار - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { theme: { extend: { fontFamily: { tajawal: ['Tajawal', 'sans-serif'] } } } }
-    </script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%);
-            min-height: 100vh;
-        }
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.5rem;transition:all .4s ease}
+        .card-popular{background:rgba(99,102,241,0.08);border:2px solid rgba(99,102,241,0.3);box-shadow:0 0 60px rgba(99,102,241,0.1)}
+        .card-popular:hover{border-color:rgba(99,102,241,0.5);box-shadow:0 0 80px rgba(99,102,241,0.2);transform:translateY(-8px) scale(1.02)}
+        .card-glass:hover{background:rgba(255,255,255,0.06);transform:translateY(-6px)}
+        .badge-popular{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 4px 15px rgba(99,102,241,0.4)}
+        .badge-save{background:linear-gradient(135deg,#10b981,#14b8a6);box-shadow:0 4px 15px rgba(16,185,129,0.4)}
+        .feature-yes{color:#22c55e}.feature-no{color:rgba(255,255,255,0.15)}
+        .btn-free{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:white;transition:all .3s ease}
+        .btn-free:hover{background:rgba(255,255,255,0.15)}
+        .btn-monthly{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 25px rgba(99,102,241,0.3);transition:all .3s ease}
+        .btn-monthly:hover{box-shadow:0 12px 35px rgba(99,102,241,0.5);transform:translateY(-2px)}
+        .btn-yearly{background:linear-gradient(135deg,#10b981,#14b8a6);box-shadow:0 8px 25px rgba(16,185,129,0.3);transition:all .3s ease}
+        .btn-yearly:hover{box-shadow:0 12px 35px rgba(16,185,129,0.5);transform:translateY(-2px)}
+        .offer-banner{background:linear-gradient(135deg,#ef4444,#ec4899);position:relative;overflow:hidden}
+        .offer-banner::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 70%);border-radius:50%}
+        .faq-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:1rem;overflow:hidden;transition:all .3s ease}
+        .faq-item:hover{background:rgba(255,255,255,0.05)}
+        .faq-header{cursor:pointer}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease}
+        .faq-item.open .faq-answer{max-height:200px}
+        .faq-item.open .faq-arrow{transform:rotate(180deg)}
+        .faq-arrow{transition:transform .3s ease}
+        .compare-table{border-collapse:separate;border-spacing:0}
+        .compare-table th,.compare-table td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05)}
+        .price-old{position:relative;color:rgba(255,255,255,0.3)}
+        .price-old::after{content:'';position:absolute;left:0;right:0;top:50%;height:2px;background:#ef4444;transform:rotate(-8deg)}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.25s;opacity:0}.delay-4{animation-delay:.3s;opacity:0}.delay-5{animation-delay:.4s;opacity:0}
+        .marquee-container{overflow:hidden;white-space:nowrap}
+        .marquee-text{display:inline-block;animation:marquee 25s linear infinite}
+        @keyframes marquee{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-        .card-glass {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-            border-radius: 1.5rem;
-            transition: all 0.4s ease;
-        }
-
-        /* Popular Card */
-        .card-popular {
-            background: rgba(99,102,241,0.08);
-            border: 2px solid rgba(99,102,241,0.3);
-            box-shadow: 0 0 60px rgba(99,102,241,0.1);
-        }
-        .card-popular:hover {
-            border-color: rgba(99,102,241,0.5);
-            box-shadow: 0 0 80px rgba(99,102,241,0.2);
-            transform: translateY(-8px) scale(1.02);
-        }
-        .card-glass:hover {
-            background: rgba(255,255,255,0.06);
-            transform: translateY(-6px);
-        }
-
-        /* Badge */
-        .badge-popular {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
-        }
-        .badge-save {
-            background: linear-gradient(135deg, #10b981, #14b8a6);
-            box-shadow: 0 4px 15px rgba(16,185,129,0.4);
-        }
-
-        /* Feature Check */
-        .feature-yes { color: #22c55e; }
-        .feature-no { color: rgba(255,255,255,0.15); }
-
-        /* Buttons */
-        .btn-free {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: white;
-            transition: all 0.3s ease;
-        }
-        .btn-free:hover { background: rgba(255,255,255,0.15); }
-
-        .btn-monthly {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            box-shadow: 0 8px 25px rgba(99,102,241,0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-monthly:hover { box-shadow: 0 12px 35px rgba(99,102,241,0.5); transform: translateY(-2px); }
-
-        .btn-yearly {
-            background: linear-gradient(135deg, #10b981, #14b8a6);
-            box-shadow: 0 8px 25px rgba(16,185,129,0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-yearly:hover { box-shadow: 0 12px 35px rgba(16,185,129,0.5); transform: translateY(-2px); }
-
-        /* Offer Banner */
-        .offer-banner {
-            background: linear-gradient(135deg, #ef4444, #ec4899);
-            position: relative; overflow: hidden;
-        }
-        .offer-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%; right: -20%;
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        /* FAQ */
-        .faq-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .faq-item:hover { background: rgba(255,255,255,0.05); }
-        .faq-header { cursor: pointer; }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .faq-item.open .faq-answer { max-height: 200px; }
-        .faq-item.open .faq-arrow { transform: rotate(180deg); }
-        .faq-arrow { transition: transform 0.3s ease; }
-
-        /* Table */
-        .compare-table { border-collapse: separate; border-spacing: 0; }
-        .compare-table th, .compare-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        /* Price Strike */
-        .price-old {
-            position: relative;
-            color: rgba(255,255,255,0.3);
-        }
-        .price-old::after {
-            content: '';
-            position: absolute;
-            left: 0; right: 0; top: 50%;
-            height: 2px;
-            background: #ef4444;
-            transform: rotate(-8deg);
-        }
-
-        /* Animations */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-in { animation: fadeUp 0.5s ease forwards; }
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.25s; opacity: 0; }
-        .delay-4 { animation-delay: 0.3s; opacity: 0; }
-        .delay-5 { animation-delay: 0.4s; opacity: 0; }
-
-        /* Marquee */
-        .marquee-container { overflow: hidden; white-space: nowrap; }
-        .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
     </style>
 </head>
 <body class="font-tajawal text-white">
@@ -147,16 +58,28 @@
     <!-- Top Banner -->
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
         <div class="marquee-container py-2.5">
-            <span class="marquee-text text-sm text-purple-200/90">✨ نعمل خلف الكواليس لتطوير خوارز — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
+            <span class="marquee-text text-sm text-purple-200/90">✨ نعمل خلف الكواليس لتطوير مدارك النخبة — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
         </div>
     </div>
 
     <!-- Header -->
     <header class="animate-in delay-1">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-2">
-                <div class="kh-logo"><span class="kh-kha" style="font-size:24px">خـ</span><span class="kh-ar" style="font-size:24px">ـوارز</span><div class="kh-en-wrap" style="margin-top:0px"><div class="kh-en-line kh-en-line-r"></div><span class="kh-en" style="font-size:7px">KHAWARIZ</span><div class="kh-en-line kh-en-line-l"></div></div></div>
-                
+            <a href="index.html" class="madarek-logo">
+                <div class="icon">
+                    <div class="ring"></div>
+                    <svg viewBox="0 0 36 36" width="20" height="20" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <span class="name">مدارك النخبة</span>
+                    <span class="tag">حيث يُصنع التميّز</span>
+                </div>
             </a>
             <div class="flex gap-2">
                 <a href="login.html" class="px-4 py-2 text-purple-300/70 hover:text-white text-sm font-medium transition">تسجيل دخول</a>
@@ -165,14 +88,11 @@
         </div>
     </header>
 
-    <!-- Main -->
     <main class="max-w-6xl mx-auto px-4 pb-16">
 
         <!-- Hero -->
         <div class="animate-in delay-1 text-center mb-10 pt-6">
-            <div class="inline-block px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-green-400 text-xs font-bold mb-4">
-                🎁 ابدأ بتجربة مجانية — بدون بطاقة
-            </div>
+            <div class="inline-block px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-green-400 text-xs font-bold mb-4">🎁 ابدأ بتجربة مجانية — بدون بطاقة</div>
             <h1 class="text-4xl sm:text-5xl font-black mb-3">اختر الخطة المناسبة لك</h1>
             <p class="text-purple-300/50 text-base max-w-xl mx-auto">ابدأ مجاناً، ثم اختر الخطة اللي تناسبك عشان تستمر في رحلة التميز</p>
         </div>
@@ -180,9 +100,7 @@
         <!-- Offer Banner -->
         <div class="animate-in delay-2 offer-banner rounded-2xl p-5 text-center text-white mb-10 relative">
             <div class="flex items-center justify-center gap-2 mb-1 relative z-10">
-                <span class="text-xl">🔥</span>
-                <h3 class="text-xl font-black">عرض محدود</h3>
-                <span class="text-xl">🔥</span>
+                <span class="text-xl">🔥</span><h3 class="text-xl font-black">عرض محدود</h3><span class="text-xl">🔥</span>
             </div>
             <p class="text-white/80 text-sm relative z-10">وفّر 120 ريال عند الاشتراك السنوي — العرض ينتهي قريباً</p>
         </div>
@@ -198,7 +116,6 @@
                     <div class="text-4xl font-black mb-0.5">0 <span class="text-lg text-purple-200/70">ريال</span></div>
                     <p class="text-purple-200/60 text-xs">للأبد</p>
                 </div>
-
                 <div class="space-y-3 mb-6">
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-purple-200/70 text-sm">10 أسئلة مجانية</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-purple-200/70 text-sm">إحصائيات أساسية</span></div>
@@ -207,14 +124,12 @@
                     <div class="flex items-center gap-2"><span class="feature-no text-sm">✗</span><span class="text-purple-300/25 text-sm">مراجعة الأخطاء</span></div>
                     <div class="flex items-center gap-2"><span class="feature-no text-sm">✗</span><span class="text-purple-300/25 text-sm">إحصائيات متقدمة</span></div>
                 </div>
-
                 <a href="register.html" class="btn-free block w-full py-3 rounded-xl font-bold text-sm text-center">ابدأ التجربة</a>
             </div>
 
-            <!-- Monthly — Popular -->
+            <!-- Monthly -->
             <div class="animate-in delay-3 card-glass card-popular p-6 relative md:-mt-4">
                 <div class="badge-popular absolute -top-3.5 left-1/2 -translate-x-1/2 px-5 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap">⭐ الأكثر شعبية</div>
-
                 <div class="text-center mb-6 pt-2">
                     <div class="w-14 h-14 bg-indigo-500/15 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">📅</div>
                     <h3 class="text-xl font-bold mb-1">اشتراك شهري</h3>
@@ -222,23 +137,20 @@
                     <div class="text-5xl font-black text-indigo-400 mb-0.5"><span id="monthly-price">29</span> <span class="text-lg text-purple-200/70">ريال</span></div>
                     <p class="text-purple-200/60 text-xs">شهرياً</p>
                 </div>
-
                 <div class="space-y-3 mb-6">
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">أسئلة غير محدودة</span></div>
-                    <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">بنك أسئلة كامل (130+)</span></div>
+                    <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">بنك أسئلة كامل (700+)</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">مراجعة الأخطاء</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">إحصائيات متقدمة</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">تحديثات مستمرة</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">دعم فني</span></div>
                 </div>
-
                 <button onclick="subscribe('monthly')" class="btn-monthly block w-full py-3.5 rounded-xl font-bold text-sm text-center text-white">اشترك الآن</button>
             </div>
 
-            <!-- Yearly — Best Value -->
+            <!-- Yearly -->
             <div class="animate-in delay-4 card-glass p-6 relative">
                 <div class="badge-save absolute -top-3.5 left-1/2 -translate-x-1/2 px-5 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap" id="yearly-save-badge">💎 وفّر 120 ريال</div>
-
                 <div class="text-center mb-6 pt-2">
                     <div class="w-14 h-14 bg-emerald-500/15 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">💎</div>
                     <h3 class="text-xl font-bold mb-1">اشتراك سنوي</h3>
@@ -246,7 +158,6 @@
                     <div class="text-5xl font-black text-emerald-400 mb-0.5"><span id="yearly-per-month">19</span> <span class="text-lg text-purple-200/70">ريال</span></div>
                     <p class="text-purple-200/60 text-xs">شهرياً (<span id="yearly-total">يُدفع 228 ريال سنوياً</span>)</p>
                 </div>
-
                 <div class="space-y-3 mb-6">
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">كل مميزات الشهري</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">خصم 47% على السنة</span></div>
@@ -255,7 +166,6 @@
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">محتوى حصري</span></div>
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">شهرين مجاناً</span></div>
                 </div>
-
                 <button onclick="subscribe('yearly')" class="btn-yearly block w-full py-3.5 rounded-xl font-bold text-sm text-center text-white">اشترك الآن</button>
             </div>
         </div>
@@ -291,45 +201,25 @@
             <h2 class="text-2xl font-black text-center mb-6">الأسئلة الشائعة</h2>
             <div class="max-w-2xl mx-auto space-y-3">
                 <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-header flex items-center justify-between p-4">
-                        <h3 class="font-bold text-sm">كيف أبدأ التجربة المجانية؟</h3>
-                        <svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                    <div class="faq-answer px-4">
-                        <p class="text-purple-300/50 text-sm pb-4">سجل حساب جديد وابدأ فوراً بحل 10 أسئلة مجانية بدون الحاجة لبطاقة ائتمانية.</p>
-                    </div>
+                    <div class="faq-header flex items-center justify-between p-4"><h3 class="font-bold text-sm">كيف أبدأ التجربة المجانية؟</h3><svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                    <div class="faq-answer px-4"><p class="text-purple-300/50 text-sm pb-4">سجل حساب جديد وابدأ فوراً بحل 10 أسئلة مجانية بدون الحاجة لبطاقة ائتمانية.</p></div>
                 </div>
                 <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-header flex items-center justify-between p-4">
-                        <h3 class="font-bold text-sm">هل يمكنني إلغاء الاشتراك؟</h3>
-                        <svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                    <div class="faq-answer px-4">
-                        <p class="text-purple-300/50 text-sm pb-4">نعم، تقدر تلغي اشتراكك بأي وقت من لوحة التحكم بدون أي التزام.</p>
-                    </div>
+                    <div class="faq-header flex items-center justify-between p-4"><h3 class="font-bold text-sm">هل يمكنني إلغاء الاشتراك؟</h3><svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                    <div class="faq-answer px-4"><p class="text-purple-300/50 text-sm pb-4">نعم، تقدر تلغي اشتراكك بأي وقت من لوحة التحكم بدون أي التزام.</p></div>
                 </div>
                 <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-header flex items-center justify-between p-4">
-                        <h3 class="font-bold text-sm">ما الفرق بين الشهري والسنوي؟</h3>
-                        <svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                    <div class="faq-answer px-4">
-                        <p class="text-purple-300/50 text-sm pb-4">السنوي يوفر لك 120 ريال (شهرين مجاناً) + مميزات حصرية ودعم مميز.</p>
-                    </div>
+                    <div class="faq-header flex items-center justify-between p-4"><h3 class="font-bold text-sm">ما الفرق بين الشهري والسنوي؟</h3><svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                    <div class="faq-answer px-4"><p class="text-purple-300/50 text-sm pb-4">السنوي يوفر لك 120 ريال (شهرين مجاناً) + مميزات حصرية ودعم مميز.</p></div>
                 </div>
                 <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-header flex items-center justify-between p-4">
-                        <h3 class="font-bold text-sm">ماذا يحدث بعد انتهاء الـ 10 أسئلة المجانية؟</h3>
-                        <svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                    <div class="faq-answer px-4">
-                        <p class="text-purple-300/50 text-sm pb-4">تحتاج تشترك عشان تكمل، بس إحصائياتك وتقدمك يبقون محفوظين.</p>
-                    </div>
+                    <div class="faq-header flex items-center justify-between p-4"><h3 class="font-bold text-sm">ماذا يحدث بعد انتهاء الـ 10 أسئلة المجانية؟</h3><svg class="faq-arrow w-4 h-4 text-purple-200/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                    <div class="faq-answer px-4"><p class="text-purple-300/50 text-sm pb-4">تحتاج تشترك عشان تكمل، بس إحصائياتك وتقدمك يبقون محفوظين.</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- Coupon Section -->
+        <!-- Coupon -->
         <div class="animate-in delay-5 mb-12">
             <div class="card-glass p-6 max-w-md mx-auto text-center">
                 <span class="text-2xl block mb-2">🎟️</span>
@@ -340,147 +230,34 @@
                     <button onclick="applyCoupon()" id="couponBtn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">تحقق</button>
                 </div>
                 <div id="couponResult" class="mt-3 hidden">
-                    <div id="couponSuccess" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399">
-                        <span id="couponMsg"></span>
-                    </div>
-                    <div id="couponError" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171">
-                        <span id="couponErrMsg"></span>
-                    </div>
+                    <div id="couponSuccess" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399"><span id="couponMsg"></span></div>
+                    <div id="couponError" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171"><span id="couponErrMsg"></span></div>
                 </div>
             </div>
         </div>
 
         <!-- CTA -->
         <div class="animate-in delay-5 text-center">
-            <a href="register.html" class="inline-block px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-purple-500/20 transition">
-                🚀 ابدأ رحلتك الآن مجاناً
-            </a>
+            <a href="register.html" class="inline-block px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-purple-500/20 transition">🚀 ابدأ رحلتك الآن مجاناً</a>
         </div>
-
     </main>
 
     <!-- Footer -->
     <footer class="border-t border-purple-500/10 mt-12">
         <div class="max-w-6xl mx-auto px-4 py-8 text-center">
-            <p class="text-purple-200/60 text-sm mb-1">© 2026 خوارز — جميع الحقوق محفوظة</p>
+            <p class="text-purple-200/60 text-sm mb-1">© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
             <p class="text-purple-200/50 text-xs">منصة تعليمية سعودية للاستعداد لاختبارات القدرات والتحصيلي</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        var sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
-
-        // تحميل الأسعار من الإعدادات
-        (async function(){
-            var{data}=await sb.from('site_settings').select('*');
-            if(!data)return;
-            var s={};data.forEach(function(r){s[r.key]=r.value});
-
-            var mOrig=parseInt(s.price_monthly_orig)||0;
-            var mNow=parseInt(s.price_monthly)||29;
-            var yOrig=parseInt(s.price_yearly_orig)||0;
-            var yNow=parseInt(s.price_yearly)||228;
-            var yPerMonth=Math.round(yNow/12);
-
-            // الشهري
-            document.getElementById('monthly-price').textContent=mNow;
-            if(mOrig&&mOrig>mNow){
-                document.getElementById('monthly-orig').textContent=mOrig+' ريال';
-                document.getElementById('monthly-orig-wrap').classList.remove('hidden');
-            }
-
-            // السنوي
-            document.getElementById('yearly-per-month').textContent=yPerMonth;
-            document.getElementById('yearly-total').textContent='يُدفع '+yNow+' ريال سنوياً';
-            if(yOrig&&yOrig>yNow){
-                document.getElementById('yearly-orig').textContent=yOrig+' ريال';
-                document.getElementById('yearly-orig-wrap').classList.remove('hidden');
-            }
-
-            // حساب التوفير
-            var saving=(mNow*12)-yNow;
-            if(saving>0)document.getElementById('yearly-save-badge').textContent='💎 وفّر '+saving+' ريال';
-
-            // بانر العرض
-            var offerEl=document.querySelector('.offer-banner p');
-            if(offerEl&&saving>0)offerEl.textContent='وفّر '+saving+' ريال عند الاشتراك السنوي — بدل '+mNow+' ريال شهرياً ادفع '+yPerMonth+' ريال فقط!';
-        })();
-
-        function subscribe(plan) {
-            window.location.href = 'register.html';
-        }
-
-        function toggleFaq(el) {
-            el.classList.toggle('open');
-        }
-
-        async function applyCoupon() {
-            var code = document.getElementById('couponInput').value.trim().toUpperCase();
-            if (!code) return;
-
-            var btn = document.getElementById('couponBtn');
-            btn.textContent = '...';
-            btn.disabled = true;
-
-            document.getElementById('couponResult').classList.remove('hidden');
-            document.getElementById('couponSuccess').classList.add('hidden');
-            document.getElementById('couponError').classList.add('hidden');
-
-            try {
-                var { data, error } = await sb.from('coupons').select('*').eq('code', code).single();
-
-                if (error || !data) {
-                    document.getElementById('couponErrMsg').textContent = 'الكود غير صحيح أو غير موجود';
-                    document.getElementById('couponError').classList.remove('hidden');
-                } else if (data.expires_at && new Date(data.expires_at) < new Date()) {
-                    document.getElementById('couponErrMsg').textContent = 'هالكوبون منتهي الصلاحية';
-                    document.getElementById('couponError').classList.remove('hidden');
-                } else if (data.max_uses && data.used_count >= data.max_uses) {
-                    document.getElementById('couponErrMsg').textContent = 'هالكوبون وصل الحد الأقصى للاستخدام';
-                    document.getElementById('couponError').classList.remove('hidden');
-                } else {
-                    var discountText = data.discount_type === 'percentage'
-                        ? 'خصم ' + data.discount_value + '% على اشتراكك'
-                        : 'خصم ' + data.discount_value + ' ريال على اشتراكك';
-                    document.getElementById('couponMsg').textContent = '✓ ' + discountText;
-                    document.getElementById('couponSuccess').classList.remove('hidden');
-
-                    localStorage.setItem('khawariz_coupon', JSON.stringify({
-                        code: data.code,
-                        type: data.discount_type,
-                        value: data.discount_value
-                    }));
-
-                    // زيادة عداد الاستخدام
-                    await sb.from('coupons').update({used_count:(data.used_count||0)+1}).eq('id',data.id);
-
-                    // لو خصم 100% — فعّل الاشتراك مباشرة
-                    if(data.discount_type==='percentage' && data.discount_value>=100){
-                        var{data:{session}}=await sb.auth.getSession();
-                        if(session){
-                            await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);
-                            document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
-                        } else {
-                            document.getElementById('couponMsg').innerHTML='✓ '+discountText+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>';
-                        }
-                    }
-                }
-            } catch(e) {
-                document.getElementById('couponErrMsg').textContent = 'حدث خطأ، حاول مرة ثانية';
-                document.getElementById('couponError').classList.remove('hidden');
-            }
-
-            btn.textContent = 'تحقق';
-            btn.disabled = false;
-        }
-
-        document.getElementById('couponInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') applyCoupon();
-        });
+        var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+        (async function(){var{data}=await sb.from('site_settings').select('*');if(!data)return;var s={};data.forEach(function(r){s[r.key]=r.value});var mOrig=parseInt(s.price_monthly_orig)||0,mNow=parseInt(s.price_monthly)||29,yOrig=parseInt(s.price_yearly_orig)||0,yNow=parseInt(s.price_yearly)||228,yPM=Math.round(yNow/12);document.getElementById('monthly-price').textContent=mNow;if(mOrig&&mOrig>mNow){document.getElementById('monthly-orig').textContent=mOrig+' ريال';document.getElementById('monthly-orig-wrap').classList.remove('hidden')}document.getElementById('yearly-per-month').textContent=yPM;document.getElementById('yearly-total').textContent='يُدفع '+yNow+' ريال سنوياً';if(yOrig&&yOrig>yNow){document.getElementById('yearly-orig').textContent=yOrig+' ريال';document.getElementById('yearly-orig-wrap').classList.remove('hidden')}var saving=(mNow*12)-yNow;if(saving>0){document.getElementById('yearly-save-badge').textContent='💎 وفّر '+saving+' ريال';var offerEl=document.querySelector('.offer-banner p');if(offerEl)offerEl.textContent='وفّر '+saving+' ريال عند الاشتراك السنوي — بدل '+mNow+' ريال شهرياً ادفع '+yPM+' ريال فقط!'}})();
+        function subscribe(plan){window.location.href='register.html'}
+        function toggleFaq(el){el.classList.toggle('open')}
+        async function applyCoupon(){var code=document.getElementById('couponInput').value.trim().toUpperCase();if(!code)return;var btn=document.getElementById('couponBtn');btn.textContent='...';btn.disabled=true;document.getElementById('couponResult').classList.remove('hidden');document.getElementById('couponSuccess').classList.add('hidden');document.getElementById('couponError').classList.add('hidden');try{var{data,error}=await sb.from('coupons').select('*').eq('code',code).single();if(error||!data){document.getElementById('couponErrMsg').textContent='الكود غير صحيح أو غير موجود';document.getElementById('couponError').classList.remove('hidden')}else if(data.expires_at&&new Date(data.expires_at)<new Date()){document.getElementById('couponErrMsg').textContent='هالكوبون منتهي الصلاحية';document.getElementById('couponError').classList.remove('hidden')}else if(data.max_uses&&data.used_count>=data.max_uses){document.getElementById('couponErrMsg').textContent='هالكوبون وصل الحد الأقصى للاستخدام';document.getElementById('couponError').classList.remove('hidden')}else{var dt=data.discount_type==='percentage'?'خصم '+data.discount_value+'% على اشتراكك':'خصم '+data.discount_value+' ريال على اشتراكك';document.getElementById('couponMsg').textContent='✓ '+dt;document.getElementById('couponSuccess').classList.remove('hidden');localStorage.setItem('khawariz_coupon',JSON.stringify({code:data.code,type:data.discount_type,value:data.discount_value}));await sb.from('coupons').update({used_count:(data.used_count||0)+1}).eq('id',data.id);if(data.discount_type==='percentage'&&data.discount_value>=100){var{data:{session}}=await sb.auth.getSession();if(session){await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>'}else{document.getElementById('couponMsg').innerHTML='✓ '+dt+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>'}}}}catch(e){document.getElementById('couponErrMsg').textContent='حدث خطأ، حاول مرة ثانية';document.getElementById('couponError').classList.remove('hidden')}btn.textContent='تحقق';btn.disabled=false}
+        document.getElementById('couponInput').addEventListener('keypress',function(e){if(e.key==='Enter')applyCoupon()});
     </script>
 </body>
 </html>
