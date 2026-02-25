@@ -227,17 +227,17 @@ function draw(){
 
   } else {
     // نجوم ثلاث كبيرة
-    ctx.save();
-    ctx.font='110px Arial';
-    ctx.fillText('🌟',W/2-160,zoneY+185);
-    ctx.font='140px Arial';
-    ctx.fillText('⭐️',W/2,zoneY+200);
-    ctx.font='110px Arial';
-    ctx.fillText('🌟',W/2+160,zoneY+185);
-    ctx.restore();
-    ctx.fillStyle='rgba(196,181,253,0.6)';
+    ctx.textAlign='center';
+    ctx.font='110px serif';
+    ctx.fillStyle='rgba(255,255,255,1)';
+    ctx.fillText('🌟',W/2-170,zoneY+195);
+    ctx.font='150px serif';
+    ctx.fillText('⭐️',W/2,zoneY+210);
+    ctx.font='110px serif';
+    ctx.fillText('🌟',W/2+170,zoneY+195);
+    ctx.fillStyle='rgba(196,181,253,0.7)';
     ctx.font='bold 42px Tajawal, Arial';
-    ctx.fillText('جلسة تدريب مكتملة ✓',W/2,zoneY+272);
+    ctx.fillText('جلسة تدريب مكتملة ✓',W/2,zoneY+285);
   }
 
   // ━━━ اسم الطالب — ثابت تحت الزون دائماً ━━━
