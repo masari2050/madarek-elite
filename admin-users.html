@@ -7,279 +7,301 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
-        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        *{font-family:'Tajawal',sans-serif}
+        @keyframes spin-r{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
-        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
-        .madarek-logo .icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
-        .madarek-logo .icon .ring{position:absolute;inset:2px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
-        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
-        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:8.5px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+        @keyframes gp{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,.6)}}
+        .ml{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .ml .ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,.35);display:flex;align-items:center;justify-content:center;position:relative;animation:gp 3s ease-in-out infinite}
+        .ml .ic .rg{position:absolute;inset:2px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,.8);border-right-color:rgba(139,92,246,.4);animation:spin-r 3s linear infinite}
+        .ml .nm{font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .ml .tg{font-size:8.5px;color:rgba(196,181,253,.5);margin-top:1px;display:block}
+        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:12px;font-size:.9rem;font-weight:700;z-index:999}
+        .tok{background:linear-gradient(135deg,#10b981,#14b8a6);color:#fff}
+        .ter{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+        .fbtn{background:#f1f5f9;color:#64748b;padding:8px 16px;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+        .fbtn:hover{background:#e2e8f0}
+        .fbtn.on{background:#6366f1;color:#fff}
+        .spin{display:inline-block;width:28px;height:28px;border:3px solid rgba(99,102,241,.2);border-top-color:#6366f1;border-radius:50%;animation:spin-r .7s linear infinite}
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <a href="admin.html" class="text-gray-600 hover:text-gray-800">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+<body class="bg-gray-50 min-h-screen">
+<div id="toast" class="toast hidden"></div>
+
+<!-- Header -->
+<header class="bg-white shadow-sm border-b sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <a href="admin.html" class="text-gray-400 hover:text-gray-700 transition p-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <a href="index.html" class="ml">
+                <div class="ic"><div class="rg"></div>
+                    <svg viewBox="0 0 36 36" width="19" height="19" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/><circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/><circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
                     </svg>
-                </a>
-                <a href="index.html" class="madarek-logo">
-                    <div class="icon">
-                        <div class="ring"></div>
-                        <svg viewBox="0 0 36 36" width="19" height="19" fill="none">
-                            <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
-                            <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
-                            <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
-                            <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
-                        </svg>
-                    </div>
-                    <div style="display:flex;flex-direction:column;align-items:flex-end">
-                        <span class="name">مدارك النخبة</span>
-                        <span class="tag">حيث يُصنع التميّز</span>
-                    </div>
-                </a>
-                <h1 class="text-2xl font-black text-gray-800">👥 إدارة المستخدمين</h1>
-            </div>
-            <div class="flex items-center gap-3">
-                <span class="text-gray-600" id="adminName">المدير</span>
-                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">خروج</button>
-            </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <span class="nm">مدارك النخبة</span><span class="tg">حيث يُصنع التميّز</span>
+                </div>
+            </a>
+            <h1 class="text-lg font-black text-gray-800">👥 المستخدمين</h1>
         </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-blue-200">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-gray-600">الطلاب</span>
-                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">👨‍🎓</div>
-                </div>
-                <p class="text-3xl font-black text-blue-600" id="studentsCount">0</p>
-            </div>
-            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-green-200">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-gray-600">المعلمين</span>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">👨‍🏫</div>
-                </div>
-                <p class="text-3xl font-black text-green-600" id="teachersCount">0</p>
-            </div>
-            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-purple-200">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-gray-600">الدعم الفني</span>
-                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl">🛟</div>
-                </div>
-                <p class="text-3xl font-black text-purple-600" id="supportCount">0</p>
-            </div>
-            <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-amber-200">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-gray-600">المشتركين</span>
-                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-2xl">💎</div>
-                </div>
-                <p class="text-3xl font-black text-amber-600" id="subscribersCount">0</p>
-            </div>
+        <div class="flex items-center gap-3">
+            <span class="text-gray-400 text-sm" id="adminName">...</span>
+            <button onclick="sb.auth.signOut().then(()=>location.href='admin-login.html')"
+                class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-red-600 transition">خروج</button>
         </div>
+    </div>
+</header>
 
-        <!-- Add User Button -->
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">قائمة المستخدمين</h2>
-            <button onclick="openAddUserModal()" class="bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-600 transition flex items-center gap-2">
-                <span class="text-xl">➕</span>
-                إضافة مستخدم
-            </button>
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+    <!-- إحصائيات -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <p class="text-gray-400 text-xs mb-1">إجمالي الأعضاء</p>
+            <p class="text-3xl font-black text-gray-800" id="s-total">-</p>
         </div>
-
-        <!-- Filters -->
-        <div class="bg-white rounded-xl p-4 mb-6 shadow-sm flex gap-4 flex-wrap">
-            <button onclick="filterUsers('all')" id="filter-all" class="px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium">الكل</button>
-            <button onclick="filterUsers('student')" id="filter-student" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">طلاب</button>
-            <button onclick="filterUsers('teacher')" id="filter-teacher" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">معلمين</button>
-            <button onclick="filterUsers('support')" id="filter-support" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">دعم فني</button>
-            <button onclick="filterUsers('admin')" id="filter-admin" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">مدراء</button>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <p class="text-gray-400 text-xs mb-1">مشتركين فعالين</p>
+            <p class="text-3xl font-black text-indigo-600" id="s-paid">-</p>
         </div>
-
-        <!-- Users Table -->
-        <div class="bg-white rounded-xl shadow-lg border overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-50 border-b-2">
-                    <tr>
-                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">الاسم</th>
-                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">البريد</th>
-                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">الدور</th>
-                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">الحالة</th>
-                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">تاريخ التسجيل</th>
-                        <th class="px-6 py-4 text-right text-sm font-bold text-gray-700">إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTable">
-                    <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">لا يوجد مستخدمين</td></tr>
-                </tbody>
-            </table>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <p class="text-gray-400 text-xs mb-1">شهري</p>
+            <p class="text-3xl font-black text-blue-600" id="s-monthly">-</p>
         </div>
-    </main>
-
-    <!-- Add/Edit User Modal -->
-    <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
-            <h2 class="text-3xl font-black mb-6" id="modalTitle">إضافة مستخدم جديد</h2>
-            <form id="userForm" class="space-y-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">الاسم الكامل</label>
-                        <input type="text" id="userName" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
-                        <input type="email" id="userEmail" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
-                        <input type="password" id="userPassword" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
-                        <p class="text-xs text-gray-500 mt-1">اتركها فارغة للتعديل</p>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">الجنس</label>
-                        <select id="userGender" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
-                            <option value="male">ذكر</option>
-                            <option value="female">أنثى</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">الدور الوظيفي</label>
-                    <select id="userRole" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
-                        <option value="student">طالب - يمكنه حل الأسئلة فقط</option>
-                        <option value="teacher">معلم - يمكنه إضافة وتعديل الأسئلة</option>
-                        <option value="support">دعم فني - يمكنه عرض بيانات الطلاب</option>
-                        <option value="admin">مدير - صلاحيات كاملة</option>
-                    </select>
-                </div>
-                <div id="subscriptionSection">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">نوع الاشتراك (للطلاب)</label>
-                    <select id="userSubscription" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
-                        <option value="free">مجاني</option>
-                        <option value="monthly">شهري</option>
-                        <option value="yearly">سنوي</option>
-                    </select>
-                </div>
-                <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 bg-indigo-500 text-white py-3 rounded-xl font-bold hover:bg-indigo-600 transition">حفظ</button>
-                    <button type="button" onclick="closeUserModal()" class="px-8 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300 transition">إلغاء</button>
-                </div>
-            </form>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <p class="text-gray-400 text-xs mb-1">سنوي</p>
+            <p class="text-3xl font-black text-purple-600" id="s-yearly">-</p>
         </div>
     </div>
 
-    <script>
-        const currentUser = JSON.parse(localStorage.getItem('khawariz_user') || 'null');
-        if (!currentUser || currentUser.role !== 'admin') {
-            alert('غير مصرح لك بالدخول');
-            window.location.href = 'login.html';
+    <!-- فلاتر + بحث -->
+    <div class="bg-white rounded-2xl p-4 mb-5 shadow-sm flex flex-wrap gap-2 items-center justify-between">
+        <div class="flex gap-2 flex-wrap" id="filters">
+            <button class="fbtn on" onclick="setF('all',this)">الكل</button>
+            <button class="fbtn" onclick="setF('monthly',this)">شهري 📅</button>
+            <button class="fbtn" onclick="setF('yearly',this)">سنوي 💎</button>
+            <button class="fbtn" onclick="setF('free',this)">مجاني</button>
+            <button class="fbtn" onclick="setF('staff',this)">أدمن / موظف</button>
+        </div>
+        <input type="text" id="searchQ" placeholder="🔍 بحث بالاسم أو الإيميل..."
+            oninput="render(1)"
+            class="border-2 border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-indigo-400 focus:outline-none w-60">
+    </div>
+
+    <!-- جدول -->
+    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b">
+                    <tr>
+                        <th class="px-4 py-3 text-right text-xs font-bold text-gray-500">العضو</th>
+                        <th class="px-4 py-3 text-right text-xs font-bold text-gray-500">الإيميل</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold text-gray-500">الدور</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold text-gray-500">الاشتراك</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold text-gray-500">المحاولات</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold text-gray-500">تاريخ التسجيل</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold text-gray-500">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl">
+                    <tr><td colspan="7" class="py-16 text-center text-gray-400">
+                        <div class="spin mx-auto mb-2"></div>جاري التحميل...
+                    </td></tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- pagination -->
+        <div class="px-4 py-3 border-t flex items-center justify-between bg-gray-50">
+            <span class="text-xs text-gray-400" id="pgInfo">-</span>
+            <div class="flex gap-2">
+                <button onclick="render(pg-1)" id="prevBtn" disabled
+                    class="px-3 py-1.5 rounded-lg bg-white border text-xs font-bold text-gray-500 hover:bg-gray-100 disabled:opacity-30 transition">السابق</button>
+                <button onclick="render(pg+1)" id="nextBtn" disabled
+                    class="px-3 py-1.5 rounded-lg bg-white border text-xs font-bold text-gray-500 hover:bg-gray-100 disabled:opacity-30 transition">التالي</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- مودال التعديل -->
+<div id="editM" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-black text-gray-800">✏️ تعديل العضو</h2>
+            <button onclick="closeM()" class="text-gray-300 hover:text-gray-600 text-2xl leading-none">✕</button>
+        </div>
+        <input type="hidden" id="m-id">
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs font-bold text-gray-500 mb-1 block">الاسم</label>
+                <input id="m-name" type="text" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 mb-1 block">الإيميل</label>
+                <input id="m-email" type="email" disabled class="w-full border-2 border-gray-100 bg-gray-50 rounded-xl px-4 py-2.5 text-sm text-gray-400">
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 mb-1 block">الاشتراك</label>
+                <select id="m-sub" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none">
+                    <option value="free">مجاني</option>
+                    <option value="monthly">شهري</option>
+                    <option value="yearly">سنوي</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 mb-1 block">الدور</label>
+                <select id="m-role" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none">
+                    <option value="user">مستخدم</option>
+                    <option value="staff">موظف</option>
+                    <option value="admin">أدمن</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 mb-1 block">تاريخ انتهاء الاشتراك</label>
+                <input id="m-exp" type="date" class="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none">
+            </div>
+            <button onclick="saveM()" class="w-full bg-indigo-500 text-white py-3 rounded-xl font-bold hover:bg-indigo-600 transition text-sm">
+                💾 حفظ التغييرات
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var sb=window.supabase.createClient(
+    'https://czzcmbxejxbotjemyuqf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+);
+
+var users=[], attMap={}, activeFilter='all', pg=1, PS=25;
+
+function toast(m,ok){var t=document.getElementById('toast');t.textContent=m;t.className='toast '+(ok?'tok':'ter');setTimeout(function(){t.classList.add('hidden')},3000)}
+
+async function init(){
+    var{data:{session}}=await sb.auth.getSession();
+    if(!session){location.href='admin-login.html';return}
+    var{data:p}=await sb.from('profiles').select('role,full_name').eq('id',session.user.id).single();
+    if(!p||(p.role!=='admin'&&p.role!=='staff')){location.href='admin-login.html';return}
+    document.getElementById('adminName').textContent=p.full_name||'المدير';
+    await load();
+}
+
+async function load(){
+    var{data:u}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
+    users=u||[];
+    var{data:a}=await sb.from('attempts').select('user_id');
+    attMap={};
+    if(a)a.forEach(function(x){attMap[x.user_id]=(attMap[x.user_id]||0)+1});
+    stats();render(1);
+}
+
+function stats(){
+    document.getElementById('s-total').textContent=users.length;
+    document.getElementById('s-paid').textContent=users.filter(function(u){return u.subscription_type==='monthly'||u.subscription_type==='yearly'}).length;
+    document.getElementById('s-monthly').textContent=users.filter(function(u){return u.subscription_type==='monthly'}).length;
+    document.getElementById('s-yearly').textContent=users.filter(function(u){return u.subscription_type==='yearly'}).length;
+}
+
+function setF(f,btn){
+    activeFilter=f;pg=1;
+    document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('on')});
+    btn.classList.add('on');
+    render(1);
+}
+
+function filtered(){
+    var q=(document.getElementById('searchQ').value||'').trim().toLowerCase();
+    return users.filter(function(u){
+        var m=true;
+        if(activeFilter==='monthly')m=u.subscription_type==='monthly';
+        else if(activeFilter==='yearly')m=u.subscription_type==='yearly';
+        else if(activeFilter==='free')m=!u.subscription_type||u.subscription_type==='free';
+        else if(activeFilter==='staff')m=u.role==='admin'||u.role==='staff';
+        return m&&(!q||(u.full_name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q));
+    });
+}
+
+function render(p){
+    pg=p||1;
+    var all=filtered(),tot=all.length,pages=Math.max(1,Math.ceil(tot/PS));
+    if(pg>pages)pg=pages;
+    var start=(pg-1)*PS,slice=all.slice(start,start+PS);
+    document.getElementById('pgInfo').textContent='عرض '+(tot===0?0:start+1)+' – '+Math.min(start+PS,tot)+' من '+tot;
+    document.getElementById('prevBtn').disabled=pg<=1;
+    document.getElementById('nextBtn').disabled=pg>=pages;
+
+    var sCls={free:'bg-gray-100 text-gray-600',monthly:'bg-indigo-100 text-indigo-700',yearly:'bg-purple-100 text-purple-700'};
+    var sLbl={free:'مجاني',monthly:'شهري',yearly:'سنوي'};
+    var rCls={user:'bg-blue-50 text-blue-600',admin:'bg-red-100 text-red-600',staff:'bg-violet-100 text-violet-600'};
+    var rLbl={user:'مستخدم',admin:'أدمن',staff:'موظف'};
+
+    if(!slice.length){
+        document.getElementById('tbl').innerHTML='<tr><td colspan="7" class="py-16 text-center text-gray-400">لا يوجد نتائج</td></tr>';
+        return;
+    }
+
+    var h=slice.map(function(u){
+        var sub=u.subscription_type||'free',role=u.role||'user';
+        var att=attMap[u.id]||0;
+        var dt=u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'-';
+        // تنبيه انتهاء الاشتراك
+        var exp='';
+        if(u.subscription_expires_at&&sub!=='free'){
+            var d=Math.ceil((new Date(u.subscription_expires_at)-new Date())/(86400000));
+            if(d<0)exp='<div class="text-red-400 text-xs">منتهي</div>';
+            else if(d<=7)exp='<div class="text-amber-500 text-xs">بعد '+d+' يوم</div>';
         }
-        document.getElementById('adminName').textContent = currentUser.name;
-        let users = JSON.parse(localStorage.getItem('khawariz_all_users') || '[]');
-        let currentFilter = 'all';
-        let editingUserId = null;
-        if (users.length === 0) {
-            users = [{ id: 'user_' + Date.now(), name: 'عبدالله', email: 'test@admin.com', role: 'student', gender: 'male', subscription: 'monthly', createdAt: Date.now() }];
-            localStorage.setItem('khawariz_all_users', JSON.stringify(users));
-        }
-        function loadStats() {
-            document.getElementById('studentsCount').textContent = users.filter(u => u.role === 'student').length;
-            document.getElementById('teachersCount').textContent = users.filter(u => u.role === 'teacher').length;
-            document.getElementById('supportCount').textContent = users.filter(u => u.role === 'support').length;
-            document.getElementById('subscribersCount').textContent = users.filter(u => u.role === 'student' && u.subscription !== 'free').length;
-        }
-        function loadUsers() {
-            const tbody = document.getElementById('usersTable');
-            const filtered = currentFilter === 'all' ? users : users.filter(u => u.role === currentFilter);
-            if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">لا يوجد مستخدمين</td></tr>'; return; }
-            const roleLabels = { student:'طالب', teacher:'معلم', support:'دعم فني', admin:'مدير' };
-            const roleColors = { student:'bg-blue-100 text-blue-700', teacher:'bg-green-100 text-green-700', support:'bg-purple-100 text-purple-700', admin:'bg-red-100 text-red-700' };
-            const subLabels = { free:'مجاني', monthly:'شهري', yearly:'سنوي' };
-            tbody.innerHTML = filtered.map(user => `
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="px-6 py-4 font-medium text-gray-800">${user.name}</td>
-                    <td class="px-6 py-4 text-gray-600">${user.email}</td>
-                    <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-sm font-medium ${roleColors[user.role]}">${roleLabels[user.role]}</span></td>
-                    <td class="px-6 py-4">${user.role === 'student' ? `<span class="text-sm text-gray-600">${subLabels[user.subscription || 'free']}</span>` : '-'}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${new Date(user.createdAt).toLocaleDateString('ar-SA')}</td>
-                    <td class="px-6 py-4">
-                        <button onclick="editUser('${user.id}')" class="text-blue-600 hover:underline ml-3">تعديل</button>
-                        <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:underline">حذف</button>
-                    </td>
-                </tr>`).join('');
-        }
-        function filterUsers(role) {
-            currentFilter = role;
-            ['all','student','teacher','support','admin'].forEach(r => {
-                document.getElementById(`filter-${r}`).className = r === role
-                    ? 'px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium'
-                    : 'px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300';
-            });
-            loadUsers();
-        }
-        function openAddUserModal() {
-            editingUserId = null;
-            document.getElementById('modalTitle').textContent = 'إضافة مستخدم جديد';
-            document.getElementById('userForm').reset();
-            document.getElementById('userModal').classList.remove('hidden');
-        }
-        function editUser(userId) {
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-            editingUserId = userId;
-            document.getElementById('modalTitle').textContent = 'تعديل مستخدم';
-            document.getElementById('userName').value = user.name;
-            document.getElementById('userEmail').value = user.email;
-            document.getElementById('userGender').value = user.gender;
-            document.getElementById('userRole').value = user.role;
-            document.getElementById('userSubscription').value = user.subscription || 'free';
-            document.getElementById('userPassword').value = '';
-            document.getElementById('userModal').classList.remove('hidden');
-        }
-        function deleteUser(userId) {
-            if (!confirm('متأكد من حذف هذا المستخدم؟')) return;
-            users = users.filter(u => u.id !== userId);
-            localStorage.setItem('khawariz_all_users', JSON.stringify(users));
-            loadStats(); loadUsers();
-        }
-        function closeUserModal() {
-            document.getElementById('userModal').classList.add('hidden');
-            editingUserId = null;
-        }
-        document.getElementById('userForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const userData = {
-                name: document.getElementById('userName').value,
-                email: document.getElementById('userEmail').value,
-                gender: document.getElementById('userGender').value,
-                role: document.getElementById('userRole').value,
-                subscription: document.getElementById('userSubscription').value
-            };
-            if (editingUserId) {
-                const index = users.findIndex(u => u.id === editingUserId);
-                users[index] = { ...users[index], ...userData };
-                const password = document.getElementById('userPassword').value;
-                if (password) users[index].password = password;
-            } else {
-                users.push({ id: 'user_' + Date.now(), ...userData, password: document.getElementById('userPassword').value || '123456', createdAt: Date.now() });
-            }
-            localStorage.setItem('khawariz_all_users', JSON.stringify(users));
-            closeUserModal(); loadStats(); loadUsers();
-        });
-        function logout() {
-            if (confirm('متأكد تبي تسجل خروج؟')) window.location.href = 'admin.html';
-        }
-        loadStats(); loadUsers();
-    </script>
+        return '<tr class="border-b hover:bg-blue-50/30 transition">'
+            +'<td class="px-4 py-3"><div class="flex items-center gap-2"><span class="text-lg">'+(u.avatar_emoji||'👤')+'</span><span class="font-bold text-gray-800 text-sm">'+(u.full_name||'—')+'</span></div></td>'
+            +'<td class="px-4 py-3 text-gray-400 text-sm">'+(u.email||'—')+'</td>'
+            +'<td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded-lg text-xs font-bold '+(rCls[role]||'bg-gray-100 text-gray-500')+'">'+(rLbl[role]||role)+'</span></td>'
+            +'<td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded-lg text-xs font-bold '+sCls[sub]+'">'+sLbl[sub]+'</span>'+exp+'</td>'
+            +'<td class="px-4 py-3 text-center text-sm font-bold text-gray-600">'+att+'</td>'
+            +'<td class="px-4 py-3 text-center text-xs text-gray-400">'+dt+'</td>'
+            +'<td class="px-4 py-3 text-center"><button onclick="openM(\''+u.id+'\')" class="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold hover:bg-indigo-100 transition">✏️ تعديل</button></td>'
+            +'</tr>';
+    }).join('');
+    document.getElementById('tbl').innerHTML=h;
+}
+
+function openM(id){
+    var u=users.find(function(x){return x.id===id});
+    if(!u)return;
+    document.getElementById('m-id').value=u.id;
+    document.getElementById('m-name').value=u.full_name||'';
+    document.getElementById('m-email').value=u.email||'';
+    document.getElementById('m-sub').value=u.subscription_type||'free';
+    document.getElementById('m-role').value=u.role||'user';
+    document.getElementById('m-exp').value=u.subscription_expires_at?(u.subscription_expires_at.substring(0,10)):'';
+    document.getElementById('editM').classList.remove('hidden');
+}
+function closeM(){document.getElementById('editM').classList.add('hidden')}
+
+async function saveM(){
+    var id=document.getElementById('m-id').value;
+    var upd={
+        full_name:document.getElementById('m-name').value,
+        subscription_type:document.getElementById('m-sub').value,
+        role:document.getElementById('m-role').value,
+        subscription_expires_at:document.getElementById('m-exp').value||null
+    };
+    var{error}=await sb.from('profiles').update(upd).eq('id',id);
+    if(error){toast('خطأ: '+error.message,false);return}
+    var i=users.findIndex(function(x){return x.id===id});
+    if(i!==-1)users[i]=Object.assign(users[i],upd);
+    toast('تم الحفظ ✓',true);
+    closeM();stats();render(pg);
+}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
 </body>
 </html>
