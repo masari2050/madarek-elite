@@ -3,206 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>التدريب - خوارز</title>
+    <title>التدريب - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: { extend: { fontFamily: { tajawal: ['Tajawal', 'sans-serif'] } } }
-        }
-    </script>
     <style>
         * { font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(180deg, #0f0a2e 0%, #1a1145 40%, #1e1550 100%);
-            min-height: 100vh;
-        }
-
-        .sticky-header {
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(15, 10, 46, 0.97);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        /* ===== شريط التقدم المحسّن ===== */
-        .progress-track {
-            background: rgba(255,255,255,0.06);
-            border-radius: 999px;
-            overflow: visible;
-            height: 8px;
-            position: relative;
-        }
-        .progress-fill {
-            border-radius: 999px;
-            height: 100%;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa, #8b5cf6);
-            background-size: 300% 100%;
-            animation: progressFlow 3s linear infinite;
-            box-shadow: 0 0 12px rgba(139,92,246,0.5);
-        }
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-            animation: shimmer 2s ease-in-out infinite;
-        }
-        @keyframes progressFlow {
-            0% { background-position: 0% center; }
-            100% { background-position: 300% center; }
-        }
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        /* ===== الوقت ===== */
-        .timer-badge {
-            border-radius: 999px;
-            padding: 6px 18px;
-            transition: all 0.4s ease;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .timer-normal {
-            background: rgba(99,102,241,0.12);
-            border: 1.5px solid rgba(99,102,241,0.25);
-            color: #a5b4fc;
-        }
-        .timer-yellow {
-            background: rgba(251,191,36,0.12);
-            border: 1.5px solid rgba(251,191,36,0.4);
-            color: #fbbf24;
-            animation: pulseGlow 1s ease-in-out infinite;
-        }
-        .timer-red {
-            background: rgba(239,68,68,0.12);
-            border: 1.5px solid rgba(239,68,68,0.4);
-            color: #ef4444;
-            animation: pulseGlowRed 0.6s ease-in-out infinite;
-        }
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }
-            50% { box-shadow: 0 0 12px rgba(251,191,36,0.3); }
-        }
-        @keyframes pulseGlowRed {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
-            50% { box-shadow: 0 0 16px rgba(239,68,68,0.4); }
-        }
-
-        .counter-badge {
-            background: rgba(139,92,246,0.12);
-            border: 1.5px solid rgba(139,92,246,0.25);
-            border-radius: 999px;
-            padding: 6px 16px;
-        }
-
-        .question-card {
-            background: rgba(255,255,255,0.97);
-            border-radius: 1.25rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .option-card {
-            background: #fff;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.875rem;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .option-card:not([disabled]):hover {
-            border-color: #8b5cf6;
-            background: #f5f3ff;
-            box-shadow: 0 4px 12px rgba(139,92,246,0.1);
-            transform: translateX(-2px);
-        }
-
-        .stat-mini {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
-        }
-
-        .feedback-correct { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #86efac; }
-        .feedback-wrong { background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 2px solid #fca5a5; }
-
-        .btn-next {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-            transition: all 0.3s ease;
-        }
+        body { background: linear-gradient(180deg, #0f0a2e 0%, #1a1145 40%, #1e1550 100%); min-height: 100vh; }
+        .sticky-header { position: sticky; top: 0; z-index: 50; background: rgba(15,10,46,0.97); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .progress-track { background: rgba(255,255,255,0.06); border-radius: 999px; overflow: visible; height: 8px; position: relative; }
+        .progress-fill { border-radius: 999px; height: 100%; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; background: linear-gradient(90deg,#6366f1,#8b5cf6,#a78bfa,#8b5cf6); background-size: 300% 100%; animation: progressFlow 3s linear infinite; box-shadow: 0 0 12px rgba(139,92,246,0.5); }
+        .progress-fill::after { content:''; position: absolute; top:0; left:-100%; right:0; bottom:0; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent); animation: shimmer 2s ease-in-out infinite; }
+        @keyframes progressFlow { 0%{background-position:0% center} 100%{background-position:300% center} }
+        @keyframes shimmer { 0%{left:-100%} 100%{left:100%} }
+        .timer-badge { border-radius: 999px; padding: 6px 18px; transition: all 0.4s ease; display: flex; align-items: center; gap: 8px; }
+        .timer-normal { background: rgba(99,102,241,0.12); border: 1.5px solid rgba(99,102,241,0.25); color: #a5b4fc; }
+        .timer-yellow { background: rgba(251,191,36,0.12); border: 1.5px solid rgba(251,191,36,0.4); color: #fbbf24; animation: pulseGlow 1s ease-in-out infinite; }
+        .timer-red { background: rgba(239,68,68,0.12); border: 1.5px solid rgba(239,68,68,0.4); color: #ef4444; animation: pulseGlowRed 0.6s ease-in-out infinite; }
+        @keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} 50%{box-shadow:0 0 12px rgba(251,191,36,0.3)} }
+        @keyframes pulseGlowRed { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 16px rgba(239,68,68,0.4)} }
+        .counter-badge { background: rgba(139,92,246,0.12); border: 1.5px solid rgba(139,92,246,0.25); border-radius: 999px; padding: 6px 16px; }
+        .question-card { background: rgba(255,255,255,0.97); border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .option-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 0.875rem; padding: 1rem; cursor: pointer; transition: all 0.2s ease; }
+        .option-card:not([disabled]):hover { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 4px 12px rgba(139,92,246,0.1); transform: translateX(-2px); }
+        .stat-mini { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); }
+        .feedback-correct { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border: 2px solid #86efac; }
+        .feedback-wrong { background: linear-gradient(135deg,#fef2f2,#fee2e2); border: 2px solid #fca5a5; }
+        .btn-next { background: linear-gradient(135deg,#8b5cf6,#6366f1); transition: all 0.3s ease; }
         .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,92,246,0.4); }
-
         .report-btn { transition: all 0.2s ease; }
         .report-btn:hover { color: #dc2626; }
-
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
         .animate-card { animation: fadeUp 0.4s ease forwards; }
         .animate-option { animation: slideIn 0.3s ease forwards; }
-
         .marquee-container { overflow: hidden; white-space: nowrap; }
         .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        .spinner-lg {
-            width: 48px; height: 48px;
-            border: 3px solid rgba(139,92,246,0.2);
-            border-top-color: #8b5cf6;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
+        @keyframes marquee { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+        .spinner-lg { width: 48px; height: 48px; border: 3px solid rgba(139,92,246,0.2); border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.7s linear infinite; }
+        @keyframes spin { to{transform:rotate(360deg)} }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 999px; }
-
-        @keyframes correctPop { 0% { transform: scale(1); } 50% { transform: scale(1.015); } 100% { transform: scale(1); } }
+        @keyframes correctPop { 0%{transform:scale(1)} 50%{transform:scale(1.015)} 100%{transform:scale(1)} }
         .answer-correct-anim { animation: correctPop 0.35s ease; }
+
+        /* الشرح الذكي */
+        .exp-box { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 0.875rem; padding: 14px 16px; margin-top: 12px; }
+        .exp-label { color: #92400e; font-size: 11px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .exp-text { color: #78350f; font-size: 13px; line-height: 1.7; }
+        .exp-correct { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; margin-top: 8px; color: #166534; font-size: 12px; font-weight: 700; }
     </style>
 </head>
 <body class="font-tajawal text-white">
 
-    <!-- Top Banner -->
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
         <div class="marquee-container py-2">
-            <span class="marquee-text text-xs text-purple-200/80">
-                ✨ منصة خوارز تتطور يومياً — نضيف أسئلة جديدة ونحسّن التجربة باستمرار لتقديم تدريب أدق وأقوى
-            </span>
+            <span class="marquee-text text-xs text-purple-200/80">✨ مدارك النخبة — نضيف أسئلة جديدة باستمرار لتقديم تدريب أدق وأقوى على القدرات والتحصيل</span>
         </div>
     </div>
 
-    <!-- Sticky Header -->
     <header class="sticky-header">
         <div class="max-w-3xl mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
-                <!-- Back -->
                 <button onclick="goBack()" class="flex items-center gap-1.5 text-purple-300/70 hover:text-white transition text-sm px-3 py-2 rounded-lg hover:bg-white/5">
                     <span>رجوع</span>
                     <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-
-                <!-- Timer -->
                 <div id="timerBadge" class="timer-badge timer-normal">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
                     <span id="timerDisplay" class="text-lg font-black">10:00</span>
                 </div>
-
-                <!-- Counter -->
                 <div class="counter-badge">
                     <span id="questionCounter" class="text-sm font-black text-purple-300">1/10</span>
                 </div>
             </div>
         </div>
-
-        <!-- Progress Bar -->
         <div class="max-w-3xl mx-auto px-4 pb-3">
             <div class="progress-track">
-                <div id="progressBar" class="progress-fill" style="width: 0%"></div>
+                <div id="progressBar" class="progress-fill" style="width:0%"></div>
             </div>
             <div class="flex justify-between mt-1.5">
                 <span id="progressLabel" class="text-purple-300/50 text-[10px]">ابدأ بسم الله 🚀</span>
@@ -211,48 +88,33 @@
         </div>
     </header>
 
-    <!-- Main -->
     <main class="max-w-3xl mx-auto px-4 py-5 pb-8">
-
-        <!-- Loading -->
         <div id="loadingState" class="flex flex-col items-center justify-center py-20">
             <div class="spinner-lg mb-4"></div>
             <p class="text-purple-300/60 text-sm">جاري تحميل الأسئلة...</p>
         </div>
 
-        <!-- Question Card -->
         <div id="questionCard" class="hidden animate-card">
             <div class="question-card p-6 mb-4">
-                <!-- Header -->
                 <div class="mb-4 flex items-center justify-between">
                     <span class="inline-block bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full" id="sectionTitle">قدرات كمي</span>
                     <span class="text-gray-400 text-xs font-medium" id="questionNumLabel">سؤال 1</span>
                 </div>
-
-                <!-- Question -->
                 <div class="mb-6">
                     <h3 class="text-lg font-bold text-gray-800 leading-relaxed" id="questionText"></h3>
                     <div id="questionImageContainer" class="hidden mt-4">
                         <img id="questionImage" class="max-w-full h-auto rounded-xl shadow-md" alt="صورة السؤال">
                     </div>
                 </div>
-
-                <!-- Options -->
                 <div class="space-y-2.5 mb-4" id="optionsContainer"></div>
-
-                <!-- Report -->
                 <div class="mt-4 pt-4 border-t border-gray-100">
                     <button onclick="reportQuestion()" class="report-btn flex items-center gap-2 text-gray-400 hover:text-red-500 text-xs">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/></svg>
                         <span>تبليغ عن خطأ في السؤال</span>
                     </button>
                 </div>
-
-                <!-- Feedback -->
                 <div id="feedbackCard" class="hidden mt-4 p-5 rounded-2xl"></div>
             </div>
-
-            <!-- Stats Bar -->
             <div class="grid grid-cols-3 gap-2">
                 <div class="stat-mini rounded-xl p-3 text-center">
                     <p class="text-purple-200/70 text-xs mb-0.5">✅ الصحيحة</p>
@@ -270,10 +132,10 @@
         </div>
     </main>
 
-    <!-- Paywall Modal -->
-    <div id="paywallModal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);">
-        <div class="w-full max-w-md rounded-3xl p-7 text-center relative overflow-hidden" style="background: linear-gradient(135deg, #1a1145, #1e1550, #0f0a2e); border: 1px solid rgba(139,92,246,0.2);">
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full" style="background: radial-gradient(circle, rgba(139,92,246,0.2), transparent 70%);"></div>
+    <!-- Paywall -->
+    <div id="paywallModal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
+        <div class="w-full max-w-md rounded-3xl p-7 text-center relative overflow-hidden" style="background:linear-gradient(135deg,#1a1145,#1e1550,#0f0a2e);border:1px solid rgba(139,92,246,0.2)">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full" style="background:radial-gradient(circle,rgba(139,92,246,0.2),transparent 70%)"></div>
             <div class="relative z-10">
                 <span class="text-5xl block mb-3">🚀</span>
                 <h2 class="text-2xl font-black mb-2">ما شاء الله عليك!</h2>
@@ -284,20 +146,18 @@
                     <div class="flex items-center gap-2"><span class="text-green-400 text-sm">✓</span><span class="text-purple-200/80 text-sm">إحصائيات متقدمة ومراجعة أخطاء</span></div>
                     <div class="flex items-center gap-2"><span class="text-green-400 text-sm">✓</span><span class="text-purple-200/80 text-sm">تحديثات أسبوعية للأسئلة</span></div>
                 </div>
-                <div class="flex items-center justify-center gap-3 mb-5 px-2" style="direction: ltr;">
-                    <div class="flex-1 text-center p-3 rounded-xl" style="background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3);">
+                <div class="flex items-center justify-center gap-3 mb-5 px-2" style="direction:ltr">
+                    <div class="flex-1 text-center p-3 rounded-xl" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3)">
                         <div class="text-2xl font-black text-indigo-300">29</div>
                         <div class="text-purple-200/70 text-xs">ريال/شهر</div>
                     </div>
                     <div class="text-purple-200/50 text-xs">أو</div>
-                    <div class="flex-1 text-center p-3 rounded-xl" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3);">
+                    <div class="flex-1 text-center p-3 rounded-xl" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3)">
                         <div class="text-2xl font-black text-emerald-300">19</div>
                         <div class="text-purple-200/70 text-xs">ريال/شهر سنوي</div>
                     </div>
                 </div>
-                <a href="pricing.html" class="block w-full py-3.5 rounded-xl font-bold text-sm text-white mb-3" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
-                    اشترك الآن وكمّل مشوارك ✨
-                </a>
+                <a href="pricing.html" class="block w-full py-3.5 rounded-xl font-bold text-sm text-white mb-3" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">اشترك الآن وكمّل مشوارك ✨</a>
                 <button onclick="closePaywall()" class="text-purple-200/60 text-xs hover:text-purple-300/50 transition">ارجع للرئيسية</button>
             </div>
         </div>
@@ -305,301 +165,221 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
+    const sb = window.supabase.createClient(
+        'https://czzcmbxejxbotjemyuqf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+    );
 
-        let currentUser = null;
-        let currentQuestions = [];
-        let currentQuestionIndex = 0;
-        let correctCount = 0;
-        let wrongCount = 0;
-        let hasAnswered = false;
-        let sessionId = null;
-        let timeRemaining = 0;
-        let timerInterval = null;
-        let userSubscription = 'free';
-        let totalAttemptsCount = 0;
-        const SECONDS_PER_QUESTION = 60;
-        const FREE_LIMIT = 10;
+    var currentUser=null, currentQuestions=[], currentQuestionIndex=0;
+    var correctCount=0, wrongCount=0, hasAnswered=false;
+    var sessionId=null, timeRemaining=0, timerInterval=null;
+    var userSubscription='free', totalAttemptsCount=0;
+    const SECONDS_PER_QUESTION=60, FREE_LIMIT=10;
 
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    function buildSmartExplanation(q, isCorrect) {
+        var correctAnswer = (q.choices||[])[q.correct_index] || '';
+        var exp = (q.explanation || '').trim();
+        return '<div class="exp-box">' +
+            (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + exp + '</div>' : '') +
+            (!isCorrect ? '<div class="exp-correct">✅ الإجابة الصحيحة: ' + correctAnswer + '</div>' : '') +
+        '</div>';
+    }
+    // ════════════════════════════════════════════
 
-        function createBeep(frequency, duration, volume) {
-            volume = volume || 0.3;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain); gain.connect(audioContext.destination);
-            osc.frequency.value = frequency; osc.type = 'sine';
-            gain.gain.setValueAtTime(volume, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            osc.start(audioContext.currentTime);
-            osc.stop(audioContext.currentTime + duration);
+    var audioCtx;
+    function getAudio(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+    function createBeep(f,d,v){ try{ var a=getAudio(),o=a.createOscillator(),g=a.createGain(); o.connect(g);g.connect(a.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(v||0.3,a.currentTime);g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+d);o.start(a.currentTime);o.stop(a.currentTime+d);}catch(e){} }
+    function playSound(ok){ if(localStorage.getItem('soundEnabled')==='false')return; if(ok){createBeep(800,0.1,0.3);setTimeout(function(){createBeep(1000,0.15,0.3)},100);}else{createBeep(200,0.3,0.3);} }
+
+    async function checkAuth(){
+        var s=await sb.auth.getSession(); var session=s.data.session;
+        if(!session){location.href='login.html';return false;}
+        currentUser=session.user;
+        try{ var r=await sb.from('profiles').select('subscription_type').eq('id',currentUser.id).single(); if(r.data&&r.data.subscription_type)userSubscription=r.data.subscription_type; }catch(e){}
+        if(userSubscription==='free'){
+            try{ var a=await sb.from('attempts').select('id').eq('user_id',currentUser.id); totalAttemptsCount=a.data?a.data.length:0; }catch(e){}
+            if(totalAttemptsCount>=FREE_LIMIT){showPaywall();return false;}
         }
+        return true;
+    }
 
-        function playSound(isCorrect) {
-            if (localStorage.getItem('soundEnabled') === 'false') return;
-            try {
-                if (isCorrect) { createBeep(800, 0.1, 0.3); setTimeout(function() { createBeep(1000, 0.15, 0.3); }, 100); }
-                else { createBeep(200, 0.3, 0.3); }
-            } catch (err) {}
-        }
+    function showPaywall(){ document.getElementById('loadingState').classList.add('hidden'); document.getElementById('paywallModal').classList.remove('hidden'); }
+    function closePaywall(){ location.href='dashboard.html'; }
 
-        async function checkAuth() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (!session) { window.location.href = 'login.html'; return false; }
-            currentUser = session.user;
-            try {
-                const { data: profile } = await sb.from('profiles').select('subscription_type').eq('id', currentUser.id).single();
-                if (profile && profile.subscription_type) userSubscription = profile.subscription_type;
-            } catch(e) {}
-            if (userSubscription === 'free') {
-                try {
-                    const { data: attempts } = await sb.from('attempts').select('id').eq('user_id', currentUser.id);
-                    totalAttemptsCount = attempts ? attempts.length : 0;
-                } catch(e) {}
-                if (totalAttemptsCount >= FREE_LIMIT) { showPaywall(); return false; }
+    async function loadQuestions(){
+        var sel=localStorage.getItem('khawariz_selected_section');
+        if(!sel){location.href='select-section.html';return false;}
+        try{
+            var questions=[];
+            if(sel==='mix'){
+                // كمي + لفظي مخلوطين
+                var r1=await sb.from('questions').select('*').eq('section','quant');
+                var r2=await sb.from('questions').select('*').eq('section','verbal');
+                questions=[...(r1.data||[]),...(r2.data||[])];
+            } else {
+                var r=await sb.from('questions').select('*').eq('section',sel);
+                if(r.error)throw r.error;
+                questions=r.data||[];
             }
+            if(!questions.length){alert('ما فيه أسئلة متاحة');location.href='select-section.html';return false;}
+
+            var cnt=parseInt(localStorage.getItem('khawariz_question_count'))||10;
+            currentQuestions=shuffleArray(questions).slice(0,cnt);
+            timeRemaining=parseInt(localStorage.getItem('khawariz_time_seconds'))||(currentQuestions.length*SECONDS_PER_QUESTION);
+
+            startTimer();
+            await createSession(sel);
+
+            var names={'quant':'قدرات كمي','verbal':'قدرات لفظي','tahsili':'التحصيلي','mix':'كمي + لفظي 🔀'};
+            document.getElementById('sectionTitle').textContent=names[sel]||sel;
             return true;
+        }catch(err){console.error(err);return false;}
+    }
+
+    function startTimer(){ updateTimerDisplay(); timerInterval=setInterval(function(){timeRemaining--;updateTimerDisplay();if(timeRemaining<=0){clearInterval(timerInterval);showResults();}},1000); }
+    function updateTimerDisplay(){
+        var m=Math.floor(timeRemaining/60),s=timeRemaining%60;
+        var badge=document.getElementById('timerBadge');
+        document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+        badge.className='timer-badge';
+        if(timeRemaining<=60)badge.classList.add('timer-red');
+        else if(timeRemaining<=120)badge.classList.add('timer-yellow');
+        else badge.classList.add('timer-normal');
+    }
+
+    async function createSession(sec){
+        try{ var r=await sb.from('practice_sessions').insert({user_id:currentUser.id,section:sec,total_questions:currentQuestions.length,started_at:new Date().toISOString()}).select().single(); if(r.data)sessionId=r.data.id; }catch(e){}
+    }
+
+    function shuffleArray(arr){ var a=[...arr]; for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+    function displayQuestion(){
+        if(currentQuestionIndex>=currentQuestions.length){showResults();return;}
+        hasAnswered=false;
+        var q=currentQuestions[currentQuestionIndex];
+        var total=currentQuestions.length, current=currentQuestionIndex+1;
+
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('questionCard').classList.remove('hidden');
+        document.getElementById('questionText').textContent=q.question_text;
+        document.getElementById('questionNumLabel').textContent='سؤال '+current+' من '+total;
+
+        // في المكس: عرض قسم كل سؤال بشكل مستقل
+        var sel=localStorage.getItem('khawariz_selected_section');
+        if(sel==='mix'){
+            var sn={'quant':'قدرات كمي','verbal':'قدرات لفظي'};
+            document.getElementById('sectionTitle').textContent=sn[q.section]||q.section;
         }
 
-        function showPaywall() {
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('paywallModal').classList.remove('hidden');
-        }
-        function closePaywall() { window.location.href = 'dashboard.html'; }
+        var imgC=document.getElementById('questionImageContainer');
+        if(q.image_url){document.getElementById('questionImage').src=q.image_url;imgC.classList.remove('hidden');}else{imgC.classList.add('hidden');}
 
-        async function loadQuestions() {
-            const selectedSection = localStorage.getItem('khawariz_selected_section');
-            if (!selectedSection) { window.location.href = 'select-section.html'; return false; }
-            try {
-                const { data: questions, error } = await sb.from('questions').select('*').eq('section', selectedSection);
-                if (error) throw error;
-                if (!questions || questions.length === 0) {
-                    alert('ما فيه أسئلة متاحة لهذا القسم');
-                    window.location.href = 'select-section.html';
-                    return false;
-                }
+        var pct=Math.round((current/total)*100);
+        document.getElementById('progressBar').style.width=pct+'%';
+        document.getElementById('questionCounter').textContent=current+'/'+total;
+        document.getElementById('progressPercent').textContent=pct+'%';
 
-                // ✅ قراءة عدد الأسئلة والوقت من localStorage
-                var requestedCount = parseInt(localStorage.getItem('khawariz_question_count')) || 10;
-                currentQuestions = shuffleArray(questions).slice(0, requestedCount);
-                timeRemaining = parseInt(localStorage.getItem('khawariz_time_seconds')) || (currentQuestions.length * SECONDS_PER_QUESTION);
+        var lbls=['ابدأ بسم الله 🚀','استمر! 🔥','نص الطريق ⚡','قريب من النهاية! 💪','السؤال الأخير! 🏁'];
+        document.getElementById('progressLabel').textContent=lbls[current===total?4:current===1?0:pct>=75?3:pct>=50?2:1];
 
-                startTimer();
-                await createSession(selectedSection);
-
-                const sectionNames = { 'quant': 'قدرات كمي', 'verbal': 'قدرات لفظي', 'tahsili': 'التحصيلي' };
-                document.getElementById('sectionTitle').textContent = sectionNames[selectedSection] || selectedSection;
-                return true;
-            } catch (err) { console.error('Error:', err); return false; }
-        }
-
-        function startTimer() {
-            updateTimerDisplay();
-            timerInterval = setInterval(function() {
-                timeRemaining--;
-                updateTimerDisplay();
-                if (timeRemaining <= 0) { clearInterval(timerInterval); showResults(); }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const m = Math.floor(timeRemaining / 60);
-            const s = timeRemaining % 60;
-            const badge = document.getElementById('timerBadge');
-            const display = document.getElementById('timerDisplay');
-            display.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-            badge.className = 'timer-badge';
-            if (timeRemaining <= 60) badge.classList.add('timer-red');
-            else if (timeRemaining <= 120) badge.classList.add('timer-yellow');
-            else badge.classList.add('timer-normal');
-        }
-
-        async function createSession(section) {
-            try {
-                const { data } = await sb.from('practice_sessions').insert({
-                    user_id: currentUser.id, section: section,
-                    total_questions: currentQuestions.length,
-                    started_at: new Date().toISOString()
-                }).select().single();
-                if (data) sessionId = data.id;
-            } catch (err) {}
-        }
-
-        function shuffleArray(arr) {
-            const a = [...arr];
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
-        }
-
-        function displayQuestion() {
-            if (currentQuestionIndex >= currentQuestions.length) { showResults(); return; }
-            hasAnswered = false;
-            const q = currentQuestions[currentQuestionIndex];
-            const total = currentQuestions.length;
-            const current = currentQuestionIndex + 1;
-
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('questionCard').classList.remove('hidden');
-            document.getElementById('questionText').textContent = q.question_text;
-            document.getElementById('questionNumLabel').textContent = 'سؤال ' + current + ' من ' + total;
-
-            const imgContainer = document.getElementById('questionImageContainer');
-            if (q.image_url) { document.getElementById('questionImage').src = q.image_url; imgContainer.classList.remove('hidden'); }
-            else { imgContainer.classList.add('hidden'); }
-
-            // Progress bar + text
-            const pct = Math.round((current / total) * 100);
-            document.getElementById('progressBar').style.width = pct + '%';
-            document.getElementById('questionCounter').textContent = current + '/' + total;
-            document.getElementById('progressPercent').textContent = pct + '%';
-
-            var labels = ['ابدأ بسم الله 🚀', 'استمر! 🔥', 'نص الطريق ⚡', 'قريب من النهاية! 💪', 'السؤال الأخير! 🏁'];
-            var labelIndex = current === total ? 4 : current === 1 ? 0 : pct >= 75 ? 3 : pct >= 50 ? 2 : 1;
-            document.getElementById('progressLabel').textContent = labels[labelIndex];
-
-            const container = document.getElementById('optionsContainer');
-            container.innerHTML = '';
-            (q.choices || []).forEach(function(option, index) {
-                const div = document.createElement('div');
-                div.className = 'option-card animate-option';
-                div.style.animationDelay = (index * 0.05) + 's';
-                div.onclick = function() { selectOption(index); };
-                div.innerHTML = '<div class="flex items-center gap-3">' +
-                    '<span class="min-w-[28px] h-7 rounded-full bg-indigo-50 flex items-center justify-center font-bold text-indigo-600 text-xs">' + (index + 1) + '</span>' +
-                    '<span class="option-text text-gray-700 text-sm leading-relaxed"></span>' +
-                    '</div>';
-                div.querySelector('.option-text').textContent = option;
-                container.appendChild(div);
-            });
-
-            document.getElementById('feedbackCard').classList.add('hidden');
-        }
-
-        async function selectOption(selectedIndex) {
-            if (hasAnswered) return;
-            hasAnswered = true;
-            const q = currentQuestions[currentQuestionIndex];
-            const isCorrect = selectedIndex === q.correct_index;
-
-            playSound(isCorrect);
-            if (isCorrect) correctCount++; else wrongCount++;
-            totalAttemptsCount++;
-            updateStats();
-
-            document.querySelectorAll('.option-card').forEach(function(card, index) {
-                card.onclick = null; card.style.cursor = 'default';
-                if (index === q.correct_index) {
-                    card.style.borderColor = '#22c55e';
-                    card.style.background = '#f0fdf4';
-                    card.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.15)';
-                    if (isCorrect && index === selectedIndex) card.classList.add('answer-correct-anim');
-                } else if (index === selectedIndex && !isCorrect) {
-                    card.style.borderColor = '#ef4444';
-                    card.style.background = '#fef2f2';
-                    card.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
-                }
-            });
-
-            showFeedback(isCorrect, q.explanation);
-            saveAttempt(q.id, selectedIndex, isCorrect);
-        }
-
-        function showFeedback(isCorrect, explanation) {
-            const card = document.getElementById('feedbackCard');
-            const isLast = (currentQuestionIndex + 1 >= currentQuestions.length);
-            card.className = 'mt-5 p-5 rounded-2xl ' + (isCorrect ? 'feedback-correct' : 'feedback-wrong');
-            card.innerHTML =
-                '<div class="flex items-center gap-2 mb-3">' +
-                    '<span class="text-3xl">' + (isCorrect ? '✅' : '❌') + '</span>' +
-                    '<h3 class="text-lg font-bold ' + (isCorrect ? 'text-green-700' : 'text-red-700') + '">' +
-                        (isCorrect ? 'إجابة صحيحة! 🎯' : 'إجابة خاطئة') +
-                    '</h3>' +
-                '</div>' +
-                '<p class="text-gray-600 text-sm mb-4 leading-relaxed">' + (explanation || 'لا يوجد شرح') + '</p>' +
-                '<button onclick="nextQuestion()" class="btn-next w-full text-white py-3 rounded-xl font-bold text-sm">' +
-                    (isLast ? '🏁 عرض النتيجة النهائية' : 'السؤال التالي ←') +
-                '</button>';
-            card.classList.remove('hidden');
-        }
-
-        function nextQuestion() {
-            if (userSubscription === 'free' && totalAttemptsCount >= FREE_LIMIT) {
-                clearInterval(timerInterval); showPaywall(); return;
-            }
-            currentQuestionIndex++;
-            displayQuestion();
-        }
-
-        async function saveAttempt(questionId, selectedAnswer, isCorrect) {
-            try {
-                await sb.from('attempts').insert({
-                    user_id: currentUser.id, question_id: questionId,
-                    selected_answer: selectedAnswer, is_correct: isCorrect,
-                    answered_at: new Date().toISOString()
-                });
-            } catch (err) {}
-        }
-
-        async function reportQuestion() {
-            const q = currentQuestions[currentQuestionIndex];
-            const reason = prompt('الرجاء ذكر سبب التبليغ (اختياري):');
-            if (reason === null) return;
-            try {
-                await sb.from('reports').insert({
-                    user_id: currentUser.id, question_id: q.id,
-                    reason: reason || 'لم يحدد سبب', reported_at: new Date().toISOString()
-                });
-                alert('✅ تم إرسال التبليغ بنجاح');
-            } catch (err) { alert('حدث خطأ أثناء إرسال التبليغ'); }
-        }
-
-        function updateStats() {
-            document.getElementById('correctCount').textContent = correctCount;
-            document.getElementById('wrongCount').textContent = wrongCount;
-            const total = correctCount + wrongCount;
-            document.getElementById('percentageCount').textContent = (total > 0 ? Math.round((correctCount / total) * 100) : 0) + '%';
-        }
-
-        async function showResults() {
-            clearInterval(timerInterval);
-            await finishSession();
-            localStorage.setItem('quiz_results', JSON.stringify({
-                correct: correctCount, wrong: wrongCount,
-                total: currentQuestions.length,
-                percentage: Math.round((correctCount / currentQuestions.length) * 100)
-            }));
-            window.location.href = 'results.html';
-        }
-
-        async function finishSession() {
-            if (!sessionId) return;
-            try {
-                await sb.from('practice_sessions').update({
-                    correct_answers: correctCount, wrong_answers: wrongCount,
-                    completed_at: new Date().toISOString()
-                }).eq('id', sessionId);
-            } catch (err) {}
-        }
-
-        function goBack() {
-            if (confirm('هل تريد الخروج من الاختبار؟')) {
-                clearInterval(timerInterval);
-                window.location.href = 'select-section.html';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            const ok = await checkAuth();
-            if (!ok) return;
-            const loaded = await loadQuestions();
-            if (loaded) displayQuestion();
+        var container=document.getElementById('optionsContainer');
+        container.innerHTML='';
+        (q.choices||[]).forEach(function(opt,i){
+            var div=document.createElement('div');
+            div.className='option-card animate-option';
+            div.style.animationDelay=(i*0.05)+'s';
+            div.onclick=function(){selectOption(i);};
+            div.innerHTML='<div class="flex items-center gap-3"><span class="min-w-[28px] h-7 rounded-full bg-indigo-50 flex items-center justify-center font-bold text-indigo-600 text-xs">'+(i+1)+'</span><span class="option-text text-gray-700 text-sm leading-relaxed"></span></div>';
+            div.querySelector('.option-text').textContent=opt;
+            container.appendChild(div);
         });
+
+        document.getElementById('feedbackCard').classList.add('hidden');
+    }
+
+    async function selectOption(sel){
+        if(hasAnswered)return;
+        hasAnswered=true;
+        var q=currentQuestions[currentQuestionIndex];
+        var isCorrect=sel===q.correct_index;
+
+        playSound(isCorrect);
+        if(isCorrect)correctCount++;else wrongCount++;
+        totalAttemptsCount++;
+        updateStats();
+
+        document.querySelectorAll('.option-card').forEach(function(card,i){
+            card.onclick=null;card.style.cursor='default';
+            if(i===q.correct_index){card.style.borderColor='#22c55e';card.style.background='#f0fdf4';card.style.boxShadow='0 0 0 3px rgba(34,197,94,0.15)';if(isCorrect&&i===sel)card.classList.add('answer-correct-anim');}
+            else if(i===sel&&!isCorrect){card.style.borderColor='#ef4444';card.style.background='#fef2f2';card.style.boxShadow='0 0 0 3px rgba(239,68,68,0.15)';}
+        });
+
+        showFeedback(isCorrect,q,sel);
+        saveAttempt(q.id,sel,isCorrect);
+    }
+
+    function showFeedback(isCorrect,q,selectedIndex){
+        var card=document.getElementById('feedbackCard');
+        var isLast=(currentQuestionIndex+1>=currentQuestions.length);
+        var expHTML=buildSmartExplanation(q,isCorrect);
+        card.className='mt-5 p-5 rounded-2xl '+(isCorrect?'feedback-correct':'feedback-wrong');
+        card.innerHTML=
+            '<div class="flex items-center gap-2 mb-3">'+
+            '<span class="text-3xl">'+(isCorrect?'✅':'❌')+'</span>'+
+            '<h3 class="text-lg font-bold '+(isCorrect?'text-green-700':'text-red-700')+'">'+
+            (isCorrect?'إجابة صحيحة! 🎯':'إجابة خاطئة')+'</h3></div>'+
+            expHTML+
+            '<button onclick="nextQuestion()" class="btn-next w-full text-white py-3 rounded-xl font-bold text-sm mt-4">'+
+            (isLast?'🏁 عرض النتيجة النهائية':'السؤال التالي ←')+'</button>';
+        card.classList.remove('hidden');
+    }
+
+    function nextQuestion(){
+        if(userSubscription==='free'&&totalAttemptsCount>=FREE_LIMIT){clearInterval(timerInterval);showPaywall();return;}
+        currentQuestionIndex++;
+        displayQuestion();
+    }
+
+    async function saveAttempt(qId,ans,ok){
+        try{ await sb.from('attempts').insert({user_id:currentUser.id,question_id:qId,selected_answer:ans,is_correct:ok,answered_at:new Date().toISOString()}); }catch(e){}
+    }
+
+    async function reportQuestion(){
+        var q=currentQuestions[currentQuestionIndex];
+        var reason=prompt('الرجاء ذكر سبب التبليغ (اختياري):');
+        if(reason===null)return;
+        try{ await sb.from('reports').insert({user_id:currentUser.id,question_id:q.id,reason:reason||'لم يحدد سبب',reported_at:new Date().toISOString()}); alert('✅ تم إرسال التبليغ'); }catch(e){ alert('حدث خطأ'); }
+    }
+
+    function updateStats(){
+        document.getElementById('correctCount').textContent=correctCount;
+        document.getElementById('wrongCount').textContent=wrongCount;
+        var t=correctCount+wrongCount;
+        document.getElementById('percentageCount').textContent=(t>0?Math.round((correctCount/t)*100):0)+'%';
+    }
+
+    async function showResults(){
+        clearInterval(timerInterval);
+        await finishSession();
+        localStorage.setItem('quiz_results',JSON.stringify({correct:correctCount,wrong:wrongCount,total:currentQuestions.length,percentage:Math.round((correctCount/currentQuestions.length)*100)}));
+        location.href='results.html';
+    }
+
+    async function finishSession(){
+        if(!sessionId)return;
+        try{ await sb.from('practice_sessions').update({correct_answers:correctCount,wrong_answers:wrongCount,completed_at:new Date().toISOString()}).eq('id',sessionId); }catch(e){}
+    }
+
+    function goBack(){
+        if(confirm('هل تريد الخروج من الاختبار؟')){clearInterval(timerInterval);location.href='select-section.html';}
+    }
+
+    document.addEventListener('DOMContentLoaded',async function(){
+        var ok=await checkAuth();
+        if(!ok)return;
+        var loaded=await loadQuestions();
+        if(loaded)displayQuestion();
+    });
     </script>
 </body>
 </html>
