@@ -97,7 +97,39 @@ var W=1080,H=1920;
 var R=JSON.parse(localStorage.getItem('quiz_results')||'{}');
 var ok=R.correct||0,tot=R.total||10,pct=R.percentage||0,sec=R.section||'';
 var secN={'quant':'القدرات الكمية','verbal':'القدرات اللفظية','tahsili':'التحصيلي','mix':'القدرات'};
-var currentPhrase='الحمدلله 🙏\nانجزت تدريبي اليوم';
+// الجنس
+var gender='male';
+try{var ud=JSON.parse(localStorage.getItem('khawariz_user')||'{}');gender=ud.gender||'male';}catch(e){}
+var isFemale=(gender==='female');
+
+var PHRASES=isFemale?[
+  {label:'الحمدلله 🙏 انجزت تدريبي اليوم', val:'الحمدلله 🙏\nانجزت تدريبي اليوم'},
+  {label:'ما توقفت عن التطور 🔥', val:'ما توقفت\nعن التطور 🔥'},
+  {label:'على طريق القبول 🎯', val:'على طريق\nالقبول 🎯'},
+  {label:'كل يوم أقوى من أمس ⚡️', val:'كل يوم\nأقوى من أمس ⚡️'},
+  {label:'شغّالة على نفسي وما وقفت 💪', val:'شغّالة على\nنفسي وما وقفت 💪'},
+  {label:'التدريب اليوم استثمار بكره 🏆', val:'التدريب اليوم\nاستثمار بكره 🏆'}
+]:[
+  {label:'الحمدلله 🙏 انجزت تدريبي اليوم', val:'الحمدلله 🙏\nانجزت تدريبي اليوم'},
+  {label:'ما توقفت عن التطور 🔥', val:'ما توقفت\nعن التطور 🔥'},
+  {label:'على طريق القبول 🎯', val:'على طريق\nالقبول 🎯'},
+  {label:'كل يوم أقوى من أمس ⚡️', val:'كل يوم\nأقوى من أمس ⚡️'},
+  {label:'شغّال على نفسي وما وقفت 💪', val:'شغّال على\nنفسي وما وقفت 💪'},
+  {label:'التدريب اليوم استثمار بكره 🏆', val:'التدريب اليوم\nاستثمار بكره 🏆'}
+];
+
+var currentPhrase=PHRASES[0].val;
+
+function buildPhrases(){
+  var cont=document.getElementById('phrases');cont.innerHTML='';
+  PHRASES.forEach(function(p,i){
+    var btn=document.createElement('button');
+    btn.className='phrase-btn'+(i===0?' selected':'');
+    btn.textContent=p.label;
+    btn.onclick=(function(pv){return function(){selectPhrase(this,pv);};})(p.val);
+    cont.appendChild(btn);
+  });
+}
 
 // نجوم
 var ST=[];for(var i=0;i<150;i++)ST.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.7+0.2,o:Math.random()*0.45+0.07});
@@ -305,6 +337,8 @@ async function shareNative(){
   },'image/png');
 }
 
+buildPhrases();
+buildPhrases();
 draw();
 document.getElementById('nameVal').addEventListener('input',draw);
 </script>
