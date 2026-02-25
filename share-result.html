@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النتائج - مدارك النخبة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .card-glass{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px)}
+        .bounce-in{animation:bounce-in .6s ease-out}
+        @keyframes bounce-in{0%{transform:scale(0);opacity:0}50%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);transition:all .3s ease}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
+        .btn-outline{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.12);transition:all .3s ease}
+        .btn-outline:hover{background:rgba(255,255,255,0.09)}
+        .btn-red{background:rgba(239,68,68,0.08);border:1.5px solid rgba(239,68,68,0.25);color:#fca5a5;transition:all .3s ease}
+        .btn-red:hover{background:rgba(239,68,68,0.15)}
+
+        @keyframes score-pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+        .score-pop{animation:score-pop .8s cubic-bezier(0.34,1.56,0.64,1) forwards}
+
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        .float{animation:float 3s ease-in-out infinite}
+    </style>
+</head>
+<body class="text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-lg w-full">
+
+        <!-- Logo -->
+        <div class="text-center mb-6 animate-in delay-1">
+            <a href="dashboard.html" style="display:inline-flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none">
+                <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite">
+                    <div style="position:absolute;inset:3px;border-radius:10px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite"></div>
+                    <svg viewBox="0 0 36 36" width="24" height="24" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite">مدارك النخبة</div>
+            </a>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card-glass rounded-3xl p-8 bounce-in">
+
+            <!-- Emoji & Title -->
+            <div class="text-center mb-8">
+                <div class="text-7xl mb-4 float" id="resultEmoji">🎉</div>
+                <h1 class="text-3xl font-black mb-2" id="resultTitle">أحسنت!</h1>
+                <p class="text-purple-300/60 text-sm" id="resultMessage">أنت في الطريق الصح</p>
+            </div>
+
+            <!-- Score -->
+            <div class="rounded-2xl p-7 mb-5 text-center score-pop" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2)">
+                <p class="text-purple-300/60 text-sm mb-2">النتيجة النهائية</p>
+                <p class="text-5xl font-black text-indigo-300 mb-3" id="finalScore">0/10</p>
+                <div class="inline-block px-6 py-2 rounded-full" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1)">
+                    <p class="text-3xl font-black" id="finalPercentage">0%</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="rounded-xl p-5 text-center animate-in delay-1" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2)">
+                    <p class="text-green-400/70 text-xs mb-1">✅ الصحيحة</p>
+                    <p class="text-4xl font-black text-green-400" id="correctAnswers">0</p>
+                </div>
+                <div class="rounded-xl p-5 text-center animate-in delay-2" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2)">
+                    <p class="text-red-400/70 text-xs mb-1">❌ الخاطئة</p>
+                    <p class="text-4xl font-black text-red-400" id="wrongAnswers">0</p>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div class="rounded-xl p-5 mb-6 animate-in delay-3" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15)">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">💡</span>
+                    <p class="text-amber-200/80 text-sm leading-relaxed" id="motivationalQuote">استمر في التدريب، كل يوم خطوة نحو حلمك!</p>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="space-y-3">
+                <button onclick="tryAgain()" class="btn-primary w-full py-3.5 rounded-xl font-bold text-sm text-white">🔄 حاول مرة ثانية</button>
+                <button onclick="goToDashboard()" class="btn-outline w-full py-3.5 rounded-xl font-bold text-sm text-white">🏠 العودة للوحة التحكم</button>
+                <button onclick="reviewMistakes()" class="btn-red w-full py-3.5 rounded-xl font-bold text-sm">📖 راجع أخطائك</button>
+                <button onclick="shareResult()" id="shareBtn" class="w-full py-3.5 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#10b981,#059669);border:none;cursor:pointer">📸 شارك نتيجتي</button>
+            </div>
+            <canvas id="shareCanvas" style="display:none"></canvas>
+        </div>
+
+        <p class="text-center text-purple-200/30 text-xs mt-6">💪 التدريب المستمر هو سر التفوق</p>
+    </div>
+
+    <script>
+        const results=JSON.parse(localStorage.getItem('quiz_results')||'{}');
+        const correct=results.correct||0,wrong=results.wrong||0,total=results.total||10,percentage=results.percentage||0;
+        const messages={
+            excellent:{emoji:'🏆',title:'ممتاز جداً!',quote:'أنت في طريقك للتفوق، استمر على هذا المستوى الرائع!'},
+            veryGood:{emoji:'🌟',title:'أحسنت!',quote:'أداء رائع! مع المزيد من التدريب ستصل للقمة'},
+            good:{emoji:'💪',title:'جيد!',quote:'بداية جيدة، استمر في التدريب وستتحسن أكثر'},
+            needsWork:{emoji:'📚',title:'مجهود طيب!',quote:'لا تستسلم، كل خطأ هو فرصة للتعلم والتطور'}
+        };
+        let msg=percentage>=90?messages.excellent:percentage>=75?messages.veryGood:percentage>=60?messages.good:messages.needsWork;
+        document.getElementById('resultEmoji').textContent=msg.emoji;
+        document.getElementById('resultTitle').textContent=msg.title;
+        document.getElementById('resultMessage').textContent=msg.quote;
+        document.getElementById('finalScore').textContent=correct+'/'+total;
+        document.getElementById('finalPercentage').textContent=percentage+'%';
+        document.getElementById('correctAnswers').textContent=correct;
+        document.getElementById('wrongAnswers').textContent=wrong;
+        document.getElementById('motivationalQuote').textContent=msg.quote;
+        const pEl=document.getElementById('finalPercentage');
+        if(percentage>=90)pEl.style.color='#4ade80';
+        else if(percentage>=75)pEl.style.color='#818cf8';
+        else if(percentage>=60)pEl.style.color='#fbbf24';
+        else pEl.style.color='#f87171';
+        function tryAgain(){window.location.href='select-section.html'}
+        function goToDashboard(){localStorage.removeItem('quiz_results');window.location.href='dashboard.html'}
+        function reviewMistakes(){window.location.href='mistakes.html'}
+        setTimeout(function(){localStorage.removeItem('quiz_results')},3600000);
+
+        async function shareResult(){
+            var btn = document.getElementById('shareBtn');
+            btn.textContent = '⏳ جاري التجهيز...';
+            btn.disabled = true;
+
+            var canvas = document.getElementById('shareCanvas');
+            canvas.width = 1080;
+            canvas.height = 1080;
+            var ctx = canvas.getContext('2d');
+
+            // خلفية داكنة
+            var grad = ctx.createLinearGradient(0,0,1080,1080);
+            grad.addColorStop(0,'#080614');
+            grad.addColorStop(0.5,'#1a1145');
+            grad.addColorStop(1,'#0f0a2e');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0,0,1080,1080);
+
+            // نجوم خلفية
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            for(var i=0;i<80;i++){
+                var x=Math.random()*1080, y=Math.random()*1080, r=Math.random()*1.5+0.3;
+                ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+            }
+
+            // دائرة وهج خلفية
+            var glow = ctx.createRadialGradient(540,400,0,540,400,400);
+            glow.addColorStop(0,'rgba(99,102,241,0.25)');
+            glow.addColorStop(1,'transparent');
+            ctx.fillStyle = glow;
+            ctx.fillRect(0,0,1080,1080);
+
+            // بطاقة مركزية
+            ctx.fillStyle = 'rgba(255,255,255,0.04)';
+            roundRect(ctx, 80, 80, 920, 920, 48);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(139,92,246,0.3)';
+            ctx.lineWidth = 1.5;
+            roundRect(ctx, 80, 80, 920, 920, 48);
+            ctx.stroke();
+
+            // شعار النصية
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(196,181,253,0.5)';
+            ctx.font = 'bold 28px Tajawal, Arial';
+            ctx.fillText('مدارك النخبة', 540, 170);
+            ctx.fillStyle = 'rgba(196,181,253,0.25)';
+            ctx.font = '20px Tajawal, Arial';
+            ctx.fillText('حيث يُصنع التميّز', 540, 205);
+
+            // فاصل
+            ctx.strokeStyle = 'rgba(139,92,246,0.2)';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(200,230); ctx.lineTo(880,230); ctx.stroke();
+
+            // إيموجي النتيجة
+            var emoji = document.getElementById('resultEmoji').textContent;
+            ctx.font = '110px Arial';
+            ctx.fillText(emoji, 540, 380);
+
+            // العنوان
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 62px Tajawal, Arial';
+            ctx.fillText(document.getElementById('resultTitle').textContent, 540, 460);
+
+            // النسبة المئوية
+            var pct = percentage;
+            var pctColor = pct>=90?'#4ade80':pct>=75?'#818cf8':pct>=60?'#fbbf24':'#f87171';
+            ctx.fillStyle = pctColor;
+            ctx.font = 'bold 130px Tajawal, Arial';
+            ctx.fillText(pct+'%', 540, 620);
+
+            // الدرجة
+            ctx.fillStyle = 'rgba(196,181,253,0.7)';
+            ctx.font = 'bold 44px Tajawal, Arial';
+            ctx.fillText(correct + ' من ' + total + ' إجابة صحيحة', 540, 690);
+
+            // فاصل
+            ctx.strokeStyle = 'rgba(139,92,246,0.2)';
+            ctx.beginPath(); ctx.moveTo(200,730); ctx.lineTo(880,730); ctx.stroke();
+
+            // اسم المستخدم
+            try {
+                var userData = JSON.parse(localStorage.getItem('khawariz_user')||'{}');
+                var name = userData.name || userData.email || '';
+                if(name && name.includes('@')) name = name.split('@')[0];
+                if(name){
+                    ctx.fillStyle = 'rgba(196,181,253,0.5)';
+                    ctx.font = '30px Tajawal, Arial';
+                    ctx.fillText(name, 540, 790);
+                }
+            } catch(e){}
+
+            // رابط الموقع
+            ctx.fillStyle = 'rgba(139,92,246,0.6)';
+            ctx.font = 'bold 28px Tajawal, Arial';
+            ctx.fillText('madarekelite.com', 540, 940);
+
+            // حفظ وتنزيل
+            try {
+                canvas.toBlob(function(blob){
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'نتيجتي-مدارك-النخبة.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    btn.textContent = '✅ تم تحميل الصورة';
+                    btn.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)';
+                    setTimeout(function(){ btn.textContent='📸 شارك نتيجتي'; btn.disabled=false; btn.style.background='linear-gradient(135deg,#10b981,#059669)'; },3000);
+                }, 'image/png');
+            } catch(e){
+                btn.textContent = '📸 شارك نتيجتي';
+                btn.disabled = false;
+            }
+        }
+
+        function roundRect(ctx, x, y, w, h, r){
+            ctx.beginPath();
+            ctx.moveTo(x+r, y);
+            ctx.lineTo(x+w-r, y);
+            ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+            ctx.lineTo(x+w, y+h-r);
+            ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+            ctx.lineTo(x+r, y+h);
+            ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+            ctx.lineTo(x, y+r);
+            ctx.quadraticCurveTo(x, y, x+r, y);
+            ctx.closePath();
+        }
+    </script>
+</body>
+</html>
