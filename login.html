@@ -42,7 +42,7 @@
             <!-- Icon only - large centered -->
             <a href="index.html" class="flex flex-col items-center gap-3 mb-5" style="text-decoration:none">
                 <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite">
-                    <div style="position:absolute;inset:3px;border-radius:15px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite"></div>
+                    <div style="position:absolute;inset:3px;border-radius:14px;border:2px solid transparent;border-top-color:rgba(99,102,241,0.85);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite;pointer-events:none"></div>
                     <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
                         <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
@@ -79,7 +79,11 @@
                 <button type="submit" id="submitBtn" class="btn-primary w-full py-3 rounded-xl font-bold text-sm text-white">
                     تسجيل الدخول
                 </button>
+                <div class="text-center mt-3">
+                    <button type="button" onclick="forgotPassword()" class="text-purple-300/60 text-xs hover:text-purple-300 transition">نسيت كلمة السر؟</button>
+                </div>
             </form>
+            <div id="resetMsg" class="hidden text-center mt-3 text-xs text-green-400 bg-green-400/10 rounded-xl py-2 px-3"></div>
             <div class="text-center mt-5">
                 <p class="text-purple-200/70 text-xs">ما عندك حساب؟ <a href="register.html" class="text-indigo-400 font-bold hover:underline">سجّل الآن</a></p>
             </div>
