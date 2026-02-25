@@ -127,6 +127,19 @@
             setTimeout(function() { t.classList.add('hidden'); }, 3500);
         }
         // استقبال رابط إعادة تعيين الباسورد
+        var hashParams = new URLSearchParams(window.location.hash.substring(1));
+        if (hashParams.get('type') === 'recovery') {
+            var accessToken = hashParams.get('access_token');
+            if (accessToken) {
+                sb.auth.setSession({ access_token: accessToken, refresh_token: accessToken })
+                    .then(function() {
+                        document.getElementById('resetModal').classList.remove('hidden');
+                    });
+            } else {
+                document.getElementById('resetModal').classList.remove('hidden');
+            }
+        }
+
         sb.auth.onAuthStateChange(async function(event, session) {
             if (event === 'PASSWORD_RECOVERY') {
                 document.getElementById('resetModal').classList.remove('hidden');
@@ -139,13 +152,20 @@
             if (!p1 || p1.length < 6) { alert('كلمة السر لازم تكون 6 أحرف على الأقل'); return; }
             if (p1 !== p2) { alert('كلمة السر ما تطابقت'); return; }
             try {
+                // تأكد إن الـ session موجودة من الـ token
+                var hashParams = new URLSearchParams(window.location.hash.substring(1));
+                var token = hashParams.get('access_token');
+                if (token) {
+                    await sb.auth.setSession({ access_token: token, refresh_token: token });
+                }
                 var { error } = await sb.auth.updateUser({ password: p1 });
                 if (error) throw error;
-                document.getElementById('resetResult').textContent = 'تم تغيير كلمة السر، جاري تحويلك...';
-                document.getElementById('resetResult').classList.remove('hidden');
+                var res = document.getElementById('resetResult');
+                res.textContent = 'تم تغيير كلمة السر، جاري تحويلك...';
+                res.classList.remove('hidden');
                 setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
             } catch(e) {
-                alert('حصل خطأ: ' + e.message);
+                alert('ما قدرنا نغير — ' + e.message);
             }
         }
 
