@@ -3,109 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خوارز - الملف الشخصي</title>
+    <title>الملف الشخصي - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        tajawal: ['Tajawal', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%);
-            min-height: 100vh;
-        }
-        .toggle-switch {
-            position: relative; width: 52px; height: 28px;
-            background: #374151; border-radius: 9999px;
-            cursor: pointer; transition: background 0.3s ease; flex-shrink: 0;
-        }
-        .toggle-switch.active { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
-        .toggle-switch::after {
-            content: ''; position: absolute; top: 3px; right: 3px;
-            width: 22px; height: 22px; background: white; border-radius: 50%;
-            transition: transform 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        .toggle-switch.active::after { transform: translateX(-24px); }
-        .card-glow {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-        }
-        .input-field {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white; transition: all 0.3s ease;
-        }
-        .input-field:focus {
-            outline: none; border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
-            background: rgba(255,255,255,0.1);
-        }
-        .input-field::placeholder { color: rgba(255,255,255,0.35); }
-        .btn-primary {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1, #4f46e5);
-            transition: all 0.3s ease; cursor: pointer;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,92,246,0.4); }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            transition: all 0.3s ease; cursor: pointer;
-        }
-        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239,68,68,0.3); }
-        .btn-danger:active { transform: translateY(0); }
-        .btn-danger:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
-        .toast {
-            position: fixed; top: 80px; left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            opacity: 0; transition: all 0.4s ease; z-index: 1000; pointer-events: none;
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .spinner {
-            width: 20px; height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white; border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-            display: inline-block; vertical-align: middle;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-in { animation: fadeUp 0.5s ease forwards; }
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .delay-4 { animation-delay: 0.4s; opacity: 0; }
-        .marquee-container { overflow: hidden; white-space: nowrap; }
-        .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        .avatar-circle { background: linear-gradient(135deg, #8b5cf6, #6366f1); box-shadow: 0 0 30px rgba(139,92,246,0.3); }
-        .password-wrapper { position: relative; }
-        .password-toggle {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: rgba(255,255,255,0.4); transition: color 0.2s;
-            background: none; border: none; padding: 4px;
-        }
-        .password-toggle:hover { color: rgba(255,255,255,0.7); }
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .toggle-switch{position:relative;width:52px;height:28px;background:#374151;border-radius:9999px;cursor:pointer;transition:background .3s ease;flex-shrink:0}
+        .toggle-switch.active{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
+        .toggle-switch::after{content:'';position:absolute;top:3px;right:3px;width:22px;height:22px;background:white;border-radius:50%;transition:transform .3s ease;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
+        .toggle-switch.active::after{transform:translateX(-24px)}
+        .card-glow{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px)}
+        .input-field{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;transition:all .3s ease}
+        .input-field:focus{outline:none;border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,0.2);background:rgba(255,255,255,0.1)}
+        .input-field::placeholder{color:rgba(255,255,255,0.35)}
+        .btn-primary{background:linear-gradient(135deg,#8b5cf6,#6366f1,#4f46e5);transition:all .3s ease;cursor:pointer}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.4)}
+        .btn-primary:disabled{opacity:.7;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);transition:all .3s ease;cursor:pointer}
+        .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(239,68,68,0.3)}
+        .btn-danger:disabled{opacity:.7;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);opacity:0;transition:all .4s ease;z-index:1000;pointer-events:none}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}.delay-4{animation-delay:.4s;opacity:0}
+        .marquee-container{overflow:hidden;white-space:nowrap}
+        .marquee-text{display:inline-block;animation:marquee 25s linear infinite}
+        @keyframes marquee{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        .avatar-circle{background:linear-gradient(135deg,#8b5cf6,#6366f1);box-shadow:0 0 30px rgba(139,92,246,0.3)}
+        .password-wrapper{position:relative}
+        .password-toggle{position:absolute;left:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,0.4);transition:color .2s;background:none;border:none;padding:4px}
+        .password-toggle:hover{color:rgba(255,255,255,0.7)}
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:6px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+    </style>
 </head>
 <body class="font-tajawal text-white">
     <div id="toast" class="toast">
@@ -117,17 +58,29 @@
 
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
         <div class="marquee-container py-2.5">
-            <span class="marquee-text text-sm text-purple-200/90">✨ نعمل خلف الكواليس لتطوير خوارز — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
+            <span class="marquee-text text-sm text-purple-200/90">✨ مدارك النخبة تتطور يومياً — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
         </div>
     </div>
 
     <div class="px-4 py-4 flex items-center justify-between max-w-2xl mx-auto">
         <a href="dashboard.html" class="flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             <span class="text-sm font-medium">الرئيسية</span>
         </a>
-        <h1 class="text-lg font-bold">الملف الشخصي</h1>
-        <div class="w-16"></div>
+        <a href="dashboard.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="17" height="17" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <span class="name">مدارك النخبة</span>
+        </a>
+        <h1 class="text-sm font-bold text-purple-300/70">الملف الشخصي</h1>
     </div>
 
     <div class="max-w-2xl mx-auto px-4 pb-12">
@@ -147,9 +100,7 @@
             </div>
 
             <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
-                <h3 class="text-base font-bold mb-5 flex items-center gap-2">
-                    <span class="text-lg">👤</span> المعلومات الشخصية
-                </h3>
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">👤</span> المعلومات الشخصية</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">الاسم</label>
@@ -163,31 +114,27 @@
             </div>
 
             <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
-                <h3 class="text-base font-bold mb-5 flex items-center gap-2">
-                    <span class="text-lg">🔒</span> تغيير كلمة المرور
-                </h3>
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">🔒</span> تغيير كلمة المرور</h3>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">كلمة المرور الجديدة</label>
                         <div class="password-wrapper">
                             <input type="password" id="input-password" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="اتركها فارغة إذا ما تبي تغيّر" dir="ltr" style="text-align:right;">
-                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password', this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password',this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">تأكيد كلمة المرور</label>
                         <div class="password-wrapper">
                             <input type="password" id="input-password-confirm" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="أعد كتابة كلمة المرور الجديدة" dir="ltr" style="text-align:right;">
-                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password-confirm', this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password-confirm',this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="animate-in delay-3 card-glow rounded-2xl p-6 mb-6">
-                <h3 class="text-base font-bold mb-5 flex items-center gap-2">
-                    <span class="text-lg">⚙️</span> الإعدادات
-                </h3>
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">⚙️</span> الإعدادات</h3>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <span class="text-xl" id="sound-icon">🔊</span>
@@ -210,240 +157,22 @@
                     <span id="logout-spinner" class="hidden"><span class="spinner"></span> جاري الخروج...</span>
                 </button>
             </div>
-            <p class="text-center text-purple-200/60 text-xs mt-8">خوارز v1.0</p>
+            <p class="text-center text-purple-200/40 text-xs mt-8">مدارك النخبة v1.0</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Same pattern as dashboard.html & login.html
-        const sb = window.supabase.createClient(
-            'https://czzcmbxejxbotjemyuqf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-        );
-
-        let currentUser = null;
-        let currentName = '';
-
-        function showToast(msg, icon) {
-            document.getElementById('toast-msg').textContent = msg;
-            document.getElementById('toast-icon').textContent = icon || '✅';
-            document.getElementById('toast').classList.add('show');
-            setTimeout(function() { document.getElementById('toast').classList.remove('show'); }, 3000);
-        }
-
-        function togglePwVis(id, btn) {
-            const inp = document.getElementById(id);
-            if (inp.type === 'password') {
-                inp.type = 'text';
-                btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';
-            } else {
-                inp.type = 'password';
-                btn.innerHTML = '<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
-            }
-        }
-
-        function initSoundToggle() {
-            const on = localStorage.getItem('soundEnabled') !== 'false';
-            const toggle = document.getElementById('sound-toggle');
-            const icon = document.getElementById('sound-icon');
-            if (on) { toggle.classList.add('active'); icon.textContent = '🔊'; }
-            else { toggle.classList.remove('active'); icon.textContent = '🔇'; }
-        }
-        function toggleSound() {
-            const toggle = document.getElementById('sound-toggle');
-            const icon = document.getElementById('sound-icon');
-            if (toggle.classList.contains('active')) {
-                toggle.classList.remove('active'); icon.textContent = '🔇';
-                localStorage.setItem('soundEnabled', 'false'); showToast('تم إيقاف الصوت', '🔇');
-            } else {
-                toggle.classList.add('active'); icon.textContent = '🔊';
-                localStorage.setItem('soundEnabled', 'true'); showToast('تم تفعيل الصوت', '🔊');
-            }
-        }
-
-        // ============================================================
-        // checkAuth — matches dashboard.html pattern
-        // NAME SOURCE PRIORITY:
-        //   1. profiles table (name column) — set by DB trigger on signup
-        //   2. user_metadata.name — set during signUp({options:{data:{name}}})
-        //   3. email prefix as last fallback
-        // ============================================================
-        async function checkAuth() {
-            try {
-                const { data: { session }, error } = await sb.auth.getSession();
-
-                if (error || !session) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                currentUser = session.user;
-
-                // Email
-                document.getElementById('user-email-display').textContent = currentUser.email || '';
-                document.getElementById('email-readonly').textContent = currentUser.email || '';
-
-                // Join date
-                if (currentUser.created_at) {
-                    try {
-                        const d = new Date(currentUser.created_at);
-                        const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-                        document.getElementById('user-join-date').textContent = 'عضو منذ ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-                    } catch(e) {}
-                }
-
-                // === Get name: try profiles table first (same as dashboard) ===
-                let displayName = '';
-
-                try {
-                    const { data: profile } = await sb
-                        .from('profiles')
-                        .select('full_name, avatar_emoji')
-                        .eq('id', currentUser.id)
-                        .single();
-
-                    if (profile && profile.full_name) {
-                        displayName = profile.full_name;
-                    }
-                    if (profile && profile.avatar_emoji) {
-                        document.getElementById('user-avatar').textContent = profile.avatar_emoji;
-                    }
-                } catch(e) {
-                    console.warn('Profile table read failed:', e);
-                }
-
-                // === Fallback: user_metadata.name (set during registration) ===
-                if (!displayName && currentUser.user_metadata && currentUser.user_metadata.name) {
-                    displayName = currentUser.user_metadata.name;
-                }
-
-                // === Last fallback: email prefix ===
-                if (!displayName) {
-                    displayName = currentUser.email ? currentUser.email.split('@')[0] : '';
-                }
-
-                currentName = displayName;
-                document.getElementById('user-name-display').textContent = displayName;
-                document.getElementById('input-name').value = displayName;
-
-                initSoundToggle();
-
-                document.getElementById('loading-state').classList.add('hidden');
-                document.getElementById('profile-content').classList.remove('hidden');
-
-            } catch (err) {
-                console.error('checkAuth error:', err);
-                window.location.href = 'login.html';
-            }
-        }
-
-        // ============================================================
-        // saveChanges — updates name via auth.updateUser (same mechanism
-        // as registration: options.data.name → user_metadata → trigger → profiles)
-        // This WORKS because auth.updateUser is an auth API call,
-        // NOT a direct profiles table write (which RLS blocks)
-        // ============================================================
-        async function saveChanges() {
-            const btn = document.getElementById('btn-save');
-            if (btn.disabled) return;
-            btn.disabled = true;
-            document.getElementById('save-text').classList.add('hidden');
-            document.getElementById('save-spinner').classList.remove('hidden');
-
-            try {
-                const newName = document.getElementById('input-name').value.trim();
-                const newPassword = document.getElementById('input-password').value;
-                const confirmPassword = document.getElementById('input-password-confirm').value;
-                let changed = false;
-
-                // Validate password
-                if (newPassword) {
-                    if (newPassword.length < 6) {
-                        showToast('كلمة المرور لازم تكون 6 أحرف على الأقل', '⚠️');
-                        resetSave(); return;
-                    }
-                    if (newPassword !== confirmPassword) {
-                        showToast('كلمات المرور ما تتطابق', '⚠️');
-                        resetSave(); return;
-                    }
-                }
-
-                // Build the updateUser payload
-                // This updates BOTH password AND user_metadata.name in one call
-                // The DB trigger will sync name to profiles table automatically
-                const updatePayload = {};
-
-                if (newName && newName !== currentName) {
-                    updatePayload.data = { name: newName };
-                    changed = true;
-                }
-
-                if (newPassword) {
-                    updatePayload.password = newPassword;
-                    changed = true;
-                }
-
-                if (changed) {
-                    const { data, error: updateErr } = await sb.auth.updateUser(updatePayload);
-
-                    if (updateErr) {
-                        console.error('updateUser error:', updateErr);
-                        showToast('فشل الحفظ: ' + updateErr.message, '❌');
-                        resetSave(); return;
-                    }
-
-                    // Update display
-                    if (newName && newName !== currentName) {
-                        currentName = newName;
-                        document.getElementById('user-name-display').textContent = newName;
-                    }
-
-                    if (newPassword) {
-                        document.getElementById('input-password').value = '';
-                        document.getElementById('input-password-confirm').value = '';
-                    }
-
-                    showToast('تم حفظ التغييرات بنجاح', '✅');
-                } else {
-                    showToast('ما في تغييرات جديدة', 'ℹ️');
-                }
-
-            } catch (err) {
-                console.error('Save error:', err);
-                showToast('حدث خطأ أثناء الحفظ', '❌');
-            }
-            resetSave();
-        }
-
-        function resetSave() {
-            document.getElementById('btn-save').disabled = false;
-            document.getElementById('save-text').classList.remove('hidden');
-            document.getElementById('save-spinner').classList.add('hidden');
-        }
-
-        // handleLogout — same as dashboard.html
-        async function handleLogout() {
-            const btn = document.getElementById('btn-logout');
-            if (btn.disabled) return;
-            btn.disabled = true;
-            document.getElementById('logout-text').classList.add('hidden');
-            document.getElementById('logout-spinner').classList.remove('hidden');
-
-            try {
-                await sb.auth.signOut();
-                showToast('تم تسجيل الخروج', '👋');
-                setTimeout(function() { window.location.href = 'login.html'; }, 800);
-            } catch (err) {
-                console.error('Logout error:', err);
-                showToast('حدث خطأ', '❌');
-                btn.disabled = false;
-                document.getElementById('logout-text').classList.remove('hidden');
-                document.getElementById('logout-spinner').classList.add('hidden');
-            }
-        }
-
-        // Init
+        const sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+        let currentUser=null,currentName='';
+        function showToast(msg,icon){document.getElementById('toast-msg').textContent=msg;document.getElementById('toast-icon').textContent=icon||'✅';document.getElementById('toast').classList.add('show');setTimeout(function(){document.getElementById('toast').classList.remove('show')},3000)}
+        function togglePwVis(id,btn){const inp=document.getElementById(id);if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>'}else{inp.type='password';btn.innerHTML='<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>'}}
+        function initSoundToggle(){const on=localStorage.getItem('soundEnabled')!=='false',toggle=document.getElementById('sound-toggle'),icon=document.getElementById('sound-icon');if(on){toggle.classList.add('active');icon.textContent='🔊'}else{toggle.classList.remove('active');icon.textContent='🔇'}}
+        function toggleSound(){const toggle=document.getElementById('sound-toggle'),icon=document.getElementById('sound-icon');if(toggle.classList.contains('active')){toggle.classList.remove('active');icon.textContent='🔇';localStorage.setItem('soundEnabled','false');showToast('تم إيقاف الصوت','🔇')}else{toggle.classList.add('active');icon.textContent='🔊';localStorage.setItem('soundEnabled','true');showToast('تم تفعيل الصوت','🔊')}}
+        async function checkAuth(){try{const{data:{session},error}=await sb.auth.getSession();if(error||!session){window.location.href='login.html';return}currentUser=session.user;document.getElementById('user-email-display').textContent=currentUser.email||'';document.getElementById('email-readonly').textContent=currentUser.email||'';if(currentUser.created_at){try{const d=new Date(currentUser.created_at),months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];document.getElementById('user-join-date').textContent='عضو منذ '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()}catch(e){}}let displayName='';try{const{data:profile}=await sb.from('profiles').select('full_name,avatar_emoji').eq('id',currentUser.id).single();if(profile?.full_name)displayName=profile.full_name;if(profile?.avatar_emoji)document.getElementById('user-avatar').textContent=profile.avatar_emoji}catch(e){}if(!displayName&&currentUser.user_metadata?.name)displayName=currentUser.user_metadata.name;if(!displayName)displayName=currentUser.email?currentUser.email.split('@')[0]:'';currentName=displayName;document.getElementById('user-name-display').textContent=displayName;document.getElementById('input-name').value=displayName;initSoundToggle();document.getElementById('loading-state').classList.add('hidden');document.getElementById('profile-content').classList.remove('hidden')}catch(err){window.location.href='login.html'}}
+        async function saveChanges(){const btn=document.getElementById('btn-save');if(btn.disabled)return;btn.disabled=true;document.getElementById('save-text').classList.add('hidden');document.getElementById('save-spinner').classList.remove('hidden');try{const newName=document.getElementById('input-name').value.trim(),newPw=document.getElementById('input-password').value,confirmPw=document.getElementById('input-password-confirm').value;let changed=false;if(newPw){if(newPw.length<6){showToast('كلمة المرور لازم تكون 6 أحرف على الأقل','⚠️');resetSave();return}if(newPw!==confirmPw){showToast('كلمات المرور ما تتطابق','⚠️');resetSave();return}}const payload={};if(newName&&newName!==currentName){payload.data={name:newName};changed=true}if(newPw){payload.password=newPw;changed=true}if(changed){const{error:err}=await sb.auth.updateUser(payload);if(err){showToast('فشل الحفظ: '+err.message,'❌');resetSave();return}if(newName&&newName!==currentName){currentName=newName;document.getElementById('user-name-display').textContent=newName}if(newPw){document.getElementById('input-password').value='';document.getElementById('input-password-confirm').value=''}showToast('تم حفظ التغييرات بنجاح','✅')}else showToast('ما في تغييرات جديدة','ℹ️')}catch(err){showToast('حدث خطأ أثناء الحفظ','❌')}resetSave()}
+        function resetSave(){document.getElementById('btn-save').disabled=false;document.getElementById('save-text').classList.remove('hidden');document.getElementById('save-spinner').classList.add('hidden')}
+        async function handleLogout(){const btn=document.getElementById('btn-logout');if(btn.disabled)return;btn.disabled=true;document.getElementById('logout-text').classList.add('hidden');document.getElementById('logout-spinner').classList.remove('hidden');try{await sb.auth.signOut();showToast('تم تسجيل الخروج','👋');setTimeout(function(){window.location.href='login.html'},800)}catch(err){showToast('حدث خطأ','❌');btn.disabled=false;document.getElementById('logout-text').classList.remove('hidden');document.getElementById('logout-spinner').classList.add('hidden')}}
         checkAuth();
     </script>
 </body>
