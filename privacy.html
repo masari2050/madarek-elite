@@ -3,49 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سياسة الخصوصية - خوارز</title>
+    <title>سياسة الخصوصية - مدارك النخبة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>* { font-family: 'Tajawal', sans-serif; }/* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.5rem}
+        .section-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:1rem;padding:1.25rem 1.5rem}
+        .section-green{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:1rem;padding:1.25rem 1.5rem}
+        .section-amber{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:1rem;padding:1.25rem 1.5rem}
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+    </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-gray-100">
-    <header class="bg-white shadow-sm border-b">
+<body class="text-white">
+    <header class="border-b border-white/5">
         <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black text-indigo-600">خوارز</a>
-            <a href="index.html" class="text-gray-600 hover:text-indigo-600 transition">← الرئيسية</a>
+            <a href="index.html" class="madarek-logo">
+                <div class="icon">
+                    <div class="ring"></div>
+                    <svg viewBox="0 0 36 36" width="20" height="20" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <span class="name">مدارك النخبة</span>
+                    <span class="tag">حيث يُصنع التميّز</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-purple-300/60 hover:text-white text-sm transition">← الرئيسية</a>
         </div>
     </header>
+
     <main class="max-w-4xl mx-auto px-4 py-12">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-black text-gray-900 mb-3">سياسة الخصوصية</h1>
-            <p class="text-gray-600">آخر تحديث: فبراير 2026</p>
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-black mb-3">سياسة الخصوصية</h1>
+            <p class="text-purple-300/50 text-sm">آخر تحديث: فبراير 2026</p>
         </div>
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
+
+        <div class="card-glass p-8 md:p-12 space-y-8">
+
             <section>
-                <p class="text-lg text-gray-700 leading-relaxed">
-                    في <span class="font-bold text-indigo-600">خوارز</span>، خصوصيتك أولوية. نلتزم بحماية بياناتك الشخصية وفقاً لأنظمة المملكة العربية السعودية.
+                <p class="text-lg text-purple-100/80 leading-relaxed">
+                    في <span class="font-bold text-indigo-400">مدارك النخبة</span>، خصوصيتك أولوية. نلتزم بحماية بياناتك الشخصية وفقاً لأنظمة المملكة العربية السعودية.
                 </p>
             </section>
+
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">📋 البيانات المجمّعة</h2>
-                <div class="bg-gray-50 rounded-xl p-6 space-y-3 text-gray-700">
-                    <p><strong>• بيانات الحساب:</strong> الاسم، البريد الإلكتروني، الجنس</p>
-                    <p><strong>• بيانات الأداء:</strong> إجابات الأسئلة، الإحصائيات، التقدم</p>
-                    <p><strong>• بيانات الاشتراك:</strong> الباقة، طريقة الدفع، تاريخ الاشتراك</p>
+                <h2 class="text-xl font-bold mb-4">📋 البيانات المجمّعة</h2>
+                <div class="section-box space-y-3 text-purple-200/70 text-sm">
+                    <p><strong class="text-white">• بيانات الحساب:</strong> الاسم، البريد الإلكتروني، الجنس</p>
+                    <p><strong class="text-white">• بيانات الأداء:</strong> إجابات الأسئلة، الإحصائيات، التقدم</p>
+                    <p><strong class="text-white">• بيانات الاشتراك:</strong> الباقة، طريقة الدفع، تاريخ الاشتراك</p>
                 </div>
             </section>
+
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">🔒 استخدام البيانات</h2>
-                <div class="space-y-2 text-gray-700">
+                <h2 class="text-xl font-bold mb-4">🔒 استخدام البيانات</h2>
+                <div class="section-box space-y-2 text-purple-200/70 text-sm">
                     <p>✓ تقديم الخدمة وتحليل أدائك</p>
                     <p>✓ تحسين المحتوى والتجربة</p>
                     <p>✓ إرسال إشعارات الحساب</p>
@@ -53,41 +79,51 @@
                     <p>✓ الامتثال القانوني</p>
                 </div>
             </section>
+
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">🛡️ حماية البيانات</h2>
-                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 space-y-2 text-green-900">
+                <h2 class="text-xl font-bold mb-4">🛡️ حماية البيانات</h2>
+                <div class="section-green space-y-2 text-emerald-300/80 text-sm">
                     <p>✓ تشفير SSL/TLS</p>
                     <p>✓ خوادم آمنة</p>
                     <p>✓ نسخ احتياطية</p>
                     <p>✓ صلاحيات محدودة</p>
                 </div>
             </section>
+
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">🤝 مشاركة البيانات</h2>
-                <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
-                    <p class="text-amber-900 font-bold mb-2">لا نبيع بياناتك. نشاركها فقط في:</p>
-                    <div class="space-y-1 text-amber-900 text-sm">
+                <h2 class="text-xl font-bold mb-4">🤝 مشاركة البيانات</h2>
+                <div class="section-amber">
+                    <p class="text-amber-300/90 font-bold mb-2 text-sm">لا نبيع بياناتك. نشاركها فقط في:</p>
+                    <div class="space-y-1 text-amber-200/60 text-sm">
                         <p>• مزودي الخدمة (استضافة، دفع)</p>
                         <p>• الامتثال القانوني</p>
                         <p>• حماية الحقوق</p>
                     </div>
                 </div>
             </section>
+
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">⚙️ حقوقك</h2>
-                <p class="text-gray-700 mb-3">يمكنك:</p>
-                <div class="space-y-2 text-gray-700 text-sm">
+                <h2 class="text-xl font-bold mb-4">⚙️ حقوقك</h2>
+                <div class="section-box space-y-2 text-purple-200/70 text-sm">
                     <p>• الوصول لبياناتك</p>
                     <p>• تصحيح المعلومات</p>
                     <p>• تصدير البيانات</p>
                     <p>• حذف حسابك (عبر الإعدادات أو التواصل معنا)</p>
                 </div>
             </section>
-            <section class="text-center bg-indigo-50 rounded-xl p-6">
-                <h3 class="font-bold mb-2">تواصل معنا</h3>
-                <a href="mailto:privacy@khawariz.sa" class="text-indigo-600 font-bold">privacy@khawariz.sa</a>
+
+            <section class="text-center" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:1rem;padding:1.5rem">
+                <h3 class="font-bold mb-2 text-sm">تواصل معنا</h3>
+                <a href="mailto:privacy@madarekelite.sa" class="text-indigo-400 font-bold text-sm hover:text-indigo-300 transition">privacy@madarekelite.sa</a>
             </section>
+
         </div>
     </main>
+
+    <footer class="border-t border-purple-500/10 mt-12">
+        <div class="max-w-4xl mx-auto px-4 py-6 text-center">
+            <p class="text-purple-200/40 text-xs">© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
 </body>
 </html>
