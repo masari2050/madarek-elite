@@ -103,7 +103,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
             <!-- كمي -->
             <div class="animate-in delay-2 section-card card-quant p-6">
                 <div class="flex items-center gap-4 mb-5">
@@ -162,6 +162,61 @@
             </div>
         </div>
 
+        <!-- الصف الثاني: مكس + STEP -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <!-- مكس: كمي + لفظي -->
+            <div class="animate-in delay-4 section-card card-mix p-6" style="--mix-color1:#f59e0b;--mix-color2:#ef4444">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="icon-circle" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔀</div>
+                    <div>
+                        <h3 class="text-xl font-black">كمي + لفظي</h3>
+                        <p class="text-purple-200/60 text-xs">تدريب مختلط — مثل الاختبار الحقيقي</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag" style="background:rgba(245,158,11,0.1);color:#fcd34d">✓ أسئلة كمية</span>
+                    <span class="subject-tag" style="background:rgba(239,68,68,0.1);color:#fca5a5">✓ أسئلة لفظية</span>
+                    <span class="subject-tag" style="background:rgba(139,92,246,0.1);color:#d8b4fe">✓ خلط عشوائي</span>
+                </div>
+                <div class="count-badge mb-4">
+                    <span class="text-2xl font-black text-amber-400" id="mixCount">—</span>
+                    <span class="text-purple-200/60 text-xs block">سؤال متاح</span>
+                </div>
+                <button id="mixBtn" class="btn-start" style="background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 8px 25px rgba(245,158,11,0.25)" onclick="openModal('mix')">ابدأ التدريب المختلط</button>
+            </div>
+
+            <!-- STEP قريباً -->
+            <div class="animate-in delay-4 section-card p-6 relative" style="border-color:rgba(255,255,255,0.06);opacity:0.8">
+                <!-- بادج قريباً -->
+                <div class="absolute top-4 left-4">
+                    <span class="text-xs font-black px-3 py-1.5 rounded-full" style="background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.2));border:1px solid rgba(251,191,36,0.4);color:#fbbf24">
+                        🔒 قريباً
+                    </span>
+                </div>
+                <div class="flex items-center gap-4 mb-5 mt-2">
+                    <div class="icon-circle" style="background:linear-gradient(135deg,#1e40af,#3b82f6)">🌍</div>
+                    <div>
+                        <h3 class="text-xl font-black">STEP</h3>
+                        <p class="text-purple-200/60 text-xs">كفايات اللغة الإنجليزية</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Reading</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Vocabulary</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Grammar</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Writing</span>
+                </div>
+                <div class="count-badge mb-4" style="background:rgba(255,255,255,0.03)">
+                    <span class="text-lg font-black text-blue-400/60">قادم قريباً</span>
+                    <span class="text-purple-200/40 text-xs block">سجّل اهتمامك</span>
+                </div>
+                <button onclick="notifyStep()" class="btn-start" style="background:rgba(59,130,246,0.15);border:1.5px solid rgba(59,130,246,0.3);color:#93c5fd">
+                    🔔 أخبرني عند الإطلاق
+                </button>
+            </div>
+        </div>
+
         <p class="text-center text-purple-200/30 text-xs mt-10">مدارك النخبة v1.0</p>
     </div>
 
@@ -206,15 +261,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
-        let questionCounts={quant:0,verbal:0,tahsili:0},selectedSection='',selectedCount=10;
-        const sectionMeta={quant:{name:'قدرات كمي',icon:'📊'},verbal:{name:'قدرات لفظي',icon:'📖'},tahsili:{name:'التحصيلي',icon:'🎓'}};
-        async function loadQuestionCounts(){try{const{data:q,error}=await sb.from('questions').select('section');if(error)return;questionCounts.quant=q.filter(x=>x.section==='quant').length;questionCounts.verbal=q.filter(x=>x.section==='verbal').length;questionCounts.tahsili=q.filter(x=>x.section==='tahsili').length;document.getElementById('quantCount').textContent=questionCounts.quant;document.getElementById('verbalCount').textContent=questionCounts.verbal;document.getElementById('tahsiliCount').textContent=questionCounts.tahsili;document.getElementById('quantBtn').disabled=(questionCounts.quant===0);document.getElementById('verbalBtn').disabled=(questionCounts.verbal===0);document.getElementById('tahsiliBtn').disabled=(questionCounts.tahsili===0)}catch(e){}}
+        let questionCounts={quant:0,verbal:0,tahsili:0,mix:0},selectedSection='',selectedCount=10;
+        const sectionMeta={quant:{name:'قدرات كمي',icon:'📊'},verbal:{name:'قدرات لفظي',icon:'📖'},tahsili:{name:'التحصيلي',icon:'🎓'},mix:{name:'كمي + لفظي 🔀',icon:'🔀'}};
+        async function loadQuestionCounts(){try{const{data:q,error}=await sb.from('questions').select('section');if(error)return;questionCounts.quant=q.filter(x=>x.section==='quant').length;questionCounts.verbal=q.filter(x=>x.section==='verbal').length;questionCounts.tahsili=q.filter(x=>x.section==='tahsili').length;questionCounts.mix=questionCounts.quant+questionCounts.verbal;document.getElementById('quantCount').textContent=questionCounts.quant;document.getElementById('verbalCount').textContent=questionCounts.verbal;document.getElementById('tahsiliCount').textContent=questionCounts.tahsili;document.getElementById('mixCount').textContent=questionCounts.mix;document.getElementById('quantBtn').disabled=(questionCounts.quant===0);document.getElementById('verbalBtn').disabled=(questionCounts.verbal===0);document.getElementById('tahsiliBtn').disabled=(questionCounts.tahsili===0);document.getElementById('mixBtn').disabled=(questionCounts.mix===0)}catch(e){}}
+        function notifyStep(){alert('✅ تم تسجيل اهتمامك! سنخبرك فور إطلاق قسم STEP 🚀');}
         function openModal(section){selectedSection=section;const meta=sectionMeta[section];document.getElementById('modalIcon').textContent=meta.icon;document.getElementById('modalTitle').textContent=meta.name;selectCount(10);checkAvailableCount();document.getElementById('trainingModal').classList.remove('hidden')}
         function closeModal(){document.getElementById('trainingModal').classList.add('hidden')}
         document.getElementById('trainingModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
         function selectCount(count){selectedCount=count;document.querySelectorAll('.count-option').forEach(function(el){el.classList.remove('active');if(parseInt(el.dataset.count)===count)el.classList.add('active')});var t=count+' دقيقة';if(count>=60){var h=Math.floor(count/60),m=count%60;t=h+' ساعة';if(m>0)t+=' و '+m+' دقيقة'}document.getElementById('timePreview').textContent=t;checkAvailableCount()}
-        function checkAvailableCount(){var avail=questionCounts[selectedSection]||0,warn=document.getElementById('countWarning');if(selectedCount>avail&&avail>0){document.getElementById('availableNum').textContent=avail;warn.classList.remove('hidden')}else warn.classList.add('hidden')}
-        function startFromModal(){var avail=questionCounts[selectedSection]||0,actual=Math.min(selectedCount,avail);if(actual===0){alert('ما فيه أسئلة متاحة لهذا القسم');return}localStorage.setItem('khawariz_selected_section',selectedSection);localStorage.setItem('khawariz_question_count',actual);localStorage.setItem('khawariz_time_seconds',actual*60);window.location.href='practice.html'}
+        function checkAvailableCount(){var avail=selectedSection==='mix'?(questionCounts.quant+questionCounts.verbal):questionCounts[selectedSection]||0;var warn=document.getElementById('countWarning');if(selectedCount>avail&&avail>0){document.getElementById('availableNum').textContent=avail;warn.classList.remove('hidden')}else warn.classList.add('hidden')}
+        function startFromModal(){var avail=selectedSection==='mix'?(questionCounts.quant+questionCounts.verbal):questionCounts[selectedSection]||0;var actual=Math.min(selectedCount,avail);if(actual===0){alert('ما فيه أسئلة متاحة لهذا القسم');return}localStorage.setItem('khawariz_selected_section',selectedSection);localStorage.setItem('khawariz_question_count',actual);localStorage.setItem('khawariz_time_seconds',actual*60);window.location.href='practice.html'}
         document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
         window.addEventListener('DOMContentLoaded',loadQuestionCounts);
     </script>
