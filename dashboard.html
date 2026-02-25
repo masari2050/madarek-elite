@@ -3,153 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة التحكم - خوارز</title>
+    <title>لوحة التحكم - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: { extend: { fontFamily: { tajawal: ['Tajawal', 'sans-serif'] } } }
-        }
-    </script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
     <style>
         * { font-family: 'Tajawal', sans-serif; }
-        body {
-            background: linear-gradient(135deg, #0f0a2e 0%, #1a1145 30%, #1e1550 50%, #151040 70%, #0d0825 100%);
-            min-height: 100vh;
-        }
+        body { background: linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%); min-height: 100vh; }
+        .card-glass { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); }
+        .welcome-banner { background: linear-gradient(135deg,#6366f1 0%,#8b5cf6 30%,#a855f7 60%,#c084fc 100%); position: relative; overflow: hidden; }
+        .welcome-banner::before { content:''; position:absolute; top:-50%; right:-20%; width:300px; height:300px; background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 70%); border-radius:50%; }
+        .welcome-banner::after { content:''; position:absolute; bottom:-30%; left:-10%; width:200px; height:200px; background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%); border-radius:50%; }
+        .stat-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); backdrop-filter:blur(10px); transition:all .3s ease; }
+        .stat-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.12); transform:translateY(-2px); }
+        .action-card { transition:all .3s ease; position:relative; overflow:hidden; }
+        .action-card:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
+        .action-card::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 50%); pointer-events:none; }
+        .progress-track { background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; }
+        .progress-fill { background:linear-gradient(90deg,#8b5cf6,#6366f1,#4f46e5); border-radius:999px; transition:width 1s ease; position:relative; }
+        .progress-fill::after { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:shimmer-bar 2s infinite; }
+        @keyframes shimmer-bar { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .animate-in { animation:fadeUp .5s ease forwards; }
+        .delay-1{animation-delay:.05s;opacity:0}.delay-2{animation-delay:.1s;opacity:0}.delay-3{animation-delay:.15s;opacity:0}.delay-4{animation-delay:.2s;opacity:0}.delay-5{animation-delay:.25s;opacity:0}.delay-6{animation-delay:.3s;opacity:0}
+        .marquee-container{overflow:hidden;white-space:nowrap}
+        .marquee-text{display:inline-block;animation:marquee 25s linear infinite}
+        @keyframes marquee{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        .avatar-ring{background:linear-gradient(135deg,#8b5cf6,#6366f1);padding:2px;border-radius:50%}
 
-        /* Cards */
-        .card-glass {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-        }
-
-        /* Welcome Banner */
-        .welcome-banner {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 30%, #a855f7 60%, #c084fc 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .welcome-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%; right: -20%;
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .welcome-banner::after {
-            content: '';
-            position: absolute;
-            bottom: -30%; left: -10%;
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        /* Stat Cards */
-        .stat-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.12);
-            transform: translateY(-2px);
-        }
-
-        /* Action Buttons */
-        .action-card {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .action-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-        }
-        .action-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        /* Progress Bar */
-        .progress-track {
-            background: rgba(255,255,255,0.08);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #8b5cf6, #6366f1, #4f46e5);
-            border-radius: 999px;
-            transition: width 1s ease;
-            position: relative;
-        }
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Animations */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-in { animation: fadeUp 0.5s ease forwards; }
-        .delay-1 { animation-delay: 0.05s; opacity: 0; }
-        .delay-2 { animation-delay: 0.1s; opacity: 0; }
-        .delay-3 { animation-delay: 0.15s; opacity: 0; }
-        .delay-4 { animation-delay: 0.2s; opacity: 0; }
-        .delay-5 { animation-delay: 0.25s; opacity: 0; }
-        .delay-6 { animation-delay: 0.3s; opacity: 0; }
-
-        /* Marquee */
-        .marquee-container { overflow: hidden; white-space: nowrap; }
-        .marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        /* Logo */
-        @keyframes logoPulse {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(139,92,246,0.4)); }
-            50% { filter: drop-shadow(0 0 16px rgba(139,92,246,0.7)); }
-        }
-        .logo-glow { animation: logoPulse 3s ease-in-out infinite; }
-
-        /* Avatar */
-        .avatar-ring {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-            padding: 2px;
-            border-radius: 50%;
-        }
-
-        /* Counter Animation */
-        @keyframes countUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        /* مدارك النخبة Logo */
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:2px;border-radius:9px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:8.5px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+    </style>
 </head>
 <body class="font-tajawal text-white">
 
@@ -157,7 +48,7 @@
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
         <div class="marquee-container py-2.5">
             <span class="marquee-text text-sm text-purple-200/90">
-                ✨ منصة خوارز تتطور يومياً — نضيف أسئلة جديدة ونحسّن التجربة باستمرار لتقديم تدريب أدق وأقوى
+                ✨ مدارك النخبة تتطور يومياً — نضيف أسئلة جديدة ونحسّن التجربة باستمرار لتقديم تدريب أدق وأقوى
             </span>
         </div>
     </div>
@@ -166,15 +57,22 @@
     <header class="animate-in delay-1">
         <div class="max-w-4xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <!-- Logo + Tagline -->
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl logo-glow">🎓</span>
-                    <div>
-                        <h1 class="text-2xl font-black bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent leading-tight">خوارز</h1>
-                        <p class="text-[10px] text-purple-200/70 font-medium -mt-0.5">القدرات · التحصيلي · قياس</p>
+                <a href="index.html" class="madarek-logo">
+                    <div class="icon">
+                        <div class="ring"></div>
+                        <svg viewBox="0 0 36 36" width="20" height="20" fill="none">
+                            <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                            <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                            <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                        </svg>
                     </div>
-                </div>
-                <!-- User -->
+                    <div style="display:flex;flex-direction:column;align-items:flex-end">
+                        <span class="name">مدارك النخبة</span>
+                        <span class="tag">حيث يُصنع التميّز</span>
+                    </div>
+                </a>
                 <button onclick="window.location.href='profile.html'" class="flex items-center gap-3 hover:opacity-80 transition group">
                     <div class="text-right">
                         <span class="font-bold text-white text-sm block" id="userName">...</span>
@@ -232,7 +130,7 @@
                 <span class="text-purple-300/50 text-sm"><span id="weeklyCount">0</span> سؤال</span>
             </div>
             <div class="progress-track h-3">
-                <div id="progressBar" class="progress-fill h-3" style="width: 0%"></div>
+                <div id="progressBar" class="progress-fill h-3" style="width:0%"></div>
             </div>
         </div>
 
@@ -273,8 +171,8 @@
             </a>
         </div>
 
-        <!-- Upgrade Banner (free users only) -->
-        <div id="upgradeBanner" class="hidden animate-in delay-6 mt-5 rounded-2xl p-5 text-center relative overflow-hidden" style="background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15)); border: 1px solid rgba(139,92,246,0.2);">
+        <!-- Upgrade Banner -->
+        <div id="upgradeBanner" class="hidden animate-in delay-6 mt-5 rounded-2xl p-5 text-center relative overflow-hidden" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(168,85,247,0.15));border:1px solid rgba(139,92,246,0.2)">
             <h3 class="text-base font-bold mb-1">🚀 طوّر تجربتك</h3>
             <p class="text-purple-300/50 text-xs mb-3">اشترك الآن واحصل على أسئلة غير محدودة وإحصائيات متقدمة</p>
             <a href="pricing.html" class="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-purple-500/25 transition">شوف الباقات ✨</a>
@@ -288,8 +186,7 @@
             <span class="text-purple-300/10">|</span>
             <a href="terms.html" class="text-purple-200/60 hover:text-purple-300/60 transition">الشروط</a>
         </div>
-
-        <p class="text-center text-purple-200/50 text-xs mt-4">خوارز v1.0</p>
+        <p class="text-center text-purple-200/50 text-xs mt-4">مدارك النخبة v1.0</p>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -298,120 +195,55 @@
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
-
         let currentUser = null;
-
         async function checkAuth() {
             try {
                 const { data: { session }, error } = await sb.auth.getSession();
-                if (error || !session) {
-                    window.location.href = 'login.html';
-                    return false;
-                }
+                if (error || !session) { window.location.href = 'login.html'; return false; }
                 currentUser = session.user;
-
-                // Get name from profiles (full_name column)
-                let displayName = '';
-                let subType = 'free';
+                let displayName = '', subType = 'free';
                 try {
-                    const { data: profile } = await sb
-                        .from('profiles')
-                        .select('full_name, avatar_emoji, subscription_type')
-                        .eq('id', currentUser.id)
-                        .single();
-
-                    if (profile && profile.full_name) {
-                        displayName = profile.full_name;
-                    }
-                    if (profile && profile.avatar_emoji) {
-                        document.getElementById('userAvatar').textContent = profile.avatar_emoji;
-                    }
-                    if (profile && profile.subscription_type) {
-                        subType = profile.subscription_type;
-                    }
+                    const { data: profile } = await sb.from('profiles').select('full_name,avatar_emoji,subscription_type').eq('id', currentUser.id).single();
+                    if (profile?.full_name) displayName = profile.full_name;
+                    if (profile?.avatar_emoji) document.getElementById('userAvatar').textContent = profile.avatar_emoji;
+                    if (profile?.subscription_type) subType = profile.subscription_type;
                 } catch(e) {}
-
-                // Subscription label
                 const subEl = document.getElementById('subscriptionLabel');
-                if (subType === 'monthly') {
-                    subEl.innerHTML = '<span class="text-indigo-300">مشترك شهري 🔥</span>';
-                } else if (subType === 'yearly') {
-                    subEl.innerHTML = '<span class="text-emerald-300">مشترك سنوي 💎</span>';
-                } else {
-                    subEl.innerHTML = '<a href="pricing.html" class="text-yellow-300/80 hover:text-yellow-200 transition">تجربة مجانية — <span class="underline">اشترك</span> ✨</a>';
-                }
-
-                // Fallback: user_metadata
-                if (!displayName && currentUser.user_metadata && currentUser.user_metadata.name) {
-                    displayName = currentUser.user_metadata.name;
-                }
-
-                // Last fallback: email
-                if (!displayName) {
-                    displayName = currentUser.email ? currentUser.email.split('@')[0] : '';
-                }
-
-                // First name only for welcome
-                const firstName = displayName.split(' ')[0];
+                if (subType === 'monthly') subEl.innerHTML = '<span class="text-indigo-300">مشترك شهري 🔥</span>';
+                else if (subType === 'yearly') subEl.innerHTML = '<span class="text-emerald-300">مشترك سنوي 💎</span>';
+                else subEl.innerHTML = '<a href="pricing.html" class="text-yellow-300/80 hover:text-yellow-200 transition">تجربة مجانية — <span class="underline">اشترك</span> ✨</a>';
+                if (!displayName && currentUser.user_metadata?.name) displayName = currentUser.user_metadata.name;
+                if (!displayName) displayName = currentUser.email ? currentUser.email.split('@')[0] : '';
                 document.getElementById('userName').textContent = displayName;
-                document.getElementById('displayName').textContent = firstName;
-
+                document.getElementById('displayName').textContent = displayName.split(' ')[0];
                 return true;
-            } catch (err) {
-                console.error('Auth error:', err);
-                window.location.href = 'login.html';
-                return false;
-            }
+            } catch(err) { window.location.href = 'login.html'; return false; }
         }
-
         async function loadStats() {
-            const quotes = [
-                'كل سؤال تحله خطوة أقرب لحلمك',
-                'النجاح يحتاج للجهد والإصرار',
-                'أنت قادر على تحقيق أهدافك',
-                'ثق بنفسك، أنت أقوى مما تتخيل',
-                'كل يوم تدريب، كل يوم تطور',
-                'حلمك قريب، استمر واجتهد'
-            ];
+            const quotes = ['كل سؤال تحله خطوة أقرب لحلمك','النجاح يحتاج للجهد والإصرار','أنت قادر على تحقيق أهدافك','ثق بنفسك، أنت أقوى مما تتخيل','كل يوم تدريب، كل يوم تطور','حلمك قريب، استمر واجتهد'];
             document.getElementById('motivationalQuote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
-
             try {
-                const { data: allAttempts, error } = await sb
-                    .from('attempts')
-                    .select('is_correct, answered_at')
-                    .eq('user_id', currentUser.id);
-
-                if (error && error.code !== 'PGRST116') return;
-
-                const total = allAttempts ? allAttempts.length : 0;
-                const correct = allAttempts ? allAttempts.filter(a => a.is_correct).length : 0;
+                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at').eq('user_id', currentUser.id);
+                const total = allAttempts?.length || 0;
+                const correct = allAttempts?.filter(a => a.is_correct).length || 0;
                 const wrong = total - correct;
                 const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
-
                 document.getElementById('totalQuestions').textContent = total;
                 document.getElementById('correctAnswers').textContent = correct;
                 document.getElementById('wrongAnswers').textContent = wrong;
                 document.getElementById('successRate').textContent = rate + '%';
-
-                const oneWeekAgo = new Date();
-                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                const weekly = allAttempts ? allAttempts.filter(a => new Date(a.answered_at) > oneWeekAgo).length : 0;
+                const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                const weekly = allAttempts?.filter(a => new Date(a.answered_at) > oneWeekAgo).length || 0;
                 document.getElementById('weeklyCount').textContent = weekly;
                 document.getElementById('progressBar').style.width = Math.min((weekly / 50) * 100, 100) + '%';
-            } catch (err) {
-                console.error('Stats error:', err);
-            }
+            } catch(err) {}
         }
-
         document.addEventListener('DOMContentLoaded', async function() {
             const ok = await checkAuth();
             if (!ok) return;
             await loadStats();
-            // Show upgrade banner for free users
             const subLabel = document.getElementById('subscriptionLabel').textContent;
-            if (subLabel.includes('مجانية') || subLabel.includes('اشترك')) {
-                document.getElementById('upgradeBanner').classList.remove('hidden');
-            }
+            if (subLabel.includes('مجانية') || subLabel.includes('اشترك')) document.getElementById('upgradeBanner').classList.remove('hidden');
         });
     </script>
 </body>
