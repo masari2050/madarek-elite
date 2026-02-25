@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قريباً - خوارز</title>
+    <title>قريباً - مدارك النخبة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -11,22 +11,21 @@
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
         .animate-float { animation: float 3s ease-in-out infinite; }
         .animate-fadeInUp { animation: fadeInUp 1s ease-out; }
         .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:2px;border-radius:9px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+    </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 min-h-screen overflow-y-auto relative">
     
@@ -38,6 +37,26 @@
     <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
         <div class="max-w-5xl w-full">
             
+            <!-- Logo -->
+            <div class="flex justify-center mb-8 animate-fadeInUp">
+                <a href="index.html" class="madarek-logo">
+                    <div class="icon">
+                        <div class="ring"></div>
+                        <svg viewBox="0 0 36 36" width="20" height="20" fill="none">
+                            <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                            <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                            <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                        </svg>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end">
+                        <span class="name">مدارك النخبة</span>
+                        <span class="tag">حيث يُصنع التميّز</span>
+                    </div>
+                </a>
+            </div>
+
             <!-- Rocket Icon -->
             <div class="text-center mb-8 animate-fadeInUp">
                 <div class="w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-float">
@@ -47,9 +66,7 @@
 
             <!-- Main Title -->
             <div class="text-center mb-8 animate-fadeInUp delay-100">
-                <h1 class="text-5xl md:text-7xl font-black text-white mb-4">
-                    قريباً
-                </h1>
+                <h1 class="text-5xl md:text-7xl font-black text-white mb-4">قريباً</h1>
                 <p class="text-2xl md:text-3xl font-bold mb-2">
                     <span class="text-yellow-400">👊 شيء جديد في الطريق!</span>
                 </p>
@@ -60,12 +77,10 @@
                 <h2 class="text-2xl md:text-3xl font-black text-yellow-400 mb-6 text-center">
                     نستعد لإطلاق تجربة تعليمية استثنائية
                 </h2>
-                
                 <p class="text-xl md:text-2xl text-white leading-relaxed text-center mb-6">
-                    منصة خوارز تأتيك بطريقة <span class="font-black text-yellow-300">جديدة</span> وأسلوب <span class="font-black text-yellow-300">مختلف</span> 
+                    مدارك النخبة تأتيك بطريقة <span class="font-black text-yellow-300">جديدة</span> وأسلوب <span class="font-black text-yellow-300">مختلف</span> 
                     لتحضيرك لاختبارات القدرات والتحصيلي
                 </p>
-
                 <div class="grid md:grid-cols-3 gap-6 mb-8">
                     <div class="bg-purple-900/50 rounded-2xl p-6 text-center border border-purple-400/30">
                         <div class="text-4xl mb-3">⚡</div>
@@ -83,13 +98,11 @@
                         <p class="text-purple-200 text-sm">تجميعات محدثة وأسئلة متنوعة</p>
                     </div>
                 </div>
-
-                <!-- Motivation Message -->
                 <div class="bg-gradient-to-r from-amber-900/50 to-orange-900/50 rounded-2xl p-6 border-2 border-yellow-400/40">
                     <p class="text-center text-yellow-100 text-lg leading-relaxed">
                         <span class="font-black text-yellow-300">✨ نسعى للأفضل ✨</span><br>
                         نقدم تجميعات مدروسة بعناية مع التنويه بأن الاجتهاد واردة لكثرة الأسئلة وتعدد المصادر. 
-                        المسؤولية النهائية عن التعلم تقع على المتعلم نفسه. 
+                        المسؤولية النهائية عن التعلم تقع على المتعلم نفسه.
                     </p>
                 </div>
             </div>
@@ -106,13 +119,11 @@
                     ارجع للصفحة الرئيسية
                 </a>
             </div>
-
         </div>
     </div>
 
     <div class="relative z-10 pb-4 text-center">
-        <p class="text-purple-300 text-sm">© 2026 خوارز - جميع الحقوق محفوظة</p>
+        <p class="text-purple-300 text-sm">© 2026 مدارك النخبة - جميع الحقوق محفوظة</p>
     </div>
-
 </body>
 </html>
