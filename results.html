@@ -3,68 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>شارك نتيجتك — مدارك النخبة</title>
+<title>شارك إنجازك — مدارك النخبة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#08051a;font-family:'Tajawal',sans-serif;color:white;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 48px}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 10%,rgba(99,102,241,0.18) 0%,transparent 70%),radial-gradient(ellipse 60% 50% at 80% 90%,rgba(168,85,247,0.14) 0%,transparent 70%);pointer-events:none;z-index:0}
+body{background:#070416;font-family:'Tajawal',sans-serif;color:white;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 48px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 15% 5%,rgba(99,102,241,0.2) 0%,transparent 65%),radial-gradient(ellipse 60% 50% at 85% 95%,rgba(168,85,247,0.15) 0%,transparent 65%);pointer-events:none}
 
-.page-title{font-family:'Cairo',sans-serif;font-size:24px;font-weight:900;margin-bottom:6px;position:relative}
-.page-sub{color:rgba(196,181,253,0.45);font-size:13px;margin-bottom:28px;position:relative}
+.page-title{font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;margin-bottom:5px;position:relative;text-align:center}
+.page-sub{color:rgba(196,181,253,0.4);font-size:13px;margin-bottom:26px;position:relative;text-align:center}
 
-.panel{width:100%;max-width:400px;background:rgba(255,255,255,0.04);border:1px solid rgba(139,92,246,0.18);border-radius:22px;padding:22px;margin-bottom:16px;position:relative}
-.panel-title{font-size:11px;letter-spacing:3px;color:rgba(196,181,253,0.35);margin-bottom:16px;font-weight:500}
+.panel{width:100%;max-width:420px;background:rgba(255,255,255,0.035);border:1px solid rgba(139,92,246,0.2);border-radius:22px;padding:20px;margin-bottom:14px;position:relative}
+.panel-title{font-size:11px;letter-spacing:3px;color:rgba(196,181,253,0.3);margin-bottom:14px;font-weight:500}
 
-/* توggles */
+/* اختيار الجملة */
+.phrases{display:flex;flex-direction:column;gap:8px}
+.phrase-btn{width:100%;padding:13px 18px;border-radius:14px;border:1px solid rgba(139,92,246,0.18);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.75);font-family:'Tajawal',sans-serif;font-size:15px;cursor:pointer;text-align:right;transition:.2s;line-height:1.4}
+.phrase-btn:hover{background:rgba(99,102,241,0.1);border-color:rgba(139,92,246,0.35);color:white}
+.phrase-btn.selected{background:rgba(99,102,241,0.15);border-color:rgba(139,92,246,0.6);color:white}
+
+/* toggles */
 .row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
 .row:last-of-type{border:none}
-.row-label{font-size:14px;color:rgba(255,255,255,0.75)}
-.sw{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:.3s;background:rgba(255,255,255,0.1)}
+.row-label{font-size:14px;color:rgba(255,255,255,0.7)}
+.sw{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:.3s;background:rgba(255,255,255,0.1);flex-shrink:0}
 .sw.on{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
 .sw::after{content:'';position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;left:3px;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
 .sw.on::after{left:23px}
-
-.name-field{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(139,92,246,0.22);border-radius:14px;padding:11px 16px;color:white;font-family:'Tajawal',sans-serif;font-size:15px;margin-top:12px;outline:none;text-align:right;transition:.2s}
-.name-field:focus{border-color:rgba(139,92,246,0.55);background:rgba(99,102,241,0.08)}
-.name-field::placeholder{color:rgba(196,181,253,0.25)}
+.name-field{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(139,92,246,0.2);border-radius:14px;padding:11px 16px;color:white;font-family:'Tajawal',sans-serif;font-size:15px;margin-top:12px;outline:none;text-align:right;transition:.2s}
+.name-field:focus{border-color:rgba(139,92,246,0.5);background:rgba(99,102,241,0.07)}
+.name-field::placeholder{color:rgba(196,181,253,0.22)}
 
 /* معاينة */
-.preview-box{width:100%;max-width:400px;margin-bottom:18px;position:relative}
-.preview-label{font-size:11px;letter-spacing:3px;color:rgba(196,181,253,0.35);margin-bottom:12px;font-weight:500}
-#previewCanvas{width:100%;border-radius:18px;border:1px solid rgba(139,92,246,0.22);display:block;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.preview-box{width:100%;max-width:420px;margin-bottom:16px}
+.preview-label{font-size:11px;letter-spacing:3px;color:rgba(196,181,253,0.3);margin-bottom:10px;font-weight:500}
+#previewCanvas{width:100%;border-radius:18px;border:1px solid rgba(139,92,246,0.2);display:block;box-shadow:0 16px 50px rgba(0,0,0,0.5)}
 
-/* أزرار */
-.btns{display:flex;gap:10px;width:100%;max-width:400px}
-.btn-main{flex:1;padding:15px;border-radius:16px;font-family:'Tajawal',sans-serif;font-weight:900;font-size:15px;cursor:pointer;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;transition:.2s;letter-spacing:.3px}
+.btns{display:flex;gap:10px;width:100%;max-width:420px}
+.btn-main{flex:1;padding:15px;border-radius:16px;font-family:'Tajawal',sans-serif;font-weight:900;font-size:15px;cursor:pointer;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;transition:.15s}
 .btn-main:active{transform:scale(0.97)}
-.btn-sec{padding:15px 18px;border-radius:16px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(139,92,246,0.25);background:rgba(99,102,241,0.08);color:rgba(196,181,253,0.8);transition:.2s}
-.btn-sec:active{background:rgba(99,102,241,0.18)}
-
-.back{margin-top:22px;color:rgba(196,181,253,0.25);font-size:13px;cursor:pointer;transition:.2s}
-.back:hover{color:rgba(196,181,253,0.55)}
+.btn-sec{padding:15px 20px;border-radius:16px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(139,92,246,0.25);background:rgba(99,102,241,0.07);color:rgba(196,181,253,0.7);transition:.15s}
+.back{margin-top:20px;color:rgba(196,181,253,0.22);font-size:13px;cursor:pointer;transition:.2s}
+.back:hover{color:rgba(196,181,253,0.5)}
 canvas{display:none}
 </style>
 </head>
 <body>
 
-<p class="page-title">شارك إنجازك 🏆</p>
-<p class="page-sub">اختار وش تحب يظهر</p>
+<p class="page-title">شارك إنجازك 🔥</p>
+<p class="page-sub">صمّم صورتك وشاركها</p>
+
+<!-- اختيار الجملة -->
+<div class="panel">
+  <p class="panel-title">اختار جملتك</p>
+  <div class="phrases" id="phrases">
+    <button class="phrase-btn selected" onclick="selectPhrase(this,'الحمدلله 🙏\nانجزت تدريبي اليوم')">الحمدلله 🙏 انجزت تدريبي اليوم</button>
+    <button class="phrase-btn" onclick="selectPhrase(this,'ما توقفت\nعن التطور 🔥')">ما توقفت عن التطور 🔥</button>
+    <button class="phrase-btn" onclick="selectPhrase(this,'على طريق\nالقبول 🎯')">على طريق القبول 🎯</button>
+    <button class="phrase-btn" onclick="selectPhrase(this,'كل يوم\nأقوى من أمس ⚡️')">كل يوم أقوى من أمس ⚡️</button>
+    <button class="phrase-btn" onclick="selectPhrase(this,'شغّال على\nnنفسي وما وقفت 💪')">شغّال على نفسي وما وقفت 💪</button>
+    <button class="phrase-btn" onclick="selectPhrase(this,'التدريب اليوم\nاستثمار بكره 🏆')">التدريب اليوم استثمار بكره 🏆</button>
+  </div>
+</div>
 
 <!-- خيارات -->
 <div class="panel">
-  <p class="panel-title">خيارات الصورة</p>
+  <p class="panel-title">خيارات إضافية</p>
   <div class="row"><span class="row-label">إظهار النسبة</span><button class="sw on" id="sPct" onclick="tog('sPct')"></button></div>
   <div class="row"><span class="row-label">إظهار عدد الأسئلة</span><button class="sw on" id="sCnt" onclick="tog('sCnt')"></button></div>
   <div class="row"><span class="row-label">إظهار الاسم</span><button class="sw on" id="sName" onclick="tog('sName')"></button></div>
   <div id="nameWrap">
-    <input class="name-field" id="nameVal" placeholder="اسمك أو لقبك..." maxlength="25" oninput="draw()">
+    <input class="name-field" id="nameVal" placeholder="اسمك أو لقبك..." maxlength="22" oninput="draw()">
   </div>
 </div>
 
 <!-- معاينة -->
 <div class="preview-box">
-  <p class="preview-label">معاينة الصورة</p>
+  <p class="preview-label">معاينة</p>
   <canvas id="previewCanvas"></canvas>
 </div>
 
@@ -72,200 +87,182 @@ canvas{display:none}
   <button class="btn-main" onclick="dl()">⬇️ تنزيل وشارك</button>
   <button class="btn-sec" onclick="cp()">نسخ</button>
 </div>
-
 <p class="back" onclick="history.back()">← رجوع</p>
 <canvas id="C"></canvas>
 
 <script>
 var W=1080,H=1920;
 var R=JSON.parse(localStorage.getItem('quiz_results')||'{}');
-var ok=R.correct||0, bad=R.wrong||0, tot=R.total||10, pct=R.percentage||0, sec=R.section||'';
+var ok=R.correct||0,tot=R.total||10,pct=R.percentage||0,sec=R.section||'';
 var secN={'quant':'القدرات الكمية','verbal':'القدرات اللفظية','tahsili':'التحصيلي','mix':'القدرات'};
+var currentPhrase='الحمدلله 🙏\nانجزت تدريبي اليوم';
 
-// نجوم ثابتة
-var ST=[];for(var i=0;i<140;i++)ST.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+0.2,o:Math.random()*0.5+0.08});
+// نجوم
+var ST=[];for(var i=0;i<150;i++)ST.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.7+0.2,o:Math.random()*0.45+0.07});
 
 // اسم افتراضي
-try{var u=JSON.parse(localStorage.getItem('khawariz_user')||'{}');var dn=u.name||(u.email?u.email.split('@')[0]:'');document.getElementById('nameVal').value=dn;}catch(e){}
+try{var u=JSON.parse(localStorage.getItem('khawariz_user')||'{}');document.getElementById('nameVal').value=u.name||(u.email?u.email.split('@')[0]:'');}catch(e){}
 
-function tog(id){
-  var el=document.getElementById(id);el.classList.toggle('on');
-  if(id==='sName')document.getElementById('nameWrap').style.display=el.classList.contains('on')?'block':'none';
+function selectPhrase(btn,phrase){
+  document.querySelectorAll('.phrase-btn').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');
+  currentPhrase=phrase;
   draw();
 }
+function tog(id){var el=document.getElementById(id);el.classList.toggle('on');if(id==='sName')document.getElementById('nameWrap').style.display=el.classList.contains('on')?'block':'none';draw();}
 function on(id){return document.getElementById(id).classList.contains('on');}
 
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
-
-// نصوص الفخر حسب النتيجة وحسب القسم
-function getTexts(){
-  var sName=secN[sec]||'التدريب';
-  var emoji=pct>=90?'🔥':pct>=75?'⚡️':pct>=60?'💪':'🎯';
-  var line1, line2;
-  if(pct>=90){
-    line1='الحمدلله 🙏';
-    line2='ما شاء الله انجزت تدريبي في '+emoji;
-  } else if(pct>=75){
-    line1='ماشي الحال '+emoji;
-    line2='انجزت جلسة تدريب في';
-  } else if(pct>=60){
-    line1='شغّالين '+emoji;
-    line2='ما توقف، انجزت جلسة في';
-  } else {
-    line1='البداية دايما الأصعب '+emoji;
-    line2='بديت رحلتي في';
-  }
-  return {line1:line1, line2:line2, sName:sName, emoji:emoji};
-}
 
 function draw(){
   var cv=document.getElementById('C');cv.width=W;cv.height=H;
   var ctx=cv.getContext('2d');
   var pColor=pct>=90?'#4ade80':pct>=75?'#c4b5fd':pct>=60?'#fbbf24':'#f87171';
-  var pGlow=pct>=90?'rgba(74,222,128,':pct>=75?'rgba(196,181,253,':pct>=60?'rgba(251,191,36,':'rgba(248,113,113,';
-  var T=getTexts();
+  var pGlow=pct>=90?[74,222,128]:pct>=75?[196,181,253]:pct>=60?[251,191,36]:[248,113,113];
 
   // ━━━ خلفية ━━━
   var bg=ctx.createLinearGradient(0,0,W,H);
-  bg.addColorStop(0,'#08051a');bg.addColorStop(0.4,'#0f0a28');bg.addColorStop(0.75,'#160e35');bg.addColorStop(1,'#08051a');
+  bg.addColorStop(0,'#07041a');bg.addColorStop(0.45,'#0e0a26');bg.addColorStop(0.8,'#140d32');bg.addColorStop(1,'#07041a');
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
 
   // نجوم
   ST.forEach(function(s){ctx.fillStyle='rgba(255,255,255,'+s.o+')';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
 
-  // وهج أعلى يسار
-  var g1=ctx.createRadialGradient(200,250,0,200,250,550);g1.addColorStop(0,'rgba(99,102,241,0.2)');g1.addColorStop(1,'transparent');ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
-  // وهج أسفل يمين
-  var g2=ctx.createRadialGradient(900,1650,0,900,1650,500);g2.addColorStop(0,'rgba(168,85,247,0.16)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
+  // وهج أعلى
+  var g1=ctx.createRadialGradient(180,220,0,180,220,600);g1.addColorStop(0,'rgba(99,102,241,0.22)');g1.addColorStop(1,'transparent');ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
+  // وهج أسفل
+  var g2=ctx.createRadialGradient(900,1700,0,900,1700,520);g2.addColorStop(0,'rgba(168,85,247,0.17)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
   // وهج النتيجة
-  var g3=ctx.createRadialGradient(W/2,920,0,W/2,920,380);g3.addColorStop(0,pGlow+'0.12)');g3.addColorStop(1,'transparent');ctx.fillStyle=g3;ctx.fillRect(0,0,W,H);
-
-  // ━━━ خط زخرفي علوي ━━━
-  var topLine=ctx.createLinearGradient(0,0,W,0);
-  topLine.addColorStop(0,'transparent');topLine.addColorStop(0.3,pColor.replace(')',',0.7)').replace('#','rgba(').replace('rgba(','rgba('));
-  // أبسط:
-  ctx.strokeStyle=pColor;ctx.globalAlpha=0.25;ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(0,4);ctx.lineTo(W,4);ctx.stroke();
-  ctx.globalAlpha=1;
+  var g3=ctx.createRadialGradient(W/2,1000,0,W/2,1000,350);
+  g3.addColorStop(0,'rgba('+pGlow.join(',')+',0.13)');g3.addColorStop(1,'transparent');ctx.fillStyle=g3;ctx.fillRect(0,0,W,H);
 
   ctx.textAlign='center';
 
-  // ━━━ شعار أعلى ━━━
+  // ━━━ شعار ━━━
   // تاج
-  var tx=W/2, ty=320;
-  ctx.save();ctx.strokeStyle='rgba(165,180,252,0.85)';ctx.lineWidth=3.5;ctx.lineJoin='round';ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(tx-70,ty+50);ctx.lineTo(tx-70,ty-5);ctx.lineTo(tx-22,ty+28);ctx.lineTo(tx,ty-40);ctx.lineTo(tx+22,ty+28);ctx.lineTo(tx+70,ty-5);ctx.lineTo(tx+70,ty+50);ctx.closePath();ctx.stroke();
-  ctx.beginPath();ctx.moveTo(tx-70,ty+62);ctx.lineTo(tx+70,ty+62);ctx.stroke();
-  ctx.fillStyle='#a5b4fc';ctx.beginPath();ctx.arc(tx-70,ty-5,6,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#c4b5fd';ctx.beginPath();ctx.arc(tx,ty-40,6,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#a5b4fc';ctx.beginPath();ctx.arc(tx+70,ty-5,6,0,Math.PI*2);ctx.fill();
+  var tx=W/2,ty=290;
+  ctx.save();ctx.strokeStyle='rgba(165,180,252,0.8)';ctx.lineWidth=3.5;ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(tx-72,ty+52);ctx.lineTo(tx-72,ty-2);ctx.lineTo(tx-23,ty+30);ctx.lineTo(tx,ty-42);ctx.lineTo(tx+23,ty+30);ctx.lineTo(tx+72,ty-2);ctx.lineTo(tx+72,ty+52);ctx.closePath();ctx.stroke();
+  ctx.beginPath();ctx.moveTo(tx-72,ty+64);ctx.lineTo(tx+72,ty+64);ctx.stroke();
+  ctx.fillStyle='#a5b4fc';ctx.beginPath();ctx.arc(tx-72,ty-2,6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#c4b5fd';ctx.beginPath();ctx.arc(tx,ty-42,6,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#a5b4fc';ctx.beginPath();ctx.arc(tx+72,ty-2,6,0,Math.PI*2);ctx.fill();
   ctx.restore();
 
-  ctx.fillStyle='rgba(255,255,255,0.88)';ctx.font='bold 60px Cairo, Arial';ctx.fillText('مدارك النخبة',W/2,440);
-  ctx.fillStyle='rgba(196,181,253,0.35)';ctx.font='500 30px Tajawal, Arial';ctx.fillText('حيث يُصنع التميّز',W/2,485);
+  ctx.fillStyle='rgba(255,255,255,0.92)';ctx.font='bold 62px Cairo, Arial';ctx.fillText('مدارك النخبة',W/2,430);
+  ctx.fillStyle='rgba(196,181,253,0.38)';ctx.font='500 30px Tajawal, Arial';ctx.fillText('حيث يُصنع التميّز',W/2,476);
 
   // فاصل
-  ctx.strokeStyle='rgba(139,92,246,0.22)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(160,530);ctx.lineTo(W-160,530);ctx.stroke();
+  ctx.strokeStyle='rgba(139,92,246,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(155,516);ctx.lineTo(W-155,516);ctx.stroke();
 
-  // ━━━ كلام الطالب ━━━
-  // البطاقة الرئيسية
-  ctx.fillStyle='rgba(255,255,255,0.03)';
-  rr(ctx,70,570,W-140,780,48);ctx.fill();
-  ctx.strokeStyle='rgba(139,92,246,0.18)';ctx.lineWidth=1.5;
-  rr(ctx,70,570,W-140,780,48);ctx.stroke();
+  // ━━━ الجملة الرئيسية ━━━
+  var lines=currentPhrase.split('\n');
+  // بطاقة الجملة — بدون حدود، بس وهج خفيف
+  var g4=ctx.createLinearGradient(0,555,0,830);g4.addColorStop(0,'rgba(99,102,241,0.06)');g4.addColorStop(1,'rgba(168,85,247,0.04)');
+  ctx.fillStyle=g4;rr(ctx,60,555,W-120,290,44);ctx.fill();
 
-  // السطر الأول — بلسان الطالب
+  // السطر الأول
   ctx.fillStyle='rgba(255,255,255,0.95)';
-  ctx.font='900 72px Cairo, Arial';
-  ctx.fillText(T.line1,W/2,670);
-
-  // السطر الثاني
-  ctx.fillStyle='rgba(196,181,253,0.65)';
-  ctx.font='500 38px Tajawal, Arial';
-  ctx.fillText(T.line2,W/2,740);
-
-  // اسم القسم
-  ctx.fillStyle='rgba(255,255,255,0.8)';
-  ctx.font='bold 52px Cairo, Arial';
-  ctx.fillText(T.sName,W/2,812);
-
-  // ━━━ النتيجة — الرقم الكبير ━━━
-  if(on('sPct')){
-    // دائرة الرقم
-    ctx.fillStyle=pGlow+'0.1)';ctx.beginPath();ctx.arc(W/2,985,210,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle=pColor;ctx.globalAlpha=0.2;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(W/2,985,210,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
-
-    ctx.fillStyle=pColor;
-    ctx.font='900 220px Cairo, Arial';
-    ctx.fillText(pct+'%',W/2,1060);
-
-    if(on('sCnt')){
-      ctx.fillStyle='rgba(255,255,255,0.45)';
-      ctx.font='500 40px Tajawal, Arial';
-      ctx.fillText(ok+' صح من أصل '+tot+' سؤال',W/2,1140);
-    }
-  } else if(on('sCnt')){
-    ctx.fillStyle=pColor;ctx.font='900 130px Cairo, Arial';ctx.fillText(ok+'/'+tot,W/2,1020);
-    ctx.fillStyle='rgba(255,255,255,0.45)';ctx.font='500 40px Tajawal, Arial';ctx.fillText('إجابة صحيحة',W/2,1090);
+  ctx.font='900 86px Cairo, Arial';
+  if(lines.length>1){
+    ctx.fillText(lines[0],W/2,655);
+    ctx.fillText(lines[1],W/2,760);
+  } else {
+    // كسر تلقائي
+    var words=lines[0].split(' '),line1='',line2='';
+    var half=Math.ceil(words.length/2);
+    line1=words.slice(0,half).join(' ');line2=words.slice(half).join(' ');
+    ctx.fillText(line1,W/2,640);
+    if(line2)ctx.fillText(line2,W/2,748);
   }
 
-  // فاصل
-  ctx.strokeStyle='rgba(139,92,246,0.18)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(160,1220);ctx.lineTo(W-160,1220);ctx.stroke();
+  // ━━━ بادج القسم ━━━
+  var sLabel=secN[sec]||'القدرات والتحصيلي';
+  var badgeW=500, badgeH=72, badgeX=W/2-badgeW/2, badgeY=855;
+  var badgeGrad=ctx.createLinearGradient(badgeX,0,badgeX+badgeW,0);
+  badgeGrad.addColorStop(0,'rgba(99,102,241,0.25)');
+  badgeGrad.addColorStop(1,'rgba(168,85,247,0.25)');
+  ctx.fillStyle=badgeGrad;
+  rr(ctx,badgeX,badgeY,badgeW,badgeH,36);ctx.fill();
+  ctx.strokeStyle='rgba(139,92,246,0.45)';ctx.lineWidth=1.2;
+  rr(ctx,badgeX,badgeY,badgeW,badgeH,36);ctx.stroke();
+  ctx.fillStyle='rgba(196,181,253,0.85)';ctx.font='bold 32px Tajawal, Arial';
+  ctx.fillText('📚 تدريب '+sLabel,W/2,badgeY+46);
+
+  // فاصل رفيع
+  ctx.strokeStyle='rgba(139,92,246,0.15)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(200,910);ctx.lineTo(W-200,910);ctx.stroke();
+
+  // ━━━ النتيجة ━━━
+  var showP=on('sPct'),showC=on('sCnt');
+  var centerY=showP&&showC?1060:showP||showC?1020:0;
+
+  if(showP){
+    var cg=ctx.createRadialGradient(W/2,centerY-40,0,W/2,centerY-40,230);
+    cg.addColorStop(0,'rgba('+pGlow.join(',')+',0.13)');cg.addColorStop(1,'transparent');
+    ctx.fillStyle=cg;ctx.beginPath();ctx.arc(W/2,centerY-40,230,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=pColor;ctx.font='900 230px Cairo, Arial';
+    ctx.fillText(pct+'%',W/2,centerY+40);
+  } else if(!showC){
+    // نجمة كبيرة بدل النتيجة
+    ctx.font='160px Arial';ctx.fillText('⭐️',W/2,1080);
+    ctx.fillStyle='rgba(196,181,253,0.35)';ctx.font='500 34px Tajawal, Arial';
+    ctx.fillText('جلسة تدريب مكتملة',W/2,1160);
+  }
+  if(showC){
+    ctx.fillStyle='rgba(255,255,255,'+(showP?'0.5':'0.85')+')';
+    ctx.font=showP?'bold 44px Tajawal, Arial':'900 100px Cairo, Arial';
+    var yC=showP?centerY+105:centerY+30;
+    ctx.fillText(showP?(ok+' صح من أصل '+tot+' سؤال'):(ok+'/'+tot),W/2,yC);
+    if(!showP){ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='500 42px Tajawal, Arial';ctx.fillText('إجابة صحيحة',W/2,yC+60);}
+  }
 
   // ━━━ اسم الطالب ━━━
   if(on('sName')){
     var nm=document.getElementById('nameVal').value.trim();
     if(nm){
-      ctx.font='bold 40px Tajawal, Arial';
-      var nmW=ctx.measureText(nm).width+90;
-      ctx.fillStyle='rgba(99,102,241,0.14)';
-      rr(ctx,W/2-nmW/2,1265,nmW,80,40);ctx.fill();
-      ctx.strokeStyle='rgba(99,102,241,0.3)';ctx.lineWidth=1;
-      rr(ctx,W/2-nmW/2,1265,nmW,80,40);ctx.stroke();
-      ctx.fillStyle='rgba(255,255,255,0.8)';
-      ctx.fillText(nm,W/2,1318);
+      ctx.font='bold 42px Tajawal, Arial';
+      var nmW=Math.min(ctx.measureText(nm).width+100,700);
+      var nmY=(showP||showC)?1310:1050;
+      ctx.fillStyle='rgba(99,102,241,0.13)';rr(ctx,W/2-nmW/2,nmY,nmW,80,40);ctx.fill();
+      ctx.strokeStyle='rgba(99,102,241,0.28)';ctx.lineWidth=1;rr(ctx,W/2-nmW/2,nmY,nmW,80,40);ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.78)';ctx.fillText(nm,W/2,nmY+50);
     }
   }
 
-  // ━━━ دعوة للتسجيل — منطقة سفلية ━━━
-  // خط فاصل
-  ctx.strokeStyle='rgba(139,92,246,0.15)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(160,1430);ctx.lineTo(W-160,1430);ctx.stroke();
+  // ━━━ قسم الدعوة ━━━
+  var divY=1490;
+  ctx.strokeStyle='rgba(139,92,246,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(155,divY);ctx.lineTo(W-155,divY);ctx.stroke();
 
-  ctx.fillStyle='rgba(196,181,253,0.3)';ctx.font='500 30px Tajawal, Arial';
-  ctx.fillText('تدرّب معي',W/2,1510);
+  // نجمات زخرفية
+  ctx.fillStyle='rgba(196,181,253,0.2)';ctx.font='28px Arial';
+  ctx.fillText('✦  ✦  ✦',W/2,divY+55);
 
-  ctx.fillStyle='rgba(165,180,252,0.75)';ctx.font='bold 52px Cairo, Arial';
-  ctx.fillText('madarekelite.com',W/2,1580);
+  ctx.fillStyle='rgba(196,181,253,0.6)';ctx.font='700 36px Tajawal, Arial';
+  ctx.fillText('تدرّب معهم على',W/2,divY+120);
 
-  ctx.fillStyle='rgba(196,181,253,0.2)';ctx.font='26px Tajawal, Arial';
-  ctx.fillText('منصة تدريب القدرات والتحصيلي',W/2,1638);
+  // اسم الموقع بارز
+  var siteGrad=ctx.createLinearGradient(W/2-250,0,W/2+250,0);
+  siteGrad.addColorStop(0,'#a5b4fc');siteGrad.addColorStop(0.5,'#e0e7ff');siteGrad.addColorStop(1,'#c4b5fd');
+  ctx.fillStyle=siteGrad;ctx.font='bold 58px Cairo, Arial';
+  ctx.fillText('madarekelite.com',W/2,divY+196);
 
-  // شعار أسفل صغير
-  ctx.fillStyle='rgba(196,181,253,0.1)';ctx.font='22px Tajawal, Arial';
-  ctx.fillText('مدارك النخبة © 2026',W/2,1840);
+  ctx.fillStyle='rgba(196,181,253,0.22)';ctx.font='26px Tajawal, Arial';
+  ctx.fillText('أسئلة القدرات والتحصيلي',W/2,divY+248);
+
+  // خط سفلي
+  ctx.strokeStyle='rgba(139,92,246,0.1)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(155,divY+286);ctx.lineTo(W-155,divY+286);ctx.stroke();
+
+  // watermark
+  ctx.fillStyle='rgba(196,181,253,0.09)';ctx.font='22px Tajawal, Arial';
+  ctx.fillText('مدارك النخبة © 2026',W/2,1848);
 
   // معاينة
   var pv=document.getElementById('previewCanvas');pv.width=W;pv.height=H;
   pv.getContext('2d').drawImage(cv,0,0);
 }
 
-function dl(){
-  document.getElementById('C').toBlob(function(b){
-    var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='نتيجتي-مدارك.png';a.click();
-  },'image/png');
-}
-async function cp(){
-  try{
-    document.getElementById('C').toBlob(async function(b){
-      await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);
-      var btn=document.querySelector('.btn-sec');btn.textContent='✅';
-      setTimeout(function(){btn.textContent='نسخ';},2000);
-    },'image/png');
-  }catch(e){alert('استخدم التنزيل وارفعها من الجهاز');}
-}
+function dl(){document.getElementById('C').toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='نتيجتي-مدارك.png';a.click();},'image/png');}
+async function cp(){try{document.getElementById('C').toBlob(async function(b){await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);var btn=document.querySelector('.btn-sec');btn.textContent='✅';setTimeout(function(){btn.textContent='نسخ';},2000);});}catch(e){alert('استخدم التنزيل');}}
 
 draw();
 document.getElementById('nameVal').addEventListener('input',draw);
