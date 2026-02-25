@@ -110,7 +110,32 @@
             t.className = 'toast toast-error';
             setTimeout(function() { t.classList.add('hidden'); }, 3500);
         }
+        // استقبال رابط إعادة تعيين الباسورد
+        sb.auth.onAuthStateChange(async function(event, session) {
+            if (event === 'PASSWORD_RECOVERY') {
+                document.getElementById('resetModal').classList.remove('hidden');
+            }
+        });
+
+        async function saveNewPass() {
+            var p1 = document.getElementById('newPass').value;
+            var p2 = document.getElementById('confirmPass').value;
+            if (!p1 || p1.length < 6) { alert('كلمة السر لازم تكون 6 أحرف على الأقل'); return; }
+            if (p1 !== p2) { alert('كلمة السر ما تطابقت'); return; }
+            try {
+                var { error } = await sb.auth.updateUser({ password: p1 });
+                if (error) throw error;
+                document.getElementById('resetResult').textContent = 'تم تغيير كلمة السر، جاري تحويلك...';
+                document.getElementById('resetResult').classList.remove('hidden');
+                setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
+            } catch(e) {
+                alert('حصل خطأ: ' + e.message);
+            }
+        }
+
         (async function() {
+            // لو فيه hash في الرابط (رابط recovery) لا تحول للداشبورد
+            if (window.location.hash && window.location.hash.includes('type=recovery')) return;
             var { data: { session } } = await sb.auth.getSession();
             if (session) {
                 localStorage.setItem('khawariz_user', JSON.stringify({ id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || '' }));
@@ -138,5 +163,18 @@
             }
         });
     </script>
+
+    <!-- مودال تغيير الباسورد -->
+    <div id="resetModal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
+        <div class="w-full max-w-sm rounded-3xl p-7" style="background:linear-gradient(135deg,#1a1145,#1e1550);border:1px solid rgba(139,92,246,0.3)">
+            <h2 class="text-xl font-black text-white text-center mb-2">تغيير كلمة السر</h2>
+            <p class="text-purple-200/60 text-xs text-center mb-6">اكتب كلمة السر الجديدة</p>
+            <input id="newPass" type="password" placeholder="كلمة السر الجديدة" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-sm mb-3 outline-none focus:border-indigo-400" style="direction:rtl">
+            <input id="confirmPass" type="password" placeholder="تأكيد كلمة السر" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-sm mb-5 outline-none focus:border-indigo-400" style="direction:rtl">
+            <button onclick="saveNewPass()" class="w-full py-3 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">حفظ كلمة السر الجديدة</button>
+            <div id="resetResult" class="hidden text-center mt-3 text-xs text-green-400"></div>
+        </div>
+    </div>
+
 </body>
 </html>
