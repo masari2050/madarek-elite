@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة - خوارز</title>
+    <title>لوحة الإدارة - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         *{font-family:'Tajawal',sans-serif}
         body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
         .glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1rem}
-        .sidebar{background:rgba(255,255,255,0.03);border-left:1px solid rgba(255,255,255,0.06);min-height:100vh;width:240px;position:fixed;top:0;right:0;z-index:40;overflow-y:auto}
+        .sidebar{background:rgba(15,10,46,0.97);border-left:1px solid rgba(255,255,255,0.06);min-height:100vh;width:240px;position:fixed;top:0;right:0;z-index:40;overflow-y:auto}
         .sb-link{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:.75rem;font-size:.9rem;font-weight:700;color:rgba(196,181,253,0.5);transition:all .2s;cursor:pointer;margin:3px 10px}
         .sb-link:hover{background:rgba(255,255,255,0.05);color:rgba(196,181,253,0.8)}
         .sb-link.on{background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2)}
@@ -40,23 +40,41 @@
         .rr{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:.75rem}.rr:hover{background:rgba(255,255,255,0.03)}
         .rn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0}
         @media(max-width:768px){.sidebar{display:none}.mc{margin-right:0;padding:16px}}
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+        /* Madarek Logo */
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-size:9px;color:rgba(196,181,253,0.4);margin-top:1px;display:block;font-family:'Tajawal',sans-serif}
+    </style>
 </head>
 <body class="text-white">
 <div id="toast" class="toast hidden"></div>
 
 <!-- Sidebar -->
 <aside class="sidebar">
-    <div class="p-4 mb-2"><div class="flex items-center gap-2 mb-1"><div class="kh-logo"><span class="kh-kha" style="font-size:24px">خـ</span><span class="kh-ar" style="font-size:24px">ـوارز</span><div class="kh-en-wrap" style="margin-top:0px"><div class="kh-en-line kh-en-line-r"></div><span class="kh-en" style="font-size:7px">KHAWARIZ</span><div class="kh-en-line kh-en-line-l"></div></div></div><span class="text-lg font-black bg-gradient-to-l from-purple-300 to-indigo-300 bg-clip-text text-transparent">خوارز</span></div><p class="text-[10px] text-purple-200/60">لوحة الإدارة</p></div>
+    <div class="p-4 mb-2">
+        <div class="madarek-logo mb-1">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="20" height="20" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end">
+                <span class="name">مدارك النخبة</span>
+                <span class="tag">حيث يُصنع التميّز</span>
+            </div>
+        </div>
+        <p class="text-[10px] text-purple-200/50 mr-1">لوحة الإدارة</p>
+    </div>
     <div class="sb-link on" data-tab="overview"><span>📊</span><span>نظرة عامة</span></div>
     <div class="sb-link" data-tab="questions"><span>📝</span><span>الأسئلة</span></div>
     <div class="sb-link" data-tab="users"><span>👥</span><span>الأعضاء</span></div>
@@ -65,7 +83,9 @@
     <div class="sb-link" data-tab="reports"><span>🚩</span><span>البلاغات</span></div>
     <div class="sb-link" data-tab="staff"><span>🔑</span><span>الموظفين</span></div>
     <div class="sb-link" data-tab="settings"><span>⚙️</span><span>الإعدادات</span></div>
-    <div class="mt-4 p-4 border-t border-purple-500/10"><div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div></div>
+    <div class="mt-4 p-4 border-t border-purple-500/10">
+        <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
+    </div>
 </aside>
 
 <!-- Main -->
@@ -161,8 +181,6 @@
     <div class="space-y-3">
         <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الرئيسي</label><select id="qm-sec" class="inp" onchange="updateSubSec()"><option value="quant">قدرات كمي</option><option value="verbal">قدرات لفظي</option><option value="tahsili">التحصيلي</option></select></div>
         <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الفرعي</label><select id="qm-sub" class="inp"></select></div>
-
-        <!-- صورة السؤال -->
         <div class="p-4 rounded-xl" style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.1)">
             <label class="text-purple-300/50 text-sm mb-2 block">🖼️ صورة السؤال (اختياري)</label>
             <p class="text-purple-200/60 text-xs mb-2">ارفع صورة أو حط رابط — الصورة تظهر فوق نص السؤال</p>
@@ -170,7 +188,6 @@
             <input id="qm-img" class="inp text-sm" placeholder="أو حط رابط الصورة هنا...">
             <div id="qm-preview" class="mt-2 hidden"><img id="qm-prev-img" class="max-h-32 rounded-lg mx-auto"><button onclick="clearImg()" class="text-red-400 text-xs mt-1 block mx-auto">✕ إزالة الصورة</button></div>
         </div>
-
         <div><label class="text-purple-300/50 text-sm mb-1 block">نص السؤال</label><textarea id="qm-txt" class="inp" rows="3" placeholder="اكتب نص السؤال... أو اتركه فارغ لو السؤال صورة فقط"></textarea></div>
         <div class="grid grid-cols-2 gap-2"><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 1</label><input id="qm-c0" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 2</label><input id="qm-c1" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 3</label><input id="qm-c2" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 4</label><input id="qm-c3" class="inp"></div></div>
         <div><label class="text-purple-300/50 text-sm mb-1 block">الإجابة الصحيحة</label><select id="qm-cor" class="inp"><option value="0">خيار 1</option><option value="1">خيار 2</option><option value="2">خيار 3</option><option value="3">خيار 4</option></select></div>
@@ -190,7 +207,7 @@
 <div id="couponM" class="mbg hidden"><div class="mbox">
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">كوبون جديد</h3><button onclick="$('couponM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
     <div class="space-y-3">
-        <div><label class="text-purple-300/50 text-sm mb-1 block">الكود</label><input id="cm-c" class="inp" style="text-transform:uppercase" placeholder="مثال: khawariz50"></div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الكود</label><input id="cm-c" class="inp" style="text-transform:uppercase" placeholder="مثال: MADAREK50"></div>
         <div><label class="text-purple-300/50 text-sm mb-1 block">يطبّق على</label><select id="cm-plan" class="inp"><option value="all">الكل (شهري + سنوي)</option><option value="monthly">شهري فقط</option><option value="yearly">سنوي فقط</option></select></div>
         <div><label class="text-purple-300/50 text-sm mb-1 block">نوع الخصم</label><select id="cm-t" class="inp"><option value="percentage">نسبة %</option><option value="fixed">مبلغ ثابت (ريال)</option></select></div>
         <div><label class="text-purple-300/50 text-sm mb-1 block">القيمة</label><input type="number" id="cm-v" class="inp" placeholder="مثال: 50"></div>
@@ -208,6 +225,7 @@
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">إضافة موظف</h3><button onclick="$('staffM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
     <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">إيميل الموظف</label><input id="sm-e" class="inp"></div><button class="bp w-full" onclick="saveSt2()">💾 إضافة كأدمن</button></div>
 </div></div>
+
 <!-- ═══ Preview Modal ═══ -->
 <div id="previewM" class="mbg hidden"><div class="mbox" style="max-width:420px">
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">👁️ معاينة السؤال</h3><button onclick="$('previewM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
@@ -220,7 +238,6 @@ var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','
 var me=null;
 function $(id){return document.getElementById(id)}
 
-// Sub-sections map
 var subSections={
     quant:['الجبر والمعادلات','النسبة والتناسب','الهندسة','الإحصاء','الأعداد','التحليل'],
     verbal:['التناظر اللفظي','إكمال الجمل','الاستيعاب المقروء','الخطأ السياقي'],
@@ -231,7 +248,6 @@ function updateSubSec(){
     $('qm-sub').innerHTML=opts.map(function(o){return'<option value="'+o+'">'+o+'</option>'}).join('');
 }
 
-// Auth
 async function init(){
     var{data:{session}}=await sb.auth.getSession();
     if(!session){location.href='admin-login.html';return}
@@ -240,7 +256,6 @@ async function init(){
     me={id:session.user.id,...p};loadOV();
 }
 
-// Tabs
 document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
     el.addEventListener('click',function(){
         var t=this.dataset.tab;
@@ -255,7 +270,6 @@ document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
 
 function toast(m,ok){var t=$('toast');t.textContent=m;t.className='toast '+(ok?'tok':'ter');setTimeout(function(){t.classList.add('hidden')},3000)}
 
-// ═══ OVERVIEW ═══
 async function loadOV(){
     var{data:q}=await sb.from('questions').select('section,sub_section');
     var{data:u}=await sb.from('profiles').select('id,full_name,email,avatar_emoji,created_at');
@@ -273,7 +287,6 @@ async function loadOV(){
     if(u&&u.length){var nh='';u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p></div><p class="text-purple-200/60 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'});$('d-new').innerHTML=nh}
     return}
 
-    // Hardest
     var wr=a.filter(function(x){return!x.is_correct}),fr={};
     wr.forEach(function(x){fr[x.question_id]=(fr[x.question_id]||0)+1});
     if(Object.keys(fr).length){var hid=Object.keys(fr).sort(function(a,b){return fr[b]-fr[a]})[0];
@@ -281,15 +294,13 @@ async function loadOV(){
     if(hq){var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};$('d-hard').innerHTML='<span class="bg bg-m mb-2">'+(sn[hq.section]||'')+'</span><p class="text-white text-base mt-2">'+hq.question_text.substring(0,120)+'</p><p class="text-red-400 text-sm mt-2 font-bold">🔴 '+fr[hid]+' خطأ</p>'}}
     else $('d-hard').innerHTML='<p class="text-purple-200/70">ما فيه أخطاء</p>';
 
-    // Rate
     var cor=a.filter(function(x){return x.is_correct}).length;$('d-rate').textContent=Math.round(cor/a.length*100)+'%';
 
-    // User map
     var um={};if(u)u.forEach(function(x){um[x.id]=x});
     var ua={};a.forEach(function(x){if(!ua[x.user_id])ua[x.user_id]={t:0,c:0};ua[x.user_id].t++;if(x.is_correct)ua[x.user_id].c++});
     var rc=['#fbbf24','#c0c0c0','#cd7f32','#818cf8','#818cf8'],rb=['rgba(251,191,36,0.15)','rgba(192,192,192,0.1)','rgba(205,127,50,0.1)','rgba(129,140,248,0.08)','rgba(129,140,248,0.08)'];
 
-    function rank(arr,el,valFn,lblFn){var h='';arr.forEach(function(uid,i){var usr=um[uid]||{};h+='<div class="rr"><div class="rn" style="background:'+rb[i]+';color:'+rc[i]+'">'+(i+1)+'</div><div class="flex-1"><p class="text-white font-bold text-sm">'+(usr.full_name||'مجهول')+'</p></div><div class="text-left">'+valFn(uid)+'</div></div>'});el.innerHTML=h||'<p class="text-purple-200/60">لا توجد بيانات</p>'}
+    function rank(arr,el,valFn){var h='';arr.forEach(function(uid,i){var usr=um[uid]||{};h+='<div class="rr"><div class="rn" style="background:'+rb[i]+';color:'+rc[i]+'">'+(i+1)+'</div><div class="flex-1"><p class="text-white font-bold text-sm">'+(usr.full_name||'مجهول')+'</p></div><div class="text-left">'+valFn(uid)+'</div></div>'});el.innerHTML=h||'<p class="text-purple-200/60">لا توجد بيانات</p>'}
 
     rank(Object.keys(ua).sort(function(a,b){return ua[b].t-ua[a].t}).slice(0,5),$('d-top'),function(uid){return'<p class="text-lg font-black text-indigo-400">'+ua[uid].t+'</p><p class="text-purple-200/60 text-[10px]">محاولة</p>'});
     rank(Object.keys(ua).filter(function(uid){return ua[uid].t>=3}).sort(function(a,b){return ua[b].c/ua[b].t-ua[a].c/ua[a].t}).slice(0,5),$('d-acc'),function(uid){return'<p class="text-lg font-black text-emerald-400">'+Math.round(ua[uid].c/ua[uid].t*100)+'%</p>'});
@@ -300,7 +311,6 @@ async function loadOV(){
     if(u&&u.length){var nh='';u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p><p class="text-purple-200/60 text-xs">'+(m.email||'')+'</p></div><p class="text-purple-200/60 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'});$('d-new').innerHTML=nh}
 }
 
-// ═══ QUESTIONS ═══
 async function loadQ(){
     var f=$('qf').value,s=$('qs').value.trim().toLowerCase(),qr=sb.from('questions').select('*').order('created_at',{ascending:false});
     if(f!=='all')qr=qr.eq('section',f);var{data}=await qr;if(!data)data=[];
@@ -357,43 +367,23 @@ async function previewQ(id){
 async function uploadImg(){
     var file=$('qm-file').files[0];
     if(!file)return $('qm-img').value||null;
-    // جرّب رفع على Storage أول
     try{
         var ext=file.name.split('.').pop();var name='q_'+Date.now()+'.'+ext;
         var{data,error}=await sb.storage.from('question-images').upload(name,file,{cacheControl:'3600',upsert:false});
         if(error){
-            // لو ما فيه bucket — حوّل الصورة لـ base64 وخزّنها كـ data URL
-            return await new Promise(function(resolve){
-                var reader=new FileReader();
-                reader.onload=function(e){resolve(e.target.result)};
-                reader.readAsDataURL(file);
-            });
+            return await new Promise(function(resolve){var reader=new FileReader();reader.onload=function(e){resolve(e.target.result)};reader.readAsDataURL(file)});
         }
         var{data:pub}=sb.storage.from('question-images').getPublicUrl(name);
         return pub.publicUrl;
     }catch(e){
-        // Fallback to base64
-        return await new Promise(function(resolve){
-            var reader=new FileReader();
-            reader.onload=function(e){resolve(e.target.result)};
-            reader.readAsDataURL(file);
-        });
+        return await new Promise(function(resolve){var reader=new FileReader();reader.onload=function(e){resolve(e.target.result)};reader.readAsDataURL(file)});
     }
 }
 
 async function saveQ2(){
     var id=$('qm-id').value;
     var imgUrl=await uploadImg();
-    var obj={
-        section:$('qm-sec').value,
-        subject:$('qm-sub').value||$('qm-sec').value,
-        sub_section:$('qm-sub').value,
-        question_text:$('qm-txt').value||'سؤال بالصورة',
-        choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],
-        correct_index:parseInt($('qm-cor').value),
-        explanation:$('qm-exp').value,
-        image_url:imgUrl||null
-    };
+    var obj={section:$('qm-sec').value,subject:$('qm-sub').value||$('qm-sec').value,sub_section:$('qm-sub').value,question_text:$('qm-txt').value||'سؤال بالصورة',choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],correct_index:parseInt($('qm-cor').value),explanation:$('qm-exp').value,image_url:imgUrl||null};
     if(!obj.choices[0]){toast('املأ الخيارات',false);return}
     var{error}=id?await sb.from('questions').update(obj).eq('id',id):await sb.from('questions').insert(obj);
     if(error){toast('خطأ: '+error.message,false);return}
@@ -401,7 +391,6 @@ async function saveQ2(){
 }
 async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);toast('تم الحذف',true);loadQ()}
 
-// ═══ USERS ═══
 async function loadU(){
     var s=($('us').value||'').trim().toLowerCase();var{data}=await sb.from('profiles').select('*').order('created_at',{ascending:false});if(!data)data=[];
     if(s)data=data.filter(function(u){return(u.full_name||'').toLowerCase().includes(s)||(u.email||'').toLowerCase().includes(s)});
@@ -412,26 +401,21 @@ async function loadU(){
 async function editU(id){var{data}=await sb.from('profiles').select('*').eq('id',id).single();if(!data)return;$('um-id').value=data.id;$('um-n').value=data.full_name||'';$('um-e').value=data.email||'';$('um-s').value=data.subscription_type||'free';$('um-r').value=data.role||'user';$('userM').classList.remove('hidden')}
 async function saveU2(){var{error}=await sb.from('profiles').update({full_name:$('um-n').value,subscription_type:$('um-s').value,role:$('um-r').value}).eq('id',$('um-id').value);if(error)toast('خطأ',false);else{toast('تم',true);$('userM').classList.add('hidden');loadU()}}
 
-// ═══ COUPONS ═══
 async function loadC(){var{data}=await sb.from('coupons').select('*').order('created_at',{ascending:false});if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="7" class="p-6 text-center text-purple-200/60">لا توجد كوبونات</td></tr>';return}
 var planN={all:'الكل',monthly:'شهري',yearly:'سنوي'};var durN={'1':'شهر','3':'3 أشهر','6':'6 أشهر','12':'سنة'};
 var h='';data.forEach(function(c){var ok=!c.expires_at||new Date(c.expires_at)>new Date();h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300">'+c.code+'</td><td class="p-3 text-center">'+c.discount_value+(c.discount_type==='percentage'?'%':' ر')+'</td><td class="p-3 text-center text-purple-200/70 text-xs">'+(planN[c.plan_type]||'الكل')+'</td><td class="p-3 text-center text-purple-200/70 text-xs">'+(durN[c.duration_months]||'-')+'</td><td class="p-3 text-center font-bold">'+(c.used_count||0)+'/'+(c.max_uses||'∞')+'</td><td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td><td class="p-3 text-center"><button class="bd" onclick="delC(\''+c.id+'\')">🗑️</button></td></tr>'});$('c-list').innerHTML=h}
 async function saveC2(){var obj={code:$('cm-c').value.toUpperCase().trim(),discount_type:$('cm-t').value,discount_value:parseFloat($('cm-v').value),plan_type:$('cm-plan').value,duration_months:parseInt($('cm-dur').value),max_uses:parseInt($('cm-x').value)||100,used_count:0,expires_at:$('cm-e').value||null};if(!obj.code||!obj.discount_value){toast('املأ الكود والقيمة',false);return}var{error}=await sb.from('coupons').insert(obj);if(error)toast('خطأ: '+error.message,false);else{toast('تم إنشاء الكوبون',true);$('couponM').classList.add('hidden');loadC()}}
 async function delC(id){if(!confirm('حذف؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
 
-// ═══ FINANCE ═══
 async function loadF(){var{data}=await sb.from('profiles').select('subscription_type');if(!data)return;var m=data.filter(function(u){return u.subscription_type==='monthly'}).length,y=data.filter(function(u){return u.subscription_type==='yearly'}).length,f=data.filter(function(u){return!u.subscription_type||u.subscription_type==='free'}).length;$('f-a').textContent=m+y;$('f-m').textContent=m;$('f-y').textContent=y;$('f-f').textContent=f}
 
-// ═══ REPORTS ═══
 async function loadR(){var{data}=await sb.from('reports').select('*,questions(question_text,section)').order('reported_at',{ascending:false});if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-200/60">ما فيه بلاغات</div>';return}var h='';data.forEach(function(r){h+='<div class="glass p-4"><div class="flex items-start justify-between"><div><p class="text-white text-sm">'+(r.questions?r.questions.question_text.substring(0,80)+'...':'محذوف')+'</p><p class="text-purple-200/70 text-xs mt-1">السبب: '+(r.reason||'-')+'</p></div><button class="bd" onclick="delR(\''+r.id+'\')">✕</button></div></div>'});$('r-list').innerHTML=h}
 async function delR(id){await sb.from('reports').delete().eq('id',id);toast('تم',true);loadR()}
 
-// ═══ STAFF ═══
 async function loadST(){var{data}=await sb.from('profiles').select('*').eq('role','admin');if(!data)data=[];var h='';data.forEach(function(s){h+='<tr class="tr"><td class="p-3 font-bold">'+(s.full_name||'—')+'</td><td class="p-3 text-purple-200/70">'+(s.email||'')+'</td><td class="p-3 text-center"><span class="bg bg-a">أدمن</span></td><td class="p-3 text-center">'+(s.id!==me.id?'<button class="bd" onclick="rmST(\''+s.id+'\')">إزالة</button>':'<span class="text-purple-200/50 text-xs">أنت</span>')+'</td></tr>'});$('st-list').innerHTML=h}
 async function saveSt2(){var e=$('sm-e').value.trim();if(!e){toast('أدخل الإيميل',false);return}var{data:u}=await sb.from('profiles').select('id').eq('email',e).single();if(!u){toast('ما لقينا حساب',false);return}await sb.from('profiles').update({role:'admin'}).eq('id',u.id);toast('تم',true);$('staffM').classList.add('hidden');loadST()}
 async function rmST(id){if(!confirm('متأكد؟'))return;await sb.from('profiles').update({role:'user'}).eq('id',id);toast('تم',true);loadST()}
 
-// ═══ SETTINGS ═══
 async function loadSet(){var{data}=await sb.from('site_settings').select('*');if(data)data.forEach(function(s){
     if(s.key==='banner_text')$('st-ban').value=s.value||'';
     if(s.key==='free_limit')$('st-fl').value=s.value||'10';
