@@ -171,7 +171,7 @@
                     <div class="icon-circle" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔀</div>
                     <div>
                         <h3 class="text-xl font-black">كمي + لفظي</h3>
-                        <p class="text-purple-200/60 text-xs">تدريب مختلط — مثل الاختبار الحقيقي</p>
+                        <p class="text-purple-200/60 text-xs">كمي ولفظي مع بعض بشكل عشوائي</p>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-1.5 mb-5">
@@ -202,18 +202,17 @@
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-1.5 mb-5">
-                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Reading</span>
-                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Vocabulary</span>
-                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Grammar</span>
-                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ Writing</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ فهم المقروء</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ القواعد النحوية</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ فهم المسموع</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ التحليل الكتابي</span>
                 </div>
                 <div class="count-badge mb-4" style="background:rgba(255,255,255,0.03)">
                     <span class="text-lg font-black text-blue-400/60">قادم قريباً</span>
                     <span class="text-purple-200/40 text-xs block">سجّل اهتمامك</span>
                 </div>
                 <button onclick="notifyStep()" class="btn-start" style="background:rgba(59,130,246,0.15);border:1.5px solid rgba(59,130,246,0.3);color:#93c5fd">
-                    🔔 أخبرني عند الإطلاق
-                </button>
+                    🔔 أبغى أعرف لما ينطلق</button>
             </div>
         </div>
 
@@ -264,7 +263,7 @@
         let questionCounts={quant:0,verbal:0,tahsili:0,mix:0},selectedSection='',selectedCount=10;
         const sectionMeta={quant:{name:'قدرات كمي',icon:'📊'},verbal:{name:'قدرات لفظي',icon:'📖'},tahsili:{name:'التحصيلي',icon:'🎓'},mix:{name:'كمي + لفظي 🔀',icon:'🔀'}};
         async function loadQuestionCounts(){try{const{data:q,error}=await sb.from('questions').select('section');if(error)return;questionCounts.quant=q.filter(x=>x.section==='quant').length;questionCounts.verbal=q.filter(x=>x.section==='verbal').length;questionCounts.tahsili=q.filter(x=>x.section==='tahsili').length;questionCounts.mix=questionCounts.quant+questionCounts.verbal;document.getElementById('quantCount').textContent=questionCounts.quant;document.getElementById('verbalCount').textContent=questionCounts.verbal;document.getElementById('tahsiliCount').textContent=questionCounts.tahsili;document.getElementById('mixCount').textContent=questionCounts.mix;document.getElementById('quantBtn').disabled=(questionCounts.quant===0);document.getElementById('verbalBtn').disabled=(questionCounts.verbal===0);document.getElementById('tahsiliBtn').disabled=(questionCounts.tahsili===0);document.getElementById('mixBtn').disabled=(questionCounts.mix===0)}catch(e){}}
-        function notifyStep(){alert('✅ تم تسجيل اهتمامك! سنخبرك فور إطلاق قسم STEP 🚀');}
+        function notifyStep(){alert('تم تسجيل اهتمامك، بنخبرك أول ما ينطلق قسم STEP');}
         function openModal(section){selectedSection=section;const meta=sectionMeta[section];document.getElementById('modalIcon').textContent=meta.icon;document.getElementById('modalTitle').textContent=meta.name;selectCount(10);checkAvailableCount();document.getElementById('trainingModal').classList.remove('hidden')}
         function closeModal(){document.getElementById('trainingModal').classList.add('hidden')}
         document.getElementById('trainingModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
