@@ -56,50 +56,51 @@
         </div>
 
         <!-- Main Card -->
-        <div class="card-glass rounded-3xl p-8 bounce-in">
+        <div class="card-glass rounded-3xl p-7 bounce-in">
 
-            <!-- إيموجي + عنوان -->
-            <div class="text-center mb-6">
-                <div class="text-6xl mb-3 float" id="resultEmoji">🎉</div>
-                <h1 class="text-2xl font-black mb-1" id="resultTitle" style="font-family:'Cairo',sans-serif">أحسنت!</h1>
+            <!-- إيموجي -->
+            <div class="text-center mb-5">
+                <div class="text-6xl mb-4 float" id="resultEmoji">🎉</div>
+
+                <!-- رسالة تحفيزية من المنصة — بارزة فوق -->
+                <div class="rounded-2xl p-5 mb-5" id="motivBox">
+                    <p class="text-base leading-relaxed font-bold text-center" id="motivMsg" style="font-family:'Cairo',sans-serif"></p>
+                </div>
             </div>
 
-            <!-- النتيجة الكبيرة -->
+            <!-- النتيجة -->
             <div class="rounded-2xl p-6 mb-4 text-center score-pop" style="background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.18)">
-                <p class="text-5xl font-black mb-2" id="finalPercentage" style="font-family:'Cairo',sans-serif">0%</p>
-                <p class="text-purple-300/50 text-sm" id="finalScore">0 من 10</p>
+                <p class="text-6xl font-black mb-2" id="finalPercentage" style="font-family:'Cairo',sans-serif">0%</p>
+                <p class="text-purple-300/50 text-sm" id="finalScore">0 من 10 سؤال</p>
             </div>
 
             <!-- صح/خطأ -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="rounded-xl p-4 text-center animate-in delay-1" style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18)">
                     <p class="text-green-400/60 text-xs mb-1">✅ صحيحة</p>
-                    <p class="text-3xl font-black text-green-400" id="correctAnswers" style="font-family:'Cairo',sans-serif">0</p>
+                    <p class="text-4xl font-black text-green-400" id="correctAnswers" style="font-family:'Cairo',sans-serif">0</p>
                 </div>
                 <div class="rounded-xl p-4 text-center animate-in delay-2" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.18)">
                     <p class="text-red-400/60 text-xs mb-1">❌ خاطئة</p>
-                    <p class="text-3xl font-black text-red-400" id="wrongAnswers" style="font-family:'Cairo',sans-serif">0</p>
+                    <p class="text-4xl font-black text-red-400" id="wrongAnswers" style="font-family:'Cairo',sans-serif">0</p>
                 </div>
             </div>
 
-            <!-- رسالة تحفيزية حسب المستوى -->
-            <div class="rounded-2xl p-5 mb-6 animate-in delay-3" id="motivBox" style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12)">
-                <p class="text-sm leading-relaxed text-center" id="motivMsg" style="color:rgba(253,230,138,0.85)"></p>
+            <!-- فاصل + دعوة مشاركة -->
+            <div class="text-center mb-3 animate-in delay-3">
+                <p style="font-family:'Tajawal',sans-serif;font-size:13px;color:rgba(196,181,253,0.55);letter-spacing:.5px">
+                    شاركه مع أصدقائك وحفّزهم 🔥
+                </p>
             </div>
 
-            <!-- زر المشاركة — بارز -->
-            <div class="mb-4 animate-in" style="animation-delay:.4s;opacity:0">
-                <div class="text-center text-purple-300/35 text-xs mb-3" style="font-family:'Tajawal',sans-serif;letter-spacing:1px">
-                    شاركه مع أصدقائك وحفّزهم 👇
-                </div>
-                <button onclick="goShare()" class="w-full py-4 rounded-2xl font-black text-base text-white" 
-                  style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 8px 24px rgba(99,102,241,0.35);letter-spacing:.5px">
-                    📸 شارك إنجازك
-                </button>
-            </div>
+            <!-- زر شارك إنجازك — أبرز زر في الصفحة -->
+            <button onclick="goShare()" class="w-full py-4 rounded-2xl font-black text-lg text-white mb-4 animate-in delay-3"
+              style="background:linear-gradient(135deg,#818cf8,#6366f1,#8b5cf6);border:none;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 8px 28px rgba(99,102,241,0.5);letter-spacing:.5px">
+                📸 شارك إنجازك
+            </button>
 
             <!-- باقي الأزرار -->
-            <div class="space-y-2 animate-in" style="animation-delay:.5s;opacity:0">
+            <div class="space-y-2 animate-in" style="animation-delay:.4s;opacity:0">
                 <button onclick="tryAgain()" class="btn-primary w-full py-3 rounded-xl font-bold text-sm text-white">🔄 تدرّب مرة ثانية</button>
                 <button onclick="reviewMistakes()" class="btn-red w-full py-3 rounded-xl font-bold text-sm">📖 راجع أخطائك</button>
                 <button onclick="goToDashboard()" class="btn-outline w-full py-3 rounded-xl font-bold text-sm text-white">🏠 الرئيسية</button>
@@ -107,39 +108,38 @@
 
         </div>
 
-        <p class="text-center text-purple-200/20 text-xs mt-5" style="font-family:'Tajawal',sans-serif">التدريب المستمر هو سر المتفوقين</p>
+        <p class="text-center text-purple-200/20 text-xs mt-5" style="font-family:'Tajawal',sans-serif">💪 التدريب المستمر هو سر المتفوقين</p>
     </div>
 
     <script>
         const results=JSON.parse(localStorage.getItem('quiz_results')||'{}');
         const correct=results.correct||0,wrong=results.wrong||0,total=results.total||10,percentage=results.percentage||0;
 
-        // رسائل حسب المستوى — لهجة سعودية محفّزة
         const messages={
             perfect:{
-                emoji:'🏆',title:'ما شاء الله!',
-                motiv:'والله أبهرتني — '+percentage+'% هذي مو بس نتيجة، هذا دليل إنك تشتغل على نفسك بجد. استمر وما راح تتوقف عن الارتقاء.',
-                color:'rgba(74,222,128,0.85)',box:'rgba(74,222,128,0.07)',border:'rgba(74,222,128,0.18)'
+                emoji:'🏆',
+                motiv:'والله أبهرتني — '+percentage+'% هذا دليل إنك تشتغل على نفسك بجد. استمر وما راح تتوقف عن الارتقاء.',
+                color:'rgba(74,222,128,0.95)',box:'rgba(74,222,128,0.08)',border:'rgba(74,222,128,0.2)'
             },
             excellent:{
-                emoji:'🌟',title:'ممتاز!',
+                emoji:'🌟',
                 motiv:'نتيجة تعبّر عن مجهود حقيقي — '+percentage+'% مو مصادفة. أنت على الطريق الصح، كمّل ولا تكسر الزخم.',
-                color:'rgba(196,181,253,0.9)',box:'rgba(99,102,241,0.07)',border:'rgba(99,102,241,0.2)'
+                color:'rgba(196,181,253,0.95)',box:'rgba(99,102,241,0.09)',border:'rgba(139,92,246,0.25)'
             },
             veryGood:{
-                emoji:'💪',title:'أحسنت!',
-                motiv:percentage+'% وأنت بداياتك — تخيل لو تدربت يومياً وين تكون بعد أسبوع؟ المتفوقين ما ولدوا متفوقين، يتدربون بشكل مختلف.',
-                color:'rgba(251,191,36,0.9)',box:'rgba(251,191,36,0.05)',border:'rgba(251,191,36,0.15)'
+                emoji:'💪',
+                motiv:'تخيل لو تدربت يومياً وين تكون بعد أسبوع؟ المتفوقون ما ولدوا متفوقين — يتدربون بشكل مختلف.',
+                color:'rgba(251,191,36,0.95)',box:'rgba(251,191,36,0.06)',border:'rgba(251,191,36,0.18)'
             },
             good:{
-                emoji:'🔥',title:'شغّال!',
-                motiv:'كل سؤال أخطأت فيه هو معلومة جديدة تسكن دماغك — '+percentage+'% اليوم و'+Math.min(percentage+15,99)+'% بكره لو ما وقفت. روح راجع أخطائك.',
-                color:'rgba(251,191,36,0.8)',box:'rgba(251,191,36,0.04)',border:'rgba(251,191,36,0.12)'
+                emoji:'🔥',
+                motiv:'كل سؤال أخطأت فيه هو معلومة جديدة تسكن دماغك — '+percentage+'% اليوم. راجع أخطائك وعود أقوى.',
+                color:'rgba(251,191,36,0.9)',box:'rgba(251,191,36,0.05)',border:'rgba(251,191,36,0.15)'
             },
             needsWork:{
-                emoji:'⚡️',title:'ابدأ من هنا!',
-                motiv:'الفرق بين اللي ينجح واللي ما ينجح — إنه ما وقف. البداية دايماً صعبة وهذا طبيعي. راجع أخطائك وعود من جديد.',
-                color:'rgba(248,113,113,0.85)',box:'rgba(239,68,68,0.05)',border:'rgba(239,68,68,0.15)'
+                emoji:'⚡️',
+                motiv:'الفرق بين اللي ينجح واللي ما ينجح — إنه ما وقف. البداية دايماً صعبة، راجع أخطائك وعود من جديد.',
+                color:'rgba(248,163,113,0.95)',box:'rgba(239,68,68,0.06)',border:'rgba(239,68,68,0.18)'
             }
         };
 
@@ -150,17 +150,15 @@
                 : messages.needsWork;
 
         document.getElementById('resultEmoji').textContent=msg.emoji;
-        document.getElementById('resultTitle').textContent=msg.title;
-        document.getElementById('resultTitle').style.color=msg.color;
+        document.getElementById('motivMsg').textContent=msg.motiv;
+        document.getElementById('motivMsg').style.color=msg.color;
+        document.getElementById('motivBox').style.background=msg.box;
+        document.getElementById('motivBox').style.border='1px solid '+msg.border;
         document.getElementById('finalScore').textContent=correct+' من أصل '+total+' سؤال';
         document.getElementById('finalPercentage').textContent=percentage+'%';
         document.getElementById('finalPercentage').style.color=msg.color;
         document.getElementById('correctAnswers').textContent=correct;
         document.getElementById('wrongAnswers').textContent=wrong;
-        document.getElementById('motivMsg').textContent=msg.motiv;
-        document.getElementById('motivMsg').style.color=msg.color;
-        document.getElementById('motivBox').style.background=msg.box;
-        document.getElementById('motivBox').style.border='1px solid '+msg.border;
 
         function tryAgain(){window.location.href='select-section.html'}
         function goToDashboard(){localStorage.removeItem('quiz_results');window.location.href='dashboard.html'}
