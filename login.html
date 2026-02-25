@@ -79,11 +79,11 @@
                 <button type="submit" id="submitBtn" class="btn-primary w-full py-3 rounded-xl font-bold text-sm text-white">
                     تسجيل الدخول
                 </button>
-                <div class="text-center mt-3">
-                    <button type="button" onclick="forgotPassword()" class="text-purple-300/60 text-xs hover:text-purple-300 transition">نسيت كلمة السر؟</button>
-                </div>
             </form>
             <div id="resetMsg" class="hidden text-center mt-3 text-xs text-green-400 bg-green-400/10 rounded-xl py-2 px-3"></div>
+            <div class="text-center mt-3" style="position:relative;z-index:10">
+                <button type="button" onclick="forgotPassword()" style="cursor:pointer;padding:8px 16px;color:rgba(196,181,253,0.7);font-size:12px;background:none;border:none;text-decoration:underline">نسيت كلمة السر؟</button>
+            </div>
             <div class="text-center mt-5">
                 <p class="text-purple-200/70 text-xs">ما عندك حساب؟ <a href="register.html" class="text-indigo-400 font-bold hover:underline">سجّل الآن</a></p>
             </div>
@@ -100,6 +100,22 @@
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
+        async function forgotPassword() {
+            var email = document.getElementById('email').value.trim();
+            if (!email) { alert('اكتب إيميلك أول في حقل البريد الإلكتروني'); return; }
+            try {
+                var { error } = await sb.auth.resetPasswordForEmail(email, {
+                    redirectTo: 'https://madarekelite.com/login.html'
+                });
+                if (error) throw error;
+                var msg = document.getElementById('resetMsg');
+                msg.textContent = 'تم إرسال رابط تغيير كلمة السر على ' + email;
+                msg.classList.remove('hidden');
+            } catch(e) {
+                alert('ما قدرنا نرسل — تأكد من الإيميل وحاول مرة ثانية');
+            }
+        }
+
         function togglePass() {
             var f = document.getElementById('password');
             f.type = f.type === 'password' ? 'text' : 'password';
