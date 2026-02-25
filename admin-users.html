@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المستخدمين - خوارز</title>
+    <title>إدارة المستخدمين - مدارك النخبة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>* { font-family: 'Tajawal', sans-serif; }/* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:2px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:8.5px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+    </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-
     <!-- Header -->
     <header class="bg-white shadow-sm border-b">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -28,19 +28,32 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </a>
+                <a href="index.html" class="madarek-logo">
+                    <div class="icon">
+                        <div class="ring"></div>
+                        <svg viewBox="0 0 36 36" width="19" height="19" fill="none">
+                            <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                            <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                            <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                        </svg>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end">
+                        <span class="name">مدارك النخبة</span>
+                        <span class="tag">حيث يُصنع التميّز</span>
+                    </div>
+                </a>
                 <h1 class="text-2xl font-black text-gray-800">👥 إدارة المستخدمين</h1>
             </div>
             <div class="flex items-center gap-3">
                 <span class="text-gray-600" id="adminName">المدير</span>
-                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-                    خروج
-                </button>
+                <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">خروج</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8">
-        
         <!-- Stats Overview -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-blue-200">
@@ -50,7 +63,6 @@
                 </div>
                 <p class="text-3xl font-black text-blue-600" id="studentsCount">0</p>
             </div>
-
             <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-green-200">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-gray-600">المعلمين</span>
@@ -58,7 +70,6 @@
                 </div>
                 <p class="text-3xl font-black text-green-600" id="teachersCount">0</p>
             </div>
-
             <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-purple-200">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-gray-600">الدعم الفني</span>
@@ -66,7 +77,6 @@
                 </div>
                 <p class="text-3xl font-black text-purple-600" id="supportCount">0</p>
             </div>
-
             <div class="bg-white rounded-xl p-6 shadow-sm border-2 border-amber-200">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-gray-600">المشتركين</span>
@@ -87,21 +97,11 @@
 
         <!-- Filters -->
         <div class="bg-white rounded-xl p-4 mb-6 shadow-sm flex gap-4 flex-wrap">
-            <button onclick="filterUsers('all')" id="filter-all" class="px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium">
-                الكل
-            </button>
-            <button onclick="filterUsers('student')" id="filter-student" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
-                طلاب
-            </button>
-            <button onclick="filterUsers('teacher')" id="filter-teacher" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
-                معلمين
-            </button>
-            <button onclick="filterUsers('support')" id="filter-support" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
-                دعم فني
-            </button>
-            <button onclick="filterUsers('admin')" id="filter-admin" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">
-                مدراء
-            </button>
+            <button onclick="filterUsers('all')" id="filter-all" class="px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium">الكل</button>
+            <button onclick="filterUsers('student')" id="filter-student" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">طلاب</button>
+            <button onclick="filterUsers('teacher')" id="filter-teacher" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">معلمين</button>
+            <button onclick="filterUsers('support')" id="filter-support" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">دعم فني</button>
+            <button onclick="filterUsers('admin')" id="filter-admin" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300">مدراء</button>
         </div>
 
         <!-- Users Table -->
@@ -118,42 +118,33 @@
                     </tr>
                 </thead>
                 <tbody id="usersTable">
-                    <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-                            لا يوجد مستخدمين
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">لا يوجد مستخدمين</td></tr>
                 </tbody>
             </table>
         </div>
-
     </main>
 
     <!-- Add/Edit User Modal -->
     <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl">
             <h2 class="text-3xl font-black mb-6" id="modalTitle">إضافة مستخدم جديد</h2>
-            
             <form id="userForm" class="space-y-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">الاسم الكامل</label>
                         <input type="text" id="userName" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
                     </div>
-                    
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
                         <input type="email" id="userEmail" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
                         <input type="password" id="userPassword" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
                         <p class="text-xs text-gray-500 mt-1">اتركها فارغة للتعديل</p>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">الجنس</label>
                         <select id="userGender" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
@@ -162,7 +153,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">الدور الوظيفي</label>
                     <select id="userRole" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
@@ -172,7 +162,6 @@
                         <option value="admin">مدير - صلاحيات كاملة</option>
                     </select>
                 </div>
-
                 <div id="subscriptionSection">
                     <label class="block text-sm font-medium text-gray-700 mb-2">نوع الاشتراك (للطلاب)</label>
                     <select id="userSubscription" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:outline-none">
@@ -181,143 +170,72 @@
                         <option value="yearly">سنوي</option>
                     </select>
                 </div>
-
                 <div class="flex gap-3 pt-4">
-                    <button type="submit" class="flex-1 bg-indigo-500 text-white py-3 rounded-xl font-bold hover:bg-indigo-600 transition">
-                        حفظ
-                    </button>
-                    <button type="button" onclick="closeUserModal()" class="px-8 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300 transition">
-                        إلغاء
-                    </button>
+                    <button type="submit" class="flex-1 bg-indigo-500 text-white py-3 rounded-xl font-bold hover:bg-indigo-600 transition">حفظ</button>
+                    <button type="button" onclick="closeUserModal()" class="px-8 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300 transition">إلغاء</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Check admin
         const currentUser = JSON.parse(localStorage.getItem('khawariz_user') || 'null');
         if (!currentUser || currentUser.role !== 'admin') {
             alert('غير مصرح لك بالدخول');
             window.location.href = 'login.html';
         }
-
         document.getElementById('adminName').textContent = currentUser.name;
-
-        // Load users
         let users = JSON.parse(localStorage.getItem('khawariz_all_users') || '[]');
         let currentFilter = 'all';
         let editingUserId = null;
-
-        // Initialize with sample data if empty
         if (users.length === 0) {
-            users = [
-                {
-                    id: 'user_' + Date.now(),
-                    name: 'عبدالله',
-                    email: 'test@admin.com',
-                    role: 'student',
-                    gender: 'male',
-                    subscription: 'monthly',
-                    createdAt: Date.now()
-                }
-            ];
+            users = [{ id: 'user_' + Date.now(), name: 'عبدالله', email: 'test@admin.com', role: 'student', gender: 'male', subscription: 'monthly', createdAt: Date.now() }];
             localStorage.setItem('khawariz_all_users', JSON.stringify(users));
         }
-
         function loadStats() {
-            const students = users.filter(u => u.role === 'student').length;
-            const teachers = users.filter(u => u.role === 'teacher').length;
-            const support = users.filter(u => u.role === 'support').length;
-            const subscribers = users.filter(u => u.role === 'student' && u.subscription !== 'free').length;
-
-            document.getElementById('studentsCount').textContent = students;
-            document.getElementById('teachersCount').textContent = teachers;
-            document.getElementById('supportCount').textContent = support;
-            document.getElementById('subscribersCount').textContent = subscribers;
+            document.getElementById('studentsCount').textContent = users.filter(u => u.role === 'student').length;
+            document.getElementById('teachersCount').textContent = users.filter(u => u.role === 'teacher').length;
+            document.getElementById('supportCount').textContent = users.filter(u => u.role === 'support').length;
+            document.getElementById('subscribersCount').textContent = users.filter(u => u.role === 'student' && u.subscription !== 'free').length;
         }
-
         function loadUsers() {
             const tbody = document.getElementById('usersTable');
             const filtered = currentFilter === 'all' ? users : users.filter(u => u.role === currentFilter);
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">لا يوجد مستخدمين</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = filtered.map(user => {
-                const roleLabels = {
-                    student: 'طالب',
-                    teacher: 'معلم',
-                    support: 'دعم فني',
-                    admin: 'مدير'
-                };
-
-                const roleColors = {
-                    student: 'bg-blue-100 text-blue-700',
-                    teacher: 'bg-green-100 text-green-700',
-                    support: 'bg-purple-100 text-purple-700',
-                    admin: 'bg-red-100 text-red-700'
-                };
-
-                const subLabels = {
-                    free: 'مجاني',
-                    monthly: 'شهري',
-                    yearly: 'سنوي'
-                };
-
-                const date = new Date(user.createdAt).toLocaleDateString('ar-SA');
-
-                return `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="px-6 py-4 font-medium text-gray-800">${user.name}</td>
-                        <td class="px-6 py-4 text-gray-600">${user.email}</td>
-                        <td class="px-6 py-4">
-                            <span class="px-3 py-1 rounded-full text-sm font-medium ${roleColors[user.role]}">
-                                ${roleLabels[user.role]}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            ${user.role === 'student' ? `<span class="text-sm text-gray-600">${subLabels[user.subscription || 'free']}</span>` : '-'}
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${date}</td>
-                        <td class="px-6 py-4">
-                            <button onclick="editUser('${user.id}')" class="text-blue-600 hover:underline ml-3">تعديل</button>
-                            <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:underline">حذف</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-gray-500">لا يوجد مستخدمين</td></tr>'; return; }
+            const roleLabels = { student:'طالب', teacher:'معلم', support:'دعم فني', admin:'مدير' };
+            const roleColors = { student:'bg-blue-100 text-blue-700', teacher:'bg-green-100 text-green-700', support:'bg-purple-100 text-purple-700', admin:'bg-red-100 text-red-700' };
+            const subLabels = { free:'مجاني', monthly:'شهري', yearly:'سنوي' };
+            tbody.innerHTML = filtered.map(user => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 font-medium text-gray-800">${user.name}</td>
+                    <td class="px-6 py-4 text-gray-600">${user.email}</td>
+                    <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-sm font-medium ${roleColors[user.role]}">${roleLabels[user.role]}</span></td>
+                    <td class="px-6 py-4">${user.role === 'student' ? `<span class="text-sm text-gray-600">${subLabels[user.subscription || 'free']}</span>` : '-'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${new Date(user.createdAt).toLocaleDateString('ar-SA')}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="editUser('${user.id}')" class="text-blue-600 hover:underline ml-3">تعديل</button>
+                        <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:underline">حذف</button>
+                    </td>
+                </tr>`).join('');
         }
-
         function filterUsers(role) {
             currentFilter = role;
-            
-            // Update button styles
-            ['all', 'student', 'teacher', 'support', 'admin'].forEach(r => {
-                const btn = document.getElementById(`filter-${r}`);
-                if (r === role) {
-                    btn.className = 'px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium';
-                } else {
-                    btn.className = 'px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300';
-                }
+            ['all','student','teacher','support','admin'].forEach(r => {
+                document.getElementById(`filter-${r}`).className = r === role
+                    ? 'px-4 py-2 rounded-lg bg-indigo-500 text-white font-medium'
+                    : 'px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300';
             });
-
             loadUsers();
         }
-
         function openAddUserModal() {
             editingUserId = null;
             document.getElementById('modalTitle').textContent = 'إضافة مستخدم جديد';
             document.getElementById('userForm').reset();
             document.getElementById('userModal').classList.remove('hidden');
         }
-
         function editUser(userId) {
             const user = users.find(u => u.id === userId);
             if (!user) return;
-
             editingUserId = userId;
             document.getElementById('modalTitle').textContent = 'تعديل مستخدم';
             document.getElementById('userName').value = user.name;
@@ -326,27 +244,20 @@
             document.getElementById('userRole').value = user.role;
             document.getElementById('userSubscription').value = user.subscription || 'free';
             document.getElementById('userPassword').value = '';
-            
             document.getElementById('userModal').classList.remove('hidden');
         }
-
         function deleteUser(userId) {
             if (!confirm('متأكد من حذف هذا المستخدم؟')) return;
-
             users = users.filter(u => u.id !== userId);
             localStorage.setItem('khawariz_all_users', JSON.stringify(users));
-            loadStats();
-            loadUsers();
+            loadStats(); loadUsers();
         }
-
         function closeUserModal() {
             document.getElementById('userModal').classList.add('hidden');
             editingUserId = null;
         }
-
         document.getElementById('userForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
             const userData = {
                 name: document.getElementById('userName').value,
                 email: document.getElementById('userEmail').value,
@@ -354,42 +265,21 @@
                 role: document.getElementById('userRole').value,
                 subscription: document.getElementById('userSubscription').value
             };
-
             if (editingUserId) {
-                // Edit existing user
                 const index = users.findIndex(u => u.id === editingUserId);
                 users[index] = { ...users[index], ...userData };
-                
                 const password = document.getElementById('userPassword').value;
-                if (password) {
-                    users[index].password = password;
-                }
+                if (password) users[index].password = password;
             } else {
-                // Add new user
-                const newUser = {
-                    id: 'user_' + Date.now(),
-                    ...userData,
-                    password: document.getElementById('userPassword').value || '123456',
-                    createdAt: Date.now()
-                };
-                users.push(newUser);
+                users.push({ id: 'user_' + Date.now(), ...userData, password: document.getElementById('userPassword').value || '123456', createdAt: Date.now() });
             }
-
             localStorage.setItem('khawariz_all_users', JSON.stringify(users));
-            closeUserModal();
-            loadStats();
-            loadUsers();
+            closeUserModal(); loadStats(); loadUsers();
         });
-
         function logout() {
-            if (confirm('متأكد تبي تسجل خروج؟')) {
-                window.location.href = 'admin.html';
-            }
+            if (confirm('متأكد تبي تسجل خروج؟')) window.location.href = 'admin.html';
         }
-
-        // Initialize
-        loadStats();
-        loadUsers();
+        loadStats(); loadUsers();
     </script>
 </body>
 </html>
