@@ -192,37 +192,55 @@ function draw(){
   // فاصل رفيع
   ctx.strokeStyle='rgba(139,92,246,0.15)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(200,910);ctx.lineTo(W-200,910);ctx.stroke();
 
-  // ━━━ النتيجة ━━━
+  // ━━━ منطقة النتيجة — ارتفاع ثابت دائماً ━━━
   var showP=on('sPct'),showC=on('sCnt');
-  var centerY=showP&&showC?1060:showP||showC?1020:0;
+  var zoneY=960, zoneH=320;
 
-  if(showP){
-    var cg=ctx.createRadialGradient(W/2,centerY-40,0,W/2,centerY-40,230);
+  // صندوق ثابت الحجم دائماً
+  ctx.fillStyle='rgba(255,255,255,0.02)';
+  rr(ctx,100,zoneY,W-200,zoneH,40);ctx.fill();
+
+  if(showP && showC){
+    // النسبة + الأسئلة
+    var cg=ctx.createRadialGradient(W/2,zoneY+120,0,W/2,zoneY+120,200);
     cg.addColorStop(0,'rgba('+pGlow.join(',')+',0.13)');cg.addColorStop(1,'transparent');
-    ctx.fillStyle=cg;ctx.beginPath();ctx.arc(W/2,centerY-40,230,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle=pColor;ctx.font='900 230px Cairo, Arial';
-    ctx.fillText(pct+'%',W/2,centerY+40);
-  } else if(!showC){
-    // نجمة كبيرة بدل النتيجة
-    ctx.font='160px Arial';ctx.fillText('⭐️',W/2,1080);
-    ctx.fillStyle='rgba(196,181,253,0.35)';ctx.font='500 34px Tajawal, Arial';
-    ctx.fillText('جلسة تدريب مكتملة',W/2,1160);
-  }
-  if(showC){
-    ctx.fillStyle='rgba(255,255,255,'+(showP?'0.5':'0.85')+')';
-    ctx.font=showP?'bold 44px Tajawal, Arial':'900 100px Cairo, Arial';
-    var yC=showP?centerY+105:centerY+30;
-    ctx.fillText(showP?(ok+' صح من أصل '+tot+' سؤال'):(ok+'/'+tot),W/2,yC);
-    if(!showP){ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='500 42px Tajawal, Arial';ctx.fillText('إجابة صحيحة',W/2,yC+60);}
+    ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=pColor;ctx.font='900 190px Cairo, Arial';
+    ctx.fillText(pct+'%',W/2,zoneY+190);
+    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='bold 40px Tajawal, Arial';
+    ctx.fillText(ok+' صح من أصل '+tot+' سؤال',W/2,zoneY+258);
+
+  } else if(showP && !showC){
+    // النسبة فقط — كبيرة في المنتصف
+    var cg2=ctx.createRadialGradient(W/2,zoneY+150,0,W/2,zoneY+150,200);
+    cg2.addColorStop(0,'rgba('+pGlow.join(',')+',0.14)');cg2.addColorStop(1,'transparent');
+    ctx.fillStyle=cg2;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=pColor;ctx.font='900 210px Cairo, Arial';
+    ctx.fillText(pct+'%',W/2,zoneY+215);
+
+  } else if(!showP && showC){
+    // الأسئلة فقط
+    ctx.fillStyle=pColor;ctx.font='900 130px Cairo, Arial';
+    ctx.fillText(ok+'/'+tot,W/2,zoneY+165);
+    ctx.fillStyle='rgba(255,255,255,0.45)';ctx.font='500 44px Tajawal, Arial';
+    ctx.fillText('إجابة صحيحة',W/2,zoneY+235);
+
+  } else {
+    // لا شيء — نجوم زخرفية + نص
+    ctx.font='80px Arial';ctx.fillText('🌟',W/2-90,zoneY+160);
+    ctx.font='80px Arial';ctx.fillText('🌟',W/2+90,zoneY+160);
+    ctx.font='100px Arial';ctx.fillText('⭐️',W/2,zoneY+155);
+    ctx.fillStyle='rgba(196,181,253,0.5)';ctx.font='bold 40px Tajawal, Arial';
+    ctx.fillText('جلسة تدريب مكتملة ✓',W/2,zoneY+258);
   }
 
-  // ━━━ اسم الطالب ━━━
+  // ━━━ اسم الطالب — ثابت تحت الزون دائماً ━━━
   if(on('sName')){
     var nm=document.getElementById('nameVal').value.trim();
     if(nm){
       ctx.font='bold 42px Tajawal, Arial';
       var nmW=Math.min(ctx.measureText(nm).width+100,700);
-      var nmY=(showP||showC)?1310:1050;
+      var nmY=zoneY+zoneH+40;
       ctx.fillStyle='rgba(99,102,241,0.13)';rr(ctx,W/2-nmW/2,nmY,nmW,80,40);ctx.fill();
       ctx.strokeStyle='rgba(99,102,241,0.28)';ctx.lineWidth=1;rr(ctx,W/2-nmW/2,nmY,nmW,80,40);ctx.stroke();
       ctx.fillStyle='rgba(255,255,255,0.78)';ctx.fillText(nm,W/2,nmY+50);
