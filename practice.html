@@ -193,6 +193,10 @@
 
     async function checkAuth(){
         var s=await sb.auth.getSession(); var session=s.data.session;
+        // لو ما في session، جرب تجدده أول
+        if(!session){
+            try{ var r=await sb.auth.refreshSession(); session=r.data.session; }catch(e){}
+        }
         if(!session){location.href='login.html';return false;}
         currentUser=session.user;
         try{ var r=await sb.from('profiles').select('subscription_type').eq('id',currentUser.id).single(); if(r.data&&r.data.subscription_type)userSubscription=r.data.subscription_type; }catch(e){}
@@ -212,10 +216,21 @@
         try{
             var questions=[];
             if(sel==='mix'){
-                // كمي + لفظي مخلوطين
+                // كمي + لفظي بالتناوب
                 var r1=await sb.from('questions').select('*').eq('section','quant');
                 var r2=await sb.from('questions').select('*').eq('section','verbal');
-                questions=[...(r1.data||[]),...(r2.data||[])];
+                var qList=shuffleArray(r1.data||[]);
+                var vList=shuffleArray(r2.data||[]);
+                var cnt2=parseInt(localStorage.getItem('khawariz_question_count'))||10;
+                var half=Math.ceil(cnt2/2);
+                var qSlice=qList.slice(0,half);
+                var vSlice=vList.slice(0,cnt2-half);
+                // تناوب: كمي، لفظي، كمي، لفظي...
+                var maxLen=Math.max(qSlice.length,vSlice.length);
+                for(var ii=0;ii<maxLen;ii++){
+                    if(ii<qSlice.length) questions.push(qSlice[ii]);
+                    if(ii<vSlice.length) questions.push(vSlice[ii]);
+                }
             } else {
                 var r=await sb.from('questions').select('*').eq('section',sel);
                 if(r.error)throw r.error;
@@ -224,7 +239,7 @@
             if(!questions.length){alert('ما فيه أسئلة متاحة');location.href='select-section.html';return false;}
 
             var cnt=parseInt(localStorage.getItem('khawariz_question_count'))||10;
-            currentQuestions=shuffleArray(questions).slice(0,cnt);
+            currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
             timeRemaining=parseInt(localStorage.getItem('khawariz_time_seconds'))||(currentQuestions.length*SECONDS_PER_QUESTION);
 
             startTimer();
@@ -261,7 +276,8 @@
 
         document.getElementById('loadingState').classList.add('hidden');
         document.getElementById('questionCard').classList.remove('hidden');
-        document.getElementById('questionText').textContent=q.question_text;
+        var cleanText=(q.question_text||'').replace(/\\n/g,' ').replace(/\n/g,' ').trim();
+        document.getElementById('questionText').textContent=cleanText;
         document.getElementById('questionNumLabel').textContent='سؤال '+current+' من '+total;
 
         // في المكس: عرض قسم كل سؤال بشكل مستقل
@@ -285,12 +301,13 @@
         var container=document.getElementById('optionsContainer');
         container.innerHTML='';
         (q.choices||[]).forEach(function(opt,i){
+            if(!opt||!opt.trim())return; // تخطى الخيارات الفارغة
             var div=document.createElement('div');
             div.className='option-card animate-option';
             div.style.animationDelay=(i*0.05)+'s';
             div.onclick=function(){selectOption(i);};
             div.innerHTML='<div class="flex items-center gap-3"><span class="min-w-[28px] h-7 rounded-full bg-indigo-50 flex items-center justify-center font-bold text-indigo-600 text-xs">'+(i+1)+'</span><span class="option-text text-gray-700 text-sm leading-relaxed"></span></div>';
-            div.querySelector('.option-text').textContent=opt;
+            div.querySelector('.option-text').textContent=opt.trim();
             container.appendChild(div);
         });
 
