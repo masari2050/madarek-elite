@@ -226,12 +226,18 @@ function draw(){
     ctx.fillText('إجابة صحيحة',W/2,zoneY+235);
 
   } else {
-    // لا شيء — نجوم زخرفية + نص
-    ctx.font='80px Arial';ctx.fillText('🌟',W/2-90,zoneY+160);
-    ctx.font='80px Arial';ctx.fillText('🌟',W/2+90,zoneY+160);
-    ctx.font='100px Arial';ctx.fillText('⭐️',W/2,zoneY+155);
-    ctx.fillStyle='rgba(196,181,253,0.5)';ctx.font='bold 40px Tajawal, Arial';
-    ctx.fillText('جلسة تدريب مكتملة ✓',W/2,zoneY+258);
+    // نجوم ثلاث كبيرة
+    ctx.save();
+    ctx.font='110px Arial';
+    ctx.fillText('🌟',W/2-160,zoneY+185);
+    ctx.font='140px Arial';
+    ctx.fillText('⭐️',W/2,zoneY+200);
+    ctx.font='110px Arial';
+    ctx.fillText('🌟',W/2+160,zoneY+185);
+    ctx.restore();
+    ctx.fillStyle='rgba(196,181,253,0.6)';
+    ctx.font='bold 42px Tajawal, Arial';
+    ctx.fillText('جلسة تدريب مكتملة ✓',W/2,zoneY+272);
   }
 
   // ━━━ اسم الطالب — ثابت تحت الزون دائماً ━━━
