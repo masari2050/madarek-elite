@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>راجع أخطائك - خوارز</title>
+    <title>راجع أخطائك - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
@@ -11,95 +11,86 @@
         *{font-family:'Tajawal',sans-serif}
         body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
         .card-glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
-
-        /* Mistake Card */
         .mistake-card{background:rgba(255,255,255,0.97);border-radius:1.25rem;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
-
-        /* Options inside mistake card */
         .opt-correct{background:#f0fdf4;border:2px solid #86efac;border-radius:.75rem;padding:.75rem 1rem}
         .opt-wrong{background:#fef2f2;border:2px solid #fca5a5;border-radius:.75rem;padding:.75rem 1rem}
         .opt-neutral{background:#f9fafb;border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem 1rem}
-
-        /* Explanation */
         .explanation-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:.75rem;padding:1rem}
         .math-equation{font-family:'Courier New',monospace;background:#e0e7ff;padding:2px 8px;border-radius:4px;display:inline-block;direction:ltr;unicode-bidi:embed;color:#4338ca}
-
-        /* Filter Tabs */
         .filter-tab{padding:6px 16px;border-radius:999px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04)}
         .filter-tab:hover{background:rgba(255,255,255,0.08)}
         .filter-tab.active{background:rgba(139,92,246,0.2);border-color:rgba(139,92,246,0.4);color:#c4b5fd}
-
-        /* Section badge */
         .badge-quant{background:rgba(59,130,246,0.1);color:#60a5fa;border:1px solid rgba(59,130,246,0.2)}
         .badge-verbal{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
         .badge-tahsili{background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.2)}
-
         @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-in{animation:fadeUp .4s ease forwards}.delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.15s;opacity:0}
         .spinner-lg{width:40px;height:40px;border:3px solid rgba(139,92,246,0.2);border-top-color:#8b5cf6;border-radius:50%;animation:spin .7s linear infinite}
         @keyframes spin{to{transform:rotate(360deg)}}
-    /* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:2px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:8px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+    </style>
 </head>
 <body class="font-tajawal text-white">
-
     <!-- Header -->
     <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between animate-in delay-1">
         <a href="dashboard.html" class="flex items-center gap-2 text-purple-300/70 hover:text-white transition text-sm">
             <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             <span>الرئيسية</span>
         </a>
+        <a href="index.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="18" height="18" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end">
+                <span class="name">مدارك النخبة</span>
+                <span class="tag">حيث يُصنع التميّز</span>
+            </div>
+        </a>
         <h1 class="text-lg font-bold">📖 راجع أخطائك</h1>
-        <div class="w-16"></div>
     </div>
 
     <main class="max-w-3xl mx-auto px-4 pb-12">
-
-        <!-- Filter Tabs -->
         <div id="filterTabs" class="hidden flex gap-2 mb-5 overflow-x-auto pb-1 animate-in delay-2">
             <button class="filter-tab active" onclick="filterMistakes('all', this)">الكل</button>
             <button class="filter-tab" onclick="filterMistakes('quant', this)">كمي</button>
             <button class="filter-tab" onclick="filterMistakes('verbal', this)">لفظي</button>
             <button class="filter-tab" onclick="filterMistakes('tahsili', this)">تحصيلي</button>
         </div>
-
-        <!-- Summary -->
         <div id="summaryBar" class="hidden card-glass p-4 mb-5 flex items-center justify-between animate-in delay-2">
             <span class="text-purple-300/50 text-sm">إجمالي الأخطاء: <span class="text-white font-bold" id="mistakesCount">0</span></span>
             <span class="text-purple-200/60 text-xs">تعلّم من أخطائك وارجع أقوى 💪</span>
         </div>
-
-        <!-- Loading -->
         <div id="loadingState" class="flex flex-col items-center justify-center py-20">
             <div class="spinner-lg mb-4"></div>
             <p class="text-purple-300/50 text-sm">جاري تحميل أخطائك...</p>
         </div>
-
-        <!-- Empty State (all correct) -->
         <div id="emptyState" class="hidden card-glass p-10 text-center">
             <span class="text-5xl block mb-3">🎉</span>
             <h2 class="text-xl font-bold mb-2">ما عندك أخطاء!</h2>
             <p class="text-purple-200/70 text-sm mb-5">ممتاز! كل إجاباتك صحيحة — استمر</p>
             <a href="dashboard.html" class="inline-block px-6 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">العودة للوحة</a>
         </div>
-
-        <!-- No Data (no attempts) -->
         <div id="noDataState" class="hidden card-glass p-10 text-center">
             <span class="text-5xl block mb-3">📝</span>
             <h2 class="text-xl font-bold mb-2">ما بدأت بعد!</h2>
             <p class="text-purple-200/70 text-sm mb-5">ابدأ حل الأسئلة عشان تشوف أخطائك هنا</p>
             <a href="select-section.html" class="inline-block px-6 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">ابدأ التدريب</a>
         </div>
-
-        <!-- Mistakes List -->
         <div id="mistakesList" class="hidden space-y-4"></div>
     </main>
 
@@ -109,71 +100,55 @@
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
-        let currentUser = null;
-        let allMistakes = [];
-
+        let currentUser = null, allMistakes = [];
         async function checkAuth() {
             const { data: { session } } = await sb.auth.getSession();
             if (!session) { window.location.href = 'login.html'; return false; }
-            currentUser = session.user;
-            return true;
+            currentUser = session.user; return true;
         }
-
         async function loadMistakes() {
             try {
                 const { data: allAttempts } = await sb.from('attempts').select('id').eq('user_id', currentUser.id).limit(1);
                 if (!allAttempts || allAttempts.length === 0) { showNoData(); return; }
-
                 const { data: wrongAttempts, error } = await sb.from('attempts')
-                    .select('question_id, selected_answer, answered_at')
+                    .select('question_id,selected_answer,answered_at')
                     .eq('user_id', currentUser.id).eq('is_correct', false)
                     .order('answered_at', { ascending: false });
-
                 if (error) throw error;
                 if (!wrongAttempts || wrongAttempts.length === 0) { showEmpty(); return; }
-
                 const questionIds = [...new Set(wrongAttempts.map(a => a.question_id))];
                 const { data: questions } = await sb.from('questions').select('*').in('id', questionIds);
-
                 allMistakes = wrongAttempts.map(function(attempt) {
                     var q = questions ? questions.find(function(q) { return q.id === attempt.question_id; }) : null;
                     if (!q) return null;
                     return { ...q, userAnswer: attempt.selected_answer, answeredAt: attempt.answered_at };
                 }).filter(function(m) { return m && m.question_text; });
-
                 if (allMistakes.length === 0) { showEmpty(); return; }
-
                 document.getElementById('mistakesCount').textContent = allMistakes.length;
                 displayMistakes(allMistakes);
                 document.getElementById('filterTabs').classList.remove('hidden');
                 document.getElementById('summaryBar').classList.remove('hidden');
-            } catch (err) {
-                console.error(err);
+            } catch(err) {
                 document.getElementById('loadingState').innerHTML = '<div class="text-center"><span class="text-5xl block mb-3">⚠️</span><p class="text-purple-300/50 text-sm">حدث خطأ — <a href="" class="underline">حاول مرة ثانية</a></p></div>';
             }
         }
-
         function displayMistakes(mistakes) {
             var container = document.getElementById('mistakesList');
             container.innerHTML = '';
-            var sectionNames = { 'quant': 'قدرات كمي', 'verbal': 'قدرات لفظي', 'tahsili': 'التحصيلي' };
-            var sectionBadge = { 'quant': 'badge-quant', 'verbal': 'badge-verbal', 'tahsili': 'badge-tahsili' };
-
+            var sectionNames = { quant:'قدرات كمي', verbal:'قدرات لفظي', tahsili:'التحصيلي' };
+            var sectionBadge = { quant:'badge-quant', verbal:'badge-verbal', tahsili:'badge-tahsili' };
             mistakes.forEach(function(m, index) {
                 var choices = m.choices || [];
                 var card = document.createElement('div');
                 card.className = 'mistake-card p-5 animate-in';
                 card.style.animationDelay = (index * 0.05) + 's';
-
                 var optionsHtml = '';
                 choices.forEach(function(choice, i) {
-                    var cls = 'opt-neutral';
-                    var icon = '';
+                    var cls = 'opt-neutral', icon = '';
                     if (i === m.correct_index) { cls = 'opt-correct'; icon = '<span class="text-green-600 font-bold text-sm">✓ الإجابة الصحيحة</span>'; }
                     else if (i === m.userAnswer) { cls = 'opt-wrong'; icon = '<span class="text-red-500 font-bold text-sm">✗ إجابتك</span>'; }
                     optionsHtml += '<div class="' + cls + '"><div class="flex items-center justify-between"><span class="text-gray-700 text-sm">' + (i+1) + '. ' + choice + '</span>' + icon + '</div></div>';
                 });
-
                 card.innerHTML =
                     '<div class="flex items-center justify-between mb-3">' +
                         '<span class="px-3 py-1 rounded-full text-xs font-bold ' + (sectionBadge[m.section] || '') + '">' + (sectionNames[m.section] || m.section) + '</span>' +
@@ -182,14 +157,11 @@
                     '<h3 class="text-base font-bold text-gray-800 mb-3 leading-relaxed">' + m.question_text + '</h3>' +
                     '<div class="space-y-2 mb-4">' + optionsHtml + '</div>' +
                     '<div class="explanation-box"><h4 class="font-bold text-blue-800 text-sm mb-1">💡 الشرح:</h4><p class="text-blue-700 text-sm leading-relaxed">' + formatExplanation(m.explanation || 'لا يوجد شرح') + '</p></div>';
-
                 container.appendChild(card);
             });
-
             document.getElementById('loadingState').classList.add('hidden');
             container.classList.remove('hidden');
         }
-
         function filterMistakes(section, btn) {
             document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
             btn.classList.add('active');
@@ -197,25 +169,14 @@
             document.getElementById('mistakesCount').textContent = filtered.length;
             if (filtered.length === 0) {
                 document.getElementById('mistakesList').innerHTML = '<div class="card-glass p-8 text-center"><span class="text-3xl block mb-2">👌</span><p class="text-purple-200/70 text-sm">ما عندك أخطاء في هذا القسم</p></div>';
-            } else {
-                displayMistakes(filtered);
-            }
+            } else { displayMistakes(filtered); }
         }
-
         function formatExplanation(text) {
             return text.replace(/س\^(\d+)/g, '<code class="math-equation">س<sup>$1</sup></code>')
                        .replace(/س = ([\d.]+)/g, '<span class="math-equation">س = $1</span>');
         }
-
-        function showEmpty() {
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('emptyState').classList.remove('hidden');
-        }
-        function showNoData() {
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('noDataState').classList.remove('hidden');
-        }
-
+        function showEmpty() { document.getElementById('loadingState').classList.add('hidden'); document.getElementById('emptyState').classList.remove('hidden'); }
+        function showNoData() { document.getElementById('loadingState').classList.add('hidden'); document.getElementById('noDataState').classList.remove('hidden'); }
         document.addEventListener('DOMContentLoaded', async function() {
             var ok = await checkAuth();
             if (ok) await loadMistakes();
