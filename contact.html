@@ -3,79 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تواصل ودعم - خوارز</title>
+    <title>تواصل ودعم - مدارك النخبة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>* { font-family: 'Tajawal', sans-serif; }/* Khawariz Logo - B */
-.kh-logo{font-family:Cairo,sans-serif;display:inline-block}
-.kh-logo .kh-ar{font-weight:900;color:white}
-.kh-logo .kh-kha{font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.kh-logo .kh-en-wrap{display:flex;align-items:center;justify-content:center;gap:6px}
-.kh-logo .kh-en-line{height:1px;width:16px;border-radius:2px}
-.kh-logo .kh-en-line-r{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.45))}
-.kh-logo .kh-en-line-l{background:linear-gradient(90deg,rgba(99,102,241,0.45),transparent)}
-.kh-logo .kh-en{font-family:Tajawal,sans-serif;letter-spacing:3.5px;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-</style>
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+        body { background: linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%); min-height: 100vh; }
+        .glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); border-radius: 1.25rem; }
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; transition: all .3s; }
+        .glass-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+        .nav-glass { background: rgba(13,8,37,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:2px;border-radius:9px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+    </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-gray-100">
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black text-indigo-600">خوارز</a>
-            <a href="index.html" class="text-gray-600 hover:text-indigo-600 transition">← الرئيسية</a>
+<body class="text-white">
+
+    <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="madarek-logo">
+                <div class="icon">
+                    <div class="ring"></div>
+                    <svg viewBox="0 0 36 36" width="20" height="20" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <span class="name">مدارك النخبة</span>
+                    <span class="tag">حيث يُصنع التميّز</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-purple-300/60 hover:text-white text-sm transition">← الرئيسية</a>
         </div>
-    </header>
-    <main class="max-w-4xl mx-auto px-4 py-12">
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 pt-28 pb-16">
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-black text-gray-900 mb-3">تواصل ودعم</h1>
-            <p class="text-gray-600">نحن هنا لمساعدتك</p>
+            <h1 class="text-4xl font-black mb-3">تواصل ودعم</h1>
+            <p class="text-purple-200/60">نحن هنا لمساعدتك</p>
+            <div class="w-14 h-0.5 rounded-full mx-auto mt-4" style="background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div>
         </div>
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
+
+        <div class="glass p-8 md:p-12 space-y-10">
+
+            <!-- طرق التواصل -->
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-6">📞 طرق التواصل</h2>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-6">
+                <h2 class="text-xl font-bold mb-6 text-purple-200">📞 طرق التواصل</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="glass-card p-6" style="border-color:rgba(99,102,241,0.2);background:rgba(99,102,241,0.05)">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-white text-2xl">✉️</div>
+                            <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">✉️</div>
                             <div>
-                                <h3 class="font-bold text-gray-900">البريد الإلكتروني</h3>
-                                <p class="text-sm text-gray-600">نرد خلال 24 ساعة</p>
+                                <h3 class="font-bold">البريد الإلكتروني</h3>
+                                <p class="text-xs text-purple-200/50">نرد خلال 24 ساعة</p>
                             </div>
                         </div>
-                        <a href="/cdn-cgi/l/email-protection#1f6c6a6f6f706d6b5f727e6c7e6d76316c7e" class="text-indigo-600 font-bold"><span class="__cf_email__" data-cfemail="8bf8fefbfbe4f9ffcbe6eaf8eaf9e2a5f8ea">[email&#160;protected]</span></a>
+                        <a href="mailto:support@madarekelite.sa" class="text-indigo-400 font-bold text-sm hover:text-indigo-300 transition">support@madarekelite.sa</a>
                     </div>
-                    <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+                    <div class="glass-card p-6" style="border-color:rgba(34,197,94,0.2);background:rgba(34,197,94,0.04)">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl">💬</div>
+                            <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#10b981,#14b8a6)">💬</div>
                             <div>
-                                <h3 class="font-bold text-gray-900">واتساب</h3>
-                                <p class="text-sm text-gray-600">دعم مباشر</p>
+                                <h3 class="font-bold">واتساب</h3>
+                                <p class="text-xs text-purple-200/50">دعم مباشر</p>
                             </div>
                         </div>
-                        <a href="https://wa.me/966XXXXXXXXX" class="text-green-600 font-bold">+966 XX XXX XXXX</a>
+                        <a href="https://wa.me/966553339885" class="text-green-400 font-bold text-sm hover:text-green-300 transition">+966 55 333 9885</a>
                     </div>
                 </div>
             </section>
+
+            <!-- ساعات العمل -->
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">🕐 ساعات العمل</h2>
-                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 text-center">
-                    <p class="text-2xl font-bold text-green-900 mb-2">🎯 متاحون على مدار الساعة</p>
-                    <p class="text-gray-700">الدعم الفني متوفر 24/7 للرد على استفساراتك</p>
+                <h2 class="text-xl font-bold mb-4 text-purple-200">🕐 ساعات العمل</h2>
+                <div class="glass-card p-6 text-center" style="border-color:rgba(34,197,94,0.2);background:rgba(34,197,94,0.04)">
+                    <p class="text-xl font-bold text-green-400 mb-2">🎯 متاحون على مدار الساعة</p>
+                    <p class="text-purple-200/60 text-sm">الدعم الفني متوفر 24/7 للرد على استفساراتك</p>
                 </div>
             </section>
+
+            <!-- الأسئلة الشائعة -->
             <section>
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">❓ الأسئلة الشائعة</h2>
-                <div class="space-y-4">
-                    <div class="bg-white border-2 rounded-xl p-4">
-                        <h3 class="font-bold text-gray-900 mb-2">كيف أسترجع كلمة المرور؟</h3>
-                        <p class="text-gray-600 text-sm">اضغط "نسيت كلمة المرور" في صفحة تسجيل الدخول</p>
+                <h2 class="text-xl font-bold mb-4 text-purple-200">❓ الأسئلة الشائعة</h2>
+                <div class="space-y-3">
+                    <div class="glass-card p-5">
+                        <h3 class="font-bold mb-1.5">كيف أسترجع كلمة المرور؟</h3>
+                        <p class="text-purple-200/60 text-sm">اضغط "نسيت كلمة المرور" في صفحة تسجيل الدخول</p>
                     </div>
-                    <div class="bg-white border-2 rounded-xl p-4">
-                        <h3 class="font-bold text-gray-900 mb-2">متى يتم تجديد الاشتراك؟</h3>
-                        <p class="text-gray-600 text-sm">تلقائياً في نفس تاريخ الاشتراك شهرياً/سنوياً</p>
+                    <div class="glass-card p-5">
+                        <h3 class="font-bold mb-1.5">متى يتم تجديد الاشتراك؟</h3>
+                        <p class="text-purple-200/60 text-sm">تلقائياً في نفس تاريخ الاشتراك شهرياً/سنوياً</p>
                     </div>
-                    <div class="bg-white border-2 rounded-xl p-4">
-                        <h3 class="font-bold text-gray-900 mb-2">هل يمكن إلغاء الاشتراك؟</h3>
-                        <p class="text-gray-600 text-sm">نعم، في أي وقت من إعدادات الحساب</p>
+                    <div class="glass-card p-5">
+                        <h3 class="font-bold mb-1.5">هل يمكن إلغاء الاشتراك؟</h3>
+                        <p class="text-purple-200/60 text-sm">نعم، في أي وقت من إعدادات الحساب</p>
                     </div>
                 </div>
             </section>
+
+        </div>
+    </main>
+
+    <footer class="text-center pb-8">
+        <p class="text-purple-200/40 text-xs">© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
+    </footer>
+
+</body>
+</html>
