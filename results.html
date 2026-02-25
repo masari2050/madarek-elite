@@ -59,112 +59,95 @@
         <div class="card-glass rounded-3xl p-7 bounce-in">
 
             <!-- إيموجي -->
-            <div class="text-center mb-5">
+            <div class="text-center mb-4">
                 <div class="text-6xl mb-4 float" id="resultEmoji">🎉</div>
 
-                <!-- رسالة تحفيزية من المنصة — بارزة فوق -->
-                <div class="rounded-2xl p-5 mb-5" id="motivBox">
-                    <p class="text-base leading-relaxed font-bold text-center" id="motivMsg" style="font-family:'Cairo',sans-serif"></p>
+                <!-- رسالة تحفيزية من المنصة -->
+                <div class="rounded-2xl p-5 mb-2" id="motivBox" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2)">
+                    <p class="text-base font-bold leading-relaxed text-center" id="motivMsg" style="font-family:'Cairo',sans-serif;color:rgba(196,181,253,0.95)"></p>
                 </div>
             </div>
 
-            <!-- النتيجة -->
-            <div class="rounded-2xl p-6 mb-4 text-center score-pop" style="background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.18)">
-                <p class="text-6xl font-black mb-2" id="finalPercentage" style="font-family:'Cairo',sans-serif">0%</p>
-                <p class="text-purple-300/50 text-sm" id="finalScore">0 من 10 سؤال</p>
+            <!-- النتيجة الكبيرة -->
+            <div class="rounded-2xl p-6 mb-4 text-center score-pop" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
+                <p class="text-6xl font-black mb-1" id="finalPercentage" style="font-family:'Cairo',sans-serif">0%</p>
+                <p class="text-purple-300/40 text-sm mt-1" id="finalScore">0 من 10 سؤال</p>
             </div>
 
-            <!-- صح/خطأ -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="rounded-xl p-4 text-center animate-in delay-1" style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18)">
+            <!-- صح / خطأ -->
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="rounded-xl p-4 text-center" style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18)">
                     <p class="text-green-400/60 text-xs mb-1">✅ صحيحة</p>
                     <p class="text-4xl font-black text-green-400" id="correctAnswers" style="font-family:'Cairo',sans-serif">0</p>
                 </div>
-                <div class="rounded-xl p-4 text-center animate-in delay-2" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.18)">
+                <div class="rounded-xl p-4 text-center" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.18)">
                     <p class="text-red-400/60 text-xs mb-1">❌ خاطئة</p>
                     <p class="text-4xl font-black text-red-400" id="wrongAnswers" style="font-family:'Cairo',sans-serif">0</p>
                 </div>
             </div>
 
-            <!-- فاصل + دعوة مشاركة -->
-            <div class="text-center mb-3 animate-in delay-3">
-                <p style="font-family:'Tajawal',sans-serif;font-size:13px;color:rgba(196,181,253,0.55);letter-spacing:.5px">
-                    شاركه مع أصدقائك وحفّزهم 🔥
-                </p>
-            </div>
+            <!-- دعوة المشاركة -->
+            <p class="text-center text-xs mb-3" style="font-family:'Tajawal';color:rgba(196,181,253,0.45);letter-spacing:.5px">
+                حفّز أصدقائك وشاركهم إنجازك 🔥
+            </p>
 
-            <!-- زر شارك إنجازك — أبرز زر في الصفحة -->
-            <button onclick="goShare()" class="w-full py-4 rounded-2xl font-black text-lg text-white mb-4 animate-in delay-3"
-              style="background:linear-gradient(135deg,#818cf8,#6366f1,#8b5cf6);border:none;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 8px 28px rgba(99,102,241,0.5);letter-spacing:.5px">
+            <!-- زر شارك — الأبرز -->
+            <button onclick="goShare()" class="w-full py-4 rounded-2xl font-black text-lg text-white mb-3"
+              style="background:linear-gradient(135deg,#818cf8,#6366f1,#8b5cf6);border:none;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 8px 28px rgba(99,102,241,0.45)">
                 📸 شارك إنجازك
             </button>
 
-            <!-- باقي الأزرار -->
-            <div class="space-y-2 animate-in" style="animation-delay:.4s;opacity:0">
-                <button onclick="tryAgain()" class="btn-primary w-full py-3 rounded-xl font-bold text-sm text-white">🔄 تدرّب مرة ثانية</button>
-                <button onclick="reviewMistakes()" class="btn-red w-full py-3 rounded-xl font-bold text-sm">📖 راجع أخطائك</button>
-                <button onclick="goToDashboard()" class="btn-outline w-full py-3 rounded-xl font-bold text-sm text-white">🏠 الرئيسية</button>
+            <!-- أزرار ثانوية -->
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <button onclick="reviewMistakes()" class="btn-red py-3 rounded-xl font-bold text-sm">📖 راجع أخطائك</button>
+                <button onclick="tryAgain()" class="btn-primary py-3 rounded-xl font-bold text-sm text-white">🔄 تدرّب مرة ثانية</button>
             </div>
+            <button onclick="goToDashboard()" class="btn-outline w-full py-3 rounded-xl font-bold text-sm text-white">🏠 الرئيسية</button>
 
         </div>
 
-        <p class="text-center text-purple-200/20 text-xs mt-5" style="font-family:'Tajawal',sans-serif">💪 التدريب المستمر هو سر المتفوقين</p>
+        <p class="text-center text-purple-200/15 text-xs mt-5" style="font-family:'Tajawal'">💪 التدريب المستمر هو سر المتفوقين</p>
     </div>
 
     <script>
-        const results=JSON.parse(localStorage.getItem('quiz_results')||'{}');
-        const correct=results.correct||0,wrong=results.wrong||0,total=results.total||10,percentage=results.percentage||0;
+        const results = JSON.parse(localStorage.getItem('quiz_results') || '{}');
+        const correct = results.correct || 0;
+        const wrong   = results.wrong   || 0;
+        const total   = results.total   || 10;
+        const pct     = results.percentage || 0;
 
-        const messages={
-            perfect:{
-                emoji:'🏆',
-                motiv:'والله أبهرتني — '+percentage+'% هذا دليل إنك تشتغل على نفسك بجد. استمر وما راح تتوقف عن الارتقاء.',
-                color:'rgba(74,222,128,0.95)',box:'rgba(74,222,128,0.08)',border:'rgba(74,222,128,0.2)'
-            },
-            excellent:{
-                emoji:'🌟',
-                motiv:'نتيجة تعبّر عن مجهود حقيقي — '+percentage+'% مو مصادفة. أنت على الطريق الصح، كمّل ولا تكسر الزخم.',
-                color:'rgba(196,181,253,0.95)',box:'rgba(99,102,241,0.09)',border:'rgba(139,92,246,0.25)'
-            },
-            veryGood:{
-                emoji:'💪',
-                motiv:'تخيل لو تدربت يومياً وين تكون بعد أسبوع؟ المتفوقون ما ولدوا متفوقين — يتدربون بشكل مختلف.',
-                color:'rgba(251,191,36,0.95)',box:'rgba(251,191,36,0.06)',border:'rgba(251,191,36,0.18)'
-            },
-            good:{
-                emoji:'🔥',
-                motiv:'كل سؤال أخطأت فيه هو معلومة جديدة تسكن دماغك — '+percentage+'% اليوم. راجع أخطائك وعود أقوى.',
-                color:'rgba(251,191,36,0.9)',box:'rgba(251,191,36,0.05)',border:'rgba(251,191,36,0.15)'
-            },
-            needsWork:{
-                emoji:'⚡️',
-                motiv:'الفرق بين اللي ينجح واللي ما ينجح — إنه ما وقف. البداية دايماً صعبة، راجع أخطائك وعود من جديد.',
-                color:'rgba(248,163,113,0.95)',box:'rgba(239,68,68,0.06)',border:'rgba(239,68,68,0.18)'
-            }
+        const msgs = {
+            perfect:  { e:'🏆', t:'rgba(74,222,128,0.95)',  bg:'rgba(74,222,128,0.08)',  bd:'rgba(74,222,128,0.2)',
+                m:'والله أبهرتني — '+pct+'% هذا دليل إنك تشتغل على نفسك بجد. استمر وما راح تتوقف عن الارتقاء.' },
+            excellent:{ e:'🌟', t:'rgba(196,181,253,0.95)', bg:'rgba(99,102,241,0.09)',  bd:'rgba(139,92,246,0.25)',
+                m:'نتيجة تعبّر عن مجهود حقيقي — '+pct+'% مو مصادفة. أنت على الطريق الصح، كمّل ولا تكسر الزخم.' },
+            veryGood: { e:'💪', t:'rgba(251,191,36,0.95)',  bg:'rgba(251,191,36,0.06)',  bd:'rgba(251,191,36,0.18)',
+                m:'تخيّل لو تدربت يومياً وين تكون بعد أسبوع؟ المتفوقون ما ولدوا متفوقين — يتدربون بشكل مختلف.' },
+            good:     { e:'🔥', t:'rgba(251,191,36,0.9)',   bg:'rgba(251,191,36,0.05)',  bd:'rgba(251,191,36,0.15)',
+                m:'كل سؤال أخطأت فيه هو معلومة جديدة تسكن دماغك. راجع أخطائك وعود أقوى.' },
+            start:    { e:'⚡️', t:'rgba(248,163,113,0.95)', bg:'rgba(239,68,68,0.06)',   bd:'rgba(239,68,68,0.18)',
+                m:'الفرق بين اللي ينجح واللي ما ينجح — إنه ما وقف. راجع أخطائك وعود من جديد.' }
         };
 
-        let msg = percentage>=98 ? messages.perfect
-                : percentage>=85 ? messages.excellent
-                : percentage>=70 ? messages.veryGood
-                : percentage>=55 ? messages.good
-                : messages.needsWork;
+        const m = pct>=98 ? msgs.perfect : pct>=85 ? msgs.excellent : pct>=70 ? msgs.veryGood : pct>=50 ? msgs.good : msgs.start;
 
-        document.getElementById('resultEmoji').textContent=msg.emoji;
-        document.getElementById('motivMsg').textContent=msg.motiv;
-        document.getElementById('motivMsg').style.color=msg.color;
-        document.getElementById('motivBox').style.background=msg.box;
-        document.getElementById('motivBox').style.border='1px solid '+msg.border;
-        document.getElementById('finalScore').textContent=correct+' من أصل '+total+' سؤال';
-        document.getElementById('finalPercentage').textContent=percentage+'%';
-        document.getElementById('finalPercentage').style.color=msg.color;
-        document.getElementById('correctAnswers').textContent=correct;
-        document.getElementById('wrongAnswers').textContent=wrong;
+        document.getElementById('resultEmoji').textContent    = m.e;
+        document.getElementById('motivMsg').textContent       = m.m;
+        document.getElementById('motivMsg').style.color       = m.t;
+        document.getElementById('motivBox').style.background  = m.bg;
+        document.getElementById('motivBox').style.border      = '1px solid ' + m.bd;
+        document.getElementById('finalPercentage').textContent = pct + '%';
+        document.getElementById('finalPercentage').style.color = m.t;
+        document.getElementById('finalScore').textContent     = correct + ' من أصل ' + total + ' سؤال';
+        document.getElementById('correctAnswers').textContent  = correct;
+        document.getElementById('wrongAnswers').textContent    = wrong;
 
-        function tryAgain(){window.location.href='select-section.html'}
-        function goToDashboard(){localStorage.removeItem('quiz_results');window.location.href='dashboard.html'}
-        function reviewMistakes(){window.location.href='mistakes.html'}
-        function goShare(){window.location.href='share-result.html';}
-        setTimeout(function(){localStorage.removeItem('quiz_results')},3600000);
+        function tryAgain()      { window.location.href = 'select-section.html'; }
+        function goToDashboard() { localStorage.removeItem('quiz_results'); window.location.href = 'dashboard.html'; }
+        function reviewMistakes(){ window.location.href = 'mistakes.html'; }
+        function goShare()       { window.location.href = 'share-result.html'; }
+
+        setTimeout(function(){ localStorage.removeItem('quiz_results'); }, 3600000);
     </script>
 </body>
 </html>
