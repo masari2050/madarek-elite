@@ -1,346 +1,172 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>شارك إنجازك — مدارك النخبة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#070416;font-family:'Tajawal',sans-serif;color:white;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 48px}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 15% 5%,rgba(99,102,241,0.2) 0%,transparent 65%),radial-gradient(ellipse 60% 50% at 85% 95%,rgba(168,85,247,0.15) 0%,transparent 65%);pointer-events:none}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النتائج - مدارك النخبة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .card-glass{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px)}
+        .bounce-in{animation:bounce-in .6s ease-out}
+        @keyframes bounce-in{0%{transform:scale(0);opacity:0}50%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}
 
-.page-title{font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;margin-bottom:5px;position:relative;text-align:center}
-.page-sub{color:rgba(196,181,253,0.4);font-size:13px;margin-bottom:26px;position:relative;text-align:center}
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
 
-.panel{width:100%;max-width:420px;background:rgba(255,255,255,0.035);border:1px solid rgba(139,92,246,0.2);border-radius:22px;padding:20px;margin-bottom:14px;position:relative}
-.panel-title{font-size:11px;letter-spacing:3px;color:rgba(196,181,253,0.3);margin-bottom:14px;font-weight:500}
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);transition:all .3s ease}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
+        .btn-outline{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.12);transition:all .3s ease}
+        .btn-outline:hover{background:rgba(255,255,255,0.09)}
+        .btn-red{background:rgba(239,68,68,0.08);border:1.5px solid rgba(239,68,68,0.25);color:#fca5a5;transition:all .3s ease}
+        .btn-red:hover{background:rgba(239,68,68,0.15)}
 
-/* اختيار الجملة */
-.phrases{display:flex;flex-direction:column;gap:8px}
-.phrase-btn{width:100%;padding:13px 18px;border-radius:14px;border:1px solid rgba(139,92,246,0.18);background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.75);font-family:'Tajawal',sans-serif;font-size:15px;cursor:pointer;text-align:right;transition:.2s;line-height:1.4}
-.phrase-btn:hover{background:rgba(99,102,241,0.1);border-color:rgba(139,92,246,0.35);color:white}
-.phrase-btn.selected{background:rgba(99,102,241,0.15);border-color:rgba(139,92,246,0.6);color:white}
+        @keyframes score-pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+        .score-pop{animation:score-pop .8s cubic-bezier(0.34,1.56,0.64,1) forwards}
 
-/* toggles */
-.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.row:last-of-type{border:none}
-.row-label{font-size:14px;color:rgba(255,255,255,0.7)}
-.sw{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:.3s;background:rgba(255,255,255,0.1);flex-shrink:0}
-.sw.on{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
-.sw::after{content:'';position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:3px;left:3px;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
-.sw.on::after{left:23px}
-.name-field{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(139,92,246,0.2);border-radius:14px;padding:11px 16px;color:white;font-family:'Tajawal',sans-serif;font-size:15px;margin-top:12px;outline:none;text-align:right;transition:.2s}
-.name-field:focus{border-color:rgba(139,92,246,0.5);background:rgba(99,102,241,0.07)}
-.name-field::placeholder{color:rgba(196,181,253,0.22)}
-
-/* معاينة */
-.preview-box{width:100%;max-width:420px;margin-bottom:16px}
-.preview-label{font-size:11px;letter-spacing:3px;color:rgba(196,181,253,0.3);margin-bottom:10px;font-weight:500}
-#previewCanvas{width:100%;border-radius:18px;border:1px solid rgba(139,92,246,0.2);display:block;box-shadow:0 16px 50px rgba(0,0,0,0.5)}
-
-.btns{display:flex;gap:10px;width:100%;max-width:420px}
-.btn-main{flex:1;padding:15px;border-radius:16px;font-family:'Tajawal',sans-serif;font-weight:900;font-size:15px;cursor:pointer;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;transition:.15s}
-.btn-main:active{transform:scale(0.97)}
-.btn-dl{padding:15px 20px;border-radius:16px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;border:1px solid rgba(139,92,246,0.25);background:rgba(99,102,241,0.07);color:rgba(196,181,253,0.8);transition:.15s}
-.back{margin-top:20px;color:rgba(196,181,253,0.22);font-size:13px;cursor:pointer;transition:.2s}
-.back:hover{color:rgba(196,181,253,0.5)}
-canvas{display:none}
-</style>
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        .float{animation:float 3s ease-in-out infinite}
+    </style>
 </head>
-<body>
+<body class="text-white min-h-screen flex items-center justify-center p-4">
 
-<p class="page-title">شارك إنجازك 🔥</p>
-<p class="page-sub">صمّم صورتك وشاركها</p>
+    <div class="max-w-lg w-full">
 
-<!-- معاينة أعلى -->
-<div class="preview-box">
-  <p class="preview-label">معاينة</p>
-  <canvas id="previewCanvas"></canvas>
-</div>
+        <!-- Logo -->
+        <div class="text-center mb-6 animate-in delay-1">
+            <a href="dashboard.html" style="display:inline-flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none">
+                <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,0.35);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite">
+                    <div style="position:absolute;inset:3px;border-radius:10px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite"></div>
+                    <svg viewBox="0 0 36 36" width="24" height="24" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite">مدارك النخبة</div>
+            </a>
+        </div>
 
-<div class="btns">
-  <button class="btn-main" onclick="shareNative()">↗️ شارك</button>
-  <button class="btn-dl" onclick="dl()">⬇️ تنزيل</button>
-</div>
+        <!-- Main Card -->
+        <div class="card-glass rounded-3xl p-8 bounce-in">
 
-<!-- اختيار الجملة -->
-<div class="panel" style="margin-top:20px">
-  <p class="panel-title">اختار جملتك</p>
-  <div class="phrases" id="phrases">
-    <button class="phrase-btn selected" onclick="selectPhrase(this,'الحمدلله 🙏\nانجزت تدريبي اليوم')">الحمدلله 🙏 انجزت تدريبي اليوم</button>
-    <button class="phrase-btn" onclick="selectPhrase(this,'ما توقفت\nعن التطور 🔥')">ما توقفت عن التطور 🔥</button>
-    <button class="phrase-btn" onclick="selectPhrase(this,'على طريق\nالقبول 🎯')">على طريق القبول 🎯</button>
-    <button class="phrase-btn" onclick="selectPhrase(this,'كل يوم\nأقوى من أمس ⚡️')">كل يوم أقوى من أمس ⚡️</button>
-    <button class="phrase-btn" onclick="selectPhrase(this,'شغّال على\nnنفسي وما وقفت 💪')">شغّال على نفسي وما وقفت 💪</button>
-    <button class="phrase-btn" onclick="selectPhrase(this,'التدريب اليوم\nاستثمار بكره 🏆')">التدريب اليوم استثمار بكره 🏆</button>
-  </div>
-</div>
+            <!-- إيموجي + عنوان -->
+            <div class="text-center mb-6">
+                <div class="text-6xl mb-3 float" id="resultEmoji">🎉</div>
+                <h1 class="text-2xl font-black mb-1" id="resultTitle" style="font-family:'Cairo',sans-serif">أحسنت!</h1>
+            </div>
 
-<!-- خيارات -->
-<div class="panel">
-  <p class="panel-title">خيارات إضافية</p>
-  <div class="row"><span class="row-label">إظهار النسبة</span><button class="sw on" id="sPct" onclick="tog('sPct')"></button></div>
-  <div class="row"><span class="row-label">إظهار عدد الأسئلة</span><button class="sw on" id="sCnt" onclick="tog('sCnt')"></button></div>
-  <div class="row"><span class="row-label">إظهار الاسم</span><button class="sw on" id="sName" onclick="tog('sName')"></button></div>
-  <div id="nameWrap">
-    <input class="name-field" id="nameVal" placeholder="اسمك أو لقبك..." maxlength="22" oninput="draw()">
-  </div>
-</div>
+            <!-- النتيجة الكبيرة -->
+            <div class="rounded-2xl p-6 mb-4 text-center score-pop" style="background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.18)">
+                <p class="text-5xl font-black mb-2" id="finalPercentage" style="font-family:'Cairo',sans-serif">0%</p>
+                <p class="text-purple-300/50 text-sm" id="finalScore">0 من 10</p>
+            </div>
 
+            <!-- صح/خطأ -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="rounded-xl p-4 text-center animate-in delay-1" style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18)">
+                    <p class="text-green-400/60 text-xs mb-1">✅ صحيحة</p>
+                    <p class="text-3xl font-black text-green-400" id="correctAnswers" style="font-family:'Cairo',sans-serif">0</p>
+                </div>
+                <div class="rounded-xl p-4 text-center animate-in delay-2" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.18)">
+                    <p class="text-red-400/60 text-xs mb-1">❌ خاطئة</p>
+                    <p class="text-3xl font-black text-red-400" id="wrongAnswers" style="font-family:'Cairo',sans-serif">0</p>
+                </div>
+            </div>
 
-<p class="back" onclick="history.back()">← رجوع</p>
-<canvas id="C"></canvas>
+            <!-- رسالة تحفيزية حسب المستوى -->
+            <div class="rounded-2xl p-5 mb-6 animate-in delay-3" id="motivBox" style="background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.12)">
+                <p class="text-sm leading-relaxed text-center" id="motivMsg" style="color:rgba(253,230,138,0.85)"></p>
+            </div>
 
-<script>
-var W=1080,H=1920;
-var R=JSON.parse(localStorage.getItem('quiz_results')||'{}');
-var ok=R.correct||0,tot=R.total||10,pct=R.percentage||0,sec=R.section||'';
-var secN={'quant':'القدرات الكمية','verbal':'القدرات اللفظية','tahsili':'التحصيلي','mix':'القدرات'};
-// الجنس
-var gender='male';
-try{var ud=JSON.parse(localStorage.getItem('khawariz_user')||'{}');gender=ud.gender||'male';}catch(e){}
-var isFemale=(gender==='female');
+            <!-- زر المشاركة — بارز -->
+            <div class="mb-4 animate-in" style="animation-delay:.4s;opacity:0">
+                <div class="text-center text-purple-300/35 text-xs mb-3" style="font-family:'Tajawal',sans-serif;letter-spacing:1px">
+                    شاركه مع أصدقائك وحفّزهم 👇
+                </div>
+                <button onclick="goShare()" class="w-full py-4 rounded-2xl font-black text-base text-white" 
+                  style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 8px 24px rgba(99,102,241,0.35);letter-spacing:.5px">
+                    📸 شارك إنجازك
+                </button>
+            </div>
 
-var PHRASES=isFemale?[
-  {label:'الحمدلله 🙏 انجزت تدريبي اليوم', val:'الحمدلله 🙏\nانجزت تدريبي اليوم'},
-  {label:'ما توقفت عن التطور 🔥', val:'ما توقفت\nعن التطور 🔥'},
-  {label:'على طريق القبول 🎯', val:'على طريق\nالقبول 🎯'},
-  {label:'كل يوم أقوى من أمس ⚡️', val:'كل يوم\nأقوى من أمس ⚡️'},
-  {label:'شغّالة على نفسي وما وقفت 💪', val:'شغّالة على\nنفسي وما وقفت 💪'},
-  {label:'التدريب اليوم استثمار بكره 🏆', val:'التدريب اليوم\nاستثمار بكره 🏆'}
-]:[
-  {label:'الحمدلله 🙏 انجزت تدريبي اليوم', val:'الحمدلله 🙏\nانجزت تدريبي اليوم'},
-  {label:'ما توقفت عن التطور 🔥', val:'ما توقفت\nعن التطور 🔥'},
-  {label:'على طريق القبول 🎯', val:'على طريق\nالقبول 🎯'},
-  {label:'كل يوم أقوى من أمس ⚡️', val:'كل يوم\nأقوى من أمس ⚡️'},
-  {label:'شغّال على نفسي وما وقفت 💪', val:'شغّال على\nنفسي وما وقفت 💪'},
-  {label:'التدريب اليوم استثمار بكره 🏆', val:'التدريب اليوم\nاستثمار بكره 🏆'}
-];
+            <!-- باقي الأزرار -->
+            <div class="space-y-2 animate-in" style="animation-delay:.5s;opacity:0">
+                <button onclick="tryAgain()" class="btn-primary w-full py-3 rounded-xl font-bold text-sm text-white">🔄 تدرّب مرة ثانية</button>
+                <button onclick="reviewMistakes()" class="btn-red w-full py-3 rounded-xl font-bold text-sm">📖 راجع أخطائك</button>
+                <button onclick="goToDashboard()" class="btn-outline w-full py-3 rounded-xl font-bold text-sm text-white">🏠 الرئيسية</button>
+            </div>
 
-var currentPhrase=PHRASES[0].val;
+        </div>
 
-function buildPhrases(){
-  var cont=document.getElementById('phrases');cont.innerHTML='';
-  PHRASES.forEach(function(p,i){
-    var btn=document.createElement('button');
-    btn.className='phrase-btn'+(i===0?' selected':'');
-    btn.textContent=p.label;
-    btn.onclick=(function(pv){return function(){selectPhrase(this,pv);};})(p.val);
-    cont.appendChild(btn);
-  });
-}
+        <p class="text-center text-purple-200/20 text-xs mt-5" style="font-family:'Tajawal',sans-serif">التدريب المستمر هو سر المتفوقين</p>
+    </div>
 
-// نجوم
-var ST=[];for(var i=0;i<150;i++)ST.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.7+0.2,o:Math.random()*0.45+0.07});
+    <script>
+        const results=JSON.parse(localStorage.getItem('quiz_results')||'{}');
+        const correct=results.correct||0,wrong=results.wrong||0,total=results.total||10,percentage=results.percentage||0;
 
-// اسم افتراضي
-try{var u=JSON.parse(localStorage.getItem('khawariz_user')||'{}');document.getElementById('nameVal').value=u.name||(u.email?u.email.split('@')[0]:'');}catch(e){}
+        // رسائل حسب المستوى — لهجة سعودية محفّزة
+        const messages={
+            perfect:{
+                emoji:'🏆',title:'ما شاء الله!',
+                motiv:'والله أبهرتني — '+percentage+'% هذي مو بس نتيجة، هذا دليل إنك تشتغل على نفسك بجد. استمر وما راح تتوقف عن الارتقاء.',
+                color:'rgba(74,222,128,0.85)',box:'rgba(74,222,128,0.07)',border:'rgba(74,222,128,0.18)'
+            },
+            excellent:{
+                emoji:'🌟',title:'ممتاز!',
+                motiv:'نتيجة تعبّر عن مجهود حقيقي — '+percentage+'% مو مصادفة. أنت على الطريق الصح، كمّل ولا تكسر الزخم.',
+                color:'rgba(196,181,253,0.9)',box:'rgba(99,102,241,0.07)',border:'rgba(99,102,241,0.2)'
+            },
+            veryGood:{
+                emoji:'💪',title:'أحسنت!',
+                motiv:percentage+'% وأنت بداياتك — تخيل لو تدربت يومياً وين تكون بعد أسبوع؟ المتفوقين ما ولدوا متفوقين، يتدربون بشكل مختلف.',
+                color:'rgba(251,191,36,0.9)',box:'rgba(251,191,36,0.05)',border:'rgba(251,191,36,0.15)'
+            },
+            good:{
+                emoji:'🔥',title:'شغّال!',
+                motiv:'كل سؤال أخطأت فيه هو معلومة جديدة تسكن دماغك — '+percentage+'% اليوم و'+Math.min(percentage+15,99)+'% بكره لو ما وقفت. روح راجع أخطائك.',
+                color:'rgba(251,191,36,0.8)',box:'rgba(251,191,36,0.04)',border:'rgba(251,191,36,0.12)'
+            },
+            needsWork:{
+                emoji:'⚡️',title:'ابدأ من هنا!',
+                motiv:'الفرق بين اللي ينجح واللي ما ينجح — إنه ما وقف. البداية دايماً صعبة وهذا طبيعي. راجع أخطائك وعود من جديد.',
+                color:'rgba(248,113,113,0.85)',box:'rgba(239,68,68,0.05)',border:'rgba(239,68,68,0.15)'
+            }
+        };
 
-function selectPhrase(btn,phrase){
-  document.querySelectorAll('.phrase-btn').forEach(function(b){b.classList.remove('selected');});
-  btn.classList.add('selected');
-  currentPhrase=phrase;
-  draw();
-}
-function tog(id){var el=document.getElementById(id);el.classList.toggle('on');if(id==='sName')document.getElementById('nameWrap').style.display=el.classList.contains('on')?'block':'none';draw();}
-function on(id){return document.getElementById(id).classList.contains('on');}
+        let msg = percentage>=98 ? messages.perfect
+                : percentage>=85 ? messages.excellent
+                : percentage>=70 ? messages.veryGood
+                : percentage>=55 ? messages.good
+                : messages.needsWork;
 
-function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+        document.getElementById('resultEmoji').textContent=msg.emoji;
+        document.getElementById('resultTitle').textContent=msg.title;
+        document.getElementById('resultTitle').style.color=msg.color;
+        document.getElementById('finalScore').textContent=correct+' من أصل '+total+' سؤال';
+        document.getElementById('finalPercentage').textContent=percentage+'%';
+        document.getElementById('finalPercentage').style.color=msg.color;
+        document.getElementById('correctAnswers').textContent=correct;
+        document.getElementById('wrongAnswers').textContent=wrong;
+        document.getElementById('motivMsg').textContent=msg.motiv;
+        document.getElementById('motivMsg').style.color=msg.color;
+        document.getElementById('motivBox').style.background=msg.box;
+        document.getElementById('motivBox').style.border='1px solid '+msg.border;
 
-function draw(){
-  var cv=document.getElementById('C');cv.width=W;cv.height=H;
-  var ctx=cv.getContext('2d');
-  var pColor=pct>=90?'#4ade80':pct>=75?'#c4b5fd':pct>=60?'#fbbf24':'#f87171';
-  var pGlow=pct>=90?[74,222,128]:pct>=75?[196,181,253]:pct>=60?[251,191,36]:[248,113,113];
-
-  // ━━━ خلفية ━━━
-  var bg=ctx.createLinearGradient(0,0,W,H);
-  bg.addColorStop(0,'#07041a');bg.addColorStop(0.45,'#0e0a26');bg.addColorStop(0.8,'#140d32');bg.addColorStop(1,'#07041a');
-  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-
-  // نجوم
-  ST.forEach(function(s){ctx.fillStyle='rgba(255,255,255,'+s.o+')';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
-
-  // وهج أعلى
-  var g1=ctx.createRadialGradient(180,220,0,180,220,600);g1.addColorStop(0,'rgba(99,102,241,0.22)');g1.addColorStop(1,'transparent');ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
-  // وهج أسفل
-  var g2=ctx.createRadialGradient(900,1700,0,900,1700,520);g2.addColorStop(0,'rgba(168,85,247,0.17)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
-  // وهج النتيجة
-  var g3=ctx.createRadialGradient(W/2,1000,0,W/2,1000,350);
-  g3.addColorStop(0,'rgba('+pGlow.join(',')+',0.13)');g3.addColorStop(1,'transparent');ctx.fillStyle=g3;ctx.fillRect(0,0,W,H);
-
-  ctx.textAlign='center';
-
-  // ━━━ شعار ━━━
-  // تاج
-  var tx=W/2,ty=290;
-  ctx.save();ctx.strokeStyle='rgba(165,180,252,0.8)';ctx.lineWidth=3.5;ctx.lineJoin='round';ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(tx-72,ty+52);ctx.lineTo(tx-72,ty-2);ctx.lineTo(tx-23,ty+30);ctx.lineTo(tx,ty-42);ctx.lineTo(tx+23,ty+30);ctx.lineTo(tx+72,ty-2);ctx.lineTo(tx+72,ty+52);ctx.closePath();ctx.stroke();
-  ctx.beginPath();ctx.moveTo(tx-72,ty+64);ctx.lineTo(tx+72,ty+64);ctx.stroke();
-  ctx.fillStyle='#a5b4fc';ctx.beginPath();ctx.arc(tx-72,ty-2,6,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#c4b5fd';ctx.beginPath();ctx.arc(tx,ty-42,6,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#a5b4fc';ctx.beginPath();ctx.arc(tx+72,ty-2,6,0,Math.PI*2);ctx.fill();
-  ctx.restore();
-
-  ctx.fillStyle='rgba(255,255,255,0.92)';ctx.font='bold 62px Cairo, Arial';ctx.fillText('مدارك النخبة',W/2,430);
-  ctx.fillStyle='rgba(196,181,253,0.38)';ctx.font='500 30px Tajawal, Arial';ctx.fillText('حيث يُصنع التميّز',W/2,476);
-
-  // فاصل
-  ctx.strokeStyle='rgba(139,92,246,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(155,516);ctx.lineTo(W-155,516);ctx.stroke();
-
-  // ━━━ الجملة الرئيسية ━━━
-  var lines=currentPhrase.split('\n');
-  // بطاقة الجملة — بدون حدود، بس وهج خفيف
-  var g4=ctx.createLinearGradient(0,555,0,830);g4.addColorStop(0,'rgba(99,102,241,0.06)');g4.addColorStop(1,'rgba(168,85,247,0.04)');
-  ctx.fillStyle=g4;rr(ctx,60,555,W-120,290,44);ctx.fill();
-
-  // السطر الأول
-  ctx.fillStyle='rgba(255,255,255,0.95)';
-  ctx.font='900 86px Cairo, Arial';
-  if(lines.length>1){
-    ctx.fillText(lines[0],W/2,655);
-    ctx.fillText(lines[1],W/2,760);
-  } else {
-    // كسر تلقائي
-    var words=lines[0].split(' '),line1='',line2='';
-    var half=Math.ceil(words.length/2);
-    line1=words.slice(0,half).join(' ');line2=words.slice(half).join(' ');
-    ctx.fillText(line1,W/2,640);
-    if(line2)ctx.fillText(line2,W/2,748);
-  }
-
-  // ━━━ بادج القسم ━━━
-  var sLabel=secN[sec]||'القدرات والتحصيلي';
-  var badgeW=500, badgeH=72, badgeX=W/2-badgeW/2, badgeY=820;
-  var badgeGrad=ctx.createLinearGradient(badgeX,0,badgeX+badgeW,0);
-  badgeGrad.addColorStop(0,'rgba(99,102,241,0.25)');
-  badgeGrad.addColorStop(1,'rgba(168,85,247,0.25)');
-  ctx.fillStyle=badgeGrad;
-  rr(ctx,badgeX,badgeY,badgeW,badgeH,36);ctx.fill();
-  ctx.strokeStyle='rgba(139,92,246,0.45)';ctx.lineWidth=1.2;
-  rr(ctx,badgeX,badgeY,badgeW,badgeH,36);ctx.stroke();
-  ctx.fillStyle='rgba(196,181,253,0.85)';ctx.font='bold 32px Tajawal, Arial';
-  ctx.fillText('📚 تدريب '+sLabel,W/2,badgeY+46);
-
-  // فاصل رفيع
-  ctx.strokeStyle='rgba(139,92,246,0.15)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(200,910);ctx.lineTo(W-200,910);ctx.stroke();
-
-  // ━━━ منطقة النتيجة — ارتفاع ثابت دائماً ━━━
-  var showP=on('sPct'),showC=on('sCnt');
-  var zoneY=1030, zoneH=320;
-
-  // صندوق ثابت الحجم دائماً
-  ctx.fillStyle='rgba(255,255,255,0.02)';
-  rr(ctx,100,zoneY,W-200,zoneH,40);ctx.fill();
-
-  if(showP && showC){
-    // النسبة + الأسئلة
-    var cg=ctx.createRadialGradient(W/2,zoneY+120,0,W/2,zoneY+120,200);
-    cg.addColorStop(0,'rgba('+pGlow.join(',')+',0.13)');cg.addColorStop(1,'transparent');
-    ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);
-    ctx.fillStyle=pColor;ctx.font='900 190px Cairo, Arial';
-    ctx.fillText(pct+'%',W/2,zoneY+190);
-    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='bold 40px Tajawal, Arial';
-    ctx.fillText(ok+' صح من أصل '+tot+' سؤال',W/2,zoneY+258);
-
-  } else if(showP && !showC){
-    // النسبة فقط — كبيرة في المنتصف
-    var cg2=ctx.createRadialGradient(W/2,zoneY+150,0,W/2,zoneY+150,200);
-    cg2.addColorStop(0,'rgba('+pGlow.join(',')+',0.14)');cg2.addColorStop(1,'transparent');
-    ctx.fillStyle=cg2;ctx.fillRect(0,0,W,H);
-    ctx.fillStyle=pColor;ctx.font='900 210px Cairo, Arial';
-    ctx.fillText(pct+'%',W/2,zoneY+215);
-
-  } else if(!showP && showC){
-    // الأسئلة فقط
-    ctx.fillStyle=pColor;ctx.font='900 130px Cairo, Arial';
-    ctx.fillText(ok+'/'+tot,W/2,zoneY+165);
-    ctx.fillStyle='rgba(255,255,255,0.45)';ctx.font='500 44px Tajawal, Arial';
-    ctx.fillText('إجابة صحيحة',W/2,zoneY+235);
-
-  } else {
-    // نجوم ثلاث كبيرة
-    ctx.textAlign='center';
-    ctx.font='110px serif';
-    ctx.fillStyle='rgba(255,255,255,1)';
-    ctx.fillText('🌟',W/2-170,zoneY+195);
-    ctx.font='150px serif';
-    ctx.fillText('⭐️',W/2,zoneY+210);
-    ctx.font='110px serif';
-    ctx.fillText('🌟',W/2+170,zoneY+195);
-    ctx.fillStyle='rgba(196,181,253,0.7)';
-    ctx.font='bold 42px Tajawal, Arial';
-    ctx.fillText('جلسة تدريب مكتملة ✓',W/2,zoneY+285);
-  }
-
-  // ━━━ اسم الطالب — ثابت تحت الزون دائماً ━━━
-  if(on('sName')){
-    var nm=document.getElementById('nameVal').value.trim();
-    if(nm){
-      ctx.font='bold 42px Tajawal, Arial';
-      var nmW=Math.min(ctx.measureText(nm).width+100,700);
-      var nmY=zoneY+zoneH+40;
-      ctx.fillStyle='rgba(99,102,241,0.13)';rr(ctx,W/2-nmW/2,nmY,nmW,80,40);ctx.fill();
-      ctx.strokeStyle='rgba(99,102,241,0.28)';ctx.lineWidth=1;rr(ctx,W/2-nmW/2,nmY,nmW,80,40);ctx.stroke();
-      ctx.fillStyle='rgba(255,255,255,0.78)';ctx.fillText(nm,W/2,nmY+50);
-    }
-  }
-
-  // ━━━ قسم الدعوة ━━━
-  var divY=1490;
-  ctx.strokeStyle='rgba(139,92,246,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(155,divY);ctx.lineTo(W-155,divY);ctx.stroke();
-
-  // نجمات زخرفية
-  ctx.fillStyle='rgba(196,181,253,0.2)';ctx.font='28px Arial';
-  ctx.fillText('✦  ✦  ✦',W/2,divY+55);
-
-  ctx.fillStyle='rgba(196,181,253,0.6)';ctx.font='700 36px Tajawal, Arial';
-  ctx.fillText('تدرّب معهم على',W/2,divY+120);
-
-  // اسم الموقع بارز
-  var siteGrad=ctx.createLinearGradient(W/2-250,0,W/2+250,0);
-  siteGrad.addColorStop(0,'#a5b4fc');siteGrad.addColorStop(0.5,'#e0e7ff');siteGrad.addColorStop(1,'#c4b5fd');
-  ctx.fillStyle=siteGrad;ctx.font='bold 58px Cairo, Arial';
-  ctx.fillText('madarekelite.com',W/2,divY+196);
-
-  ctx.fillStyle='rgba(196,181,253,0.22)';ctx.font='26px Tajawal, Arial';
-  ctx.fillText('أسئلة القدرات والتحصيلي',W/2,divY+248);
-
-  // خط سفلي
-  ctx.strokeStyle='rgba(139,92,246,0.1)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(155,divY+286);ctx.lineTo(W-155,divY+286);ctx.stroke();
-
-  // watermark
-  ctx.fillStyle='rgba(196,181,253,0.09)';ctx.font='22px Tajawal, Arial';
-  ctx.fillText('مدارك النخبة © 2026',W/2,1848);
-
-  // معاينة
-  var pv=document.getElementById('previewCanvas');pv.width=W;pv.height=H;
-  pv.getContext('2d').drawImage(cv,0,0);
-}
-
-function dl(){document.getElementById('C').toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='نتيجتي-مدارك.png';a.click();},'image/png');}
-async function shareNative(){
-  var btn=document.querySelector('.btn-main');
-  btn.textContent='⏳';
-  document.getElementById('C').toBlob(async function(blob){
-    var file=new File([blob],'نتيجتي-مدارك.png',{type:'image/png'});
-    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-      try{
-        await navigator.share({files:[file],title:'نتيجتي على مدارك النخبة',text:'تدرّب معي على madarekelite.com'});
-      }catch(e){}
-    } else {
-      // fallback — تنزيل
-      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='نتيجتي-مدارك.png';a.click();
-    }
-    btn.textContent='↗️ شارك';
-  },'image/png');
-}
-
-buildPhrases();
-buildPhrases();
-draw();
-document.getElementById('nameVal').addEventListener('input',draw);
-</script>
+        function tryAgain(){window.location.href='select-section.html'}
+        function goToDashboard(){localStorage.removeItem('quiz_results');window.location.href='dashboard.html'}
+        function reviewMistakes(){window.location.href='mistakes.html'}
+        function goShare(){window.location.href='share-result.html';}
+        setTimeout(function(){localStorage.removeItem('quiz_results')},3600000);
+    </script>
 </body>
 </html>
