@@ -152,7 +152,7 @@
     <div class="sb-link" data-tab="users" data-perm="users"><span>👥</span><span>الأعضاء</span></div>
     <div class="sb-link" data-tab="coupons" data-perm="coupons"><span>🎟️</span><span>الكوبونات</span></div>
     <div class="sb-link" data-tab="finance" data-perm="finance"><span>💰</span><span>المالية</span></div>
-    <div class="sb-link" data-tab="reports" data-perm="reports"><span>🚩</span><span>البلاغات</span></div>
+    <div class="sb-link" data-tab="reports" data-perm="reports"><span>🚩</span><span>البلاغات</span><span id="reports-badge" class="hidden mr-auto text-xs font-black px-2 py-0.5 rounded-full" style="background:rgba(239,68,68,0.25);color:#f87171;min-width:20px;text-align:center"></span></div>
     <div class="sb-link" data-tab="staff" data-perm="staff"><span>🔑</span><span>الموظفين</span></div>
     <div class="sb-link" data-tab="settings" data-perm="settings"><span>⚙️</span><span>الإعدادات</span></div>
     <div class="mt-4 p-4 border-t border-purple-500/10">
@@ -240,7 +240,7 @@
 <div id="t-users" class="tab">
     <h2 class="text-2xl font-black mb-5">👥 إدارة الأعضاء</h2>
     <input type="text" id="us" class="inp mb-4" placeholder="بحث بالاسم أو الإيميل..." oninput="loadU()">
-    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50 text-sm">العضو</th><th class="text-right p-3 text-purple-300/50 text-sm">الإيميل</th><th class="text-center p-3 text-purple-300/50 text-sm">الاشتراك</th><th class="text-center p-3 text-purple-300/50 text-sm">التسجيل</th><th class="text-center p-3 text-purple-300/50 text-sm">إجراء</th></tr></thead><tbody id="u-list"></tbody></table></div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50 text-sm">العضو</th><th class="text-right p-3 text-purple-300/50 text-sm">الإيميل</th><th class="text-center p-3 text-purple-300/50 text-sm">الاشتراك</th><th class="text-center p-3 text-purple-300/50 text-sm">ينتهي</th><th class="text-center p-3 text-purple-300/50 text-sm">التسجيل</th><th class="text-center p-3 text-purple-300/50 text-sm">إجراء</th></tr></thead><tbody id="u-list"></tbody></table></div>
 </div>
 
 <!-- ═══ الكوبونات ═══ -->
@@ -267,7 +267,7 @@
 
 <!-- ═══ البلاغات (✅ محسّنة) ═══ -->
 <div id="t-reports" class="tab">
-    <h2 class="text-2xl font-black mb-5">🚩 البلاغات</h2>
+    <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🚩 البلاغات <span id="r-count-title" class="text-lg text-red-400 font-bold"></span></h2><button class="bs" onclick="loadR()" style="font-size:.85rem;padding:8px 14px">🔄 تحديث</button></div>
     <div id="r-list" class="space-y-2"></div>
 </div>
 
@@ -386,7 +386,8 @@
 
 <!-- ═══ Coupon Modal (✅ محسّن) ═══ -->
 <div id="couponM" class="mbg hidden"><div class="mbox">
-    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">كوبون جديد</h3><button onclick="$('couponM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg" id="cm-title">كوبون جديد</h3><button onclick="$('couponM').classList.add('hidden');$('cm-id').value='';$('cm-title').textContent='كوبون جديد';$('cm-save-btn').textContent='💾 إنشاء الكوبون'" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
+    <input type="hidden" id="cm-id">
     <div class="space-y-3">
         <div><label class="text-purple-300/50 text-sm mb-1 block">الكود</label><input id="cm-c" class="inp" style="text-transform:uppercase" placeholder="مثال: MADAREK50"></div>
         <div><label class="text-purple-300/50 text-sm mb-1 block">يطبّق على</label>
@@ -419,7 +420,7 @@
             <div><label class="text-purple-300/50 text-sm mb-1 block">الحد الأقصى للاستخدام</label><input type="number" id="cm-x" class="inp" value="100"></div>
             <div><label class="text-purple-300/50 text-sm mb-1 block">ينتهي بتاريخ</label><input type="date" id="cm-e" class="inp"></div>
         </div>
-        <button class="bp w-full" onclick="saveC2()">💾 إنشاء الكوبون</button>
+        <button class="bp w-full" id="cm-save-btn" onclick="saveC2()">💾 إنشاء الكوبون</button>
     </div>
 </div></div>
 
@@ -1053,9 +1054,31 @@ async function saveQ2(){
     _allQCache.push({id:id||'new',question_text:qTextPlain});
     toast(id?'تم التحديث ✓':'تم الإضافة ✓',true);
     $('questionM').classList.add('hidden');
+    // ✅ إذا كان التعديل من البلاغات → احذف البلاغ تلقائياً
+    if(_reportEditId){
+        await sb.from('reports').delete().eq('id',_reportEditId);
+        _reportEditId=null;
+        toast('✅ تم حفظ السؤال وإزالة البلاغ',true);
+        loadR(); // تحديث عداد البلاغات
+    }
     loadQ();
 }
 async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);toast('تم الحذف',true);loadQ()}
+
+// ✅ إصلاح مشكلة subscription_type — يحدد monthly/yearly بناءً على subscription_end
+async function fixSubscriptionType(userId, currentType, endDate){
+    // لو مافيه تاريخ انتهاء → مجاني
+    if(!endDate){
+        await sb.from('profiles').update({subscription_type:'free',subscription_end:null}).eq('id',userId);
+        return 'free';
+    }
+    // لو التاريخ انتهى → مجاني
+    if(new Date(endDate)<new Date()){
+        await sb.from('profiles').update({subscription_type:'free',subscription_end:null}).eq('id',userId);
+        return 'free';
+    }
+    return currentType; // لا تغيير
+}
 
 // ✅ تعديل العضو محسّن
 async function loadU(){
@@ -1068,7 +1091,13 @@ async function loadU(){
         var bg=u.subscription_type==='monthly'?'bg-m':u.subscription_type==='yearly'?'bg-y':'bg-f';
         var lb=u.subscription_type==='monthly'?'شهري':u.subscription_type==='yearly'?'سنوي':'مجاني';
         var roleBadge=u.role==='admin'?'<span class="bg bg-a mr-1">أدمن</span>':u.role==='staff'?'<span class="badge-staff mr-1">موظف</span>':'';
-        h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+(u.full_name||'—')+'</span>'+roleBadge+'</div></td><td class="p-3 text-purple-200/70 text-sm">'+(u.email||'')+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span></td><td class="p-3 text-center text-purple-200/60 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+u.id+'\')">✏️</button></td></tr>'
+        var expInfo='';
+        if(u.subscription_type!=='free'&&u.subscription_end){
+            var ed=new Date(u.subscription_end);
+            var dLeft=Math.ceil((ed-new Date())/86400000);
+            expInfo=dLeft>0?'<span class="text-xs text-purple-200/50">'+ed.toLocaleDateString('ar-SA')+'</span>':'<span class="text-xs text-red-400 font-bold">⚠️ منتهي</span>';
+        }else if(u.subscription_type!=='free'){expInfo='<span class="text-xs text-yellow-400">لا يوجد تاريخ</span>'}
+        h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+(u.full_name||'—')+'</span>'+roleBadge+'</div></td><td class="p-3 text-purple-200/70 text-sm">'+(u.email||'')+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span></td><td class="p-3 text-center">'+expInfo+'</td><td class="p-3 text-center text-purple-200/60 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+u.id+'\')">✏️</button></td></tr>'
     });
     $('u-list').innerHTML=h;
 }
@@ -1118,47 +1147,52 @@ async function saveU2(){
     loadU();
 }
 
-// ✅ الكوبونات محسّنة
+// ✅ الكوبونات — عداد استخدام حقيقي + زر تعديل
 async function loadC(){
     var{data}=await sb.from('coupons').select('*').order('created_at',{ascending:false});
     if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="7" class="p-6 text-center text-purple-200/60">لا توجد كوبونات</td></tr>';return}
+    var realUse={};
+    try{
+        var{data:pu}=await sb.from('profiles').select('used_coupon').not('used_coupon','is',null);
+        if(pu)pu.forEach(function(p){if(p.used_coupon)realUse[p.used_coupon.toUpperCase()]=(realUse[p.used_coupon.toUpperCase()]||0)+1});
+    }catch(e){}
     var planN={all:'الكل',monthly:'شهري',yearly:'سنوي'};
     var durN={'1':'شهر','3':'3 أشهر','6':'6 أشهر','12':'سنة'};
     var h='';
     data.forEach(function(c){
         var ok=!c.expires_at||new Date(c.expires_at)>new Date();
-        // ✅ حساب صح لعدد الاستخدام
-        var usedDisplay=(c.used_count||0)+'/'+(c.max_uses||'∞');
-        h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300">'+c.code+'</td>'
-        +'<td class="p-3 text-center">'+(c.discount_type==='free'?'<span class="text-emerald-400 font-bold">مجاني</span>':c.discount_value+(c.discount_type==='percentage'?'%':' ر'))+'</td>'
+        var n=Math.max(realUse[c.code]||0,c.used_count||0);
+        var ud='<span class="font-bold '+(n>0?'text-emerald-400':'text-purple-200/60')+'">'+n+'</span><span class="text-purple-200/40">/'+(c.max_uses||'∞')+'</span>';
+        h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300 text-base">'+c.code+'</td>'
+        +'<td class="p-3 text-center">'+(c.discount_type==='free'?'<span class="bg bg-y">مجاني</span>':c.discount_value+(c.discount_type==='percentage'?'%':' ر'))+'</td>'
         +'<td class="p-3 text-center text-purple-200/70 text-xs">'+(planN[c.plan_type]||'الكل')+'</td>'
         +'<td class="p-3 text-center"><span class="bg bg-m">'+(durN[String(c.duration_months)]||c.duration_months+' شهر')+'</span></td>'
-        +'<td class="p-3 text-center font-bold '+((c.used_count||0)>0?'text-emerald-400':'')+'">'+usedDisplay+'</td>'
+        +'<td class="p-3 text-center">'+ud+'</td>'
         +'<td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td>'
-        +'<td class="p-3 text-center"><button class="bd" onclick="delC(\''+c.id+'\')">🗑️</button></td></tr>';
+        +'<td class="p-3 text-center whitespace-nowrap">'
+        +'<button class="bs" onclick="editC('+JSON.stringify(c)+')" style="font-size:.8rem;padding:5px 10px;margin-left:4px">✏️</button>'
+        +'<button class="bd" onclick="delC(''+c.id+'')" style="font-size:.8rem;padding:5px 10px">🗑️</button>'
+        +'</td></tr>';
     });
     $('c-list').innerHTML=h;
 }
-
-async function saveC2(){
-    var discType=$('cm-t').value;
-    var obj={
-        code:$('cm-c').value.toUpperCase().trim(),
-        discount_type:discType,
-        discount_value:discType==='free'?100:parseFloat($('cm-v').value||0),
-        plan_type:$('cm-plan').value,
-        duration_months:parseInt($('cm-dur').value),
-        max_uses:parseInt($('cm-x').value)||100,
-        used_count:0,
-        expires_at:$('cm-e').value||null
-    };
-    if(!obj.code){toast('أدخل الكود',false);return}
-    if(discType!=='free'&&!obj.discount_value){toast('أدخل قيمة الخصم',false);return}
-    var{error}=await sb.from('coupons').insert(obj);
-    if(error)toast('خطأ: '+error.message,false);
-    else{toast('تم إنشاء الكوبون ✓',true);$('couponM').classList.add('hidden');loadC()}
-}
 async function delC(id){if(!confirm('حذف الكوبون؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
+
+// ✅ تعديل الكوبون
+function editC(c){
+    $('cm-id').value=c.id;
+    $('cm-title').textContent='تعديل الكوبون';
+    $('cm-save-btn').textContent='💾 حفظ التعديل';
+    $('cm-c').value=c.code||'';
+    $('cm-plan').value=c.plan_type||'all';
+    $('cm-t').value=c.discount_type||'percentage';
+    $('cm-val-wrap').style.display=c.discount_type==='free'?'none':'block';
+    $('cm-v').value=c.discount_value||'';
+    $('cm-dur').value=String(c.duration_months||'12');
+    $('cm-x').value=c.max_uses||100;
+    $('cm-e').value=c.expires_at?c.expires_at.split('T')[0]:'';
+    $('couponM').classList.remove('hidden');
+}
 
 async function loadF(){
     var{data}=await sb.from('profiles').select('subscription_type');
@@ -1259,7 +1293,22 @@ $('cm-t').addEventListener('change',function(){
 
 updateSubSec();
 initEditors();
-document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('DOMContentLoaded',function(){
+    init();
+    // ✅ تحميل عداد البلاغات عند الفتح
+    setTimeout(function(){loadReportsBadge()},2000);
+});
+
+// ✅ جلب عدد البلاغات فقط (بدون تحميل الكل)
+async function loadReportsBadge(){
+    var{count}=await sb.from('reports').select('id',{count:'exact',head:true});
+    var badge=$('reports-badge');
+    if(badge){
+        if(count&&count>0){badge.textContent=count;badge.classList.remove('hidden')}
+        else{badge.classList.add('hidden')}
+    }
+    if($('s-r'))$('s-r').textContent=count||0;
+}
 </script>
 </body>
 </html>
