@@ -473,6 +473,7 @@
 var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
 var me=null;
 var _allQCache=[]; // ✅ cache للأسئلة لفحص التكرار
+var _reportEditId=null; // ✅ آيدي البلاغ المفتوح للتعديل
 function $(id){return document.getElementById(id)}
 
 var subSections={
@@ -1214,7 +1215,7 @@ async function loadR(){
     data.forEach(function(r){
         var qText=r.questions?r.questions.question_text.substring(0,100)+'...':'(سؤال محذوف)';
         var qId=r.questions?r.questions.id:null;
-        var editBtn=qId?'<button class="bs" style="font-size:.8rem;padding:6px 12px" onclick="editQfromReport(\''+qId+'\')">✏️ تعديل السؤال</button>':'';
+        var editBtn=qId?'<button class="bs" style="font-size:.8rem;padding:6px 12px" onclick="editQfromReport(\''+qId+'\',\''+r.id+'\')">✏️ تعديل السؤال</button>':'';
         h+='<div class="glass p-4">'
           +'<div class="flex items-start justify-between gap-3">'
           +'<div class="flex-1">'
@@ -1231,16 +1232,17 @@ async function loadR(){
 }
 
 // ✅ فتح تعديل السؤال من البلاغات
-async function editQfromReport(qid){
+async function editQfromReport(qid, reportId){
     var{data}=await sb.from('questions').select('*').eq('id',qid).single();
     if(!data){toast('السؤال غير موجود',false);return}
-    // انتقل لتبويب الأسئلة
+    _reportEditId = reportId; // ✅ نحفظ آيدي البلاغ لحذفه بعد saveQ2
     document.querySelectorAll('.tab').forEach(function(s){s.classList.remove('on')});
     document.querySelectorAll('.sb-link').forEach(function(l){l.classList.remove('on')});
     $('t-questions').classList.add('on');
     document.querySelector('[data-tab="questions"]').classList.add('on');
     await loadQ();
     openQM(data);
+    toast('ℹ️ عدّل السؤال واضغط حفظ — سيُزال البلاغ تلقائياً', true);
 }
 
 async function delR(id){await sb.from('reports').delete().eq('id',id);toast('تم رفض البلاغ',true);loadR()}
