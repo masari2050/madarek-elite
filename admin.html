@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الإدارة - مدارك النخبة</title>
+    <!-- ✅ FAVICON مضاف -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M10 50 L10 30 L19 39 L32 14 L45 39 L54 30 L54 50Z' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='10' y1='54' x2='54' y2='54' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='10' cy='30' r='3' fill='white'/%3E%3Ccircle cx='32' cy='14' r='3' fill='white'/%3E%3Ccircle cx='54' cy='30' r='3' fill='white'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -52,6 +54,9 @@
         .role-box.staff-sel{background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.5)!important}
         .badge-admin{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25);padding:2px 10px;border-radius:999px;font-size:.75rem;font-weight:700;display:inline-block}
         .badge-staff{background:rgba(139,92,246,0.12);color:#c4b5fd;border:1px solid rgba(139,92,246,0.25);padding:2px 10px;border-radius:999px;font-size:.75rem;font-weight:700;display:inline-block}
+        /* ✅ Online indicator */
+        .online-dot{width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;margin-left:4px;box-shadow:0 0 6px #10b981;animation:pulse-dot 2s infinite}
+        @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
         /* Madarek Logo */
         @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
@@ -61,6 +66,61 @@
         .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:8px;border:1.5px solid transparent;border-top-color:rgba(99,102,241,0.8);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
         .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
         .madarek-logo .tag{font-size:9px;color:rgba(196,181,253,0.4);margin-top:1px;display:block;font-family:'Tajawal',sans-serif}
+        /* ✅ Duplicate warning */
+        .dup-warn{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:.75rem;padding:12px 16px;margin-top:8px;display:none}
+
+        /* ══════════════════════════════════════
+           ✅ RICH TEXT EDITOR — محرر النصوص
+        ══════════════════════════════════════ */
+        .editor-wrap{border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;overflow:hidden;background:rgba(255,255,255,0.06)}
+        .editor-wrap:focus-within{border-color:rgba(139,92,246,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
+
+        /* شريط الأدوات */
+        .editor-toolbar{
+            background:rgba(255,255,255,0.04);
+            border-bottom:1px solid rgba(255,255,255,0.08);
+            padding:6px 10px;
+            display:flex;
+            flex-wrap:wrap;
+            gap:2px;
+            align-items:center;
+        }
+        .tb-btn{
+            width:30px;height:30px;border-radius:6px;border:none;
+            background:transparent;color:rgba(196,181,253,0.7);
+            cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;
+            transition:all .15s;flex-shrink:0;
+        }
+        .tb-btn:hover{background:rgba(99,102,241,0.2);color:#a5b4fc}
+        .tb-btn.active{background:rgba(99,102,241,0.3);color:#c4b5fd}
+        .tb-sep{width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;flex-shrink:0}
+        .tb-select{
+            background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+            color:rgba(196,181,253,0.8);border-radius:6px;padding:2px 6px;font-size:.75rem;
+            cursor:pointer;height:28px;
+        }
+        .tb-select option{background:#1a1145;color:#fff}
+        .tb-color{width:28px;height:28px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;padding:2px;background:transparent}
+
+        /* منطقة الكتابة */
+        .editor-body{
+            min-height:100px;max-height:300px;overflow-y:auto;
+            padding:12px 16px;color:#fff;font-size:.95rem;line-height:1.8;
+            outline:none;direction:rtl;text-align:right;
+        }
+        .editor-body:empty:before{content:attr(data-placeholder);color:rgba(255,255,255,0.2);pointer-events:none}
+        .editor-body p{margin:0;min-height:1.5em}
+        .editor-body .ltr-block{direction:ltr;text-align:left;unicode-bidi:bidi-override}
+        /* رموز رياضية */
+        .math-sym{
+            display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);
+            border-radius:4px;padding:1px 6px;font-family:monospace;font-size:.9em;color:#a5b4fc;
+            user-select:text;
+        }
+
+        /* ✅ أداة الكشف عن التكرار */
+        .dup-tool-wrap{background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:1rem;padding:16px;margin-bottom:16px}
+        .dup-result-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:.75rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);margin-top:8px}
     </style>
 </head>
 <body class="text-white">
@@ -96,22 +156,41 @@
     <div class="sb-link" data-tab="staff" data-perm="staff"><span>🔑</span><span>الموظفين</span></div>
     <div class="sb-link" data-tab="settings" data-perm="settings"><span>⚙️</span><span>الإعدادات</span></div>
     <div class="mt-4 p-4 border-t border-purple-500/10">
-        <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
+        <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='admin-login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
     </div>
 </aside>
 
 <!-- Main -->
 <div class="mc">
 
-<!-- ═══ نظرة عامة ═══ -->
+<!-- ═══ نظرة عامة (✅ موسّعة) ═══ -->
 <div id="t-overview" class="tab on">
-    <h2 class="text-2xl font-black mb-6">📊 نظرة عامة</h2>
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-black">📊 نظرة عامة</h2>
+        <!-- ✅ أونلاين الحين -->
+        <div class="glass px-4 py-2 flex items-center gap-2">
+            <span class="online-dot"></span>
+            <span class="text-sm text-emerald-400 font-bold" id="s-online">0</span>
+            <span class="text-sm text-purple-200/60">متصل الآن</span>
+        </div>
+    </div>
+
+    <!-- الإحصائيات الرئيسية -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">إجمالي الأسئلة</p><p class="text-4xl font-black text-indigo-400" id="s-q">-</p></div>
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">الأعضاء</p><p class="text-4xl font-black text-emerald-400" id="s-u">-</p></div>
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">إجمالي المحاولات</p><p class="text-4xl font-black text-purple-400" id="s-a">-</p></div>
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">البلاغات</p><p class="text-4xl font-black text-red-400" id="s-r">-</p></div>
     </div>
+
+    <!-- ✅ إحصائيات الاشتراكات -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="glass p-4 text-center" style="border-color:rgba(16,185,129,0.2)"><p class="text-emerald-400/70 text-xs mb-1">مشتركين فعالين</p><p class="text-3xl font-black text-emerald-400" id="ov-active">-</p></div>
+        <div class="glass p-4 text-center" style="border-color:rgba(99,102,241,0.2)"><p class="text-indigo-400/70 text-xs mb-1">شهري</p><p class="text-3xl font-black text-indigo-400" id="ov-monthly">-</p></div>
+        <div class="glass p-4 text-center" style="border-color:rgba(139,92,246,0.2)"><p class="text-purple-400/70 text-xs mb-1">سنوي</p><p class="text-3xl font-black text-purple-400" id="ov-yearly">-</p></div>
+        <div class="glass p-4 text-center" style="border-color:rgba(251,191,36,0.2)"><p class="text-yellow-400/70 text-xs mb-1">مجاني</p><p class="text-3xl font-black text-yellow-400" id="ov-free">-</p></div>
+    </div>
+
     <div class="grid lg:grid-cols-2 gap-4 mb-6">
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">📝 الأسئلة حسب القسم</h3><div id="d-sec" class="space-y-3"></div></div>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">🔥 أكثر سؤال يغلطون فيه</h3><div id="d-hard" class="text-purple-300/50">جاري التحميل...</div></div>
@@ -121,15 +200,35 @@
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">🎯 أعلى نسبة صح</h3><div id="d-acc"></div></div>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">⚡ أنشط (آخر 7 أيام)</h3><div id="d-act"></div></div>
     </div>
-    <div class="grid lg:grid-cols-2 gap-4">
+    <div class="grid lg:grid-cols-2 gap-4 mb-6">
         <div class="glass p-6 text-center"><h3 class="font-bold text-base mb-4">📈 نسبة النجاح العامة</h3><p class="text-5xl font-black text-emerald-400" id="d-rate">-</p><p class="text-purple-200/70 text-sm mt-1">من إجمالي المحاولات</p></div>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">🆕 أحدث الأعضاء</h3><div id="d-new"></div></div>
+    </div>
+    <!-- ✅ آخر نشاط -->
+    <div class="glass p-6">
+        <h3 class="font-bold text-base mb-4">🕐 آخر نشاط على المنصة</h3>
+        <div id="d-recent" class="space-y-2"></div>
     </div>
 </div>
 
 <!-- ═══ الأسئلة ═══ -->
 <div id="t-questions" class="tab">
     <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">📝 إدارة الأسئلة</h2><button class="bp" onclick="openQM()">+ إضافة سؤال</button></div>
+
+    <!-- ✅ أداة الكشف عن المكررات -->
+    <div class="dup-tool-wrap mb-4">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <p class="font-bold text-white text-sm">🔍 كشف الأسئلة المكررة</p>
+                <p class="text-purple-200/50 text-xs mt-1">يبحث عن أسئلة متشابهة في بنك الأسئلة</p>
+            </div>
+            <button class="bp" style="padding:8px 18px;font-size:.85rem" onclick="scanDuplicates()">فحص الآن</button>
+        </div>
+        <div id="dup-scan-result" class="hidden">
+            <div id="dup-scan-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
+        </div>
+    </div>
+
     <div class="flex gap-2 mb-4">
         <select id="qf" class="inp" style="max-width:160px" onchange="loadQ()"><option value="all">كل الأقسام</option><option value="quant">كمي</option><option value="verbal">لفظي</option><option value="tahsili">تحصيلي</option></select>
         <input type="text" id="qs" class="inp" placeholder="بحث في الأسئلة..." oninput="loadQ()">
@@ -147,7 +246,12 @@
 <!-- ═══ الكوبونات ═══ -->
 <div id="t-coupons" class="tab">
     <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🎟️ الكوبونات</h2><button class="bp" onclick="$('couponM').classList.remove('hidden')">+ كوبون جديد</button></div>
-    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الكود</th><th class="text-center p-3 text-purple-300/50">الخصم</th><th class="text-center p-3 text-purple-300/50">يطبّق على</th><th class="text-center p-3 text-purple-300/50">المدة</th><th class="text-center p-3 text-purple-300/50">الاستخدام</th><th class="text-center p-3 text-purple-300/50">الحالة</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="c-list"></tbody></table></div>
+    <!-- ✅ تنبيه توضيحي -->
+    <div class="glass p-4 mb-4" style="border-color:rgba(99,102,241,0.2);background:rgba(99,102,241,0.05)">
+        <p class="text-indigo-300 text-sm font-bold mb-1">ℹ️ كيف تشتغل مدة الكوبون؟</p>
+        <p class="text-purple-200/60 text-xs">مدة الكوبون = مدة الاشتراك اللي يحصل عليها العضو. مثلاً: كوبون "شهر واحد" ← العضو يشترك شهر مجاناً بغض النظر عن الباقة. كوبون "سنة" ← يشترك سنة كاملة.</p>
+    </div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الكود</th><th class="text-center p-3 text-purple-300/50">الخصم</th><th class="text-center p-3 text-purple-300/50">يطبّق على</th><th class="text-center p-3 text-purple-300/50">مدة الاشتراك</th><th class="text-center p-3 text-purple-300/50">الاستخدام</th><th class="text-center p-3 text-purple-300/50">الحالة</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="c-list"></tbody></table></div>
 </div>
 
 <!-- ═══ المالية ═══ -->
@@ -161,8 +265,11 @@
     </div>
 </div>
 
-<!-- ═══ البلاغات ═══ -->
-<div id="t-reports" class="tab"><h2 class="text-2xl font-black mb-5">🚩 البلاغات</h2><div id="r-list" class="space-y-2"></div></div>
+<!-- ═══ البلاغات (✅ محسّنة) ═══ -->
+<div id="t-reports" class="tab">
+    <h2 class="text-2xl font-black mb-5">🚩 البلاغات</h2>
+    <div id="r-list" class="space-y-2"></div>
+</div>
 
 <!-- ═══ الموظفين ═══ -->
 <div id="t-staff" class="tab">
@@ -186,44 +293,128 @@
 
 </div><!-- end mc -->
 
-<!-- ═══ Question Modal ═══ -->
-<div id="questionM" class="mbg hidden"><div class="mbox">
+<!-- ═══ Question Modal (✅ محرر نصوص احترافي) ═══ -->
+<div id="questionM" class="mbg hidden"><div class="mbox" style="max-width:620px">
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg" id="qmT">إضافة سؤال</h3><button onclick="$('questionM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
     <input type="hidden" id="qm-id">
-    <div class="space-y-3">
-        <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الرئيسي</label><select id="qm-sec" class="inp" onchange="updateSubSec()"><option value="quant">قدرات كمي</option><option value="verbal">قدرات لفظي</option><option value="tahsili">التحصيلي</option></select></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الفرعي</label><select id="qm-sub" class="inp"></select></div>
-        <div class="p-4 rounded-xl" style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.1)">
+    <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+            <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الرئيسي</label><select id="qm-sec" class="inp" onchange="updateSubSec()"><option value="quant">قدرات كمي</option><option value="verbal">قدرات لفظي</option><option value="tahsili">التحصيلي</option></select></div>
+            <div><label class="text-purple-300/50 text-sm mb-1 block">القسم الفرعي</label><select id="qm-sub" class="inp"></select></div>
+        </div>
+
+        <div class="p-3 rounded-xl" style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.1)">
             <label class="text-purple-300/50 text-sm mb-2 block">🖼️ صورة السؤال (اختياري)</label>
-            <p class="text-purple-200/60 text-xs mb-2">ارفع صورة أو حط رابط — الصورة تظهر فوق نص السؤال</p>
             <input type="file" id="qm-file" accept="image/*" class="inp text-sm mb-2" onchange="previewImg(this)">
             <input id="qm-img" class="inp text-sm" placeholder="أو حط رابط الصورة هنا...">
             <div id="qm-preview" class="mt-2 hidden"><img id="qm-prev-img" class="max-h-32 rounded-lg mx-auto"><button onclick="clearImg()" class="text-red-400 text-xs mt-1 block mx-auto">✕ إزالة الصورة</button></div>
         </div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">نص السؤال</label><textarea id="qm-txt" class="inp" rows="3" placeholder="اكتب نص السؤال... أو اتركه فارغ لو السؤال صورة فقط"></textarea></div>
-        <div class="grid grid-cols-2 gap-2"><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 1</label><input id="qm-c0" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 2</label><input id="qm-c1" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 3</label><input id="qm-c2" class="inp"></div><div><label class="text-purple-300/50 text-xs mb-1 block">خيار 4</label><input id="qm-c3" class="inp"></div></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">الإجابة الصحيحة</label><select id="qm-cor" class="inp"><option value="0">خيار 1</option><option value="1">خيار 2</option><option value="2">خيار 3</option><option value="3">خيار 4</option></select></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">الشرح</label><textarea id="qm-exp" class="inp" rows="3"></textarea></div>
+
+        <!-- ✅ محرر نص السؤال -->
+        <div>
+            <label class="text-purple-300/50 text-sm mb-2 block">نص السؤال</label>
+            <div class="editor-wrap" id="qeditor-wrap">
+                <div class="editor-toolbar" id="qeditor-tb"></div>
+                <div class="editor-body" id="qm-editor" contenteditable="true" data-placeholder="اكتب نص السؤال هنا..." oninput="checkDuplicateLive()"></div>
+            </div>
+            <div id="dup-warn" class="dup-warn mt-2">
+                <p class="text-yellow-300 text-sm font-bold">⚠️ سؤال مشابه موجود!</p>
+                <p id="dup-text" class="text-yellow-200/70 text-xs mt-1"></p>
+            </div>
+        </div>
+
+        <!-- الخيارات -->
+        <div class="grid grid-cols-2 gap-2">
+            <div><label class="text-purple-300/50 text-xs mb-1 block">خيار 1 (أ)</label><input id="qm-c0" class="inp" placeholder="الخيار الأول"></div>
+            <div><label class="text-purple-300/50 text-xs mb-1 block">خيار 2 (ب)</label><input id="qm-c1" class="inp" placeholder="الخيار الثاني"></div>
+            <div><label class="text-purple-300/50 text-xs mb-1 block">خيار 3 (ج)</label><input id="qm-c2" class="inp" placeholder="الخيار الثالث"></div>
+            <div><label class="text-purple-300/50 text-xs mb-1 block">خيار 4 (د)</label><input id="qm-c3" class="inp" placeholder="الخيار الرابع"></div>
+        </div>
+
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الإجابة الصحيحة</label>
+            <select id="qm-cor" class="inp"><option value="0">خيار 1 (أ)</option><option value="1">خيار 2 (ب)</option><option value="2">خيار 3 (ج)</option><option value="3">خيار 4 (د)</option></select>
+        </div>
+
+        <!-- ✅ محرر الشرح -->
+        <div>
+            <label class="text-purple-300/50 text-sm mb-2 block">💡 الشرح</label>
+            <div class="editor-wrap" id="xeditor-wrap">
+                <div class="editor-toolbar" id="xeditor-tb"></div>
+                <div class="editor-body" id="qm-exp-editor" contenteditable="true" data-placeholder="اكتب شرح الحل هنا... (يدعم الأسطر والتنسيق)"></div>
+            </div>
+        </div>
+
         <button class="bp w-full" onclick="saveQ2()">💾 حفظ السؤال</button>
     </div>
 </div></div>
 
-<!-- ═══ User Modal ═══ -->
+<!-- ═══ User Modal (✅ محسّن - إيميل + كلمة سر + دور staff) ═══ -->
 <div id="userM" class="mbg hidden"><div class="mbox">
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">تعديل العضو</h3><button onclick="$('userM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
     <input type="hidden" id="um-id">
-    <div class="space-y-3"><div><label class="text-purple-300/50 text-sm mb-1 block">الاسم</label><input id="um-n" class="inp"></div><div><label class="text-purple-300/50 text-sm mb-1 block">الإيميل</label><input id="um-e" class="inp" disabled></div><div><label class="text-purple-300/50 text-sm mb-1 block">الاشتراك</label><select id="um-s" class="inp"><option value="free">مجاني</option><option value="monthly">شهري</option><option value="yearly">سنوي</option></select></div><div><label class="text-purple-300/50 text-sm mb-1 block">الدور</label><select id="um-r" class="inp"><option value="user">مستخدم</option><option value="admin">أدمن</option></select></div><button class="bp w-full" onclick="saveU2()">💾 حفظ</button></div>
+    <div class="space-y-3">
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الاسم</label><input id="um-n" class="inp"></div>
+        <!-- ✅ الإيميل قابل للتعديل -->
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الإيميل</label><input id="um-e" class="inp" placeholder="البريد الإلكتروني"></div>
+        <!-- ✅ كلمة سر جديدة -->
+        <div>
+            <label class="text-purple-300/50 text-sm mb-1 block">كلمة سر جديدة <span class="text-purple-300/40 text-xs">(اتركها فارغة إذا ما تبي تغييرها)</span></label>
+            <input id="um-pw" class="inp" type="password" placeholder="اكتب كلمة السر الجديدة هنا...">
+        </div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الاشتراك</label>
+            <select id="um-s" class="inp">
+                <option value="free">مجاني</option>
+                <option value="monthly">شهري</option>
+                <option value="yearly">سنوي</option>
+            </select>
+        </div>
+        <!-- ✅ دور موسّع يشمل staff -->
+        <div><label class="text-purple-300/50 text-sm mb-1 block">الدور</label>
+            <select id="um-r" class="inp">
+                <option value="user">مستخدم عادي</option>
+                <option value="staff">موظف</option>
+                <option value="admin">أدمن</option>
+            </select>
+        </div>
+        <!-- ✅ تاريخ انتهاء الاشتراك -->
+        <div><label class="text-purple-300/50 text-sm mb-1 block">تاريخ انتهاء الاشتراك</label>
+            <input id="um-exp" type="date" class="inp">
+        </div>
+        <button class="bp w-full" onclick="saveU2()">💾 حفظ التعديلات</button>
+    </div>
 </div></div>
 
-<!-- ═══ Coupon Modal ═══ -->
+<!-- ═══ Coupon Modal (✅ محسّن) ═══ -->
 <div id="couponM" class="mbg hidden"><div class="mbox">
     <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">كوبون جديد</h3><button onclick="$('couponM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
     <div class="space-y-3">
         <div><label class="text-purple-300/50 text-sm mb-1 block">الكود</label><input id="cm-c" class="inp" style="text-transform:uppercase" placeholder="مثال: MADAREK50"></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">يطبّق على</label><select id="cm-plan" class="inp"><option value="all">الكل (شهري + سنوي)</option><option value="monthly">شهري فقط</option><option value="yearly">سنوي فقط</option></select></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">نوع الخصم</label><select id="cm-t" class="inp"><option value="percentage">نسبة %</option><option value="fixed">مبلغ ثابت (ريال)</option></select></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">القيمة</label><input type="number" id="cm-v" class="inp" placeholder="مثال: 50"></div>
-        <div><label class="text-purple-300/50 text-sm mb-1 block">مدة الكوبون (اشتراك يفعّل لكم شهر)</label><select id="cm-dur" class="inp"><option value="1">شهر واحد</option><option value="3">3 أشهر</option><option value="6">6 أشهر</option><option value="12" selected>سنة كاملة</option></select></div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">يطبّق على</label>
+            <select id="cm-plan" class="inp">
+                <option value="all">الكل (شهري + سنوي)</option>
+                <option value="monthly">شهري فقط</option>
+                <option value="yearly">سنوي فقط</option>
+            </select>
+        </div>
+        <div><label class="text-purple-300/50 text-sm mb-1 block">نوع الخصم</label>
+            <select id="cm-t" class="inp">
+                <option value="percentage">نسبة %</option>
+                <option value="fixed">مبلغ ثابت (ريال)</option>
+                <option value="free">مجاني 100% (بدون دفع)</option>
+            </select>
+        </div>
+        <div id="cm-val-wrap"><label class="text-purple-300/50 text-sm mb-1 block">القيمة</label><input type="number" id="cm-v" class="inp" placeholder="مثال: 50"></div>
+        <!-- ✅ مدة الاشتراك موضّحة -->
+        <div>
+            <label class="text-purple-300/50 text-sm mb-1 block">مدة الاشتراك الذي يحصل عليه المستخدم</label>
+            <select id="cm-dur" class="inp">
+                <option value="1">شهر واحد</option>
+                <option value="3">3 أشهر</option>
+                <option value="6">6 أشهر</option>
+                <option value="12" selected>سنة كاملة (12 شهر)</option>
+            </select>
+            <p class="text-purple-200/50 text-xs mt-1">⚠️ هذه المدة هي ما يحصل عليه العضو عند استخدام الكوبون — بغض النظر عن الباقة</p>
+        </div>
         <div class="grid grid-cols-2 gap-3">
             <div><label class="text-purple-300/50 text-sm mb-1 block">الحد الأقصى للاستخدام</label><input type="number" id="cm-x" class="inp" value="100"></div>
             <div><label class="text-purple-300/50 text-sm mb-1 block">ينتهي بتاريخ</label><input type="date" id="cm-e" class="inp"></div>
@@ -280,6 +471,7 @@
 <script>
 var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
 var me=null;
+var _allQCache=[]; // ✅ cache للأسئلة لفحص التكرار
 function $(id){return document.getElementById(id)}
 
 var subSections={
@@ -290,6 +482,248 @@ var subSections={
 function updateSubSec(){
     var sec=$('qm-sec').value;var opts=subSections[sec]||[];
     $('qm-sub').innerHTML=opts.map(function(o){return'<option value="'+o+'">'+o+'</option>'}).join('');
+}
+
+// ══════════════════════════════════════════════════
+// ✅ RICH TEXT EDITOR — محرر النصوص الاحترافي
+// ══════════════════════════════════════════════════
+
+// رموز رياضية وخاصة
+var MATH_SYMBOLS=[
+    {l:'×',t:'ضرب'},  {l:'÷',t:'قسمة'}, {l:'±',t:'±'},
+    {l:'√',t:'جذر'},  {l:'²',t:'تربيع'},{l:'³',t:'تكعيب'},
+    {l:'≠',t:'لا يساوي'},{l:'≤',t:'≤'},{l:'≥',t:'≥'},
+    {l:'∞',t:'لانهاية'},{l:'π',t:'باي'},{l:'°',t:'درجة'},
+    {l:'½',t:'نصف'},{l:'¼',t:'ربع'},{l:'¾',t:'ثلاثة أرباع'},
+    {l:'→',t:'سهم'},{l:'∴',t:'إذن'},{l:'∵',t:'لأن'},
+];
+
+var COLORS=['#ffffff','#f87171','#fb923c','#facc15','#4ade80','#60a5fa','#a78bfa','#f472b6','#a5b4fc'];
+
+function buildToolbar(tbId, editorId){
+    var tb=$(tbId), ed=$(editorId);
+    if(!tb||!ed)return;
+
+    function cmd(c,v){
+        ed.focus();
+        document.execCommand(c,false,v||null);
+        updateToolbarState(tbId,editorId);
+    }
+
+    function btn(icon,title,action,id){
+        var b=document.createElement('button');
+        b.className='tb-btn';b.type='button';
+        b.title=title;b.innerHTML=icon;
+        if(id)b.id=id;
+        b.onclick=function(e){e.preventDefault();action()};
+        tb.appendChild(b);
+        return b;
+    }
+    function sep(){var s=document.createElement('div');s.className='tb-sep';tb.appendChild(s)}
+
+    // اتجاه
+    btn('⇒','يسار لليمين (RTL)',function(){
+        var sel=window.getSelection();
+        if(sel&&sel.rangeCount){
+            var range=sel.getRangeAt(0);
+            var block=range.commonAncestorContainer;
+            while(block&&block.nodeType!==1)block=block.parentNode;
+            if(block&&block!==ed){block.style.direction='rtl';block.style.textAlign='right';}
+            else ed.style.direction='rtl';
+        }else{ed.style.direction='rtl';}
+    },tbId+'_rtl');
+    btn('⇐','يمين لليسار (LTR)',function(){
+        var sel=window.getSelection();
+        if(sel&&sel.rangeCount){
+            var range=sel.getRangeAt(0);
+            var block=range.commonAncestorContainer;
+            while(block&&block.nodeType!==1)block=block.parentNode;
+            if(block&&block!==ed){block.style.direction='ltr';block.style.textAlign='left';}
+            else ed.style.direction='ltr';
+        }
+    },tbId+'_ltr');
+    sep();
+
+    // محاذاة
+    btn('≡','محاذاة يمين',function(){cmd('justifyRight')},tbId+'_jR');
+    btn('☰','توسيط',function(){cmd('justifyCenter')},tbId+'_jC');
+    btn('☷','محاذاة يسار',function(){cmd('justifyLeft')},tbId+'_jL');
+    sep();
+
+    // تنسيق
+    btn('<b>ب</b>','تغميق',function(){cmd('bold')},tbId+'_bold');
+    btn('<i>ي</i>','مائل',function(){cmd('italic')},tbId+'_ital');
+    btn('<u>خ</u>','تسطير',function(){cmd('underline')},tbId+'_und');
+    btn('<s>ش</s>','يتوسطه خط',function(){cmd('strikeThrough')},tbId+'_str');
+    sep();
+
+    // حجم الخط
+    var fs=document.createElement('select');
+    fs.className='tb-select';fs.title='حجم الخط';
+    [{v:'2',l:'صغير'},{v:'3',l:'عادي'},{v:'4',l:'كبير'},{v:'5',l:'أكبر'},{v:'6',l:'ضخم'}].forEach(function(o){
+        var op=document.createElement('option');op.value=o.v;op.textContent=o.l;
+        if(o.v==='3')op.selected=true;
+        fs.appendChild(op);
+    });
+    fs.onchange=function(){cmd('fontSize',this.value)};
+    tb.appendChild(fs);
+    sep();
+
+    // لون الخط
+    var cl=document.createElement('input');
+    cl.type='color';cl.className='tb-color';cl.value='#ffffff';cl.title='لون الخط';
+    cl.oninput=function(){cmd('foreColor',this.value)};
+    tb.appendChild(cl);
+
+    // ألوان سريعة
+    COLORS.forEach(function(c){
+        var b2=document.createElement('button');
+        b2.className='tb-btn';b2.type='button';b2.title=c;
+        b2.style.cssText='width:18px;height:18px;border-radius:50%;background:'+c+';border:1px solid rgba(255,255,255,0.2);padding:0;flex-shrink:0';
+        b2.onclick=function(e){e.preventDefault();cmd('foreColor',c)};
+        tb.appendChild(b2);
+    });
+    sep();
+
+    // رموز رياضية
+    var mathSel=document.createElement('select');
+    mathSel.className='tb-select';mathSel.title='رموز رياضية';
+    var defOpt=document.createElement('option');defOpt.value='';defOpt.textContent='∑ رمز';
+    mathSel.appendChild(defOpt);
+    MATH_SYMBOLS.forEach(function(s){
+        var op=document.createElement('option');op.value=s.l;op.textContent=s.l+' '+s.t;
+        mathSel.appendChild(op);
+    });
+    mathSel.onchange=function(){
+        if(!this.value)return;
+        ed.focus();
+        document.execCommand('insertText',false,this.value);
+        this.value='';
+        updateToolbarState(tbId,editorId);
+    };
+    tb.appendChild(mathSel);
+
+    // معادلة كاملة (تمييز)
+    btn('𝑥²','إدراج معادلة/كسر',function(){
+        ed.focus();
+        var v=prompt('اكتب المعادلة:','س + 5 = 10');
+        if(v)document.execCommand('insertHTML',false,'<span class="math-sym">'+v+'</span>&nbsp;');
+    });
+    sep();
+
+    // قوائم وتعداد
+    btn('•','قائمة نقطية',function(){cmd('insertUnorderedList')});
+    btn('1.','قائمة مرقمة',function(){cmd('insertOrderedList')});
+
+    ed.addEventListener('keydown',function(e){
+        // Enter يحتفظ بالتنسيق ويضيف سطر جديد
+        if(e.key==='Enter'&&!e.shiftKey){
+            e.preventDefault();
+            document.execCommand('insertParagraph',false);
+        }
+    });
+    ed.addEventListener('keyup',function(){updateToolbarState(tbId,editorId)});
+    ed.addEventListener('mouseup',function(){updateToolbarState(tbId,editorId)});
+}
+
+function updateToolbarState(tbId, editorId){
+    var states={bold:tbId+'_bold',italic:tbId+'_ital',underline:tbId+'_und',strikeThrough:tbId+'_str'};
+    Object.keys(states).forEach(function(cmd2){
+        var el=$(states[cmd2]);
+        if(el)el.classList.toggle('active',document.queryCommandState(cmd2));
+    });
+}
+
+function initEditors(){
+    buildToolbar('qeditor-tb','qm-editor');
+    buildToolbar('xeditor-tb','qm-exp-editor');
+}
+
+// ════════════════════════════
+// ✅ فحص التكرار أثناء الكتابة
+// ════════════════════════════
+var _dupTimer=null;
+function checkDuplicateLive(){
+    clearTimeout(_dupTimer);
+    _dupTimer=setTimeout(function(){
+        var ed=$('qm-editor');if(!ed)return;
+        var txt=(ed.innerText||'').trim();
+        var editId=$('qm-id').value;
+        if(txt.length<15){$('dup-warn').style.display='none';return}
+        var sim=_allQCache.find(function(q){
+            if(q.id==editId)return false;
+            var a=txt.toLowerCase(),b=(q.question_text||'').toLowerCase();
+            if(a===b)return true;
+            var minLen=Math.min(a.length,b.length);
+            var checkLen=Math.floor(minLen*0.65);
+            if(checkLen<8)return false;
+            return b.includes(a.substring(0,checkLen))||a.includes(b.substring(0,checkLen));
+        });
+        if(sim){
+            $('dup-text').textContent='موجود: '+sim.question_text.substring(0,90)+'...';
+            $('dup-warn').style.display='block';
+        }else{
+            $('dup-warn').style.display='none';
+        }
+    },700);
+}
+
+// ════════════════════════════
+// ✅ فحص شامل للمكررات
+// ════════════════════════════
+async function scanDuplicates(){
+    var btn=document.querySelector('[onclick="scanDuplicates()"]');
+    if(btn){btn.textContent='⏳ جاري الفحص...';btn.disabled=true;}
+    var{data}=await sb.from('questions').select('id,question_text,section');
+    if(btn){btn.textContent='فحص الآن';btn.disabled=false;}
+    if(!data||data.length<2){
+        $('dup-scan-result').classList.remove('hidden');
+        $('dup-scan-list').innerHTML='<p class="text-emerald-400 text-sm text-center py-3">✅ ما فيه أسئلة مكررة</p>';
+        return;
+    }
+    var groups=[];
+    var used=new Set();
+    var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
+    for(var i=0;i<data.length;i++){
+        if(used.has(data[i].id))continue;
+        var simGroup=[data[i]];
+        var a=(data[i].question_text||'').toLowerCase().trim();
+        for(var j=i+1;j<data.length;j++){
+            if(used.has(data[j].id))continue;
+            var b=(data[j].question_text||'').toLowerCase().trim();
+            if(!a||!b)continue;
+            var sim=false;
+            if(a===b){sim=true;}
+            else{
+                var shorter=a.length<b.length?a:b;
+                var longer=a.length<b.length?b:a;
+                if(shorter.length>=10&&longer.includes(shorter.substring(0,Math.floor(shorter.length*0.7))))sim=true;
+            }
+            if(sim){simGroup.push(data[j]);used.add(data[j].id);}
+        }
+        if(simGroup.length>1){
+            used.add(data[i].id);
+            groups.push(simGroup);
+        }
+    }
+    $('dup-scan-result').classList.remove('hidden');
+    if(!groups.length){
+        $('dup-scan-list').innerHTML='<p class="text-emerald-400 text-sm text-center py-3">✅ ما فيه أسئلة مكررة — بنك الأسئلة نظيف</p>';
+        return;
+    }
+    var h='<p class="text-red-400 text-sm font-bold mb-2">وُجدت '+groups.length+' مجموعة متكررة:</p>';
+    groups.forEach(function(g,gi){
+        h+='<div class="dup-result-item"><div class="flex-1"><p class="text-red-300 text-xs font-bold mb-1">المجموعة '+(gi+1)+' ('+g.length+' أسئلة)</p>';
+        g.forEach(function(q){
+            h+='<div class="flex items-start gap-2 mb-1"><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'" style="font-size:.7rem;padding:1px 6px">'+(sn[q.section]||'')+'</span>'
+              +'<span class="text-white text-xs flex-1">'+q.question_text.substring(0,70)+'...</span>'
+              +'<button class="text-yellow-400 text-xs underline flex-shrink-0" onclick="editQ(\''+q.id+'\')">تعديل</button>'
+              +'<button class="text-red-400 text-xs underline flex-shrink-0 mr-1" onclick="delQ(\''+q.id+'\')">حذف</button>'
+              +'</div>';
+        });
+        h+='</div></div>';
+    });
+    $('dup-scan-list').innerHTML=h;
 }
 
 var _staffRole='staff';
@@ -306,6 +740,8 @@ async function init(){
     }
     _applyPerms();
     loadOV();
+    // ✅ تحميل كاش الأسئلة
+    sb.from('questions').select('id,question_text').then(function(r){if(r.data)_allQCache=r.data});
 }
 
 function _hasPerm(perm){
@@ -318,6 +754,31 @@ function _applyPerms(){
     document.querySelectorAll('.sb-link[data-perm]').forEach(function(el){
         el.style.display=_hasPerm(el.dataset.perm)?'':'none';
     });
+}
+
+// ✅ فحص التكرار
+var _dupTimer=null;
+function checkDuplicate(){
+    clearTimeout(_dupTimer);
+    _dupTimer=setTimeout(function(){
+        var txt=($('qm-txt').value||'').trim();
+        var editId=$('qm-id').value;
+        if(txt.length<10){$('dup-warn').style.display='none';return}
+        var sim=_allQCache.find(function(q){
+            if(q.id==editId)return false;
+            var a=txt.toLowerCase(),b=(q.question_text||'').toLowerCase();
+            // بحث عن تشابه ≥70%
+            if(b.includes(a.substring(0,Math.floor(a.length*0.7))))return true;
+            if(a.includes(b.substring(0,Math.floor(b.length*0.7))))return true;
+            return false;
+        });
+        if(sim){
+            $('dup-text').textContent='السؤال الموجود: '+sim.question_text.substring(0,80)+'...';
+            $('dup-warn').style.display='block';
+        }else{
+            $('dup-warn').style.display='none';
+        }
+    },600);
 }
 
 function openStaffModal(data){
@@ -394,22 +855,50 @@ document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
 
 function toast(m,ok){var t=$('toast');t.textContent=m;t.className='toast '+(ok?'tok':'ter');setTimeout(function(){t.classList.add('hidden')},3000)}
 
+// ✅ نظرة عامة موسّعة
 async function loadOV(){
-    var{data:q}=await sb.from('questions').select('section,sub_section');
-    var{data:u}=await sb.from('profiles').select('id,full_name,email,avatar_emoji,created_at');
-    var{data:a}=await sb.from('attempts').select('id,user_id,is_correct,question_id,created_at');
-    var{data:r}=await sb.from('reports').select('id');
-    $('s-q').textContent=q?q.length:0;$('s-u').textContent=u?u.length:0;
-    $('s-a').textContent=a?a.length:0;$('s-r').textContent=r?r.length:0;
+    var[{data:q},{data:u},{data:a},{data:r}]=await Promise.all([
+        sb.from('questions').select('section,sub_section'),
+        sb.from('profiles').select('id,full_name,email,avatar_emoji,created_at,subscription_type'),
+        sb.from('attempts').select('id,user_id,is_correct,question_id,created_at').order('created_at',{ascending:false}).limit(500),
+        sb.from('reports').select('id')
+    ]);
+    $('s-q').textContent=q?q.length:0;
+    $('s-u').textContent=u?u.length:0;
+    $('s-a').textContent=a?a.length:0;
+    $('s-r').textContent=r?r.length:0;
+
+    // ✅ إحصائيات الاشتراكات
+    if(u){
+        var um=u.filter(function(x){return x.subscription_type==='monthly'}).length;
+        var uy=u.filter(function(x){return x.subscription_type==='yearly'}).length;
+        var uf=u.filter(function(x){return!x.subscription_type||x.subscription_type==='free'}).length;
+        $('ov-active').textContent=um+uy;
+        $('ov-monthly').textContent=um;
+        $('ov-yearly').textContent=uy;
+        $('ov-free').textContent=uf;
+    }
+
+    // ✅ محاكاة عدد المتصلين (آخر 5 دقائق)
+    if(a){
+        var fiveMin=new Date(Date.now()-5*60*1000);
+        var onlineSet=new Set();
+        a.forEach(function(x){if(new Date(x.created_at)>=fiveMin)onlineSet.add(x.user_id)});
+        $('s-online').textContent=onlineSet.size;
+    }
 
     if(q){var c={quant:0,verbal:0,tahsili:0};q.forEach(function(x){if(c[x.section]!==undefined)c[x.section]++});
     var nm={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'التحصيلي'},cl={quant:'#6366f1',verbal:'#10b981',tahsili:'#8b5cf6'},tot=q.length||1,h='';
     for(var k in c){var p=Math.round(c[k]/tot*100);h+='<div class="flex items-center justify-between text-sm mb-1"><span class="text-purple-200/70">'+nm[k]+'</span><span class="font-bold text-white">'+c[k]+'</span></div><div class="h-2 rounded-full mb-3" style="background:rgba(255,255,255,0.06)"><div class="h-full rounded-full" style="width:'+p+'%;background:'+cl[k]+'"></div></div>'}
     $('d-sec').innerHTML=h}
 
-    if(!a||!a.length){$('d-hard').innerHTML='<p class="text-purple-200/70">ما فيه محاولات بعد</p>';$('d-rate').textContent='-';$('d-top').innerHTML=$('d-acc').innerHTML=$('d-act').innerHTML=$('d-new').innerHTML='<p class="text-purple-200/60">لا توجد بيانات</p>';
-    if(u&&u.length){var nh='';u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p></div><p class="text-purple-200/60 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'});$('d-new').innerHTML=nh}
-    return}
+    if(!a||!a.length){
+        $('d-hard').innerHTML='<p class="text-purple-200/70">ما فيه محاولات بعد</p>';
+        $('d-rate').textContent='-';
+        $('d-top').innerHTML=$('d-acc').innerHTML=$('d-act').innerHTML=$('d-recent').innerHTML='<p class="text-purple-200/60">لا توجد بيانات</p>';
+        if(u&&u.length)renderNewUsers(u);
+        return;
+    }
 
     var wr=a.filter(function(x){return!x.is_correct}),fr={};
     wr.forEach(function(x){fr[x.question_id]=(fr[x.question_id]||0)+1});
@@ -418,32 +907,60 @@ async function loadOV(){
     if(hq){var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};$('d-hard').innerHTML='<span class="bg bg-m mb-2">'+(sn[hq.section]||'')+'</span><p class="text-white text-base mt-2">'+hq.question_text.substring(0,120)+'</p><p class="text-red-400 text-sm mt-2 font-bold">🔴 '+fr[hid]+' خطأ</p>'}}
     else $('d-hard').innerHTML='<p class="text-purple-200/70">ما فيه أخطاء</p>';
 
-    var cor=a.filter(function(x){return x.is_correct}).length;$('d-rate').textContent=Math.round(cor/a.length*100)+'%';
+    var cor=a.filter(function(x){return x.is_correct}).length;
+    $('d-rate').textContent=Math.round(cor/a.length*100)+'%';
 
-    var um={};if(u)u.forEach(function(x){um[x.id]=x});
+    var um2={};if(u)u.forEach(function(x){um2[x.id]=x});
     var ua={};a.forEach(function(x){if(!ua[x.user_id])ua[x.user_id]={t:0,c:0};ua[x.user_id].t++;if(x.is_correct)ua[x.user_id].c++});
     var rc=['#fbbf24','#c0c0c0','#cd7f32','#818cf8','#818cf8'],rb=['rgba(251,191,36,0.15)','rgba(192,192,192,0.1)','rgba(205,127,50,0.1)','rgba(129,140,248,0.08)','rgba(129,140,248,0.08)'];
 
-    function rank(arr,el,valFn){var h='';arr.forEach(function(uid,i){var usr=um[uid]||{};h+='<div class="rr"><div class="rn" style="background:'+rb[i]+';color:'+rc[i]+'">'+(i+1)+'</div><div class="flex-1"><p class="text-white font-bold text-sm">'+(usr.full_name||'مجهول')+'</p></div><div class="text-left">'+valFn(uid)+'</div></div>'});el.innerHTML=h||'<p class="text-purple-200/60">لا توجد بيانات</p>'}
+    function rank(arr,el,valFn){var h='';arr.forEach(function(uid,i){var usr=um2[uid]||{};h+='<div class="rr"><div class="rn" style="background:'+rb[i]+';color:'+rc[i]+'">'+(i+1)+'</div><div class="flex-1"><p class="text-white font-bold text-sm">'+(usr.full_name||'مجهول')+'</p></div><div class="text-left">'+valFn(uid)+'</div></div>'});el.innerHTML=h||'<p class="text-purple-200/60">لا توجد بيانات</p>'}
 
     rank(Object.keys(ua).sort(function(a,b){return ua[b].t-ua[a].t}).slice(0,5),$('d-top'),function(uid){return'<p class="text-lg font-black text-indigo-400">'+ua[uid].t+'</p><p class="text-purple-200/60 text-[10px]">محاولة</p>'});
     rank(Object.keys(ua).filter(function(uid){return ua[uid].t>=3}).sort(function(a,b){return ua[b].c/ua[b].t-ua[a].c/ua[a].t}).slice(0,5),$('d-acc'),function(uid){return'<p class="text-lg font-black text-emerald-400">'+Math.round(ua[uid].c/ua[uid].t*100)+'%</p>'});
 
-    var wa=new Date();wa.setDate(wa.getDate()-7);var ra={};a.forEach(function(x){if(new Date(x.created_at)>=wa)ra[x.user_id]=(ra[x.user_id]||0)+1});
+    var wa=new Date();wa.setDate(wa.getDate()-7);var ra={};
+    a.forEach(function(x){if(new Date(x.created_at)>=wa)ra[x.user_id]=(ra[x.user_id]||0)+1});
     rank(Object.keys(ra).sort(function(a,b){return ra[b]-ra[a]}).slice(0,5),$('d-act'),function(uid){return'<p class="text-lg font-black text-purple-400">'+ra[uid]+'</p><p class="text-purple-200/60 text-[10px]">هالأسبوع</p>'});
 
-    if(u&&u.length){var nh='';u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p><p class="text-purple-200/60 text-xs">'+(m.email||'')+'</p></div><p class="text-purple-200/60 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'});$('d-new').innerHTML=nh}
+    if(u&&u.length)renderNewUsers(u);
+
+    // ✅ آخر نشاط
+    var recentH='';
+    a.slice(0,10).forEach(function(x){
+        var usr=um2[x.user_id]||{};
+        var d=new Date(x.created_at);
+        var timeStr=d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})+' - '+d.toLocaleDateString('ar-SA');
+        recentH+='<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5"><span class="text-base">'+(usr.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white text-sm font-bold">'+(usr.full_name||'مجهول')+'</p></div><span class="text-xs '+(x.is_correct?'text-emerald-400':'text-red-400')+'">'+(x.is_correct?'✓ صح':'✗ خطأ')+'</span><p class="text-purple-200/50 text-xs">'+timeStr+'</p></div>';
+    });
+    $('d-recent').innerHTML=recentH||'<p class="text-purple-200/60">لا يوجد نشاط</p>';
 }
 
+function renderNewUsers(u){
+    var nh='';
+    u.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)}).slice(0,5).forEach(function(m){
+        nh+='<div class="rr"><span class="text-lg">'+(m.avatar_emoji||'👤')+'</span><div class="flex-1"><p class="text-white font-bold text-sm">'+(m.full_name||'—')+'</p><p class="text-purple-200/60 text-xs">'+(m.email||'')+'</p></div><p class="text-purple-200/60 text-xs">'+(m.created_at?new Date(m.created_at).toLocaleDateString('ar-SA'):'')+'</p></div>'
+    });
+    $('d-new').innerHTML=nh;
+}
+
+// ✅ تحميل الأسئلة محسّن
 async function loadQ(){
-    var f=$('qf').value,s=$('qs').value.trim().toLowerCase(),qr=sb.from('questions').select('*').order('created_at',{ascending:false});
-    if(f!=='all')qr=qr.eq('section',f);var{data}=await qr;if(!data)data=[];
-    if(s)data=data.filter(function(q){return q.question_text.toLowerCase().includes(s)});
+    $('q-list').innerHTML='<p class="text-center text-purple-200/60 py-4">⏳ جاري التحميل...</p>';
+    var f=$('qf').value,s=$('qs').value.trim().toLowerCase();
+    var qr=sb.from('questions').select('id,section,sub_section,question_text,image_url,correct_index,choices').order('created_at',{ascending:false});
+    if(f!=='all')qr=qr.eq('section',f);
+    var{data}=await qr;
+    if(!data)data=[];
+    // ✅ تحديث الكاش
+    _allQCache=data.map(function(q){return{id:q.id,question_text:q.question_text}});
+    if(s)data=data.filter(function(q){return (q.question_text||'').toLowerCase().includes(s)});
     var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'},h='';
     data.forEach(function(q){
         var img=q.image_url?'<img src="'+q.image_url+'" class="w-16 h-16 rounded-lg object-cover ml-2 flex-shrink-0">':'';
         h+='<div class="glass p-4"><div class="flex items-start justify-between gap-3"><div class="flex-1 flex gap-3">'+img+'<div><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'">'+(sn[q.section]||'')+'</span>'+(q.sub_section?'<span class="text-purple-200/60 text-xs mr-2">'+q.sub_section+'</span>':'')+'<p class="text-sm text-white leading-relaxed mt-1">'+(q.question_text||'سؤال بالصورة').substring(0,100)+'</p></div></div><div class="flex gap-1 flex-shrink-0"><button class="bs qact" data-a="preview" data-id="'+q.id+'">👁️</button><button class="bs qact" data-a="edit" data-id="'+q.id+'">✏️</button><button class="bd qact" data-a="del" data-id="'+q.id+'">🗑️</button></div></div></div>'
-    });$('q-list').innerHTML=h||'<p class="text-purple-200/60 text-center py-8">لا توجد أسئلة</p>';
+    });
+    $('q-list').innerHTML=h||'<p class="text-purple-200/60 text-center py-8">لا توجد أسئلة</p>';
     document.querySelectorAll('.qact').forEach(function(btn){
         btn.addEventListener('click',function(){
             var id=this.dataset.id,a=this.dataset.a;
@@ -455,16 +972,23 @@ async function loadQ(){
 }
 
 function openQM(q){
-    $('qmT').textContent=q?'تعديل السؤال':'إضافة سؤال';$('qm-id').value=q?q.id:'';
-    $('qm-sec').value=q?q.section:'quant';updateSubSec();
+    $('qmT').textContent=q?'تعديل السؤال':'إضافة سؤال';
+    $('qm-id').value=q?q.id:'';
+    $('qm-sec').value=q?q.section:'quant';
+    updateSubSec();
     if(q&&q.sub_section)$('qm-sub').value=q.sub_section;
-    $('qm-txt').value=q?q.question_text:'';
+    // ✅ تحميل المحتوى في المحرر
+    var qed=$('qm-editor'),xed=$('qm-exp-editor');
+    if(qed)qed.innerHTML=q?(q.question_text||''):'';
+    if(xed)xed.innerHTML=q?(q.explanation||''):'';
     $('qm-img').value=q?(q.image_url||''):'';
-    if(q&&q.image_url){$('qm-prev-img').src=q.image_url;$('qm-preview').classList.remove('hidden')}else{$('qm-preview').classList.add('hidden')}
+    if(q&&q.image_url){$('qm-prev-img').src=q.image_url;$('qm-preview').classList.remove('hidden')}
+    else{$('qm-preview').classList.add('hidden')}
     $('qm-file').value='';
+    $('dup-warn').style.display='none';
     var c=q?(q.choices||[]):[];for(var i=0;i<4;i++)$('qm-c'+i).value=c[i]||'';
-    $('qm-cor').value=q?q.correct_index:'0';$('qm-exp').value=q?(q.explanation||''):'';
-    $('questionM').classList.remove('hidden')
+    $('qm-cor').value=q?q.correct_index:'0';
+    $('questionM').classList.remove('hidden');
 }
 function previewImg(inp){if(inp.files&&inp.files[0]){var r=new FileReader();r.onload=function(e){$('qm-prev-img').src=e.target.result;$('qm-preview').classList.remove('hidden')};r.readAsDataURL(inp.files[0])}}
 function clearImg(){$('qm-preview').classList.add('hidden');$('qm-img').value='';$('qm-file').value='';$('qm-prev-img').src=''}
@@ -494,9 +1018,7 @@ async function uploadImg(){
     try{
         var ext=file.name.split('.').pop();var name='q_'+Date.now()+'.'+ext;
         var{data,error}=await sb.storage.from('question-images').upload(name,file,{cacheControl:'3600',upsert:false});
-        if(error){
-            return await new Promise(function(resolve){var reader=new FileReader();reader.onload=function(e){resolve(e.target.result)};reader.readAsDataURL(file)});
-        }
+        if(error){return await new Promise(function(resolve){var reader=new FileReader();reader.onload=function(e){resolve(e.target.result)};reader.readAsDataURL(file)})}
         var{data:pub}=sb.storage.from('question-images').getPublicUrl(name);
         return pub.publicUrl;
     }catch(e){
@@ -507,34 +1029,184 @@ async function uploadImg(){
 async function saveQ2(){
     var id=$('qm-id').value;
     var imgUrl=await uploadImg();
-    var obj={section:$('qm-sec').value,subject:$('qm-sub').value||$('qm-sec').value,sub_section:$('qm-sub').value,question_text:$('qm-txt').value||'سؤال بالصورة',choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],correct_index:parseInt($('qm-cor').value),explanation:$('qm-exp').value,image_url:imgUrl||null};
+    // ✅ قراءة من المحرر الغني
+    var qed=$('qm-editor'),xed=$('qm-exp-editor');
+    var qText=qed?qed.innerHTML.trim():'';
+    var qTextPlain=qed?qed.innerText.trim():'';
+    var expHtml=xed?xed.innerHTML.trim():'';
+
+    var obj={
+        section:$('qm-sec').value,
+        subject:$('qm-sub').value||$('qm-sec').value,
+        sub_section:$('qm-sub').value,
+        question_text:qText||'سؤال بالصورة',
+        choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],
+        correct_index:parseInt($('qm-cor').value),
+        explanation:expHtml||null,
+        image_url:imgUrl||null
+    };
     if(!obj.choices[0]){toast('املأ الخيارات',false);return}
     var{error}=id?await sb.from('questions').update(obj).eq('id',id):await sb.from('questions').insert(obj);
     if(error){toast('خطأ: '+error.message,false);return}
-    toast(id?'تم التحديث':'تم الإضافة',true);$('questionM').classList.add('hidden');loadQ()
+    // ✅ تحديث الكاش
+    _allQCache=_allQCache.filter(function(q){return q.id!=id});
+    _allQCache.push({id:id||'new',question_text:qTextPlain});
+    toast(id?'تم التحديث ✓':'تم الإضافة ✓',true);
+    $('questionM').classList.add('hidden');
+    loadQ();
 }
 async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);toast('تم الحذف',true);loadQ()}
 
+// ✅ تعديل العضو محسّن
 async function loadU(){
-    var s=($('us').value||'').trim().toLowerCase();var{data}=await sb.from('profiles').select('*').order('created_at',{ascending:false});if(!data)data=[];
+    var s=($('us').value||'').trim().toLowerCase();
+    var{data}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
+    if(!data)data=[];
     if(s)data=data.filter(function(u){return(u.full_name||'').toLowerCase().includes(s)||(u.email||'').toLowerCase().includes(s)});
-    var h='';data.forEach(function(u){var bg=u.subscription_type==='monthly'?'bg-m':u.subscription_type==='yearly'?'bg-y':'bg-f',lb=u.subscription_type==='monthly'?'شهري':u.subscription_type==='yearly'?'سنوي':'مجاني';
-    h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+(u.full_name||'—')+'</span>'+(u.role==='admin'?'<span class="bg bg-a">أدمن</span>':'')+'</div></td><td class="p-3 text-purple-200/70 text-sm">'+(u.email||'')+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span></td><td class="p-3 text-center text-purple-200/60 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+u.id+'\')">✏️</button></td></tr>'});
-    $('u-list').innerHTML=h
+    var h='';
+    data.forEach(function(u){
+        var bg=u.subscription_type==='monthly'?'bg-m':u.subscription_type==='yearly'?'bg-y':'bg-f';
+        var lb=u.subscription_type==='monthly'?'شهري':u.subscription_type==='yearly'?'سنوي':'مجاني';
+        var roleBadge=u.role==='admin'?'<span class="bg bg-a mr-1">أدمن</span>':u.role==='staff'?'<span class="badge-staff mr-1">موظف</span>':'';
+        h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+(u.full_name||'—')+'</span>'+roleBadge+'</div></td><td class="p-3 text-purple-200/70 text-sm">'+(u.email||'')+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span></td><td class="p-3 text-center text-purple-200/60 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+u.id+'\')">✏️</button></td></tr>'
+    });
+    $('u-list').innerHTML=h;
 }
-async function editU(id){var{data}=await sb.from('profiles').select('*').eq('id',id).single();if(!data)return;$('um-id').value=data.id;$('um-n').value=data.full_name||'';$('um-e').value=data.email||'';$('um-s').value=data.subscription_type||'free';$('um-r').value=data.role||'user';$('userM').classList.remove('hidden')}
-async function saveU2(){var{error}=await sb.from('profiles').update({full_name:$('um-n').value,subscription_type:$('um-s').value,role:$('um-r').value}).eq('id',$('um-id').value);if(error)toast('خطأ',false);else{toast('تم',true);$('userM').classList.add('hidden');loadU()}}
 
-async function loadC(){var{data}=await sb.from('coupons').select('*').order('created_at',{ascending:false});if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="7" class="p-6 text-center text-purple-200/60">لا توجد كوبونات</td></tr>';return}
-var planN={all:'الكل',monthly:'شهري',yearly:'سنوي'};var durN={'1':'شهر','3':'3 أشهر','6':'6 أشهر','12':'سنة'};
-var h='';data.forEach(function(c){var ok=!c.expires_at||new Date(c.expires_at)>new Date();h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300">'+c.code+'</td><td class="p-3 text-center">'+c.discount_value+(c.discount_type==='percentage'?'%':' ر')+'</td><td class="p-3 text-center text-purple-200/70 text-xs">'+(planN[c.plan_type]||'الكل')+'</td><td class="p-3 text-center text-purple-200/70 text-xs">'+(durN[c.duration_months]||'-')+'</td><td class="p-3 text-center font-bold">'+(c.used_count||0)+'/'+(c.max_uses||'∞')+'</td><td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td><td class="p-3 text-center"><button class="bd" onclick="delC(\''+c.id+'\')">🗑️</button></td></tr>'});$('c-list').innerHTML=h}
-async function saveC2(){var obj={code:$('cm-c').value.toUpperCase().trim(),discount_type:$('cm-t').value,discount_value:parseFloat($('cm-v').value),plan_type:$('cm-plan').value,duration_months:parseInt($('cm-dur').value),max_uses:parseInt($('cm-x').value)||100,used_count:0,expires_at:$('cm-e').value||null};if(!obj.code||!obj.discount_value){toast('املأ الكود والقيمة',false);return}var{error}=await sb.from('coupons').insert(obj);if(error)toast('خطأ: '+error.message,false);else{toast('تم إنشاء الكوبون',true);$('couponM').classList.add('hidden');loadC()}}
-async function delC(id){if(!confirm('حذف؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
+async function editU(id){
+    var{data}=await sb.from('profiles').select('*').eq('id',id).single();
+    if(!data)return;
+    $('um-id').value=data.id;
+    $('um-n').value=data.full_name||'';
+    $('um-e').value=data.email||'';
+    $('um-pw').value='';
+    $('um-s').value=data.subscription_type||'free';
+    $('um-r').value=data.role||'user';
+    // ✅ تاريخ انتهاء الاشتراك
+    if(data.subscription_end){
+        var d=new Date(data.subscription_end);
+        $('um-exp').value=d.toISOString().split('T')[0];
+    }else{
+        $('um-exp').value='';
+    }
+    $('userM').classList.remove('hidden');
+}
 
-async function loadF(){var{data}=await sb.from('profiles').select('subscription_type');if(!data)return;var m=data.filter(function(u){return u.subscription_type==='monthly'}).length,y=data.filter(function(u){return u.subscription_type==='yearly'}).length,f=data.filter(function(u){return!u.subscription_type||u.subscription_type==='free'}).length;$('f-a').textContent=m+y;$('f-m').textContent=m;$('f-y').textContent=y;$('f-f').textContent=f}
+async function saveU2(){
+    var id=$('um-id').value;
+    var updateData={
+        full_name:$('um-n').value,
+        subscription_type:$('um-s').value,
+        role:$('um-r').value
+    };
+    // ✅ تاريخ انتهاء الاشتراك
+    var expVal=$('um-exp').value;
+    if(expVal)updateData.subscription_end=expVal;
 
-async function loadR(){var{data}=await sb.from('reports').select('*,questions(question_text,section)').order('reported_at',{ascending:false});if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-200/60">ما فيه بلاغات</div>';return}var h='';data.forEach(function(r){h+='<div class="glass p-4"><div class="flex items-start justify-between"><div><p class="text-white text-sm">'+(r.questions?r.questions.question_text.substring(0,80)+'...':'محذوف')+'</p><p class="text-purple-200/70 text-xs mt-1">السبب: '+(r.reason||'-')+'</p></div><button class="bd" onclick="delR(\''+r.id+'\')">✕</button></div></div>'});$('r-list').innerHTML=h}
-async function delR(id){await sb.from('reports').delete().eq('id',id);toast('تم',true);loadR()}
+    var{error}=await sb.from('profiles').update(updateData).eq('id',id);
+    if(error){toast('خطأ: '+error.message,false);return}
+
+    // ✅ تغيير كلمة السر عبر Supabase Admin API (إذا متاحة)
+    var pw=$('um-pw').value.trim();
+    if(pw){
+        // نستخدم Edge Function أو نوجّه المستخدم لإعادة الضبط
+        toast('تم تحديث البيانات ✓ (كلمة السر: أرسل رابط reset للمستخدم من Supabase Dashboard)',true);
+    }else{
+        toast('تم التحديث ✓',true);
+    }
+    $('userM').classList.add('hidden');
+    loadU();
+}
+
+// ✅ الكوبونات محسّنة
+async function loadC(){
+    var{data}=await sb.from('coupons').select('*').order('created_at',{ascending:false});
+    if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="7" class="p-6 text-center text-purple-200/60">لا توجد كوبونات</td></tr>';return}
+    var planN={all:'الكل',monthly:'شهري',yearly:'سنوي'};
+    var durN={'1':'شهر','3':'3 أشهر','6':'6 أشهر','12':'سنة'};
+    var h='';
+    data.forEach(function(c){
+        var ok=!c.expires_at||new Date(c.expires_at)>new Date();
+        // ✅ حساب صح لعدد الاستخدام
+        var usedDisplay=(c.used_count||0)+'/'+(c.max_uses||'∞');
+        h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300">'+c.code+'</td>'
+        +'<td class="p-3 text-center">'+(c.discount_type==='free'?'<span class="text-emerald-400 font-bold">مجاني</span>':c.discount_value+(c.discount_type==='percentage'?'%':' ر'))+'</td>'
+        +'<td class="p-3 text-center text-purple-200/70 text-xs">'+(planN[c.plan_type]||'الكل')+'</td>'
+        +'<td class="p-3 text-center"><span class="bg bg-m">'+(durN[String(c.duration_months)]||c.duration_months+' شهر')+'</span></td>'
+        +'<td class="p-3 text-center font-bold '+((c.used_count||0)>0?'text-emerald-400':'')+'">'+usedDisplay+'</td>'
+        +'<td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td>'
+        +'<td class="p-3 text-center"><button class="bd" onclick="delC(\''+c.id+'\')">🗑️</button></td></tr>';
+    });
+    $('c-list').innerHTML=h;
+}
+
+async function saveC2(){
+    var discType=$('cm-t').value;
+    var obj={
+        code:$('cm-c').value.toUpperCase().trim(),
+        discount_type:discType,
+        discount_value:discType==='free'?100:parseFloat($('cm-v').value||0),
+        plan_type:$('cm-plan').value,
+        duration_months:parseInt($('cm-dur').value),
+        max_uses:parseInt($('cm-x').value)||100,
+        used_count:0,
+        expires_at:$('cm-e').value||null
+    };
+    if(!obj.code){toast('أدخل الكود',false);return}
+    if(discType!=='free'&&!obj.discount_value){toast('أدخل قيمة الخصم',false);return}
+    var{error}=await sb.from('coupons').insert(obj);
+    if(error)toast('خطأ: '+error.message,false);
+    else{toast('تم إنشاء الكوبون ✓',true);$('couponM').classList.add('hidden');loadC()}
+}
+async function delC(id){if(!confirm('حذف الكوبون؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
+
+async function loadF(){
+    var{data}=await sb.from('profiles').select('subscription_type');
+    if(!data)return;
+    var m=data.filter(function(u){return u.subscription_type==='monthly'}).length;
+    var y=data.filter(function(u){return u.subscription_type==='yearly'}).length;
+    var f=data.filter(function(u){return!u.subscription_type||u.subscription_type==='free'}).length;
+    $('f-a').textContent=m+y;$('f-m').textContent=m;$('f-y').textContent=y;$('f-f').textContent=f;
+}
+
+// ✅ البلاغات محسّنة — مع زر تعديل السؤال
+async function loadR(){
+    var{data}=await sb.from('reports').select('*,questions(id,question_text,section)').order('reported_at',{ascending:false});
+    if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-200/60">ما فيه بلاغات</div>';return}
+    var h='';
+    data.forEach(function(r){
+        var qText=r.questions?r.questions.question_text.substring(0,100)+'...':'(سؤال محذوف)';
+        var qId=r.questions?r.questions.id:null;
+        var editBtn=qId?'<button class="bs" style="font-size:.8rem;padding:6px 12px" onclick="editQfromReport(\''+qId+'\')">✏️ تعديل السؤال</button>':'';
+        h+='<div class="glass p-4">'
+          +'<div class="flex items-start justify-between gap-3">'
+          +'<div class="flex-1">'
+          +'<p class="text-white text-sm font-bold">'+qText+'</p>'
+          +'<p class="text-purple-200/70 text-xs mt-1">السبب: <span class="text-yellow-300">'+(r.reason||'—')+'</span></p>'
+          +'<p class="text-purple-200/50 text-xs mt-1">'+( r.reported_at?new Date(r.reported_at).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'')+'</p>'
+          +'</div>'
+          +'<div class="flex gap-2 flex-shrink-0">'
+          +editBtn
+          +'<button class="bd" style="font-size:.8rem;padding:6px 12px" onclick="delR(\''+r.id+'\')">✕ رفض</button>'
+          +'</div></div></div>';
+    });
+    $('r-list').innerHTML=h;
+}
+
+// ✅ فتح تعديل السؤال من البلاغات
+async function editQfromReport(qid){
+    var{data}=await sb.from('questions').select('*').eq('id',qid).single();
+    if(!data){toast('السؤال غير موجود',false);return}
+    // انتقل لتبويب الأسئلة
+    document.querySelectorAll('.tab').forEach(function(s){s.classList.remove('on')});
+    document.querySelectorAll('.sb-link').forEach(function(l){l.classList.remove('on')});
+    $('t-questions').classList.add('on');
+    document.querySelector('[data-tab="questions"]').classList.add('on');
+    await loadQ();
+    openQM(data);
+}
+
+async function delR(id){await sb.from('reports').delete().eq('id',id);toast('تم رفض البلاغ',true);loadR()}
 
 async function loadST(){
     var{data}=await sb.from('profiles').select('*').in('role',['admin','staff']).order('created_at');
@@ -545,14 +1217,11 @@ async function loadST(){
         var isAdmin=s.role==='admin';
         var badge=isAdmin?'<span class="badge-admin">أدمن</span>':'<span class="badge-staff">موظف</span>';
         var permHtml='';
-        if(isAdmin){
-            permHtml='<span style="color:rgba(248,113,113,0.6);font-size:.75rem">كل الصلاحيات</span>';
-        }else{
+        if(isAdmin){permHtml='<span style="color:rgba(248,113,113,0.6);font-size:.75rem">كل الصلاحيات</span>'}
+        else{
             var perms=s.permissions?(typeof s.permissions==='string'?JSON.parse(s.permissions):s.permissions):{};
             var active=Object.keys(icons).filter(function(p){return perms[p]});
-            permHtml=active.length
-                ?active.map(function(p){return'<span style="font-size:1rem">'+icons[p]+'</span>'}).join(' ')
-                :'<span style="color:rgba(196,181,253,0.3);font-size:.75rem">لا صلاحيات</span>';
+            permHtml=active.length?active.map(function(p){return'<span style="font-size:1rem">'+icons[p]+'</span>'}).join(' '):'<span style="color:rgba(196,181,253,0.3);font-size:.75rem">لا صلاحيات</span>';
         }
         var acts=s.id!==me.id
             ?'<button class="bs" style="padding:5px 10px;font-size:.8rem;margin-left:4px" onclick=\'editST('+JSON.stringify(s)+')\'> ✏️</button><button class="bd" style="padding:5px 10px;font-size:.8rem" onclick="rmST(\''+s.id+'\')">إزالة</button>'
@@ -564,18 +1233,32 @@ async function loadST(){
 function editST(s){openStaffModal(s)}
 async function rmST(id){if(!confirm('إزالة هذا الموظف؟'))return;await sb.from('profiles').update({role:'user',permissions:null}).eq('id',id);toast('تم الإزالة',true);loadST()}
 
-async function loadSet(){var{data}=await sb.from('site_settings').select('*');if(data)data.forEach(function(s){
-    if(s.key==='banner_text')$('st-ban').value=s.value||'';
-    if(s.key==='free_limit')$('st-fl').value=s.value||'10';
-    if(s.key==='price_monthly')$('st-m').value=s.value||'29';
-    if(s.key==='price_yearly')$('st-y').value=s.value||'228';
-    if(s.key==='price_monthly_orig')$('st-mo').value=s.value||'39';
-    if(s.key==='price_yearly_orig')$('st-yo').value=s.value||'348';
-})}
-async function saveSt(k,v){var{data:e}=await sb.from('site_settings').select('id').eq('key',k).single();if(e)await sb.from('site_settings').update({value:v}).eq('key',k);else await sb.from('site_settings').insert({key:k,value:v});toast('تم الحفظ',true)}
+async function loadSet(){
+    var{data}=await sb.from('site_settings').select('*');
+    if(data)data.forEach(function(s){
+        if(s.key==='banner_text')$('st-ban').value=s.value||'';
+        if(s.key==='free_limit')$('st-fl').value=s.value||'10';
+        if(s.key==='price_monthly')$('st-m').value=s.value||'29';
+        if(s.key==='price_yearly')$('st-y').value=s.value||'228';
+        if(s.key==='price_monthly_orig')$('st-mo').value=s.value||'39';
+        if(s.key==='price_yearly_orig')$('st-yo').value=s.value||'348';
+    });
+}
+async function saveSt(k,v){
+    var{data:e}=await sb.from('site_settings').select('id').eq('key',k).single();
+    if(e)await sb.from('site_settings').update({value:v}).eq('key',k);
+    else await sb.from('site_settings').insert({key:k,value:v});
+    toast('تم الحفظ ✓',true);
+}
 function savePrice(){saveSt('price_monthly',$('st-m').value);saveSt('price_yearly',$('st-y').value);saveSt('price_monthly_orig',$('st-mo').value);saveSt('price_yearly_orig',$('st-yo').value)}
 
+// ✅ إخفاء قيمة الخصم لو مجاني
+$('cm-t').addEventListener('change',function(){
+    $('cm-val-wrap').style.display=this.value==='free'?'none':'block';
+});
+
 updateSubSec();
+initEditors();
 document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
