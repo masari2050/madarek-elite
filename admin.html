@@ -1163,6 +1163,7 @@ async function loadC(){
         var ok=!c.expires_at||new Date(c.expires_at)>new Date();
         var n=Math.max(realUse[c.code]||0,c.used_count||0);
         var ud='<span class="font-bold '+(n>0?'text-emerald-400':'text-purple-200/60')+'">'+n+'</span><span class="text-purple-200/40">/'+(c.max_uses||'∞')+'</span>';
+        _couponsCache[c.id]=c;
         h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300 text-base">'+c.code+'</td>'
         +'<td class="p-3 text-center">'+(c.discount_type==='free'?'<span class="bg bg-y">مجاني</span>':c.discount_value+(c.discount_type==='percentage'?'%':' ر'))+'</td>'
         +'<td class="p-3 text-center text-purple-200/70 text-xs">'+(planN[c.plan_type]||'الكل')+'</td>'
@@ -1170,13 +1171,15 @@ async function loadC(){
         +'<td class="p-3 text-center">'+ud+'</td>'
         +'<td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td>'
         +'<td class="p-3 text-center whitespace-nowrap">'
-        +'<button class="bs" onclick="editC('+JSON.stringify(c)+')" style="font-size:.8rem;padding:5px 10px;margin-left:4px">✏️</button>'
-        +'<button class="bd" onclick="delC(''+c.id+'')" style="font-size:.8rem;padding:5px 10px">🗑️</button>'
+        +'<button class="bs" data-cid="'+c.id+'" onclick="editCById(this.dataset.cid)" style="font-size:.8rem;padding:5px 10px;margin-left:4px">✏️</button>'
+        +'<button class="bd" data-cid="'+c.id+'" onclick="delC(this.dataset.cid)" style="font-size:.8rem;padding:5px 10px">🗑️</button>'
         +'</td></tr>';
     });
     $('c-list').innerHTML=h;
 }
+var _couponsCache={};
 async function delC(id){if(!confirm('حذف الكوبون؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
+function editCById(id){var c=_couponsCache[id];if(c)editC(c);}
 
 // ✅ تعديل الكوبون
 function editC(c){
