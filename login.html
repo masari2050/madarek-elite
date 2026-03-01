@@ -10,7 +10,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         *{font-family:'Tajawal',sans-serif}
-        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh;display:block;margin:0;padding:0}
+        .login-wrapper{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
         .card-glass{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.5rem}
         .input-dark{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;padding:.75rem 1rem;color:#fff;width:100%;transition:all .2s}
         .input-dark:focus{outline:none;border-color:rgba(139,92,246,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.15)}
@@ -34,9 +35,9 @@
         .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
     </style>
 </head>
-<body class="text-white p-4" data-page="login">
+<body class="text-white" data-page="login" style="margin:0;padding:0">
 
-    <div id="toast" class="toast hidden"></div>
+    <div class="login-wrapper"><div id="toast" class="toast hidden"></div>
 
     <div class="w-full max-w-sm">
         <!-- Logo -->
@@ -96,6 +97,7 @@
         </div>
     </div>
 
+</div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const sb = window.supabase.createClient(

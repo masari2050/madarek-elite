@@ -98,11 +98,11 @@
     var closeKey = 'madarek_banner_closed_' + id + '_' + text.substring(0,20).replace(/\s/g,'');
     if(closable === 'true' && localStorage.getItem(closeKey)) return null;
 
-    var fullText = text; if(emoji && text.indexOf(emoji) === -1){ fullText = emoji + ' ' + text + ' ' + emoji; }
+    var fullText = text; // emoji is now typed directly in the text field
 
     var bar = document.createElement('div');
     bar.id = 'madarek-' + id;
-    bar.style.cssText = 'width:100%;background:' + (bg||'#6366f1') + ';color:' + (color||'#fff') + ';font-size:' + (size||13) + 'px;font-weight:' + (bold==='true'?'900':'500') + ';font-style:' + (italic==='true'?'italic':'normal') + ';font-family:Tajawal,sans-serif;position:relative;z-index:9998;overflow:hidden;min-height:36px;display:flex;align-items:center;';
+    bar.style.cssText = 'width:100%;background:' + (bg||'#6366f1') + ';color:' + (color||'#fff') + ';font-size:' + (size||13) + 'px;font-weight:' + (bold==='true'?'900':'500') + ';font-style:' + (italic==='true'?'italic':'normal') + ';font-family:Tajawal,sans-serif;position:relative;z-index:9998;overflow:hidden;min-height:40px;display:flex;align-items:center;padding:8px 16px;';
 
     if(style === 'marquee'){
       // ═══ Marquee متحرك ═══
@@ -166,6 +166,8 @@
     if(!Object.keys(settings).length) return;
 
     var pageName = getPageName();
+    // لا نعرض البنر أثناء الاختبار أو النتائج — يشتت الطالب
+    if(pageName === 'practice' || pageName === 'results') return;
     var logged = isLoggedIn();
     var totalHeight = 0;
 
@@ -185,23 +187,10 @@
           settings['banner_speed']||''
         );
         if(pubBar){
-          // Fix for flex-centered pages (login/register)
-          var bodyStyle = window.getComputedStyle(document.body);
-          if(bodyStyle.display === 'flex' && bodyStyle.alignItems === 'center'){
-            document.body.style.flexDirection = 'column';
-            document.body.style.justifyContent = 'flex-start';
-            document.body.style.paddingTop = '0';
-            var spacer = document.createElement('div');
-            spacer.id = 'madarek-page-spacer';
-            spacer.style.cssText = 'flex:1;display:flex;align-items:center;justify-content:center;width:100%;';
-            while(document.body.children.length > 0 && document.body.children[0] !== pubBar){
-              spacer.appendChild(document.body.children[0]);
-            }
-            document.body.insertBefore(pubBar, document.body.firstChild);
-            document.body.appendChild(spacer);
-          } else {
-            document.body.insertBefore(pubBar, document.body.firstChild);
-          }
+          document.body.insertBefore(pubBar, document.body.firstChild);
+          // Adjust login-wrapper height if present
+          var lw = document.querySelector('.login-wrapper');
+          if(lw) lw.style.minHeight = 'calc(100vh - ' + pubBar.offsetHeight + 'px)';
           totalHeight += pubBar.offsetHeight;
         }
       }

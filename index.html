@@ -28,9 +28,9 @@
         .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
         .feature-card:hover{transform:translateY(-6px);background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15)}
         .feature-card:hover::before{opacity:1}
-        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 30px rgba(99,102,241,0.3);transition:all .3s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer;display:inline-block;text-decoration:none;color:#fff}
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 30px rgba(99,102,241,0.3);transition:all .3s;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation;cursor:pointer;position:relative;z-index:10;text-decoration:none;color:#fff}
         .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
-        .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);transition:all .3s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;cursor:pointer;display:inline-block;text-decoration:none;color:#fff}
+        .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);transition:all .3s;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation;cursor:pointer;position:relative;z-index:10;text-decoration:none;color:#fff}
         .btn-ghost:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
         .nav-glass{background:rgba(13,8,37,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
         .nav-scrolled{box-shadow:0 4px 20px rgba(0,0,0,0.3)}
@@ -60,28 +60,26 @@
     </style>
 
     <style>
-      /* Banner + Fixed Nav fix */
-      body > .mb-bar, body > [id^="madarek-"] { position: relative; z-index: 9999; }
-      #mainNav { transition: top 0.3s ease; }
+      /* Banner + Nav fix */
+      body > [id^="madarek-"] { position:relative; z-index:60; }
     </style>
     <script>
-      // Auto-adjust nav position when banners load
-      function adjustNavForBanners(){
+    // Push fixed nav below banners
+    window.addEventListener('load', function(){
+      setTimeout(function(){
         var nav = document.getElementById('mainNav');
         if(!nav) return;
-        var banners = document.querySelectorAll('[id^="madarek-"]');
-        var totalH = 0;
-        banners.forEach(function(b){ totalH += b.offsetHeight; });
-        nav.style.top = totalH + 'px';
-        document.body.style.paddingTop = (totalH + nav.offsetHeight) + 'px';
-      }
-      // Run after banner.js loads
-      window.addEventListener('load', function(){ setTimeout(adjustNavForBanners, 300); });
-      // Also observe DOM changes
-      var navObs = new MutationObserver(function(){ setTimeout(adjustNavForBanners, 100); });
-      document.addEventListener('DOMContentLoaded', function(){
-        navObs.observe(document.body, {childList:true});
-      });
+        var banners = document.querySelectorAll('body > [id^="madarek-"]');
+        var h = 0;
+        for(var i=0; i<banners.length; i++) h += banners[i].offsetHeight;
+        if(h > 0){
+          nav.style.top = h + 'px';
+          // Also adjust hero padding
+          var hero = document.querySelector('.hero-bg');
+          if(hero) hero.style.paddingTop = (h + 112) + 'px'; // 112 = pt-28
+        }
+      }, 500);
+    });
     </script>
 </head>
 <body class="text-white" style="font-family:'Tajawal',sans-serif" data-page="index">
@@ -130,11 +128,11 @@
                         استعد لاختبارات القدرات والتحصيلي مع بنك أسئلة شامل، إحصائيات دقيقة، ورسائل تحفيزية بلهجتك
                     </p>
                     <div class="flex flex-wrap gap-3 mb-10">
-                        <a href="register.html" class="btn-primary px-7 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
+                        <a href="register.html" onclick="window.location.href='register.html'" class="btn-primary px-7 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
                             ابدأ مجاناً الحين
                             <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         </a>
-                        <a href="pricing.html" class="btn-ghost px-7 py-3.5 rounded-xl font-bold text-sm">شوف الباقات</a>
+                        <a href="pricing.html" onclick="window.location.href='pricing.html'" class="btn-ghost px-7 py-3.5 rounded-xl font-bold text-sm">شوف الباقات</a>
                     </div>
                     <div class="flex gap-5">
                         <div>
@@ -239,8 +237,8 @@
             </div>
             <div class="grid sm:grid-cols-3 gap-4 reveal">
                 <div class="glass p-6 text-center"><span class="text-3xl block mb-2">🆓</span><h3 class="font-bold mb-1">مجاني</h3><p class="text-3xl font-black mb-1">0 <span class="text-sm text-purple-200/70">ريال</span></p><p class="text-purple-200/60 text-xs mb-4">10 أسئلة مجانية</p><a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center">ابدأ الآن</a></div>
-                <div class="glass p-6 text-center relative" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)"><div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">الأكثر شعبية</div><span class="text-3xl block mb-2 mt-1">📅</span><h3 class="font-bold mb-1">شهري</h3><p class="text-3xl font-black text-indigo-400 mb-1">29 <span class="text-sm text-purple-200/70">ريال</span></p><p class="text-purple-200/60 text-xs mb-4">أسئلة غير محدودة</p><a href="register.html" class="btn-primary block w-full py-2.5 rounded-xl text-sm font-bold text-center">اشترك</a></div>
-                <div class="glass p-6 text-center"><span class="text-3xl block mb-2">💎</span><h3 class="font-bold mb-1">سنوي</h3><p class="text-3xl font-black text-emerald-400 mb-1">19 <span class="text-sm text-purple-200/70">ريال/شهر</span></p><p class="text-purple-200/60 text-xs mb-4">وفّر 120 ريال</p><a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center" style="border-color:rgba(16,185,129,0.3);color:#34d399">اشترك</a></div>
+                <div class="glass p-6 text-center relative" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)"><div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">الأكثر شعبية</div><span class="text-3xl block mb-2 mt-1">📅</span><h3 class="font-bold mb-1">شهري</h3><p class="text-3xl font-black text-indigo-400 mb-1"><span id="idx-monthly-price">29</span> <span class="text-sm text-purple-200/70">ريال</span></p><p class="text-purple-200/60 text-xs mb-4">أسئلة غير محدودة</p><a href="register.html" class="btn-primary block w-full py-2.5 rounded-xl text-sm font-bold text-center">اشترك</a></div>
+                <div class="glass p-6 text-center"><span class="text-3xl block mb-2">💎</span><h3 class="font-bold mb-1">سنوي</h3><p class="text-3xl font-black text-emerald-400 mb-1"><span id="idx-yearly-pm">19</span> <span class="text-sm text-purple-200/70">ريال/شهر</span></p><p class="text-purple-200/60 text-xs mb-4" id="idx-yearly-save">وفّر 120 ريال</p><a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center" style="border-color:rgba(16,185,129,0.3);color:#34d399">اشترك</a></div>
             </div>
             <div class="text-center mt-6 reveal"><a href="pricing.html" class="text-indigo-400/70 text-sm hover:text-indigo-300 transition">شوف المقارنة الكاملة ←</a></div>
         </div>
@@ -341,6 +339,39 @@
         else nav.classList.remove('nav-scrolled');
     });
     </script>
-        <script src="banner.js"></script>
+        
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    (function(){
+      var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+      sb.from('site_settings').select('*').then(function(res){
+        if(!res.data)return;
+        var s={};res.data.forEach(function(r){s[r.key]=r.value});
+        var mOrig=parseInt(s.price_monthly_original)||0;
+        var mCur=parseInt(s.price_monthly_current)||0;
+        var yOrig=parseInt(s.price_yearly_original)||0;
+        var yCur=parseInt(s.price_yearly_current)||0;
+        var disc=parseInt(s.discount_percent)||0;
+        
+        var mNow,yNow;
+        if(disc>0&&mOrig>0){mNow=Math.round(mOrig*(100-disc)/100);}
+        else if(mCur>0){mNow=mCur;}
+        else{mNow=mOrig;}
+        
+        if(disc>0&&yOrig>0){yNow=Math.round(yOrig*(100-disc)/100);}
+        else if(yCur>0){yNow=yCur;}
+        else{yNow=yOrig;}
+        
+        if(mNow>0){var e=document.getElementById('idx-monthly-price');if(e)e.textContent=mNow;}
+        if(yNow>0){
+          var yPM=Math.round(yNow/12);
+          var e2=document.getElementById('idx-yearly-pm');if(e2)e2.textContent=yPM;
+          var saving=mNow*12-yNow;
+          var e3=document.getElementById('idx-yearly-save');if(e3&&saving>0)e3.textContent='وفّر '+saving+' ريال';
+        }
+      });
+    })();
+    </script>
+    <script src="banner.js"></script>
 </body>
 </html>
