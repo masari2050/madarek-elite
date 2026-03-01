@@ -32,6 +32,9 @@
 
         @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
         .float{animation:float 3s ease-in-out infinite}
+        @keyframes badgePop{0%{transform:scale(0) rotate(-15deg)}60%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+        .badge-pop{animation:badgePop .6s cubic-bezier(0.68,-0.55,0.27,1.55) forwards}
+        .delay-4{animation-delay:.4s;opacity:0}
     </style>
 </head>
 <body class="text-white min-h-screen flex items-center justify-center p-4">
@@ -83,6 +86,20 @@
                 <div class="rounded-xl p-4 text-center" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.18)">
                     <p class="text-red-400/60 text-xs mb-1">❌ خاطئة</p>
                     <p class="text-4xl font-black text-red-400" id="wrongAnswers" style="font-family:'Cairo',sans-serif">0</p>
+                </div>
+            </div>
+
+            <!-- Streak + Badge Status -->
+            <div id="gamifSection" class="mb-4 animate-in delay-4" style="display:none">
+                <div id="streakRow" class="rounded-xl p-3 mb-3" style="background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.15)">
+                    <div style="display:flex;align-items:center;gap:10px;justify-content:center">
+                        <span style="font-size:28px" id="streakEmoji">🔥</span>
+                        <span id="streakText" style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;color:#fb923c"></span>
+                    </div>
+                </div>
+                <div id="newBadgeBox" class="rounded-xl p-4 text-center" style="display:none;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2)">
+                    <p style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:900;color:#c4b5fd;margin-bottom:8px">🎉 بادج جديد!</p>
+                    <div id="newBadgeContent" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap"></div>
                 </div>
             </div>
 
@@ -148,6 +165,59 @@
         function goShare()       { window.location.href = 'share-result.html'; }
 
         setTimeout(function(){ localStorage.removeItem('quiz_results'); }, 3600000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="gamification.js"></script>
+    <script>
+    (function(){
+        try {
+            var sb = window.supabase ? window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0') : null;
+            if(!sb || !window.Gamification) return;
+
+            sb.auth.getSession().then(function(res){
+                var session = res.data && res.data.session;
+                if(!session) return;
+
+                sb.from('attempts').select('is_correct,answered_at').eq('user_id', session.user.id).then(function(r){
+                    if(r.error || !r.data) return;
+
+                    var G = window.Gamification;
+                    var streakData = G.calculateStreak(r.data);
+                    var badgeResult = G.calculateBadges(r.data, streakData);
+
+                    // عرض الـ Streak
+                    var section = document.getElementById('gamifSection');
+                    var streakText = document.getElementById('streakText');
+                    var streakEmoji = document.getElementById('streakEmoji');
+
+                    if(section && streakText){
+                        if(streakData.current >= 2){
+                            var dayWord = (streakData.current >= 3 && streakData.current <= 10) ? '\u0623\u064A\u0627\u0645' : '\u064A\u0648\u0645';
+                            streakText.textContent = '\u0645\u0633\u062A\u0645\u0631 ' + streakData.current + ' ' + dayWord + '! \uD83D\uDCAA';
+                        } else if(streakData.current === 1){
+                            streakText.textContent = '\u0628\u062F\u0627\u064A\u0629 \u0633\u0644\u0633\u0644\u0629 \u062C\u062F\u064A\u062F\u0629! \uD83D\uDE80';
+                        } else {
+                            streakEmoji.textContent = '\uD83D\uDCA4';
+                            streakText.textContent = '\u062A\u062F\u0631\u0651\u0628 \u064A\u0648\u0645\u064A\u0627\u064B \u0644\u0628\u0646\u0627\u0621 \u0633\u0644\u0633\u0644\u062A\u0643!';
+                            streakText.style.color = 'rgba(251,146,60,0.5)';
+                        }
+                        section.style.display = '';
+                    }
+
+                    // عرض بادج جديد
+                    if(badgeResult.newBadges.length > 0){
+                        var box = document.getElementById('newBadgeBox');
+                        var content = document.getElementById('newBadgeContent');
+                        if(box && content){
+                            content.innerHTML = G.renderNewBadgeCelebration(badgeResult.newBadges);
+                            box.style.display = '';
+                        }
+                    }
+                });
+            });
+        } catch(e){}
+    })();
     </script>
 </body>
 </html>

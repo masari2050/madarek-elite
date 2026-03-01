@@ -166,7 +166,7 @@
     );
 
     var currentUser=null, currentQuestions=[], currentQuestionIndex=0;
-    var correctCount=0, wrongCount=0, hasAnswered=false;
+    var correctCount=0, wrongCount=0, hasAnswered=false, consecutiveCorrect=0;
     var sessionId=null, timeRemaining=0, timerInterval=null;
     var userSubscription='free', totalAttemptsCount=0;
     const SECONDS_PER_QUESTION=60, FREE_LIMIT=10;
@@ -318,8 +318,11 @@
         var isCorrect=sel===q.correct_index;
 
         playSound(isCorrect);
-        if(isCorrect)correctCount++;else wrongCount++;
+        if(isCorrect){correctCount++;consecutiveCorrect++;}else{wrongCount++;consecutiveCorrect=0;}
         totalAttemptsCount++;
+        // تحديث أعلى تتابع صحيح (بادج قنّاص)
+        var storedMax=parseInt(localStorage.getItem('madarek_max_consecutive')||'0',10);
+        if(consecutiveCorrect>storedMax)localStorage.setItem('madarek_max_consecutive',String(consecutiveCorrect));
         updateStats();
 
         document.querySelectorAll('.option-card').forEach(function(card,i){
@@ -376,6 +379,9 @@
         clearInterval(timerInterval);
         await finishSession();
         localStorage.setItem('quiz_results',JSON.stringify({correct:correctCount,wrong:wrongCount,total:currentQuestions.length,percentage:Math.round((correctCount/currentQuestions.length)*100)}));
+        // تحديث أقصى جلسة (بادج البرق)
+        var maxSes=parseInt(localStorage.getItem('madarek_max_session_questions')||'0',10);
+        if(currentQuestions.length>maxSes)localStorage.setItem('madarek_max_session_questions',String(currentQuestions.length));
         location.href='results.html';
     }
 

@@ -92,6 +92,13 @@
             <p class="text-white/80 text-sm sm:text-base font-medium relative z-10" id="motivationalQuote">ثق بنفسك، أنت أقوى مما تتخيل</p>
         </div>
 
+        <!-- Streak Widget -->
+        <div id="streakWidget" class="animate-in delay-2 mb-4">
+            <div class="card-glass rounded-2xl p-5" style="background:linear-gradient(135deg,rgba(251,146,60,0.06),rgba(239,68,68,0.04));border-color:rgba(251,146,60,0.12)">
+                <div id="streakContent"></div>
+            </div>
+        </div>
+
         <!-- Stats Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
             <div class="animate-in delay-3 stat-card rounded-2xl p-4 text-center">
@@ -164,6 +171,19 @@
             </a>
         </div>
 
+        <!-- Leaderboard Preview -->
+        <div id="leaderboardPreview" class="animate-in delay-6 mt-5">
+            <div class="card-glass rounded-2xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-bold flex items-center gap-2"><span>🏆</span> <span>المتصدرون هذا الأسبوع</span></h3>
+                    <a href="leaderboard.html" class="text-xs text-indigo-400 hover:text-indigo-300 transition">عرض الكل ←</a>
+                </div>
+                <div id="topThreeList" class="space-y-2">
+                    <p style="text-align:center;color:rgba(196,181,253,0.3);font-size:12px">جاري التحميل...</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Upgrade Banner -->
         <div id="upgradeBanner" class="hidden animate-in delay-6 mt-5 rounded-2xl p-5 text-center relative overflow-hidden" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(168,85,247,0.15));border:1px solid rgba(139,92,246,0.2)">
             <h3 class="text-base font-bold mb-1">🚀 طوّر تجربتك</h3>
@@ -229,16 +249,37 @@
                 const weekly = allAttempts?.filter(a => new Date(a.answered_at) > oneWeekAgo).length || 0;
                 document.getElementById('weeklyCount').textContent = weekly;
                 document.getElementById('progressBar').style.width = Math.min((weekly / 50) * 100, 100) + '%';
+
+                // ── Streak ──
+                if(window.Gamification){
+                    var streakData = Gamification.calculateStreak(allAttempts || []);
+                    var sw = document.getElementById('streakContent');
+                    if(sw) sw.innerHTML = Gamification.renderStreakWidget(streakData);
+                }
             } catch(err) {}
+        }
+        async function loadLeaderboard(){
+            try{
+                var{data}=await sb.rpc('get_leaderboard',{period:'week'});
+                var el=document.getElementById('topThreeList');
+                if(el && window.Gamification){
+                    el.innerHTML = Gamification.renderLeaderboardPreview(data||[], currentUser?.id);
+                }
+            }catch(e){
+                var el=document.getElementById('topThreeList');
+                if(el) el.innerHTML='<p style="text-align:center;color:rgba(196,181,253,0.3);font-size:12px">\u062A\u062D\u062F\u064A\u062B \u0642\u0631\u064A\u0628\u0627\u064B</p>';
+            }
         }
         document.addEventListener('DOMContentLoaded', async function() {
             const ok = await checkAuth();
             if (!ok) return;
             await loadStats();
+            loadLeaderboard();
             const subLabel = document.getElementById('subscriptionLabel').textContent;
             if (subLabel.includes('مجانية') || subLabel.includes('اشترك')) document.getElementById('upgradeBanner').classList.remove('hidden');
         });
     </script>
+        <script src="gamification.js"></script>
         <script src="banner.js"></script>
 </body>
 </html>

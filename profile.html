@@ -139,6 +139,13 @@
                 </div>
             </div>
 
+            <!-- قسم الإنجازات -->
+            <div id="badges-section" class="animate-in delay-4 card-glow rounded-2xl p-6 mb-4" style="display:none">
+                <h3 class="text-base font-bold mb-2 flex items-center gap-2"><span class="text-lg">🏅</span> الإنجازات</h3>
+                <p id="badges-count" class="text-xs mb-4" style="color:rgba(196,181,253,0.45)"></p>
+                <div id="badges-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px"></div>
+            </div>
+
             <div class="animate-in delay-4 space-y-3">
                 <button type="button" id="btn-save" onclick="saveChanges()" class="btn-primary w-full rounded-xl py-3.5 text-sm font-bold text-white">
                     <span id="save-text">💾 حفظ التغييرات</span>
@@ -166,6 +173,45 @@
         function resetSave(){document.getElementById('btn-save').disabled=false;document.getElementById('save-text').classList.remove('hidden');document.getElementById('save-spinner').classList.add('hidden')}
         async function handleLogout(){const btn=document.getElementById('btn-logout');if(btn.disabled)return;btn.disabled=true;document.getElementById('logout-text').classList.add('hidden');document.getElementById('logout-spinner').classList.remove('hidden');try{await sb.auth.signOut();showToast('تم تسجيل الخروج','👋');setTimeout(function(){window.location.href='login.html'},800)}catch(err){showToast('حدث خطأ','❌');btn.disabled=false;document.getElementById('logout-text').classList.remove('hidden');document.getElementById('logout-spinner').classList.add('hidden')}}
         checkAuth();
+    </script>
+    <script src="gamification.js"></script>
+    <script>
+    (function(){
+        if(!window.Gamification) return;
+
+        function tryLoad(){
+            var el = document.getElementById('profile-content');
+            if(!el || el.classList.contains('hidden')){ setTimeout(tryLoad, 300); return; }
+            loadProfileBadges();
+        }
+
+        async function loadProfileBadges(){
+            try{
+                var res = await sb.auth.getSession();
+                var session = res.data && res.data.session;
+                if(!session) return;
+
+                var r = await sb.from('attempts').select('is_correct,answered_at').eq('user_id', session.user.id);
+                if(r.error || !r.data) return;
+
+                var G = window.Gamification;
+                var streakData = G.calculateStreak(r.data);
+                var badgeResult = G.calculateBadges(r.data, streakData);
+
+                var section = document.getElementById('badges-section');
+                var grid = document.getElementById('badges-grid');
+                var count = document.getElementById('badges-count');
+
+                if(section && grid){
+                    grid.innerHTML = G.renderBadgeGrid(badgeResult);
+                    count.textContent = '\u062D\u0635\u0644\u062A \u0639\u0644\u0649 ' + badgeResult.earned.length + ' \u0645\u0646 ' + badgeResult.all.length + ' \u0625\u0646\u062C\u0627\u0632\u0627\u062A';
+                    section.style.display = '';
+                }
+            }catch(e){}
+        }
+
+        tryLoad();
+    })();
     </script>
     <script src="banner.js"></script>
 </body>
