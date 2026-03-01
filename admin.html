@@ -280,7 +280,81 @@
 <!-- ═══ الإعدادات ═══ -->
 <div id="t-settings" class="tab">
     <h2 class="text-2xl font-black mb-5">⚙️ إعدادات الموقع</h2>
-    <div class="glass p-6 mb-4"><h3 class="font-bold text-base mb-3">📢 نص البانر العلوي</h3><textarea id="st-ban" class="inp" rows="2"></textarea><button class="bp mt-2" onclick="saveSt('banner_text',$('st-ban').value)">حفظ</button></div>
+    <div class="glass p-6 mb-4">
+    <h3 class="font-bold text-base mb-4">📢 إعدادات البانر العلوي</h3>
+    
+    <!-- النص -->
+    <div class="mb-4">
+        <label class="text-purple-200/70 text-xs mb-1 block">نص البانر</label>
+        <textarea id="st-ban" class="inp" rows="2" placeholder="اكتب نص البانر هنا..."></textarea>
+    </div>
+    
+    <!-- الألوان -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+        <div>
+            <label class="text-purple-200/70 text-xs mb-2 block">🎨 لون الخلفية</label>
+            <div class="flex items-center gap-2">
+                <input type="color" id="st-ban-bg" value="#6366f1" class="w-10 h-10 rounded-lg cursor-pointer border-0" style="background:none">
+                <input type="text" id="st-ban-bg-txt" class="inp flex-1" value="#6366f1" placeholder="#6366f1" style="font-size:.8rem" onchange="$('st-ban-bg').value=this.value">
+            </div>
+        </div>
+        <div>
+            <label class="text-purple-200/70 text-xs mb-2 block">✍️ لون الخط</label>
+            <div class="flex items-center gap-2">
+                <input type="color" id="st-ban-clr" value="#ffffff" class="w-10 h-10 rounded-lg cursor-pointer border-0" style="background:none">
+                <input type="text" id="st-ban-clr-txt" class="inp flex-1" value="#ffffff" placeholder="#ffffff" style="font-size:.8rem" onchange="$('st-ban-clr').value=this.value">
+            </div>
+        </div>
+    </div>
+    
+    <!-- حجم الخط -->
+    <div class="mb-4">
+        <label class="text-purple-200/70 text-xs mb-2 block">📏 حجم الخط</label>
+        <div class="flex items-center gap-3">
+            <input type="range" id="st-ban-size" min="11" max="22" value="13" class="flex-1" oninput="$('st-ban-size-val').textContent=this.value+'px'">
+            <span id="st-ban-size-val" class="text-purple-200/60 text-xs w-10">13px</span>
+        </div>
+    </div>
+    
+    <!-- مدة الظهور -->
+    <div class="mb-5 p-4 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)">
+        <p class="text-indigo-400 font-bold text-sm mb-3">⏱️ مدة الظهور</p>
+        <div class="flex items-center gap-3 mb-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="ban-mode" id="ban-mode-always" value="always" checked onchange="toggleBanDates(this.value)">
+                <span class="text-sm text-purple-200/80">دائم (بلا نهاية)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="ban-mode" id="ban-mode-range" value="range" onchange="toggleBanDates(this.value)">
+                <span class="text-sm text-purple-200/80">من تاريخ لتاريخ</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="ban-mode" id="ban-mode-off" value="off" onchange="toggleBanDates(this.value)">
+                <span class="text-sm text-red-400">مغلق</span>
+            </label>
+        </div>
+        <div id="ban-dates-wrap" class="grid grid-cols-2 gap-3 hidden">
+            <div>
+                <label class="text-purple-200/70 text-xs mb-1 block">من تاريخ</label>
+                <input type="datetime-local" id="st-ban-from" class="inp" style="font-size:.8rem">
+            </div>
+            <div>
+                <label class="text-purple-200/70 text-xs mb-1 block">إلى تاريخ</label>
+                <input type="datetime-local" id="st-ban-to" class="inp" style="font-size:.8rem">
+            </div>
+        </div>
+    </div>
+    
+    <!-- معاينة -->
+    <div class="mb-4">
+        <label class="text-purple-200/70 text-xs mb-2 block">👁️ معاينة مباشرة</label>
+        <div id="ban-preview" class="rounded-lg p-2 text-center transition-all" style="background:#6366f1;font-size:13px;color:#fff">
+            نص البانر سيظهر هنا
+        </div>
+    </div>
+    
+    <button class="bp w-full" onclick="saveBanner()">💾 حفظ إعدادات البانر</button>
+</div>
     <div class="glass p-6 mb-4">
         <h3 class="font-bold text-base mb-4">💰 الأسعار والخصومات</h3>
         <p class="text-purple-200/60 text-xs mb-4">حط السعر الأصلي والحالي — لو الحالي أقل بيظهر خط على الأصلي في صفحة الباقات</p>
@@ -337,11 +411,28 @@
 
         <!-- ✅ محرر الشرح -->
         <div>
-            <label class="text-purple-300/50 text-sm mb-2 block">💡 الشرح</label>
+            <div class="flex items-center justify-between mb-2">
+                <label class="text-purple-300/50 text-sm">💡 الشرح</label>
+                <label class="flex items-center gap-1.5 cursor-pointer px-3 py-1.5 rounded-lg text-xs font-bold transition-all" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:rgba(196,181,253,0.9)" title="رفع صورة شرح">
+                    🖼️ إضافة صورة
+                    <input type="file" id="exp-img-input" accept="image/*" class="hidden" onchange="uploadExpImg(this)">
+                </label>
+            </div>
             <div class="editor-wrap" id="xeditor-wrap">
                 <div class="editor-toolbar" id="xeditor-tb"></div>
                 <div class="editor-body" id="qm-exp-editor" contenteditable="true" data-placeholder="اكتب شرح الحل هنا... (يدعم الأسطر والتنسيق)"></div>
             </div>
+            <!-- معاينة صورة الشرح -->
+            <div id="exp-img-preview" class="hidden mt-3 rounded-xl overflow-hidden" style="border:1px solid rgba(251,191,36,0.2);background:rgba(251,191,36,0.04)">
+                <div class="flex items-center justify-between px-3 py-2" style="border-bottom:1px solid rgba(251,191,36,0.1)">
+                    <span class="text-yellow-300/70 text-xs font-bold">🖼️ صورة الشرح</span>
+                    <button onclick="removeExpImg()" class="text-red-400/70 hover:text-red-400 text-xs">✕ حذف</button>
+                </div>
+                <div class="p-3 flex justify-center">
+                    <img id="exp-img-thumb" src="" class="max-w-full rounded-lg" style="max-height:220px;object-fit:contain">
+                </div>
+            </div>
+            <input type="hidden" id="exp-img-url" value="">
         </div>
 
         <button class="bp w-full" onclick="saveQ2()">💾 حفظ السؤال</button>
@@ -983,6 +1074,14 @@ function openQM(q){
     var qed=$('qm-editor'),xed=$('qm-exp-editor');
     if(qed)qed.innerHTML=q?(q.question_text||''):'';
     if(xed)xed.innerHTML=q?(q.explanation||''):'';
+    // عرض صورة الشرح لو موجودة
+    var eiu=$('exp-img-url'),eip=$('exp-img-preview'),eit=$('exp-img-thumb');
+    if(eiu&&eip&&eit){
+        var expImg=q&&q.explanation_image?q.explanation_image:'';
+        eiu.value=expImg;
+        if(expImg){eit.src=expImg;eip.classList.remove('hidden');}
+        else{eit.src='';eip.classList.add('hidden');}
+    }
     $('qm-img').value=q?(q.image_url||''):'';
     if(q&&q.image_url){$('qm-prev-img').src=q.image_url;$('qm-preview').classList.remove('hidden')}
     else{$('qm-preview').classList.add('hidden')}
@@ -1028,6 +1127,27 @@ async function uploadImg(){
     }
 }
 
+async function uploadExpImg(input){
+    var file=input.files[0]; if(!file)return;
+    var toastId=toast('⏳ جاري رفع الصورة...',true,99999);
+    var ext=file.name.split('.').pop();
+    var path='exp-images/'+Date.now()+'.'+ext;
+    var{data,error}=await sb.storage.from('question-images').upload(path,file,{upsert:true});
+    if(error){toast('فشل الرفع: '+error.message,false);return;}
+    var{data:urlData}=sb.storage.from('question-images').getPublicUrl(path);
+    var url=urlData.publicUrl;
+    $('exp-img-url').value=url;
+    $('exp-img-thumb').src=url;
+    $('exp-img-preview').classList.remove('hidden');
+    toast('✅ تم رفع الصورة',true);
+    input.value='';
+}
+function removeExpImg(){
+    $('exp-img-url').value='';
+    $('exp-img-thumb').src='';
+    $('exp-img-preview').classList.add('hidden');
+    $('exp-img-input').value='';
+}
 async function saveQ2(){
     var id=$('qm-id').value;
     var imgUrl=await uploadImg();
@@ -1045,6 +1165,7 @@ async function saveQ2(){
         choices:[$('qm-c0').value,$('qm-c1').value,$('qm-c2').value,$('qm-c3').value],
         correct_index:parseInt($('qm-cor').value),
         explanation:expHtml||null,
+        explanation_image:$('exp-img-url').value||null,
         image_url:imgUrl||null
     };
     if(!obj.choices[0]){toast('املأ الخيارات',false);return}
@@ -1275,13 +1396,43 @@ async function rmST(id){if(!confirm('إزالة هذا الموظف؟'))return;a
 async function loadSet(){
     var{data}=await sb.from('site_settings').select('*');
     if(data)data.forEach(function(s){
-        if(s.key==='banner_text')$('st-ban').value=s.value||'';
+        if(s.key==='banner_text'){$('st-ban').value=s.value||'';updateBanPreview();}
+        if(s.key==='banner_bg'){$('st-ban-bg').value=s.value||'#6366f1';$('st-ban-bg-txt').value=s.value||'#6366f1';updateBanPreview();}
+        if(s.key==='banner_color'){$('st-ban-clr').value=s.value||'#ffffff';$('st-ban-clr-txt').value=s.value||'#ffffff';updateBanPreview();}
+        if(s.key==='banner_size'){$('st-ban-size').value=parseInt(s.value)||13;$('st-ban-size-val').textContent=(parseInt(s.value)||13)+'px';updateBanPreview();}
+        if(s.key==='banner_mode'){
+            var m=s.value||'always';
+            document.querySelectorAll('[name="ban-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});
+            toggleBanDates(m);
+        }
+        if(s.key==='banner_from')$('st-ban-from').value=s.value||'';
+        if(s.key==='banner_to')$('st-ban-to').value=s.value||'';
         if(s.key==='free_limit')$('st-fl').value=s.value||'10';
         if(s.key==='price_monthly')$('st-m').value=s.value||'29';
         if(s.key==='price_yearly')$('st-y').value=s.value||'228';
         if(s.key==='price_monthly_orig')$('st-mo').value=s.value||'39';
         if(s.key==='price_yearly_orig')$('st-yo').value=s.value||'348';
     });
+}
+function toggleBanDates(v){$('ban-dates-wrap').classList.toggle('hidden',v!=='range');}
+function updateBanPreview(){
+    var pr=$('ban-preview');if(!pr)return;
+    var txt=$('st-ban').value||'نص البانر سيظهر هنا';
+    var bg=$('st-ban-bg').value||'#6366f1';
+    var clr=$('st-ban-clr').value||'#ffffff';
+    var sz=($('st-ban-size').value||13)+'px';
+    pr.style.background=bg; pr.style.color=clr; pr.style.fontSize=sz; pr.textContent=txt;
+}
+async function saveBanner(){
+    var mode=document.querySelector('[name="ban-mode"]:checked').value;
+    await saveSt('banner_text',$('st-ban').value);
+    await saveSt('banner_bg',$('st-ban-bg').value);
+    await saveSt('banner_color',$('st-ban-clr').value);
+    await saveSt('banner_size',$('st-ban-size').value);
+    await saveSt('banner_mode',mode);
+    await saveSt('banner_from',$('st-ban-from').value||'');
+    await saveSt('banner_to',$('st-ban-to').value||'');
+    toast('✅ تم حفظ البانر',true);
 }
 async function saveSt(k,v){
     var{data:e}=await sb.from('site_settings').select('id').eq('key',k).single();
@@ -1299,6 +1450,12 @@ $('cm-t').addEventListener('change',function(){
 updateSubSec();
 initEditors();
 document.addEventListener('DOMContentLoaded',function(){
+    // Banner live preview
+    ['st-ban','st-ban-bg','st-ban-clr','st-ban-size'].forEach(function(id){
+        var el=$(id); if(el)el.addEventListener('input',updateBanPreview);
+    });
+    $('st-ban-bg').addEventListener('input',function(){$('st-ban-bg-txt').value=this.value;updateBanPreview();});
+    $('st-ban-clr').addEventListener('input',function(){$('st-ban-clr-txt').value=this.value;updateBanPreview();});
     init();
     // ✅ تحميل عداد البلاغات عند الفتح
     setTimeout(function(){loadReportsBadge()},2000);
