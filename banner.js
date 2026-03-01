@@ -1,149 +1,180 @@
-/**
- * banner.js — مدارك النخبة v3.1
- * Fixed: handles fixed nav, no logo overlap
- */
-(function() {
-  'use strict';
-  const SB_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
-  const INTERNAL = ['dashboard','practice','stats','mistakes','profile','select-section'];
-  const PAGE = document.body ? (document.body.getAttribute('data-page')||'') : '';
-  const IS_INT = INTERNAL.includes(PAGE);
+/* ============================================================
+   banner.js — مدارك النخبة
+   البنر العلوي العام (من site_settings)
+   ============================================================ */
 
-  async function fetchSettings() {
-    try {
-      const r = await fetch(SB_URL+'/rest/v1/site_settings?select=key,value',
-        {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-      const rows = await r.json();
-      if (!Array.isArray(rows)) return {};
-      const s = {};
-      rows.forEach(x => s[x.key]=x.value);
-      return s;
-    } catch(e) { return {}; }
-  }
+(async function initBanners() {
 
-  function isActive(s, pfx) {
-    const mode = s[pfx+'_mode']||'off';
-    if (mode==='off') return false;
-    if (mode==='always') return true;
-    if (mode==='range') {
-      const now=new Date();
-      const fr=s[pfx+'_from']?new Date(s[pfx+'_from']):null;
-      const to=s[pfx+'_to']?new Date(s[pfx+'_to']):null;
-      if(fr&&now<fr) return false;
-      if(to&&now>to) return false;
-      return true;
-    }
-    return false;
-  }
+  // ── 1. اقرأ إعدادات البنر من Supabase ──
+  const SUPA_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
 
-  function addCSS() {
-    if(document.getElementById('mb-css')) return;
-    const st=document.createElement('style');
-    st.id='mb-css';
-    st.textContent=`
-      .mb-bar{width:100%;box-sizing:border-box;font-family:'Tajawal',sans-serif;direction:rtl;position:relative;z-index:10000;overflow:hidden}
-      .mb-inner{display:flex;align-items:center;justify-content:center;padding:7px 44px;min-height:34px;position:relative}
-      .mb-text{flex:1;text-align:center;overflow:hidden}
-      .mb-scroll{display:inline-block;white-space:nowrap;animation:mb-mq 22s linear infinite}
-      .mb-static{display:inline;white-space:normal}
-      .mb-close{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:20px;cursor:pointer;opacity:.75;line-height:1;padding:0 4px}
-      .mb-link{text-decoration:underline;font-weight:bold;margin-right:8px;flex-shrink:0}
-      @keyframes mb-mq{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
-    `;
-    document.head.appendChild(st);
-  }
-
-  function adjustFixedNav(totalBannerHeight) {
-    // أي nav ثابت في الأعلى — اضبط top
-    const fixedEls = document.querySelectorAll('[class*="fixed"],[style*="position: fixed"],[style*="position:fixed"]');
-    fixedEls.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const style = window.getComputedStyle(el);
-      if (style.position === 'fixed' && rect.top < 60) {
-        el.style.top = totalBannerHeight + 'px';
-      }
+  let settings = {};
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/site_settings?select=key,value', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
-    // أيضاً body padding
-    const body = document.body;
-    const curr = parseInt(body.style.paddingTop||'0') || 0;
-    if (curr < totalBannerHeight) body.style.paddingTop = totalBannerHeight + 'px';
-  }
+    const rows = await res.json();
+    if (Array.isArray(rows)) rows.forEach(r => settings[r.key] = r.value);
+  } catch(e) { console.log('banner: fetch error', e); return; }
 
-  function makeBanner(id,text,bg,color,size,motion,link,linkTxt,closeable) {
-    if(!text) return null;
-    if(sessionStorage.getItem('mb-closed-'+id)) return null;
-    const bar=document.createElement('div');
-    bar.id=id; bar.className='mb-bar';
-    bar.style.background=bg; bar.style.color=color; bar.style.fontSize=size+'px';
-    const inner=document.createElement('div');
-    inner.className='mb-inner';
-    if(link&&linkTxt){
-      const a=document.createElement('a');
-      a.href=link; a.textContent=linkTxt; a.className='mb-link'; a.style.color=color;
-      inner.appendChild(a);
-    }
-    const wrap=document.createElement('div'); wrap.className='mb-text';
-    const span=document.createElement('span');
-    span.className=motion==='scroll'?'mb-scroll':'mb-static';
-    span.textContent=text;
-    wrap.appendChild(span); inner.appendChild(wrap);
-    if(closeable){
-      const btn=document.createElement('button');
-      btn.className='mb-close'; btn.textContent='×'; btn.style.color=color;
-      btn.onclick=()=>{
-        bar.style.display='none';
-        sessionStorage.setItem('mb-closed-'+id,'1');
-        recalcOffset();
-      };
-      inner.appendChild(btn);
-    }
-    bar.appendChild(inner);
-    return bar;
-  }
+  const page = document.body.getAttribute('data-page') || '';
 
-  function recalcOffset() {
-    let h = 0;
-    ['mb-public','mb-internal'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el && el.style.display !== 'none') h += el.offsetHeight;
-    });
-    // reset ثم أعد
-    const fixedEls = document.querySelectorAll('[class*="fixed"],[style*="position: fixed"],[style*="position:fixed"]');
-    fixedEls.forEach(el => {
-      if(window.getComputedStyle(el).position==='fixed') el.style.top = h>0 ? h+'px' : '';
-    });
-  }
+  // ── 2. البنر العلوي العام (public) ──
+  renderPublicBanner(settings, page);
 
-  function insertTop(el) {
-    if(!el) return;
-    document.body.insertBefore(el, document.body.firstChild);
-  }
+  // ── 3. البنر الداخلي (للمشتركين) ──
+  renderInternalBanner(settings, page);
 
-  async function init() {
-    addCSS();
-    const s = await fetchSettings();
-    let inserted = 0;
-
-    if(IS_INT && isActive(s,'inner_banner')) {
-      const pages=s['inner_banner_pages']||'all';
-      const show=pages==='all'||pages.split(',').map(p=>p.trim()).includes(PAGE);
-      if(show){
-        const bar=makeBanner('mb-internal',s['inner_banner_text']||'',s['inner_banner_bg']||'#10b981',s['inner_banner_color']||'#fff',s['inner_banner_size']||13,s['inner_banner_motion']||'scroll',s['inner_banner_link']||'',s['inner_banner_link_text']||'',s['inner_banner_closeable']==='true');
-        if(bar){ insertTop(bar); inserted++; }
-      }
-    }
-
-    if(isActive(s,'banner')) {
-      const bar=makeBanner('mb-public',s['banner_text']||'',s['banner_bg']||'#6366f1',s['banner_color']||'#fff',s['banner_size']||13,s['banner_motion']||'scroll',s['banner_link']||'',s['banner_link_text']||'',s['banner_closeable']==='true');
-      if(bar){ insertTop(bar); inserted++; }
-    }
-
-    if(inserted>0) {
-      setTimeout(recalcOffset, 100);
-    }
-  }
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
-  else init();
 })();
+
+
+/* ── البنر العام ────────────────────────────────────────── */
+function renderPublicBanner(s, page) {
+  // حذف البنر القديم إن وجد
+  document.querySelectorAll('#madarek-top-banner, #top-announcement-bar').forEach(el => {
+    // لا نحذف top-announcement-bar لأنه داخل الـ HTML — نخفيه فقط
+    if (el.id === 'top-announcement-bar') { el.style.display = 'none'; return; }
+    el.remove();
+  });
+
+  const mode = s['banner_mode'] || 'off';
+  if (mode === 'off') return;
+
+  if (mode === 'range') {
+    const now = Date.now();
+    const from = s['banner_from'] ? new Date(s['banner_from']).getTime() : 0;
+    const to   = s['banner_to']   ? new Date(s['banner_to']).getTime()   : Infinity;
+    if (now < from || now > to) return;
+  }
+
+  const text   = s['banner_text']   || '';
+  const bg     = s['banner_bg']     || '#e91e8c';
+  const color  = s['banner_color']  || '#ffffff';
+  const size   = (s['banner_size']  || '13') + 'px';
+  const motion = s['banner_motion'] || 'marquee';
+  const canClose = s['banner_closable'] === 'true';
+  const link   = s['banner_link']   || '';
+  const linkTxt= s['banner_link_text'] || '';
+
+  if (!text) return;
+
+  // أنشئ البنر
+  const bar = document.createElement('div');
+  bar.id = 'madarek-top-banner';
+  bar.style.cssText = `
+    background:${bg};
+    color:${color};
+    font-size:${size};
+    font-family:'Tajawal',sans-serif;
+    font-weight:600;
+    width:100%;
+    position:relative;
+    z-index:9999;
+    overflow:hidden;
+    direction:rtl;
+  `;
+
+  let inner = '';
+
+  if (motion === 'marquee') {
+    // نكرر النص 5 مرات لضمان استمرارية الحركة
+    const repeated = Array(6).fill(text + (linkTxt ? `  ←  ${linkTxt}` : '')).join('    •    ');
+    inner = `
+      <div style="overflow:hidden;white-space:nowrap;padding:10px 0;">
+        <span id="madarek-marquee" style="display:inline-block;padding-left:100%;animation:madarek-scroll 25s linear infinite;">${repeated}</span>
+      </div>
+    `;
+  } else {
+    inner = `<div style="text-align:center;padding:10px 16px;">${text}${linkTxt ? ` <a href="${link}" style="color:${color};text-decoration:underline;margin-right:8px;">${linkTxt}</a>` : ''}</div>`;
+  }
+
+  if (canClose) {
+    inner += `<button onclick="document.getElementById('madarek-top-banner').remove()" 
+      style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:${color};font-size:18px;cursor:pointer;opacity:.7;padding:0 4px;">✕</button>`;
+  }
+
+  bar.innerHTML = inner;
+
+  // CSS للحركة
+  if (!document.getElementById('madarek-banner-css')) {
+    const style = document.createElement('style');
+    style.id = 'madarek-banner-css';
+    style.textContent = `
+      @keyframes madarek-scroll {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // أدرج في أول الـ body
+  document.body.insertBefore(bar, document.body.firstChild);
+}
+
+
+/* ── البنر الداخلي ──────────────────────────────────────── */
+function renderInternalBanner(s, page) {
+  const text  = s['internal_banner_text']  || '';
+  const mode  = s['internal_banner_mode']  || 'off';
+  const pages = s['internal_banner_pages'] || 'all';
+  const bg    = s['internal_banner_bg']    || '#10b981';
+  const color = s['internal_banner_color'] || '#ffffff';
+  const size  = (s['internal_banner_size'] || '13') + 'px';
+  const motion= s['internal_banner_motion']|| 'marquee';
+  const canClose = s['internal_banner_closable'] === 'true';
+  const link  = s['internal_banner_link']  || '';
+  const linkTxt = s['internal_banner_link_text'] || '';
+
+  if (!text || mode === 'off') return;
+
+  // تحقق من الصفحة
+  if (pages !== 'all' && page && !pages.includes(page)) return;
+
+  // تحقق من تسجيل الدخول
+  const needsAuth = pages === 'subscribers' || pages === 'all_subscribers';
+  
+  // أنشئ البنر
+  const bar = document.createElement('div');
+  bar.id = 'madarek-internal-banner';
+  bar.style.cssText = `
+    background:${bg};
+    color:${color};
+    font-size:${size};
+    font-family:'Tajawal',sans-serif;
+    font-weight:600;
+    width:100%;
+    position:relative;
+    z-index:9998;
+    overflow:hidden;
+    direction:rtl;
+  `;
+
+  let inner = '';
+  if (motion === 'marquee') {
+    const repeated = Array(6).fill(text + (linkTxt ? `  ←  ${linkTxt}` : '')).join('    •    ');
+    inner = `
+      <div style="overflow:hidden;white-space:nowrap;padding:10px 0;">
+        <span style="display:inline-block;padding-left:100%;animation:madarek-scroll 30s linear infinite;">${repeated}</span>
+      </div>
+    `;
+  } else {
+    inner = `<div style="text-align:center;padding:10px 16px;">${text}${linkTxt ? ` <a href="${link}" style="color:${color};text-decoration:underline;margin-right:8px;">${linkTxt}</a>` : ''}</div>`;
+  }
+
+  if (canClose) {
+    inner += `<button onclick="document.getElementById('madarek-internal-banner').remove()"
+      style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:${color};font-size:18px;cursor:pointer;opacity:.7;padding:0 4px;">✕</button>`;
+  }
+
+  bar.innerHTML = inner;
+
+  // أدرج بعد البنر العام مباشرة
+  const publicBanner = document.getElementById('madarek-top-banner');
+  if (publicBanner) {
+    publicBanner.after(bar);
+  } else {
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+}
