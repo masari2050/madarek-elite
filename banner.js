@@ -258,20 +258,19 @@
       var nav = document.getElementById('mainNav');
       var hasFixedNav = nav && getComputedStyle(nav).position === 'fixed';
 
-      if(!isMobile && hasFixedNav){
-        // ── ديسكتوب مع ناف ثابت: البنر يكون fixed فوق الناف ──
+      var bannerEls = document.querySelectorAll('body > [id^="madarek-"]');
+      for(var b = 0; b < bannerEls.length; b++) wrapper.appendChild(bannerEls[b]);
+
+      if(hasFixedNav){
+        // ── صفحة فيها ناف ثابت: البنر يكون fixed فوق الناف ──
         wrapper.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;';
-        var bannerEls = document.querySelectorAll('body > [id^="madarek-"]');
-        for(var b = 0; b < bannerEls.length; b++) wrapper.appendChild(bannerEls[b]);
         document.body.insertBefore(wrapper, document.body.firstChild);
         var wH = wrapper.offsetHeight;
-        document.body.style.paddingTop = wH + 'px';
+        document.body.style.paddingTop = (parseFloat(getComputedStyle(document.body).paddingTop)||0) + wH + 'px';
         nav.style.top = wH + 'px';
       } else {
-        // ── موبايل أو بدون ناف ثابت: البنر عادي في أعلى الصفحة يمشي مع السكرول ──
+        // ── بدون ناف ثابت: البنر عادي في أعلى الصفحة يمشي مع السكرول ──
         wrapper.style.cssText = 'position:relative;z-index:50;';
-        var bannerEls = document.querySelectorAll('body > [id^="madarek-"]');
-        for(var b = 0; b < bannerEls.length; b++) wrapper.appendChild(bannerEls[b]);
         document.body.insertBefore(wrapper, document.body.firstChild);
       }
     }
