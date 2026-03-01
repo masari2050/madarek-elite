@@ -301,7 +301,24 @@
             <!-- إيموجي -->
             <div class="mb-3">
                 <label class="text-purple-200/70 text-xs mb-1 block">إيموجي (اختياري — يظهر قبل النص وبعده)</label>
-                <input type="text" id="st-ban-emoji" class="inp" placeholder="مثال: ✨ أو 🔥" oninput="updatePreview(1)" style="font-size:1.1rem">
+                <select id="st-ban-emoji" class="inp" onchange="updatePreview(1)" style="font-size:1.1rem;cursor:pointer">
+                <option value="">— بدون إيموجي —</option>
+                <option value="✨">✨ تلألؤ</option>
+                <option value="🔥">🔥 نار</option>
+                <option value="🚀">🚀 صاروخ</option>
+                <option value="🎯">🎯 هدف</option>
+                <option value="💡">💡 فكرة</option>
+                <option value="📢">📢 إعلان</option>
+                <option value="🎉">🎉 احتفال</option>
+                <option value="⚡">⚡ برق</option>
+                <option value="🏆">🏆 بطولة</option>
+                <option value="📚">📚 كتب</option>
+                <option value="💎">💎 جوهرة</option>
+                <option value="🌟">🌟 نجم</option>
+                <option value="⚠️">⚠️ تنبيه</option>
+                <option value="🎁">🎁 هدية</option>
+                <option value="📅">📅 تاريخ</option>
+              </select>
             </div>
             <!-- رابط -->
             <div class="grid grid-cols-2 gap-3 mb-3">
@@ -424,7 +441,24 @@
             </div>
             <div class="mb-3">
                 <label class="text-purple-200/70 text-xs mb-1 block">إيموجي</label>
-                <input type="text" id="st-ban2-emoji" class="inp" placeholder="🔥" oninput="updatePreview(2)" style="font-size:1.1rem">
+                <select id="st-ban2-emoji" class="inp" onchange="updatePreview(2)" style="font-size:1.1rem;cursor:pointer">
+                <option value="">— بدون إيموجي —</option>
+                <option value="✨">✨ تلألؤ</option>
+                <option value="🔥">🔥 نار</option>
+                <option value="🚀">🚀 صاروخ</option>
+                <option value="🎯">🎯 هدف</option>
+                <option value="💡">💡 فكرة</option>
+                <option value="📢">📢 إعلان</option>
+                <option value="🎉">🎉 احتفال</option>
+                <option value="⚡">⚡ برق</option>
+                <option value="🏆">🏆 بطولة</option>
+                <option value="📚">📚 كتب</option>
+                <option value="💎">💎 جوهرة</option>
+                <option value="🌟">🌟 نجم</option>
+                <option value="⚠️">⚠️ تنبيه</option>
+                <option value="🎁">🎁 هدية</option>
+                <option value="📅">📅 تاريخ</option>
+              </select>
             </div>
             <div class="grid grid-cols-2 gap-3 mb-3">
                 <div>
