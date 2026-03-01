@@ -56,11 +56,6 @@
         </div>
     </div>
 
-    <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
-        <div class="marquee-container py-2.5">
-            <span class="marquee-text text-sm text-purple-200/90">✨ مدارك النخبة تتطور يومياً — المزيد من الأسئلة والتحسينات قادمة قريباً ✨</span>
-        </div>
-    </div>
 
     <div class="px-4 py-4 flex items-center justify-between max-w-2xl mx-auto">
         <a href="dashboard.html" class="flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
@@ -175,5 +170,6 @@
         async function handleLogout(){const btn=document.getElementById('btn-logout');if(btn.disabled)return;btn.disabled=true;document.getElementById('logout-text').classList.add('hidden');document.getElementById('logout-spinner').classList.remove('hidden');try{await sb.auth.signOut();showToast('تم تسجيل الخروج','👋');setTimeout(function(){window.location.href='login.html'},800)}catch(err){showToast('حدث خطأ','❌');btn.disabled=false;document.getElementById('logout-text').classList.remove('hidden');document.getElementById('logout-spinner').classList.add('hidden')}}
         checkAuth();
     </script>
+    <script src="banner.js"></script>
 </body>
 </html>
