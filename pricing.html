@@ -251,7 +251,47 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
-        (async function(){var{data}=await sb.from('site_settings').select('*');if(!data)return;var s={};data.forEach(function(r){s[r.key]=r.value});var mOrig=parseInt(s.price_monthly_orig)||0,mNow=parseInt(s.price_monthly)||29,yOrig=parseInt(s.price_yearly_orig)||0,yNow=parseInt(s.price_yearly)||228,yPM=Math.round(yNow/12);document.getElementById('monthly-price').textContent=mNow;if(mOrig&&mOrig>mNow){document.getElementById('monthly-orig').textContent=mOrig+' ريال';document.getElementById('monthly-orig-wrap').classList.remove('hidden')}document.getElementById('yearly-per-month').textContent=yPM;document.getElementById('yearly-total').textContent='يُدفع '+yNow+' ريال سنوياً';if(yOrig&&yOrig>yNow){document.getElementById('yearly-orig').textContent=yOrig+' ريال';document.getElementById('yearly-orig-wrap').classList.remove('hidden')}var saving=(mNow*12)-yNow;if(saving>0){document.getElementById('yearly-save-badge').textContent='💎 وفّر '+saving+' ريال';var offerEl=document.querySelector('.offer-banner p');if(offerEl)offerEl.textContent='وفّر '+saving+' ريال عند الاشتراك السنوي — بدل '+mNow+' ريال شهرياً ادفع '+yPM+' ريال فقط!'}})();
+        (async function(){
+  var{data}=await sb.from('site_settings').select('*');
+  if(!data)return;
+  var s={};
+  data.forEach(function(r){s[r.key]=r.value});
+  
+  // ✅ Updated key names to match admin panel
+  var mOrig=parseInt(s.price_monthly_original)||0;
+  var mNow=parseInt(s.price_monthly_current)||29;
+  var yOrig=parseInt(s.price_yearly_original)||0;
+  var yNow=parseInt(s.price_yearly_current)||228;
+  var discountPct=parseInt(s.discount_percent)||0;
+  
+  // ✅ Apply discount from original price if set
+  if(discountPct > 0 && mOrig > 0){
+    mNow = Math.round(mOrig * (100 - discountPct) / 100);
+  }
+  if(discountPct > 0 && yOrig > 0){
+    yNow = Math.round(yOrig * (100 - discountPct) / 100);
+  }
+  
+  var yPM=Math.round(yNow/12);
+  
+  document.getElementById('monthly-price').textContent=mNow;
+  if(mOrig&&mOrig>mNow){
+    document.getElementById('monthly-orig').textContent=mOrig+' ريال';
+    document.getElementById('monthly-orig-wrap').classList.remove('hidden');
+  }
+  document.getElementById('yearly-per-month').textContent=yPM;
+  document.getElementById('yearly-total').textContent='يُدفع '+yNow+' ريال سنوياً';
+  if(yOrig&&yOrig>yNow){
+    document.getElementById('yearly-orig').textContent=yOrig+' ريال';
+    document.getElementById('yearly-orig-wrap').classList.remove('hidden');
+  }
+  var saving=(mNow*12)-yNow;
+  if(saving>0){
+    document.getElementById('yearly-save-badge').textContent='💎 وفّر '+saving+' ريال';
+    var offerEl=document.querySelector('.offer-banner p');
+    if(offerEl)offerEl.textContent='وفّر '+saving+' ريال عند الاشتراك السنوي — بدل '+mNow+' ريال شهرياً ادفع '+yPM+' ريال فقط!';
+  }
+})();
         function subscribe(plan){window.location.href='register.html'}
         function toggleFaq(el){el.classList.toggle('open')}
         async function applyCoupon(){var code=document.getElementById('couponInput').value.trim().toUpperCase();if(!code)return;var btn=document.getElementById('couponBtn');btn.textContent='...';btn.disabled=true;document.getElementById('couponResult').classList.remove('hidden');document.getElementById('couponSuccess').classList.add('hidden');document.getElementById('couponError').classList.add('hidden');try{var{data,error}=await sb.from('coupons').select('*').eq('code',code).single();if(error||!data){document.getElementById('couponErrMsg').textContent='الكود غير صحيح أو غير موجود';document.getElementById('couponError').classList.remove('hidden')}else if(data.expires_at&&new Date(data.expires_at)<new Date()){document.getElementById('couponErrMsg').textContent='هالكوبون منتهي الصلاحية';document.getElementById('couponError').classList.remove('hidden')}else if(data.max_uses&&data.used_count>=data.max_uses){document.getElementById('couponErrMsg').textContent='هالكوبون وصل الحد الأقصى للاستخدام';document.getElementById('couponError').classList.remove('hidden')}else{var dt=data.discount_type==='percentage'?'خصم '+data.discount_value+'% على اشتراكك':'خصم '+data.discount_value+' ريال على اشتراكك';document.getElementById('couponMsg').textContent='✓ '+dt;document.getElementById('couponSuccess').classList.remove('hidden');localStorage.setItem('khawariz_coupon',JSON.stringify({code:data.code,type:data.discount_type,value:data.discount_value}));await sb.from('coupons').update({used_count:(data.used_count||0)+1}).eq('id',data.id);if(data.discount_type==='percentage'&&data.discount_value>=100){var{data:{session}}=await sb.auth.getSession();if(session){await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>'}else{document.getElementById('couponMsg').innerHTML='✓ '+dt+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>'}}}}catch(e){document.getElementById('couponErrMsg').textContent='حدث خطأ، حاول مرة ثانية';document.getElementById('couponError').classList.remove('hidden')}btn.textContent='تحقق';btn.disabled=false}

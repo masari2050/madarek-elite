@@ -312,7 +312,7 @@
             </div>
             <!-- إيموجي -->
             <div class="mb-3">
-                <label class="text-purple-200/70 text-xs mb-1 block">إيموجي (اختياري — يظهر قبل النص وبعده)</label>
+                <label class="text-purple-200/70 text-xs mb-1 block">إيموجي (اختياري — أو اكتبه مباشرة في النص)</label>
                 <select id="st-ban-emoji" class="inp" onchange="updatePreview(1)" style="font-size:1.1rem;cursor:pointer">
                 <option value="">— بدون إيموجي —</option>
                 <option value="✨">✨ تلألؤ</option>
@@ -1676,6 +1676,7 @@ async function loadSet(){
         if(s.key==='banner_bold'){var el=$('st-ban-bold');if(el)el.checked=(v==='true');}
         if(s.key==='banner_italic'){var el=$('st-ban-italic');if(el)el.checked=(v==='true');}
         if(s.key==='banner_style'){var el=$('st-ban-style');if(el)el.value=v||'marquee';}
+        if(s.key==='banner_speed'){var el=$('st-ban-speed');if(el){el.value=v||'35';var sv=document.getElementById('speed-val-1');if(sv)sv.textContent=(v||'35')+'s';}}
         if(s.key==='banner_pages'){var el=$('st-ban-pages');if(el)el.value=v||'all';}
         if(s.key==='banner_closable'){var el=$('st-ban-closable');if(el)el.checked=(v==='true');}
         if(s.key==='banner_mode'){var m=v||'always';document.querySelectorAll('[name="ban-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});toggleBanDates('b1',m);}
@@ -1692,6 +1693,7 @@ async function loadSet(){
         if(s.key==='banner2_bold'){var el=$('st-ban2-bold');if(el)el.checked=(v==='true');}
         if(s.key==='banner2_italic'){var el=$('st-ban2-italic');if(el)el.checked=(v==='true');}
         if(s.key==='banner2_style'){var el=$('st-ban2-style');if(el)el.value=v||'marquee';}
+        if(s.key==='banner2_speed'){var el=$('st-ban2-speed');if(el){el.value=v||'35';var sv=document.getElementById('speed-val-2');if(sv)sv.textContent=(v||'35')+'s';}}
         if(s.key==='banner2_pages'){var el=$('st-ban2-pages');if(el)el.value=v||'all';}
         if(s.key==='banner2_closable'){var el=$('st-ban2-closable');if(el)el.checked=(v==='true');}
         if(s.key==='banner2_mode'){var m=v||'always';document.querySelectorAll('[name="ban2-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});toggleBanDates('b2',m);}
@@ -1764,6 +1766,7 @@ async function saveBanner(n){
     await saveSt(dbPfx+'bold',   String((document.getElementById(pfx+'bold')||{}).checked||false));
     await saveSt(dbPfx+'italic', String((document.getElementById(pfx+'italic')||{}).checked||false));
     await saveSt(dbPfx+'style',  (document.getElementById(pfx+'style')||{}).value||'marquee');
+    await saveSt(dbPfx+'speed',  (document.getElementById(pfx+'speed')||{}).value||'35');
     await saveSt(dbPfx+'pages',  (document.getElementById(pfx+'pages')||{}).value||'all');
     await saveSt(dbPfx+'closable',String((document.getElementById(pfx+'closable')||{}).checked||false));
     await saveSt(dbPfx+'mode',   mode);

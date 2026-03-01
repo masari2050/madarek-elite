@@ -91,14 +91,14 @@
   }
 
   // ═══ 7. بناء البنر ═══
-  function buildBanner(id, text, emoji, bg, color, size, bold, italic, style, closable, link, linkText){
+  function buildBanner(id, text, emoji, bg, color, size, bold, italic, style, closable, link, linkText, speed){
     if(!text) return null;
 
     // هل المستخدم أغلقه سابقاً؟
     var closeKey = 'madarek_banner_closed_' + id + '_' + text.substring(0,20).replace(/\s/g,'');
     if(closable === 'true' && localStorage.getItem(closeKey)) return null;
 
-    var fullText = (emoji ? emoji + ' ' : '') + text + (emoji ? ' ' + emoji : '');
+    var fullText = text; if(emoji && text.indexOf(emoji) === -1){ fullText = emoji + ' ' + text + ' ' + emoji; }
 
     var bar = document.createElement('div');
     bar.id = 'madarek-' + id;
@@ -107,7 +107,7 @@
     if(style === 'marquee'){
       // ═══ Marquee متحرك ═══
       var track = document.createElement('div');
-      track.style.cssText = 'display:flex;width:max-content;animation:madarek-marquee-rtl ' + Math.max(15, text.length * 0.4) + 's linear infinite;';
+      track.style.cssText = 'display:flex;width:max-content;animation:madarek-marquee-rtl ' + (speed ? parseInt(speed) : Math.max(30, text.length * 0.7)) + 's linear infinite;';
       // نكرر النص 8 مرات لضمان عدم وجود فراغ
       var repeated = '';
       for(var i=0; i<8; i++){
@@ -181,10 +181,27 @@
           settings['banner_color']||'#fff', settings['banner_size']||'13',
           settings['banner_bold']||'false', settings['banner_italic']||'false',
           settings['banner_style']||'marquee', settings['banner_closable']||'false',
-          settings['banner_link']||'', settings['banner_link_text']||''
+          settings['banner_link']||'', settings['banner_link_text']||'',
+          settings['banner_speed']||''
         );
         if(pubBar){
-          document.body.insertBefore(pubBar, document.body.firstChild);
+          // Fix for flex-centered pages (login/register)
+          var bodyStyle = window.getComputedStyle(document.body);
+          if(bodyStyle.display === 'flex' && bodyStyle.alignItems === 'center'){
+            document.body.style.flexDirection = 'column';
+            document.body.style.justifyContent = 'flex-start';
+            document.body.style.paddingTop = '0';
+            var spacer = document.createElement('div');
+            spacer.id = 'madarek-page-spacer';
+            spacer.style.cssText = 'flex:1;display:flex;align-items:center;justify-content:center;width:100%;';
+            while(document.body.children.length > 0 && document.body.children[0] !== pubBar){
+              spacer.appendChild(document.body.children[0]);
+            }
+            document.body.insertBefore(pubBar, document.body.firstChild);
+            document.body.appendChild(spacer);
+          } else {
+            document.body.insertBefore(pubBar, document.body.firstChild);
+          }
           totalHeight += pubBar.offsetHeight;
         }
       }
@@ -215,7 +232,8 @@
             settings['banner2_bold']||'false', settings['banner2_italic']||'false',
             settings['banner2_style']||settings['internal_banner_motion']||'marquee',
             settings['banner2_closable']||settings['internal_banner_closable']||'false',
-            settings['banner2_link']||'', settings['banner2_link_text']||''
+            settings['banner2_link']||'', settings['banner2_link_text']||'',
+            settings['banner2_speed']||''
           );
           if(intBar){
             // نضيفه بعد البنر العام
