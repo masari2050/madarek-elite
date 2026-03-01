@@ -1,6 +1,6 @@
 /**
- * banner.js — مدارك النخبة v3.0
- * Fixed: no overlap, proper positioning
+ * banner.js — مدارك النخبة v3.1
+ * Fixed: handles fixed nav, no logo overlap
  */
 (function() {
   'use strict';
@@ -12,15 +12,14 @@
 
   async function fetchSettings() {
     try {
-      const r = await fetch(SB_URL+'/rest/v1/site_settings?select=key,value', {
-        headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-      });
+      const r = await fetch(SB_URL+'/rest/v1/site_settings?select=key,value',
+        {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
       const rows = await r.json();
       if (!Array.isArray(rows)) return {};
       const s = {};
       rows.forEach(x => s[x.key]=x.value);
       return s;
-    } catch(e){ return {}; }
+    } catch(e) { return {}; }
   }
 
   function isActive(s, pfx) {
@@ -43,7 +42,7 @@
     const st=document.createElement('style');
     st.id='mb-css';
     st.textContent=`
-      .mb-bar{width:100%;box-sizing:border-box;font-family:'Tajawal',sans-serif;direction:rtl;position:relative;z-index:9999;overflow:hidden;flex-shrink:0}
+      .mb-bar{width:100%;box-sizing:border-box;font-family:'Tajawal',sans-serif;direction:rtl;position:relative;z-index:10000;overflow:hidden}
       .mb-inner{display:flex;align-items:center;justify-content:center;padding:7px 44px;min-height:34px;position:relative}
       .mb-text{flex:1;text-align:center;overflow:hidden}
       .mb-scroll{display:inline-block;white-space:nowrap;animation:mb-mq 22s linear infinite}
@@ -53,6 +52,22 @@
       @keyframes mb-mq{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
     `;
     document.head.appendChild(st);
+  }
+
+  function adjustFixedNav(totalBannerHeight) {
+    // أي nav ثابت في الأعلى — اضبط top
+    const fixedEls = document.querySelectorAll('[class*="fixed"],[style*="position: fixed"],[style*="position:fixed"]');
+    fixedEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const style = window.getComputedStyle(el);
+      if (style.position === 'fixed' && rect.top < 60) {
+        el.style.top = totalBannerHeight + 'px';
+      }
+    });
+    // أيضاً body padding
+    const body = document.body;
+    const curr = parseInt(body.style.paddingTop||'0') || 0;
+    if (curr < totalBannerHeight) body.style.paddingTop = totalBannerHeight + 'px';
   }
 
   function makeBanner(id,text,bg,color,size,motion,link,linkTxt,closeable) {
@@ -76,34 +91,56 @@
     if(closeable){
       const btn=document.createElement('button');
       btn.className='mb-close'; btn.textContent='×'; btn.style.color=color;
-      btn.onclick=()=>{bar.style.display='none';sessionStorage.setItem('mb-closed-'+id,'1');};
+      btn.onclick=()=>{
+        bar.style.display='none';
+        sessionStorage.setItem('mb-closed-'+id,'1');
+        recalcOffset();
+      };
       inner.appendChild(btn);
     }
     bar.appendChild(inner);
     return bar;
   }
 
+  function recalcOffset() {
+    let h = 0;
+    ['mb-public','mb-internal'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el && el.style.display !== 'none') h += el.offsetHeight;
+    });
+    // reset ثم أعد
+    const fixedEls = document.querySelectorAll('[class*="fixed"],[style*="position: fixed"],[style*="position:fixed"]');
+    fixedEls.forEach(el => {
+      if(window.getComputedStyle(el).position==='fixed') el.style.top = h>0 ? h+'px' : '';
+    });
+  }
+
   function insertTop(el) {
     if(!el) return;
-    document.body.insertBefore(el,document.body.firstChild);
+    document.body.insertBefore(el, document.body.firstChild);
   }
 
   async function init() {
     addCSS();
-    const s=await fetchSettings();
+    const s = await fetchSettings();
+    let inserted = 0;
 
     if(IS_INT && isActive(s,'inner_banner')) {
       const pages=s['inner_banner_pages']||'all';
       const show=pages==='all'||pages.split(',').map(p=>p.trim()).includes(PAGE);
       if(show){
         const bar=makeBanner('mb-internal',s['inner_banner_text']||'',s['inner_banner_bg']||'#10b981',s['inner_banner_color']||'#fff',s['inner_banner_size']||13,s['inner_banner_motion']||'scroll',s['inner_banner_link']||'',s['inner_banner_link_text']||'',s['inner_banner_closeable']==='true');
-        insertTop(bar);
+        if(bar){ insertTop(bar); inserted++; }
       }
     }
 
     if(isActive(s,'banner')) {
       const bar=makeBanner('mb-public',s['banner_text']||'',s['banner_bg']||'#6366f1',s['banner_color']||'#fff',s['banner_size']||13,s['banner_motion']||'scroll',s['banner_link']||'',s['banner_link_text']||'',s['banner_closeable']==='true');
-      insertTop(bar);
+      if(bar){ insertTop(bar); inserted++; }
+    }
+
+    if(inserted>0) {
+      setTimeout(recalcOffset, 100);
     }
   }
 
