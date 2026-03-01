@@ -102,7 +102,7 @@
 
     var bar = document.createElement('div');
     bar.id = 'madarek-' + id;
-    bar.style.cssText = 'width:100%;background:' + (bg||'#6366f1') + ';color:' + (color||'#fff') + ';font-size:' + (size||13) + 'px;font-weight:' + (bold==='true'?'900':'500') + ';font-style:' + (italic==='true'?'italic':'normal') + ';font-family:Tajawal,sans-serif;position:relative;z-index:9998;overflow:hidden;min-height:40px;display:flex;align-items:center;padding:8px 16px;';
+    bar.style.cssText = 'width:100%;background:' + (bg||'#6366f1') + ';color:' + (color||'#fff') + ';font-size:' + (size||13) + 'px;font-weight:' + (bold==='true'?'900':'500') + ';font-style:' + (italic==='true'?'italic':'normal') + ';font-family:Tajawal,sans-serif;position:relative;z-index:9998;overflow:hidden;min-height:36px;display:flex;align-items:center;padding:6px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.15);';
 
     if(style === 'marquee'){
       // ═══ Marquee متحرك ═══
@@ -253,7 +253,7 @@
     if(totalHeight > 0) {
       var wrapper = document.createElement('div');
       wrapper.id = 'madarek-banner-wrapper';
-      wrapper.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;';
+      wrapper.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;box-shadow:0 2px 12px rgba(0,0,0,0.2);';
       var bannerEls = document.querySelectorAll('body > [id^="madarek-"]');
       for(var b = 0; b < bannerEls.length; b++) wrapper.appendChild(bannerEls[b]);
       document.body.insertBefore(wrapper, document.body.firstChild);
