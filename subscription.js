@@ -317,16 +317,32 @@ async function _getPrices() {
     try {
         const { data } = await sb.from('site_settings')
             .select('key, value')
-            .in('key', ['price_monthly', 'price_yearly', 'price_monthly_orig', 'price_yearly_orig']);
+            .in('key', ['price_monthly_original', 'price_monthly_current', 'price_yearly_original', 'price_yearly_current', 'discount_percent']);
 
         if (!data) return defaults;
         const map = {};
         data.forEach(r => map[r.key] = parseFloat(r.value));
+
+        const mOrig = map['price_monthly_original'] || defaults.monthlyOrig;
+        const mCur  = map['price_monthly_current']  || 0;
+        const yOrig = map['price_yearly_original']  || defaults.yearlyOrig;
+        const yCur  = map['price_yearly_current']   || 0;
+        const disc  = map['discount_percent']        || 0;
+
+        let monthly, yearly;
+        if (disc > 0 && mOrig > 0) { monthly = Math.round(mOrig * (100 - disc) / 100); }
+        else if (mCur > 0) { monthly = mCur; }
+        else { monthly = mOrig; }
+
+        if (disc > 0 && yOrig > 0) { yearly = Math.round(yOrig * (100 - disc) / 100); }
+        else if (yCur > 0) { yearly = yCur; }
+        else { yearly = yOrig; }
+
         return {
-            monthly: map['price_monthly'] || defaults.monthly,
-            yearly: map['price_yearly'] || defaults.yearly,
-            monthlyOrig: map['price_monthly_orig'] || defaults.monthlyOrig,
-            yearlyOrig: map['price_yearly_orig'] || defaults.yearlyOrig,
+            monthly: monthly,
+            yearly: yearly,
+            monthlyOrig: mOrig,
+            yearlyOrig: yOrig,
         };
     } catch (e) {
         return defaults;

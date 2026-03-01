@@ -1281,27 +1281,6 @@ function openQM(q){
     $('qmT').textContent=q?'تعديل السؤال':'إضافة سؤال';
     $('qm-id').value=q?q.id:'';
     $('qm-sec').value=q?q.section:'quant';
-    
-async function loadPrices(){
-    try {
-        var{data}=await sb.from('site_settings').select('*').in('key',[
-            'price_monthly_original','price_monthly_current',
-            'price_yearly_original','price_yearly_current',
-            'discount_percent','discount_from','discount_to','discount_label'
-        ]);
-        if(!data)return;
-        data.forEach(function(s){
-            var v=s.value||'';
-            var el=$(s.key);
-            if(el) el.value=v;
-        });
-        document.querySelectorAll('.admin-input').forEach(function(inp){
-            inp.disabled=false;
-            inp.style.pointerEvents='auto';
-            inp.style.opacity='1';
-        });
-    }catch(e){console.error('loadPrices error:',e)}
-}
 
 updateSubSec();
     if(q&&q.sub_section)$('qm-sub').value=q.sub_section;
@@ -1326,6 +1305,28 @@ updateSubSec();
     $('qm-cor').value=q?q.correct_index:'0';
     $('questionM').classList.remove('hidden');
 }
+
+async function loadPrices(){
+    try {
+        var{data}=await sb.from('site_settings').select('*').in('key',[
+            'price_monthly_original','price_monthly_current',
+            'price_yearly_original','price_yearly_current',
+            'discount_percent','discount_from','discount_to','discount_label'
+        ]);
+        if(!data)return;
+        data.forEach(function(s){
+            var v=s.value||'';
+            var el=$(s.key);
+            if(el) el.value=v;
+        });
+        document.querySelectorAll('.admin-input').forEach(function(inp){
+            inp.disabled=false;
+            inp.style.pointerEvents='auto';
+            inp.style.opacity='1';
+        });
+    }catch(e){console.error('loadPrices error:',e)}
+}
+
 function previewImg(inp){if(inp.files&&inp.files[0]){var r=new FileReader();r.onload=function(e){$('qm-prev-img').src=e.target.result;$('qm-preview').classList.remove('hidden')};r.readAsDataURL(inp.files[0])}}
 function clearImg(){$('qm-preview').classList.add('hidden');$('qm-img').value='';$('qm-file').value='';$('qm-prev-img').src=''}
 
