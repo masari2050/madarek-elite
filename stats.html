@@ -26,7 +26,7 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
 @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
 </style>
 </head>
-<body>
+<body data-page="stats">
 
 <!-- Header -->
 <div style="background:rgba(15,10,46,0.96);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,0.07)">
@@ -135,5 +135,6 @@ function switchTab(tab){activeTab=tab;document.querySelectorAll('.tab-btn').forE
 function showReport(){var el=document.getElementById('reportEl'),txt=document.getElementById('reportTxt');el.style.display='block';el.scrollIntoView({behavior:'smooth'});var tot=attempts.length,cor=attempts.filter(function(a){return a.is_correct}).length,overall=tot>0?Math.round(cor/tot*100):0,arr=Object.values(tmap);var strong=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)>=70}).sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});var weak=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});var mid=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)>=50&&Math.round(x.c/x.n*100)<70});var r='';if(overall>=80)r+='🌟 أداء رائع! نسبتك '+overall+'% تعكس استعداداً قوياً للاختبار.\n\n';else if(overall>=60)r+='💪 أداء جيد! حققت '+overall+'% من '+tot+' سؤال — أنت على الطريق الصح.\n\n';else if(overall>=40)r+='📈 بداية واعدة! نسبتك '+overall+'% وأمامك مساحة كبيرة للتحسن.\n\n';else r+='🚀 مرحلة البناء! '+overall+'% — كل سؤال تحله يضيف لرصيدك.\n\n';if(strong.length>0){r+='✅ نقاط القوة:\n';strong.forEach(function(x){r+='• '+(TN[x.t]||x.t)+': '+Math.round(x.c/x.n*100)+'% ('+x.c+'/'+x.n+') 🔥\n'});r+='\n'}if(mid.length>0){r+='⚡ تحتاج تطوير:\n';mid.forEach(function(x){r+='• '+(TN[x.t]||x.t)+': '+Math.round(x.c/x.n*100)+'% — زِد التدريب\n'});r+='\n'}if(weak.length>0){r+='⚠️ تحتاج مراجعة عاجلة:\n';weak.forEach(function(x){r+='• '+(TN[x.t]||x.t)+': '+Math.round(x.c/x.n*100)+'% — ركّز هنا أولاً\n'});r+='\n'}r+='📋 خطتك للأسبوع:\n';if(weak.length>0){r+='1. ابدأ بـ '+(TN[weak[0].t]||weak[0].t)+' — 20 سؤال يومياً\n';r+=weak.length>1?'2. راجع '+(TN[weak[1].t]||weak[1].t)+' — 15 سؤال يومياً\n':'2. راجع المواضيع المتوسطة لرفعها\n'}else{r+='1. حافظ على مستواك بـ 20 سؤال يومياً\n2. جرّب وضع محاكاة الاختبار الكامل\n'}r+='3. راجع أخطاءك قبل كل جلسة جديدة\n\n';var tips=['كل سؤال تحله اليوم هو خطوة نحو النتيجة اللي تحلم فيها 🎯','النجاح في قياس مو حظ، هو تراكم جهد متواصل 💫','الفرق بين أين أنت وأين تريد يكمن فيما ستفعله اليوم 🚀','كل يوم تدرب فيه هو يوم تقدمت — استمر! 🌟'];r+=tips[Math.floor(Math.random()*tips.length)];txt.textContent='';var i=0,chars=r.split(''),timer=setInterval(function(){if(i<chars.length)txt.textContent+=chars[i++];else clearInterval(timer)},10)}
 init();
 </script>
+    <script src="banner.js"></script>
 </body>
 </html>
