@@ -1,402 +1,244 @@
 /**
- * مدارك النخبة — نظام البنرات v3.0
- * ────────────────────────────────────
- * يُحمَّل في كل صفحة عبر: <script src="banner.js"></script>
- *
- * يدعم نوعين:
- *   1. البنر العام (public) — يظهر لكل الزوار (فوق الصفحة)
- *   2. البنر الداخلي (internal) — يظهر فقط للمسجلين داخل الصفحات المحددة
- *
- * يقرأ الإعدادات من جدول site_settings في Supabase
- * ────────────────────────────────────
+ * banner.js — مدارك النخبة — البنر الذكي
+ * يعمل تلقائياً على كل الصفحات
+ * يحذف البنرات القديمة ويستبدلها بالجديدة من Supabase
  */
+(function(){
+  'use strict';
 
-(function () {
-  "use strict";
+  var SB_URL  = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+  var SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
 
-  // ══════════════════════════════════════════
-  //  Supabase config
-  // ══════════════════════════════════════════
-  const SUPABASE_URL = "https://czzcmbxejxbotjemyuqf.supabase.co";
-  const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhibm90amVteXVxZiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzM5NjM3NjgyLCJleHAiOjIwNTUyMTM2ODJ9.oo_XX6RKFNhoFPMIlTZRSQT53LoG_mVNjFfzJkOINMk";
-
-  // ══════════════════════════════════════════
-  //  CSS — يُدرج مرة واحدة في <head>
-  // ══════════════════════════════════════════
-  const BANNER_CSS = `
-    /* ── مدارك البنرات ── */
-    @keyframes madarek-marquee-rtl {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(50%); }
-    }
-
-    .madarek-banner {
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      z-index: 9999;
-      flex-shrink: 0;
-    }
-
-    .madarek-banner-static {
-      width: 100%;
-      text-align: center;
-      padding: 10px 16px;
-      direction: rtl;
-    }
-
-    .madarek-banner-static a {
-      margin-right: 8px;
-      text-decoration: underline;
-      font-weight: 600;
-    }
-
-    .madarek-marquee-track {
-      display: flex;
-      width: max-content;
-      animation: madarek-marquee-rtl var(--marquee-duration, 20s) linear infinite;
-      direction: rtl;
-    }
-
-    .madarek-marquee-track:hover {
-      animation-play-state: paused;
-    }
-
-    .madarek-marquee-item {
-      white-space: nowrap;
-      padding: 10px 48px;
-      flex-shrink: 0;
-    }
-
-    .madarek-marquee-item a {
-      margin-right: 8px;
-      text-decoration: underline;
-      font-weight: 600;
-    }
-
-    .madarek-banner-close {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,0.2);
-      border: none;
-      color: inherit;
-      font-size: 16px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: background 0.2s;
-    }
-    .madarek-banner-close:hover {
-      background: rgba(255,255,255,0.35);
-    }
-
-    /* ── البنر الداخلي ── */
-    .madarek-internal-banner {
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      z-index: 9998;
-      flex-shrink: 0;
-    }
-  `;
-
-  // inject CSS once
-  if (!document.getElementById("madarek-banner-styles")) {
-    const styleEl = document.createElement("style");
-    styleEl.id = "madarek-banner-styles";
-    styleEl.textContent = BANNER_CSS;
-    document.head.appendChild(styleEl);
-  }
-
-  // ══════════════════════════════════════════
-  //  Helpers
-  // ══════════════════════════════════════════
-
-  /** اسم الصفحة الحالية */
-  function getCurrentPage() {
-    const path = window.location.pathname;
-    const file = path.split("/").pop() || "index.html";
-    return file.replace(".html", "");
-  }
-
-  /** هل المستخدم مسجل دخول؟ */
-  function isLoggedIn() {
-    try {
-      const raw = localStorage.getItem("sb-czzcmbxejxbotjemyuqf-auth-token");
-      if (!raw) return false;
-      const data = JSON.parse(raw);
-      return !!(data && data.access_token);
-    } catch {
-      return false;
-    }
-  }
-
-  /** هل التاريخ الحالي ضمن النطاق؟ */
-  function isWithinDateRange(from, to) {
-    if (!from && !to) return true;
-    const now = new Date();
-    if (from && new Date(from) > now) return false;
-    if (to && new Date(to) < now) return false;
-    return true;
-  }
-
-  /** جلب إعدادات البنرات من Supabase */
-  async function fetchSettings(keys) {
-    try {
-      const url = `${SUPABASE_URL}/rest/v1/site_settings?key=in.(${keys.map(k => `"${k}"`).join(",")})&select=key,value`;
-      const res = await fetch(url, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-        },
-      });
-      if (!res.ok) return {};
-      const rows = await res.json();
-      const map = {};
-      rows.forEach((r) => (map[r.key] = r.value));
-      return map;
-    } catch (e) {
-      console.warn("[Banner] فشل جلب الإعدادات:", e);
-      return {};
-    }
-  }
-
-  /** حذف أي بنر قديم hardcoded */
-  function removeOldBanners() {
-    // الطريقة 1: العنصر بالمعرف
-    const old1 = document.getElementById("top-announcement-bar");
-    if (old1) old1.remove();
-
-    // الطريقة 2: البنر القديم بالكلاس
-    document.querySelectorAll(".marquee-container").forEach((el) => {
-      const parent = el.closest("div");
-      if (parent) parent.remove();
+  // ═══ 1. حذف البنرات القديمة ═══
+  function removeOldBanners(){
+    // الأنماط القديمة
+    var selectors = [
+      '.marquee-container',
+      '#top-announcement-bar',
+      '[id^="madarek-old-banner"]',
+      '.bg-gradient-to-l.from-purple-900\\/60'
+    ];
+    selectors.forEach(function(sel){
+      try {
+        document.querySelectorAll(sel).forEach(function(el){ el.remove(); });
+      } catch(e){}
     });
-
-    // الطريقة 3: أي div فيه "مدارك النخبة تتطور" كنص
-    document.querySelectorAll("div").forEach((el) => {
-      if (
-        el.children.length <= 3 &&
-        el.textContent.includes("مدارك النخبة تتطور") &&
-        !el.classList.contains("madarek-banner")
-      ) {
+    // بنرات بالـ gradient القديم
+    document.querySelectorAll('div').forEach(function(el){
+      var bg = el.style.background || '';
+      var cls = el.className || '';
+      if(
+        (cls.indexOf('bg-gradient-to-l')!==-1 && cls.indexOf('from-purple-900')!==-1 && el.querySelector('.marquee-text')) ||
+        (bg.indexOf('linear-gradient')!==-1 && el.querySelector('.marquee-container'))
+      ){
         el.remove();
       }
     });
   }
 
-  // ══════════════════════════════════════════
-  //  البنر العام (Public Banner)
-  // ══════════════════════════════════════════
-  function buildPublicBanner(s) {
-    const mode = s.banner_mode || "off";
-    if (mode === "off") return null;
+  // ═══ 2. اسم الصفحة الحالية ═══
+  function getPageName(){
+    var path = location.pathname.split('/').pop().replace('.html','').replace('.htm','');
+    return path || 'index';
+  }
 
-    const text = s.banner_text || "";
-    if (!text.trim()) return null;
+  // ═══ 3. هل المستخدم مسجّل دخول؟ ═══
+  function isLoggedIn(){
+    try {
+      var tk = localStorage.getItem('sb-czzcmbxejxbotjemyuqf-auth-token');
+      if(!tk) return false;
+      var parsed = JSON.parse(tk);
+      return !!(parsed && parsed.access_token);
+    } catch(e){ return false; }
+  }
 
-    // تحقق من التاريخ
-    if (!isWithinDateRange(s.banner_from, s.banner_to)) return null;
+  // ═══ 4. جلب إعدادات البنر من Supabase ═══
+  async function fetchSettings(){
+    try {
+      var resp = await fetch(SB_URL + '/rest/v1/site_settings?select=key,value', {
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY
+        }
+      });
+      if(!resp.ok) return {};
+      var data = await resp.json();
+      var map = {};
+      data.forEach(function(r){ map[r.key] = r.value || ''; });
+      return map;
+    } catch(e){ console.error('Banner: fetch error', e); return {}; }
+  }
 
-    const bg = s.banner_bg || "#ec4899";
-    const color = s.banner_color || "#ffffff";
-    const size = s.banner_size || "14px";
-    const motion = s.banner_motion || "static"; // static | marquee
-    const closable = s.banner_closable === "true";
-    const link = s.banner_link || "";
-    const linkText = s.banner_link_text || "";
-
-    // هل أغلقه المستخدم سابقاً؟
-    const closedKey = "madarek_pub_banner_closed";
-    if (closable && localStorage.getItem(closedKey) === text) return null;
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "madarek-banner";
-    wrapper.id = "madarek-public-banner";
-    wrapper.style.background = bg;
-    wrapper.style.color = color;
-    wrapper.style.fontSize = size;
-    wrapper.style.fontFamily = "'Tajawal', sans-serif";
-
-    // بناء نص البنر مع الرابط
-    function buildText() {
-      let html = text;
-      if (link && linkText) {
-        html += ` <a href="${link}" style="color:${color}">${linkText}</a>`;
-      }
-      return html;
+  // ═══ 5. فحص التاريخ والوضع ═══
+  function shouldShow(mode, from, to){
+    if(mode === 'off') return false;
+    if(mode === 'always') return true;
+    if(mode === 'range' || mode === 'date'){
+      var now = new Date();
+      if(from && new Date(from) > now) return false;
+      if(to   && new Date(to)   < now) return false;
+      return true;
     }
+    // أي قيمة ثانية = دائم
+    return true;
+  }
 
-    if (motion === "marquee") {
-      // ── Marquee سلس ──
-      // نكرر النص 6 مرات عشان يغطي الشاشة + الحركة تكون seamless
-      const track = document.createElement("div");
-      track.className = "madarek-marquee-track";
-      // نحسب المدة بناءً على طول النص
-      const duration = Math.max(15, text.length * 0.4);
-      track.style.setProperty("--marquee-duration", `${duration}s`);
+  // ═══ 6. فحص الصفحة ═══
+  function isPageAllowed(pages, pageName){
+    if(!pages || pages === 'all') return true;
+    var allowed = pages.split(',').map(function(p){ return p.trim().toLowerCase(); });
+    return allowed.indexOf(pageName.toLowerCase()) !== -1;
+  }
 
-      for (let i = 0; i < 8; i++) {
-        const item = document.createElement("span");
-        item.className = "madarek-marquee-item";
-        item.innerHTML = buildText();
-        track.appendChild(item);
+  // ═══ 7. بناء البنر ═══
+  function buildBanner(id, text, emoji, bg, color, size, bold, italic, style, closable, link, linkText){
+    if(!text) return null;
+
+    // هل المستخدم أغلقه سابقاً؟
+    var closeKey = 'madarek_banner_closed_' + id + '_' + text.substring(0,20).replace(/\s/g,'');
+    if(closable === 'true' && localStorage.getItem(closeKey)) return null;
+
+    var fullText = (emoji ? emoji + ' ' : '') + text + (emoji ? ' ' + emoji : '');
+
+    var bar = document.createElement('div');
+    bar.id = 'madarek-' + id;
+    bar.style.cssText = 'width:100%;background:' + (bg||'#6366f1') + ';color:' + (color||'#fff') + ';font-size:' + (size||13) + 'px;font-weight:' + (bold==='true'?'900':'500') + ';font-style:' + (italic==='true'?'italic':'normal') + ';font-family:Tajawal,sans-serif;position:relative;z-index:9998;overflow:hidden;min-height:36px;display:flex;align-items:center;';
+
+    if(style === 'marquee'){
+      // ═══ Marquee متحرك ═══
+      var track = document.createElement('div');
+      track.style.cssText = 'display:flex;width:max-content;animation:madarek-marquee-rtl ' + Math.max(15, text.length * 0.4) + 's linear infinite;';
+      // نكرر النص 8 مرات لضمان عدم وجود فراغ
+      var repeated = '';
+      for(var i=0; i<8; i++){
+        repeated += '<span style="padding:0 60px;white-space:nowrap;display:inline-block">';
+        if(link && linkText){
+          repeated += fullText + ' <a href="' + link + '" style="color:' + (color||'#fff') + ';text-decoration:underline;font-weight:900;margin:0 8px">' + linkText + '</a>';
+        } else {
+          repeated += fullText;
+        }
+        repeated += '</span>';
       }
-      wrapper.appendChild(track);
+      track.innerHTML = repeated;
+      bar.appendChild(track);
+
+      // إضافة keyframes إذا ما كانت موجودة
+      if(!document.getElementById('madarek-marquee-css')){
+        var css = document.createElement('style');
+        css.id = 'madarek-marquee-css';
+        css.textContent = '@keyframes madarek-marquee-rtl{0%{transform:translateX(0)}100%{transform:translateX(50%)}}';
+        document.head.appendChild(css);
+      }
     } else {
-      // ── Static ──
-      const inner = document.createElement("div");
-      inner.className = "madarek-banner-static";
-      inner.innerHTML = buildText();
-      wrapper.appendChild(inner);
+      // ═══ ثابت ═══
+      bar.style.justifyContent = 'center';
+      bar.style.textAlign = 'center';
+      bar.style.padding = '8px 16px';
+      var content = fullText;
+      if(link && linkText){
+        content += ' <a href="' + link + '" style="color:' + (color||'#fff') + ';text-decoration:underline;font-weight:900;margin:0 8px">' + linkText + '</a>';
+      }
+      bar.innerHTML = '<span style="white-space:nowrap">' + content + '</span>';
     }
 
     // زر الإغلاق
-    if (closable) {
-      const btn = document.createElement("button");
-      btn.className = "madarek-banner-close";
-      btn.innerHTML = "✕";
-      btn.title = "إغلاق";
-      btn.onclick = () => {
-        localStorage.setItem(closedKey, text);
-        wrapper.remove();
+    if(closable === 'true'){
+      var closeBtn = document.createElement('button');
+      closeBtn.innerHTML = '✕';
+      closeBtn.style.cssText = 'position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:' + (color||'#fff') + ';font-size:16px;cursor:pointer;opacity:0.6;padding:4px 8px;z-index:2;';
+      closeBtn.onclick = function(){
+        bar.remove();
+        localStorage.setItem(closeKey, '1');
+        document.body.style.paddingTop = '0';
       };
-      wrapper.appendChild(btn);
+      bar.appendChild(closeBtn);
+      bar.style.paddingLeft = '40px';
     }
 
-    return wrapper;
+    return bar;
   }
 
-  // ══════════════════════════════════════════
-  //  البنر الداخلي (Internal Banner)
-  // ══════════════════════════════════════════
-  function buildInternalBanner(s) {
-    const mode = s.internal_banner_mode || "off";
-    if (mode === "off") return null;
-
-    // لازم يكون مسجل دخول
-    if (!isLoggedIn()) return null;
-
-    const text = s.internal_banner_text || "";
-    if (!text.trim()) return null;
-
-    // تحقق من الصفحات
-    const pages = s.internal_banner_pages || "all";
-    if (pages !== "all" && pages !== "") {
-      const allowed = pages.split(",").map((p) => p.trim().toLowerCase());
-      const current = getCurrentPage().toLowerCase();
-      if (!allowed.includes(current) && !allowed.includes("all")) return null;
-    }
-
-    // تحقق من التاريخ (إذا mode = date)
-    if (mode === "date") {
-      if (!isWithinDateRange(s.internal_banner_from, s.internal_banner_to)) return null;
-    }
-
-    // هل أغلقه المستخدم؟
-    const closable = s.internal_banner_closable === "true";
-    const closedKey = "madarek_int_banner_closed";
-    if (closable && localStorage.getItem(closedKey) === text) return null;
-
-    const bg = s.internal_banner_bg || "#10b981";
-    const color = s.internal_banner_color || "#ffffff";
-    const size = s.internal_banner_size || "13px";
-    const motion = s.internal_banner_motion || "static";
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "madarek-internal-banner";
-    wrapper.id = "madarek-internal-banner";
-    wrapper.style.background = bg;
-    wrapper.style.color = color;
-    wrapper.style.fontSize = size;
-    wrapper.style.fontFamily = "'Tajawal', sans-serif";
-
-    if (motion === "marquee") {
-      const track = document.createElement("div");
-      track.className = "madarek-marquee-track";
-      const duration = Math.max(15, text.length * 0.4);
-      track.style.setProperty("--marquee-duration", `${duration}s`);
-      for (let i = 0; i < 8; i++) {
-        const item = document.createElement("span");
-        item.className = "madarek-marquee-item";
-        item.textContent = text;
-        track.appendChild(item);
-      }
-      wrapper.appendChild(track);
-    } else {
-      const inner = document.createElement("div");
-      inner.className = "madarek-banner-static";
-      inner.textContent = text;
-      wrapper.appendChild(inner);
-    }
-
-    if (closable) {
-      const btn = document.createElement("button");
-      btn.className = "madarek-banner-close";
-      btn.innerHTML = "✕";
-      btn.title = "إغلاق";
-      btn.onclick = () => {
-        localStorage.setItem(closedKey, text);
-        wrapper.remove();
-      };
-      wrapper.appendChild(btn);
-    }
-
-    return wrapper;
-  }
-
-  // ══════════════════════════════════════════
-  //  Init — يُنفَّذ عند تحميل الصفحة
-  // ══════════════════════════════════════════
-  async function init() {
-    // 1) حذف البنرات القديمة
+  // ═══ 8. التشغيل الرئيسي ═══
+  async function initBanners(){
     removeOldBanners();
 
-    // 2) جلب الإعدادات
-    const keys = [
-      "banner_mode", "banner_text", "banner_bg", "banner_color",
-      "banner_size", "banner_motion", "banner_closable",
-      "banner_from", "banner_to", "banner_link", "banner_link_text",
-      "internal_banner_mode", "internal_banner_text", "internal_banner_bg",
-      "internal_banner_color", "internal_banner_size", "internal_banner_motion",
-      "internal_banner_closable", "internal_banner_pages",
-      "internal_banner_from", "internal_banner_to",
-    ];
+    var settings = await fetchSettings();
+    if(!Object.keys(settings).length) return;
 
-    const settings = await fetchSettings(keys);
+    var pageName = getPageName();
+    var logged = isLoggedIn();
+    var totalHeight = 0;
 
-    // 3) البنر العام — يُدرج كأول عنصر في body
-    const pubBanner = buildPublicBanner(settings);
-    if (pubBanner) {
-      document.body.insertBefore(pubBanner, document.body.firstChild);
+    // ─── البنر العام (الزوار + الكل) ───
+    var pubMode  = settings['banner_mode'] || settings['banner2_mode'] ? settings['banner_mode'] : 'off';
+    var pubText  = settings['banner_text'] || '';
+    if(pubText && shouldShow(pubMode, settings['banner_from'], settings['banner_to'])){
+      var pubPages = settings['banner_pages'] || 'all';
+      if(isPageAllowed(pubPages, pageName)){
+        var pubBar = buildBanner(
+          'public-banner', pubText,
+          settings['banner_emoji']||'', settings['banner_bg']||'#6366f1',
+          settings['banner_color']||'#fff', settings['banner_size']||'13',
+          settings['banner_bold']||'false', settings['banner_italic']||'false',
+          settings['banner_style']||'marquee', settings['banner_closable']||'false',
+          settings['banner_link']||'', settings['banner_link_text']||''
+        );
+        if(pubBar){
+          document.body.insertBefore(pubBar, document.body.firstChild);
+          totalHeight += pubBar.offsetHeight;
+        }
+      }
     }
 
-    // 4) البنر الداخلي — يُدرج بعد البنر العام (أو كأول عنصر)
-    const intBanner = buildInternalBanner(settings);
-    if (intBanner) {
-      const after = pubBanner || document.body.firstChild;
-      if (after && after.nextSibling) {
-        document.body.insertBefore(intBanner, after.nextSibling);
-      } else {
-        document.body.appendChild(intBanner);
+    // ─── البنر الداخلي (المسجلين فقط) ───
+    if(logged){
+      var intMode = settings['banner2_mode'] || 'off';
+      var intText = settings['banner2_text'] || settings['internal_banner_text'] || '';
+      var intModeAlt = settings['internal_banner_mode'] || intMode;
+      
+      // ندعم كلا النظامين (banner2_ و internal_banner_)
+      var finalMode = intMode !== 'off' ? intMode : intModeAlt;
+      var finalText = intText || settings['internal_banner_text'] || '';
+      
+      if(finalText && shouldShow(finalMode, 
+          settings['banner2_from']||settings['internal_banner_from']||'', 
+          settings['banner2_to']||settings['internal_banner_to']||'')){
+        
+        var intPages = settings['banner2_pages'] || settings['internal_banner_pages'] || 'all';
+        if(isPageAllowed(intPages, pageName)){
+          var intBar = buildBanner(
+            'internal-banner', finalText,
+            settings['banner2_emoji']||'', 
+            settings['banner2_bg']||settings['internal_banner_bg']||'#10b981',
+            settings['banner2_color']||settings['internal_banner_color']||'#fff',
+            settings['banner2_size']||settings['internal_banner_size']||'13',
+            settings['banner2_bold']||'false', settings['banner2_italic']||'false',
+            settings['banner2_style']||settings['internal_banner_motion']||'marquee',
+            settings['banner2_closable']||settings['internal_banner_closable']||'false',
+            settings['banner2_link']||'', settings['banner2_link_text']||''
+          );
+          if(intBar){
+            // نضيفه بعد البنر العام
+            var pubEl = document.getElementById('madarek-public-banner');
+            if(pubEl && pubEl.nextSibling){
+              document.body.insertBefore(intBar, pubEl.nextSibling);
+            } else if(pubEl){
+              pubEl.parentNode.insertBefore(intBar, pubEl.nextSibling);
+            } else {
+              document.body.insertBefore(intBar, document.body.firstChild);
+            }
+            totalHeight += intBar.offsetHeight;
+          }
+        }
       }
     }
   }
 
-  // ══════════════════════════════════════════
-  //  تشغيل
-  // ══════════════════════════════════════════
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+  // ═══ التشغيل ═══
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initBanners);
   } else {
-    init();
+    initBanners();
   }
+
 })();
