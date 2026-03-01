@@ -1763,6 +1763,7 @@ document.addEventListener('DOMContentLoaded',function(){
     loadPrices();
     // ✅ تحميل عداد البلاغات عند الفتح
     setTimeout(function(){loadReportsBadge()},2000);
+  if(typeof loadPrices === "function") loadPrices();
 });
 
 // ✅ جلب عدد البلاغات فقط (بدون تحميل الكل)
@@ -1775,78 +1776,6 @@ async function loadReportsBadge(){
     }
     if($('s-r'))$('s-r').textContent=count||0;
 }
-
-  // ===== دوال الأسعار =====
-  async function savePrices() {
-    const SUPA_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
-    const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' };
-    
-    const fields = [
-      ['monthly_price_original', document.getElementById('price_monthly_original')?.value || ''],
-      ['monthly_price_current',  document.getElementById('price_monthly_current')?.value  || ''],
-      ['yearly_price_original',  document.getElementById('price_yearly_original')?.value  || ''],
-      ['yearly_price_current',   document.getElementById('price_yearly_current')?.value   || ''],
-      ['discount_percent',       document.getElementById('discount_percent')?.value        || ''],
-      ['discount_from',          document.getElementById('discount_from')?.value           || ''],
-      ['discount_to',            document.getElementById('discount_to')?.value             || ''],
-      ['discount_message',       document.getElementById('discount_message')?.value        || ''],
-    ];
-    
-    let ok = 0;
-    for (const [key, value] of fields) {
-      const check = await fetch(SUPA_URL + '/rest/v1/site_settings?key=eq.' + key, { headers });
-      const existing = await check.json();
-      
-      if (existing.length > 0) {
-        const r = await fetch(SUPA_URL + '/rest/v1/site_settings?key=eq.' + key, {
-          method: 'PATCH', headers: { ...headers, 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ value })
-        });
-        if (r.ok) ok++;
-      } else {
-        const r = await fetch(SUPA_URL + '/rest/v1/site_settings', {
-          method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ key, value })
-        });
-        if (r.ok) ok++;
-      }
-    }
-    
-    const btn = document.querySelector('[onclick="savePrices()"]');
-    if (btn) { btn.textContent = '✅ تم الحفظ!'; setTimeout(() => btn.textContent = '💾 حفظ الأسعار', 2000); }
-    console.log('savePrices: saved ' + ok + '/' + fields.length);
-  }
-  
-  async function loadPrices() {
-    const SUPA_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
-    try {
-      const res = await fetch(SUPA_URL + '/rest/v1/site_settings?select=key,value', {
-        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
-      });
-      const rows = await res.json();
-      if (!Array.isArray(rows)) return;
-      const s = {};
-      rows.forEach(r => s[r.key] = r.value);
-      
-      const map = {
-        'monthly_price_original': 'price_monthly_original',
-        'monthly_price_current':  'price_monthly_current',
-        'yearly_price_original':  'price_yearly_original',
-        'yearly_price_current':   'price_yearly_current',
-        'discount_percent':       'discount_percent',
-        'discount_from':          'discount_from',
-        'discount_to':            'discount_to',
-        'discount_message':       'discount_message',
-      };
-      for (const [supaKey, elId] of Object.entries(map)) {
-        const el = document.getElementById(elId);
-        if (el && s[supaKey] !== undefined) el.value = s[supaKey];
-      }
-    } catch(e) { console.log('loadPrices error:', e); }
-  }
-  // ===== نهاية دوال الأسعار =====
-  </script>
+</script>
 </body>
 </html>
