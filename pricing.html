@@ -53,7 +53,7 @@
         .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
     </style>
 </head>
-<body class="font-tajawal text-white">
+<body class="font-tajawal text-white" data-page="pricing">
 
     <!-- Top Banner -->
     <div class="bg-gradient-to-l from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-b border-purple-500/20">
@@ -259,5 +259,6 @@
         async function applyCoupon(){var code=document.getElementById('couponInput').value.trim().toUpperCase();if(!code)return;var btn=document.getElementById('couponBtn');btn.textContent='...';btn.disabled=true;document.getElementById('couponResult').classList.remove('hidden');document.getElementById('couponSuccess').classList.add('hidden');document.getElementById('couponError').classList.add('hidden');try{var{data,error}=await sb.from('coupons').select('*').eq('code',code).single();if(error||!data){document.getElementById('couponErrMsg').textContent='الكود غير صحيح أو غير موجود';document.getElementById('couponError').classList.remove('hidden')}else if(data.expires_at&&new Date(data.expires_at)<new Date()){document.getElementById('couponErrMsg').textContent='هالكوبون منتهي الصلاحية';document.getElementById('couponError').classList.remove('hidden')}else if(data.max_uses&&data.used_count>=data.max_uses){document.getElementById('couponErrMsg').textContent='هالكوبون وصل الحد الأقصى للاستخدام';document.getElementById('couponError').classList.remove('hidden')}else{var dt=data.discount_type==='percentage'?'خصم '+data.discount_value+'% على اشتراكك':'خصم '+data.discount_value+' ريال على اشتراكك';document.getElementById('couponMsg').textContent='✓ '+dt;document.getElementById('couponSuccess').classList.remove('hidden');localStorage.setItem('khawariz_coupon',JSON.stringify({code:data.code,type:data.discount_type,value:data.discount_value}));await sb.from('coupons').update({used_count:(data.used_count||0)+1}).eq('id',data.id);if(data.discount_type==='percentage'&&data.discount_value>=100){var{data:{session}}=await sb.auth.getSession();if(session){await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>'}else{document.getElementById('couponMsg').innerHTML='✓ '+dt+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>'}}}}catch(e){document.getElementById('couponErrMsg').textContent='حدث خطأ، حاول مرة ثانية';document.getElementById('couponError').classList.remove('hidden')}btn.textContent='تحقق';btn.disabled=false}
         document.getElementById('couponInput').addEventListener('keypress',function(e){if(e.key==='Enter')applyCoupon()});
     </script>
+    <script src="banner.js"></script>
 </body>
 </html>
