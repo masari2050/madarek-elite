@@ -281,79 +281,253 @@
 <div id="t-settings" class="tab">
     <h2 class="text-2xl font-black mb-5">⚙️ إعدادات الموقع</h2>
     <div class="glass p-6 mb-4">
-    <h3 class="font-bold text-base mb-4">📢 إعدادات البانر العلوي</h3>
-    
-    <!-- النص -->
-    <div class="mb-4">
-        <label class="text-purple-200/70 text-xs mb-1 block">نص البانر</label>
-        <textarea id="st-ban" class="inp" rows="2" placeholder="اكتب نص البانر هنا..."></textarea>
+    <h3 class="font-bold text-base mb-5">📢 إعدادات الإعلانات والبنرات</h3>
+
+    <!-- تابات البنر -->
+    <div class="flex gap-2 mb-5">
+        <button onclick="switchBanTab('b1')" id="btab-b1" class="btab-btn flex-1 py-2 rounded-xl text-sm font-bold transition" style="background:rgba(99,102,241,0.3);color:#c4b5fd">📣 البنر العام</button>
+        <button onclick="switchBanTab('b2')" id="btab-b2" class="btab-btn flex-1 py-2 rounded-xl text-sm font-bold transition" style="background:rgba(255,255,255,0.05);color:rgba(196,181,253,0.5)">🎯 البنر الداخلي</button>
     </div>
-    
-    <!-- الألوان -->
-    <div class="grid grid-cols-2 gap-3 mb-4">
-        <div>
-            <label class="text-purple-200/70 text-xs mb-2 block">🎨 لون الخلفية</label>
-            <div class="flex items-center gap-2">
-                <input type="color" id="st-ban-bg" value="#6366f1" class="w-10 h-10 rounded-lg cursor-pointer border-0" style="background:none">
-                <input type="text" id="st-ban-bg-txt" class="inp flex-1" value="#6366f1" placeholder="#6366f1" style="font-size:.8rem" onchange="$('st-ban-bg').value=this.value">
+
+    <!-- البنر العام -->
+    <div id="ban-tab-b1">
+        <p class="text-purple-200/50 text-xs mb-4">يظهر لزوار الموقع — الصفحة الرئيسية، الأسعار، تسجيل الدخول</p>
+        <div id="ban1-fields">
+            <!-- النص -->
+            <div class="mb-3">
+                <label class="text-purple-200/70 text-xs mb-1 block">نص البنر</label>
+                <textarea id="st-ban-text" class="inp" rows="2" placeholder="اكتب نص البنر هنا..." oninput="updatePreview(1)"></textarea>
+            </div>
+            <!-- إيموجي -->
+            <div class="mb-3">
+                <label class="text-purple-200/70 text-xs mb-1 block">إيموجي (اختياري — يظهر قبل النص وبعده)</label>
+                <input type="text" id="st-ban-emoji" class="inp" placeholder="مثال: ✨ أو 🔥" oninput="updatePreview(1)" style="font-size:1.1rem">
+            </div>
+            <!-- رابط -->
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-1 block">رابط (اختياري)</label>
+                    <input type="text" id="st-ban-link" class="inp" placeholder="https://..." style="font-size:.8rem">
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-1 block">نص الرابط</label>
+                    <input type="text" id="st-ban-link-text" class="inp" placeholder="اشترك الآن" style="font-size:.8rem">
+                </div>
+            </div>
+            <!-- الألوان -->
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">🎨 لون الخلفية</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="st-ban-bg" value="#6366f1" class="w-10 h-10 rounded-lg cursor-pointer border-0" oninput="$('st-ban-bg-txt').value=this.value;updatePreview(1)">
+                        <input type="text" id="st-ban-bg-txt" class="inp flex-1" value="#6366f1" style="font-size:.8rem" oninput="$('st-ban-bg').value=this.value;updatePreview(1)">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">✍️ لون الخط</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="st-ban-clr" value="#ffffff" class="w-10 h-10 rounded-lg cursor-pointer border-0" oninput="$('st-ban-clr-txt').value=this.value;updatePreview(1)">
+                        <input type="text" id="st-ban-clr-txt" class="inp flex-1" value="#ffffff" style="font-size:.8rem" oninput="$('st-ban-clr').value=this.value;updatePreview(1)">
+                    </div>
+                </div>
+            </div>
+            <!-- حجم + bold + italic -->
+            <div class="grid grid-cols-3 gap-3 mb-3">
+                <div class="col-span-1">
+                    <label class="text-purple-200/70 text-xs mb-2 block">📏 حجم الخط</label>
+                    <div class="flex items-center gap-2">
+                        <input type="range" id="st-ban-size" min="11" max="22" value="13" class="flex-1" oninput="$('st-ban-size-val').textContent=this.value+'px';updatePreview(1)">
+                        <span id="st-ban-size-val" class="text-purple-200/60 text-xs w-10">13px</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">تنسيق</label>
+                    <div class="flex gap-2">
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" id="st-ban-bold" onchange="updatePreview(1)">
+                            <span class="text-sm font-bold text-white">B</span>
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" id="st-ban-italic" onchange="updatePreview(1)">
+                            <span class="text-sm italic text-white">I</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">نوع الحركة</label>
+                    <select id="st-ban-style" class="inp" style="font-size:.8rem" onchange="updatePreview(1)">
+                        <option value="marquee">متحرك ←</option>
+                        <option value="static">ثابت وسط</option>
+                    </select>
+                </div>
+            </div>
+            <!-- الصفحات -->
+            <div class="mb-3 p-3 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)">
+                <label class="text-indigo-400 font-bold text-xs mb-2 block">📍 أين يظهر البنر؟</label>
+                <select id="st-ban-pages" class="inp" style="font-size:.8rem">
+                    <option value="all">كل الصفحات</option>
+                    <option value="index">الصفحة الرئيسية فقط</option>
+                    <option value="pricing">صفحة الأسعار فقط</option>
+                    <option value="login,register">تسجيل الدخول والتسجيل</option>
+                    <option value="index,pricing">الرئيسية + الأسعار</option>
+                    <option value="index,pricing,login,register">كل صفحات الزوار</option>
+                </select>
+            </div>
+            <!-- قابل للإغلاق -->
+            <div class="mb-3 flex items-center gap-2">
+                <input type="checkbox" id="st-ban-closable">
+                <label for="st-ban-closable" class="text-purple-200/70 text-sm cursor-pointer">يمكن للمستخدم إغلاق البنر ✕</label>
+            </div>
+            <!-- مدة الظهور -->
+            <div class="mb-4 p-3 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)">
+                <p class="text-indigo-400 font-bold text-xs mb-2">⏱️ مدة الظهور</p>
+                <div class="flex flex-wrap gap-3 mb-2">
+                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                        <input type="radio" name="ban-mode" value="always" checked onchange="toggleBanDates('b1',this.value)"> دائم
+                    </label>
+                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                        <input type="radio" name="ban-mode" value="range" onchange="toggleBanDates('b1',this.value)"> من-إلى تاريخ
+                    </label>
+                    <label class="flex items-center gap-1 cursor-pointer text-sm text-red-400">
+                        <input type="radio" name="ban-mode" value="off" onchange="toggleBanDates('b1',this.value)"> مغلق
+                    </label>
+                </div>
+                <div id="ban-dates-wrap-b1" class="grid grid-cols-2 gap-2 hidden">
+                    <div>
+                        <label class="text-purple-200/50 text-xs mb-1 block">من</label>
+                        <input type="datetime-local" id="st-ban-from" class="inp" style="font-size:.75rem">
+                    </div>
+                    <div>
+                        <label class="text-purple-200/50 text-xs mb-1 block">إلى</label>
+                        <input type="datetime-local" id="st-ban-to" class="inp" style="font-size:.75rem">
+                    </div>
+                </div>
+            </div>
+            <!-- معاينة -->
+            <div class="mb-4">
+                <label class="text-purple-200/70 text-xs mb-1 block">👁️ معاينة</label>
+                <div id="ban-preview" class="rounded-lg overflow-hidden" style="background:#6366f1;font-size:13px;color:#fff;min-height:36px;display:flex;align-items:center;justify-content:center;padding:8px 16px;text-align:center">
+                    نص البنر سيظهر هنا
+                </div>
             </div>
         </div>
-        <div>
-            <label class="text-purple-200/70 text-xs mb-2 block">✍️ لون الخط</label>
-            <div class="flex items-center gap-2">
-                <input type="color" id="st-ban-clr" value="#ffffff" class="w-10 h-10 rounded-lg cursor-pointer border-0" style="background:none">
-                <input type="text" id="st-ban-clr-txt" class="inp flex-1" value="#ffffff" placeholder="#ffffff" style="font-size:.8rem" onchange="$('st-ban-clr').value=this.value">
+        <button class="bp w-full" onclick="saveBanner(1)">💾 حفظ البنر العام</button>
+    </div>
+
+    <!-- البنر الداخلي -->
+    <div id="ban-tab-b2" class="hidden">
+        <p class="text-purple-200/50 text-xs mb-4">يظهر للمشتركين — لوحة التحكم، التدريب، الإحصائيات</p>
+        <div id="ban2-fields">
+            <div class="mb-3">
+                <label class="text-purple-200/70 text-xs mb-1 block">نص البنر</label>
+                <textarea id="st-ban2-text" class="inp" rows="2" placeholder="مثال: ✨ تم إضافة 50 سؤال جديد في القدرات الكمي!" oninput="updatePreview(2)"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="text-purple-200/70 text-xs mb-1 block">إيموجي</label>
+                <input type="text" id="st-ban2-emoji" class="inp" placeholder="🔥" oninput="updatePreview(2)" style="font-size:1.1rem">
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-1 block">رابط</label>
+                    <input type="text" id="st-ban2-link" class="inp" placeholder="https://..." style="font-size:.8rem">
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-1 block">نص الرابط</label>
+                    <input type="text" id="st-ban2-link-text" class="inp" placeholder="جرّبها الآن" style="font-size:.8rem">
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">🎨 لون الخلفية</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="st-ban2-bg" value="#10b981" class="w-10 h-10 rounded-lg cursor-pointer border-0" oninput="$('st-ban2-bg-txt').value=this.value;updatePreview(2)">
+                        <input type="text" id="st-ban2-bg-txt" class="inp flex-1" value="#10b981" style="font-size:.8rem" oninput="$('st-ban2-bg').value=this.value;updatePreview(2)">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">✍️ لون الخط</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="st-ban2-clr" value="#ffffff" class="w-10 h-10 rounded-lg cursor-pointer border-0" oninput="$('st-ban2-clr-txt').value=this.value;updatePreview(2)">
+                        <input type="text" id="st-ban2-clr-txt" class="inp flex-1" value="#ffffff" style="font-size:.8rem" oninput="$('st-ban2-clr').value=this.value;updatePreview(2)">
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mb-3">
+                <div class="col-span-1">
+                    <label class="text-purple-200/70 text-xs mb-2 block">📏 حجم الخط</label>
+                    <div class="flex items-center gap-2">
+                        <input type="range" id="st-ban2-size" min="11" max="22" value="13" class="flex-1" oninput="$('st-ban2-size-val').textContent=this.value+'px';updatePreview(2)">
+                        <span id="st-ban2-size-val" class="text-purple-200/60 text-xs w-10">13px</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">تنسيق</label>
+                    <div class="flex gap-2">
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" id="st-ban2-bold" onchange="updatePreview(2)">
+                            <span class="text-sm font-bold text-white">B</span>
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" id="st-ban2-italic" onchange="updatePreview(2)">
+                            <span class="text-sm italic text-white">I</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-purple-200/70 text-xs mb-2 block">نوع الحركة</label>
+                    <select id="st-ban2-style" class="inp" style="font-size:.8rem" onchange="updatePreview(2)">
+                        <option value="marquee">متحرك ←</option>
+                        <option value="static">ثابت وسط</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 p-3 rounded-xl" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15)">
+                <label class="text-emerald-400 font-bold text-xs mb-2 block">📍 أين يظهر البنر الداخلي؟</label>
+                <select id="st-ban2-pages" class="inp" style="font-size:.8rem">
+                    <option value="all">كل الصفحات</option>
+                    <option value="dashboard">لوحة التحكم فقط</option>
+                    <option value="practice">صفحة التدريب فقط</option>
+                    <option value="dashboard,practice">لوحة التحكم + التدريب</option>
+                    <option value="dashboard,practice,stats,mistakes">كل صفحات المشترك</option>
+                </select>
+            </div>
+            <div class="mb-3 flex items-center gap-2">
+                <input type="checkbox" id="st-ban2-closable">
+                <label for="st-ban2-closable" class="text-purple-200/70 text-sm cursor-pointer">يمكن للمستخدم إغلاق البنر ✕</label>
+            </div>
+            <div class="mb-4 p-3 rounded-xl" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15)">
+                <p class="text-emerald-400 font-bold text-xs mb-2">⏱️ مدة الظهور</p>
+                <div class="flex flex-wrap gap-3 mb-2">
+                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                        <input type="radio" name="ban2-mode" value="always" checked onchange="toggleBanDates('b2',this.value)"> دائم
+                    </label>
+                    <label class="flex items-center gap-1 cursor-pointer text-sm">
+                        <input type="radio" name="ban2-mode" value="range" onchange="toggleBanDates('b2',this.value)"> من-إلى تاريخ
+                    </label>
+                    <label class="flex items-center gap-1 cursor-pointer text-sm text-red-400">
+                        <input type="radio" name="ban2-mode" value="off" onchange="toggleBanDates('b2',this.value)"> مغلق
+                    </label>
+                </div>
+                <div id="ban-dates-wrap-b2" class="grid grid-cols-2 gap-2 hidden">
+                    <div>
+                        <label class="text-purple-200/50 text-xs mb-1 block">من</label>
+                        <input type="datetime-local" id="st-ban2-from" class="inp" style="font-size:.75rem">
+                    </div>
+                    <div>
+                        <label class="text-purple-200/50 text-xs mb-1 block">إلى</label>
+                        <input type="datetime-local" id="st-ban2-to" class="inp" style="font-size:.75rem">
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="text-purple-200/70 text-xs mb-1 block">👁️ معاينة</label>
+                <div id="ban2-preview" class="rounded-lg overflow-hidden" style="background:#10b981;font-size:13px;color:#fff;min-height:36px;display:flex;align-items:center;justify-content:center;padding:8px 16px;text-align:center">
+                    نص البنر الداخلي سيظهر هنا
+                </div>
             </div>
         </div>
+        <button class="bp w-full" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="saveBanner(2)">💾 حفظ البنر الداخلي</button>
     </div>
-    
-    <!-- حجم الخط -->
-    <div class="mb-4">
-        <label class="text-purple-200/70 text-xs mb-2 block">📏 حجم الخط</label>
-        <div class="flex items-center gap-3">
-            <input type="range" id="st-ban-size" min="11" max="22" value="13" class="flex-1" oninput="$('st-ban-size-val').textContent=this.value+'px'">
-            <span id="st-ban-size-val" class="text-purple-200/60 text-xs w-10">13px</span>
-        </div>
-    </div>
-    
-    <!-- مدة الظهور -->
-    <div class="mb-5 p-4 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)">
-        <p class="text-indigo-400 font-bold text-sm mb-3">⏱️ مدة الظهور</p>
-        <div class="flex items-center gap-3 mb-3">
-            <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="ban-mode" id="ban-mode-always" value="always" checked onchange="toggleBanDates(this.value)">
-                <span class="text-sm text-purple-200/80">دائم (بلا نهاية)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="ban-mode" id="ban-mode-range" value="range" onchange="toggleBanDates(this.value)">
-                <span class="text-sm text-purple-200/80">من تاريخ لتاريخ</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="ban-mode" id="ban-mode-off" value="off" onchange="toggleBanDates(this.value)">
-                <span class="text-sm text-red-400">مغلق</span>
-            </label>
-        </div>
-        <div id="ban-dates-wrap" class="grid grid-cols-2 gap-3 hidden">
-            <div>
-                <label class="text-purple-200/70 text-xs mb-1 block">من تاريخ</label>
-                <input type="datetime-local" id="st-ban-from" class="inp" style="font-size:.8rem">
-            </div>
-            <div>
-                <label class="text-purple-200/70 text-xs mb-1 block">إلى تاريخ</label>
-                <input type="datetime-local" id="st-ban-to" class="inp" style="font-size:.8rem">
-            </div>
-        </div>
-    </div>
-    
-    <!-- معاينة -->
-    <div class="mb-4">
-        <label class="text-purple-200/70 text-xs mb-2 block">👁️ معاينة مباشرة</label>
-        <div id="ban-preview" class="rounded-lg p-2 text-center transition-all" style="background:#6366f1;font-size:13px;color:#fff">
-            نص البانر سيظهر هنا
-        </div>
-    </div>
-    
-    <button class="bp w-full" onclick="saveBanner()">💾 حفظ إعدادات البانر</button>
 </div>
     <div class="glass p-6 mb-4">
         <h3 class="font-bold text-base mb-4">💰 الأسعار والخصومات</h3>
@@ -1395,45 +1569,117 @@ async function rmST(id){if(!confirm('إزالة هذا الموظف؟'))return;a
 
 async function loadSet(){
     var{data}=await sb.from('site_settings').select('*');
-    if(data)data.forEach(function(s){
-        if(s.key==='banner_text'){$('st-ban').value=s.value||'';updateBanPreview();}
-        if(s.key==='banner_bg'){$('st-ban-bg').value=s.value||'#6366f1';$('st-ban-bg-txt').value=s.value||'#6366f1';updateBanPreview();}
-        if(s.key==='banner_color'){$('st-ban-clr').value=s.value||'#ffffff';$('st-ban-clr-txt').value=s.value||'#ffffff';updateBanPreview();}
-        if(s.key==='banner_size'){$('st-ban-size').value=parseInt(s.value)||13;$('st-ban-size-val').textContent=(parseInt(s.value)||13)+'px';updateBanPreview();}
-        if(s.key==='banner_mode'){
-            var m=s.value||'always';
-            document.querySelectorAll('[name="ban-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});
-            toggleBanDates(m);
-        }
-        if(s.key==='banner_from')$('st-ban-from').value=s.value||'';
-        if(s.key==='banner_to')$('st-ban-to').value=s.value||'';
-        if(s.key==='free_limit')$('st-fl').value=s.value||'10';
-        if(s.key==='price_monthly')$('st-m').value=s.value||'29';
-        if(s.key==='price_yearly')$('st-y').value=s.value||'228';
-        if(s.key==='price_monthly_orig')$('st-mo').value=s.value||'39';
-        if(s.key==='price_yearly_orig')$('st-yo').value=s.value||'348';
+    if(!data) return;
+    data.forEach(function(s){
+        var v = s.value||'';
+        // === البنر العام ===
+        if(s.key==='banner_text'){var el=$('st-ban-text');if(el)el.value=v;updatePreview(1);}
+        if(s.key==='banner_emoji'){var el=$('st-ban-emoji');if(el)el.value=v;updatePreview(1);}
+        if(s.key==='banner_bg'){var el=$('st-ban-bg');var el2=$('st-ban-bg-txt');if(el)el.value=v||'#6366f1';if(el2)el2.value=v||'#6366f1';updatePreview(1);}
+        if(s.key==='banner_color'){var el=$('st-ban-clr');var el2=$('st-ban-clr-txt');if(el)el.value=v||'#ffffff';if(el2)el2.value=v||'#ffffff';updatePreview(1);}
+        if(s.key==='banner_size'){var el=$('st-ban-size');var el2=$('st-ban-size-val');if(el)el.value=parseInt(v)||13;if(el2)el2.textContent=(parseInt(v)||13)+'px';updatePreview(1);}
+        if(s.key==='banner_bold'){var el=$('st-ban-bold');if(el)el.checked=(v==='true');}
+        if(s.key==='banner_italic'){var el=$('st-ban-italic');if(el)el.checked=(v==='true');}
+        if(s.key==='banner_style'){var el=$('st-ban-style');if(el)el.value=v||'marquee';}
+        if(s.key==='banner_pages'){var el=$('st-ban-pages');if(el)el.value=v||'all';}
+        if(s.key==='banner_closable'){var el=$('st-ban-closable');if(el)el.checked=(v==='true');}
+        if(s.key==='banner_mode'){var m=v||'always';document.querySelectorAll('[name="ban-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});toggleBanDates('b1',m);}
+        if(s.key==='banner_from'){var el=$('st-ban-from');if(el)el.value=v;}
+        if(s.key==='banner_to'){var el=$('st-ban-to');if(el)el.value=v;}
+        if(s.key==='banner_link'){var el=$('st-ban-link');if(el)el.value=v;}
+        if(s.key==='banner_link_text'){var el=$('st-ban-link-text');if(el)el.value=v;}
+        // === البنر الداخلي ===
+        if(s.key==='banner2_text'){var el=$('st-ban2-text');if(el)el.value=v;updatePreview(2);}
+        if(s.key==='banner2_emoji'){var el=$('st-ban2-emoji');if(el)el.value=v;updatePreview(2);}
+        if(s.key==='banner2_bg'){var el=$('st-ban2-bg');var el2=$('st-ban2-bg-txt');if(el)el.value=v||'#10b981';if(el2)el2.value=v||'#10b981';updatePreview(2);}
+        if(s.key==='banner2_color'){var el=$('st-ban2-clr');var el2=$('st-ban2-clr-txt');if(el)el.value=v||'#ffffff';if(el2)el2.value=v||'#ffffff';updatePreview(2);}
+        if(s.key==='banner2_size'){var el=$('st-ban2-size');var el2=$('st-ban2-size-val');if(el)el.value=parseInt(v)||13;if(el2)el2.textContent=(parseInt(v)||13)+'px';updatePreview(2);}
+        if(s.key==='banner2_bold'){var el=$('st-ban2-bold');if(el)el.checked=(v==='true');}
+        if(s.key==='banner2_italic'){var el=$('st-ban2-italic');if(el)el.checked=(v==='true');}
+        if(s.key==='banner2_style'){var el=$('st-ban2-style');if(el)el.value=v||'marquee';}
+        if(s.key==='banner2_pages'){var el=$('st-ban2-pages');if(el)el.value=v||'all';}
+        if(s.key==='banner2_closable'){var el=$('st-ban2-closable');if(el)el.checked=(v==='true');}
+        if(s.key==='banner2_mode'){var m=v||'always';document.querySelectorAll('[name="ban2-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});toggleBanDates('b2',m);}
+        if(s.key==='banner2_from'){var el=$('st-ban2-from');if(el)el.value=v;}
+        if(s.key==='banner2_to'){var el=$('st-ban2-to');if(el)el.value=v;}
+        if(s.key==='banner2_link'){var el=$('st-ban2-link');if(el)el.value=v;}
+        if(s.key==='banner2_link_text'){var el=$('st-ban2-link-text');if(el)el.value=v;}
+        // === الأسعار ===
+        if(s.key==='free_limit')$('st-fl').value=v||'10';
+        if(s.key==='price_monthly')$('st-m').value=v||'29';
+        if(s.key==='price_yearly')$('st-y').value=v||'228';
+        if(s.key==='price_monthly_orig')$('st-mo').value=v||'39';
+        if(s.key==='price_yearly_orig')$('st-yo').value=v||'348';
     });
 }
-function toggleBanDates(v){$('ban-dates-wrap').classList.toggle('hidden',v!=='range');}
-function updateBanPreview(){
-    var pr=$('ban-preview');if(!pr)return;
-    var txt=$('st-ban').value||'نص البانر سيظهر هنا';
-    var bg=$('st-ban-bg').value||'#6366f1';
-    var clr=$('st-ban-clr').value||'#ffffff';
-    var sz=($('st-ban-size').value||13)+'px';
-    pr.style.background=bg; pr.style.color=clr; pr.style.fontSize=sz; pr.textContent=txt;
+function switchBanTab(tab){
+    ['b1','b2'].forEach(function(t){
+        var tabEl = document.getElementById('ban-tab-'+t);
+        var btnEl = document.getElementById('btab-'+t);
+        if(!tabEl||!btnEl) return;
+        if(t===tab){
+            tabEl.classList.remove('hidden');
+            btnEl.style.background='rgba(99,102,241,0.3)';
+            btnEl.style.color='#c4b5fd';
+        } else {
+            tabEl.classList.add('hidden');
+            btnEl.style.background='rgba(255,255,255,0.05)';
+            btnEl.style.color='rgba(196,181,253,0.5)';
+        }
+    });
 }
-async function saveBanner(){
-    var mode=document.querySelector('[name="ban-mode"]:checked').value;
-    await saveSt('banner_text',$('st-ban').value);
-    await saveSt('banner_bg',$('st-ban-bg').value);
-    await saveSt('banner_color',$('st-ban-clr').value);
-    await saveSt('banner_size',$('st-ban-size').value);
-    await saveSt('banner_mode',mode);
-    await saveSt('banner_from',$('st-ban-from').value||'');
-    await saveSt('banner_to',$('st-ban-to').value||'');
-    toast('✅ تم حفظ البانر',true);
+function toggleBanDates(tab,v){
+    var el=document.getElementById('ban-dates-wrap-'+tab);
+    if(el) el.classList.toggle('hidden', v!=='range');
 }
+function updatePreview(n){
+    var pfx = n===2 ? 'st-ban2-' : 'st-ban-';
+    var prevId = n===2 ? 'ban2-preview' : 'ban-preview';
+    var text  = (document.getElementById(pfx+'text')||{}).value  || 'نص البنر سيظهر هنا';
+    var emoji = (document.getElementById(pfx+'emoji')||{}).value || '';
+    var bg    = (document.getElementById(pfx+'bg')||{}).value    || '#6366f1';
+    var clr   = (document.getElementById(pfx+'clr')||{}).value   || '#ffffff';
+    var size  = (document.getElementById(pfx+'size')||{}).value  || '13';
+    var bold  = (document.getElementById(pfx+'bold')||{}).checked;
+    var ital  = (document.getElementById(pfx+'italic')||{}).checked;
+    var prev  = document.getElementById(prevId);
+    if(!prev) return;
+    var fullText = (emoji?emoji+' ':'')+text+(emoji?' '+emoji:'');
+    prev.style.background = bg;
+    prev.style.color = clr;
+    prev.style.fontSize = size+'px';
+    prev.style.fontWeight = bold ? '900' : '500';
+    prev.style.fontStyle = ital ? 'italic' : 'normal';
+    prev.textContent = fullText;
+}
+async function saveBanner(n){
+    var pfx = n===2 ? 'st-ban2-' : 'st-ban-';
+    var dbPfx = n===2 ? 'banner2_' : 'banner_';
+    var modeEl = document.querySelector('input[name="'+(n===2?'ban2':'ban')+'-mode"]:checked');
+    var mode = modeEl ? modeEl.value : 'always';
+    await saveSt(dbPfx+'text',   (document.getElementById(pfx+'text')||{}).value||'');
+    await saveSt(dbPfx+'emoji',  (document.getElementById(pfx+'emoji')||{}).value||'');
+    await saveSt(dbPfx+'bg',     (document.getElementById(pfx+'bg')||{}).value||'');
+    await saveSt(dbPfx+'color',  (document.getElementById(pfx+'clr')||{}).value||'');
+    await saveSt(dbPfx+'size',   (document.getElementById(pfx+'size')||{}).value||'13');
+    await saveSt(dbPfx+'bold',   String((document.getElementById(pfx+'bold')||{}).checked||false));
+    await saveSt(dbPfx+'italic', String((document.getElementById(pfx+'italic')||{}).checked||false));
+    await saveSt(dbPfx+'style',  (document.getElementById(pfx+'style')||{}).value||'marquee');
+    await saveSt(dbPfx+'pages',  (document.getElementById(pfx+'pages')||{}).value||'all');
+    await saveSt(dbPfx+'closable',String((document.getElementById(pfx+'closable')||{}).checked||false));
+    await saveSt(dbPfx+'mode',   mode);
+    await saveSt(dbPfx+'from',   (document.getElementById(pfx+'from')||{}).value||'');
+    await saveSt(dbPfx+'to',     (document.getElementById(pfx+'to')||{}).value||'');
+    await saveSt(dbPfx+'link',   (document.getElementById(pfx+'link')||{}).value||'');
+    await saveSt(dbPfx+'link_text',(document.getElementById(pfx+'link-text')||{}).value||'');
+    toast('✅ تم حفظ البنر '+(n===2?'الداخلي':'العام'), true);
+}
+async function loadBannerSettings(n){
+    var pfx = n===2 ? 'st-ban2-' : 'st-ban-';
+    var dbPfx = n===2 ? 'banner2_' : 'banner_';
+    // يُستدعى من loadSet
+}
+
 async function saveSt(k,v){
     var{data:e}=await sb.from('site_settings').select('id').eq('key',k).single();
     if(e)await sb.from('site_settings').update({value:v}).eq('key',k);
@@ -1451,11 +1697,7 @@ updateSubSec();
 initEditors();
 document.addEventListener('DOMContentLoaded',function(){
     // Banner live preview
-    ['st-ban','st-ban-bg','st-ban-clr','st-ban-size'].forEach(function(id){
-        var el=$(id); if(el)el.addEventListener('input',updateBanPreview);
-    });
-    $('st-ban-bg').addEventListener('input',function(){$('st-ban-bg-txt').value=this.value;updateBanPreview();});
-    $('st-ban-clr').addEventListener('input',function(){$('st-ban-clr-txt').value=this.value;updateBanPreview();});
+    // updatePreview مربوط مباشرة في oninput
     init();
     // ✅ تحميل عداد البلاغات عند الفتح
     setTimeout(function(){loadReportsBadge()},2000);
