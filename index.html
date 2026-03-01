@@ -47,14 +47,14 @@
 
         .madarek-logo{display:inline-flex;align-items:center;gap:12px;direction:rtl;text-decoration:none;user-select:none}
         .madarek-logo .icon{width:42px;height:42px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
-        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;border:2px solid transparent;border-top-color:rgba(99,102,241,0.85);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
         .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
         .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9.5px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;letter-spacing:0.3px;display:block}
 
         /* footer logo smaller */
         .madarek-logo-sm{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none}
         .madarek-logo-sm .icon{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative}
-        .madarek-logo-sm .icon .ring{position:absolute;inset:3px;border-radius:7px;border:2px solid transparent;border-top-color:rgba(99,102,241,0.85);border-right-color:rgba(139,92,246,0.4);animation:spin-ring 3s linear infinite}
+        .madarek-logo-sm .icon .ring{position:absolute;inset:3px;border-radius:7px;padding:1.5px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
         .madarek-logo-sm .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
         .madarek-logo-sm .tag{font-family:'Tajawal',sans-serif;font-size:8px;font-weight:500;color:rgba(196,181,253,0.45);margin-top:1px;display:block}
     </style>
