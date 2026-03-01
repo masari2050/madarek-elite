@@ -121,6 +121,18 @@
         /* ✅ أداة الكشف عن التكرار */
         .dup-tool-wrap{background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:1rem;padding:16px;margin-bottom:16px}
         .dup-result-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:.75rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);margin-top:8px}
+            /* Fixed Pricing Styles */
+        .admin-input{background:rgba(255,255,255,0.06)!important;border:1px solid rgba(255,255,255,0.1)!important;border-radius:.75rem!important;padding:.75rem 1rem!important;color:#fff!important;width:100%!important;font-size:.95rem!important;transition:all .2s!important;pointer-events:auto!important;opacity:1!important;display:block!important}
+        .admin-input:focus{outline:none!important;border-color:rgba(139,92,246,0.5)!important;box-shadow:0 0 0 3px rgba(139,92,246,0.1)!important}
+        .admin-input::placeholder{color:rgba(255,255,255,0.2)!important}
+        .admin-input[type="number"]{-moz-appearance:textfield}
+        .admin-input[type="datetime-local"]{color-scheme:dark}
+        .input-group{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;padding:0 1rem;transition:all .2s}
+        .input-group:focus-within{border-color:rgba(139,92,246,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
+        .input-group span{color:rgba(196,181,253,0.6);font-size:.9rem;font-weight:700;flex-shrink:0}
+        .input-group .admin-input{border:none!important;background:transparent!important;padding:.75rem 0!important;box-shadow:none!important}
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:12px 24px;border-radius:.75rem;font-weight:700;font-size:.9rem;color:#fff;transition:all .2s;border:none;cursor:pointer;text-align:center}
+        .btn-primary:hover{box-shadow:0 8px 25px rgba(99,102,241,0.3);transform:translateY(-1px)}
     </style>
 </head>
 <body class="text-white">
@@ -1303,7 +1315,29 @@ function openQM(q){
     $('qmT').textContent=q?'تعديل السؤال':'إضافة سؤال';
     $('qm-id').value=q?q.id:'';
     $('qm-sec').value=q?q.section:'quant';
-    updateSubSec();
+    
+async function loadPrices(){
+    try {
+        var{data}=await sb.from('site_settings').select('*').in('key',[
+            'price_monthly_original','price_monthly_current',
+            'price_yearly_original','price_yearly_current',
+            'discount_percent','discount_from','discount_to','discount_label'
+        ]);
+        if(!data)return;
+        data.forEach(function(s){
+            var v=s.value||'';
+            var el=$(s.key);
+            if(el) el.value=v;
+        });
+        document.querySelectorAll('.admin-input').forEach(function(inp){
+            inp.disabled=false;
+            inp.style.pointerEvents='auto';
+            inp.style.opacity='1';
+        });
+    }catch(e){console.error('loadPrices error:',e)}
+}
+
+updateSubSec();
     if(q&&q.sub_section)$('qm-sub').value=q.sub_section;
     // ✅ تحميل المحتوى في المحرر
     var qed=$('qm-editor'),xed=$('qm-exp-editor');
@@ -1667,10 +1701,14 @@ async function loadSet(){
         if(s.key==='banner2_link_text'){var el=$('st-ban2-link-text');if(el)el.value=v;}
         // === الأسعار ===
         if(s.key==='free_limit')$('st-fl').value=v||'10';
-        if(s.key==='price_monthly')$('st-m').value=v||'29';
-        if(s.key==='price_yearly')$('st-y').value=v||'228';
-        if(s.key==='price_monthly_orig')$('st-mo').value=v||'39';
-        if(s.key==='price_yearly_orig')$('st-yo').value=v||'348';
+        if(s.key==='price_monthly_original'){var el=$('price_monthly_original');if(el)el.value=v;}
+        if(s.key==='price_monthly_current'){var el=$('price_monthly_current');if(el)el.value=v;}
+        if(s.key==='price_yearly_original'){var el=$('price_yearly_original');if(el)el.value=v;}
+        if(s.key==='price_yearly_current'){var el=$('price_yearly_current');if(el)el.value=v;}
+        if(s.key==='discount_percent'){var el=$('discount_percent');if(el)el.value=v;}
+        if(s.key==='discount_from'){var el=$('discount_from');if(el)el.value=v;}
+        if(s.key==='discount_to'){var el=$('discount_to');if(el)el.value=v;}
+        if(s.key==='discount_label'){var el=$('discount_label');if(el)el.value=v;}
     });
 }
 function switchBanTab(tab){
@@ -1747,7 +1785,31 @@ async function saveSt(k,v){
     else await sb.from('site_settings').insert({key:k,value:v});
     toast('تم الحفظ ✓',true);
 }
-function savePrice(){saveSt('price_monthly',$('st-m').value);saveSt('price_yearly',$('st-y').value);saveSt('price_monthly_orig',$('st-mo').value);saveSt('price_yearly_orig',$('st-yo').value)}
+async function savePrices(){
+    var btn=document.querySelector('[onclick="savePrices()"]');
+    if(btn){btn.textContent='⏳ جاري الحفظ...';btn.disabled=true;}
+    try{
+        var keys=[
+            {key:'price_monthly_original', id:'price_monthly_original'},
+            {key:'price_monthly_current',  id:'price_monthly_current'},
+            {key:'price_yearly_original',  id:'price_yearly_original'},
+            {key:'price_yearly_current',   id:'price_yearly_current'},
+            {key:'discount_percent',       id:'discount_percent'},
+            {key:'discount_from',          id:'discount_from'},
+            {key:'discount_to',            id:'discount_to'},
+            {key:'discount_label',         id:'discount_label'}
+        ];
+        for(var i=0;i<keys.length;i++){
+            var el=$(keys[i].id);
+            var val=el?el.value:'';
+            await saveSt(keys[i].key, val);
+        }
+        toast('✅ تم حفظ الأسعار والخصومات',true);
+    }catch(e){
+        toast('❌ خطأ: '+e.message,false);
+    }
+    if(btn){btn.textContent='💾 حفظ الأسعار';btn.disabled=false;}
+}
 
 // ✅ إخفاء قيمة الخصم لو مجاني
 $('cm-t').addEventListener('change',function(){
@@ -1763,7 +1825,7 @@ document.addEventListener('DOMContentLoaded',function(){
     loadPrices();
     // ✅ تحميل عداد البلاغات عند الفتح
     setTimeout(function(){loadReportsBadge()},2000);
-  if(typeof loadPrices === "function") loadPrices();
+
 });
 
 // ✅ جلب عدد البلاغات فقط (بدون تحميل الكل)
