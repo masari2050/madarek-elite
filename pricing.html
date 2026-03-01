@@ -36,8 +36,8 @@
         .faq-arrow{transition:transform .3s ease}
         .compare-table{border-collapse:separate;border-spacing:0}
         .compare-table th,.compare-table td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05)}
-        .price-old{position:relative;color:rgba(255,255,255,0.3)}
-        .price-old::after{content:'';position:absolute;left:0;right:0;top:50%;height:2px;background:#ef4444;transform:rotate(-8deg)}
+        .price-old{position:relative;color:rgba(255,255,255,0.55);font-size:16px}
+        .price-old::after{content:'';position:absolute;left:-2px;right:-2px;top:50%;height:2.5px;background:#ef4444;transform:rotate(-8deg);border-radius:2px}
         @keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
         .animate-in{animation:fadeUp .5s ease forwards}
         .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.25s;opacity:0}.delay-4{animation-delay:.3s;opacity:0}.delay-5{animation-delay:.4s;opacity:0}
@@ -129,9 +129,9 @@
                 <div class="text-center mb-6 pt-2">
                     <div class="w-14 h-14 bg-indigo-500/15 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">📅</div>
                     <h3 class="text-xl font-bold mb-1">اشتراك شهري</h3>
-                    <div id="monthly-orig-wrap" class="hidden"><span class="price-old inline-block text-sm px-2 mb-1" id="monthly-orig"></span></div>
+                    <div id="monthly-orig-wrap" class="hidden"><span class="price-old inline-block px-2 mb-1" id="monthly-orig"></span></div>
                     <div class="text-5xl font-black text-indigo-400 mb-0.5"><span id="monthly-price">29</span> <span class="text-lg text-purple-200/70">ريال</span></div>
-                    <p class="text-purple-200/60 text-xs">شهرياً</p>
+                    <p class="text-purple-200/70 text-sm">شهرياً</p>
                 </div>
                 <div class="space-y-3 mb-6">
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">أسئلة غير محدودة</span></div>
@@ -150,9 +150,10 @@
                 <div class="text-center mb-6 pt-2">
                     <div class="w-14 h-14 bg-emerald-500/15 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">💎</div>
                     <h3 class="text-xl font-bold mb-1">اشتراك سنوي</h3>
-                    <div id="yearly-orig-wrap" class="hidden"><span class="price-old inline-block text-sm px-2 mb-1" id="yearly-orig"></span></div>
+                    <div id="yearly-orig-wrap" class="hidden"><span class="price-old inline-block px-2 mb-1" id="yearly-orig"></span></div>
                     <div class="text-5xl font-black text-emerald-400 mb-0.5"><span id="yearly-per-month">19</span> <span class="text-lg text-purple-200/70">ريال</span></div>
-                    <p class="text-purple-200/60 text-xs">شهرياً (<span id="yearly-total">يُدفع 228 ريال سنوياً</span>)</p>
+                    <p class="text-purple-200/80 text-sm font-medium mb-1">شهرياً</p>
+                    <p class="text-xs font-bold px-3 py-1 rounded-lg inline-block" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#6ee7b7"><span id="yearly-total">يُدفع 228 ريال فقط لسنة كاملة</span></p>
                 </div>
                 <div class="space-y-3 mb-6">
                     <div class="flex items-center gap-2"><span class="feature-yes text-sm">✓</span><span class="text-white text-sm font-medium">كل مميزات الشهري</span></div>
@@ -296,7 +297,7 @@
   var yp = document.getElementById('yearly-per-month');
   if(yp) yp.textContent = yPM;
   var yt = document.getElementById('yearly-total');
-  if(yt) yt.textContent = 'يُدفع ' + yNow + ' ريال سنوياً';
+  if(yt) yt.textContent = 'يُدفع ' + yNow + ' ريال فقط لسنة كاملة';
   
   if(yOrig > 0 && yOrig > yNow){
     var yo = document.getElementById('yearly-orig');
@@ -309,9 +310,9 @@
   var saving = (mNow * 12) - yNow;
   if(saving > 0){
     var sb2 = document.getElementById('yearly-save-badge');
-    if(sb2) sb2.textContent = '💎 وفّر ' + saving + ' ريال';
+    if(sb2) sb2.textContent = '💎 توفّر ' + saving + ' ريال';
     var offerEl = document.querySelector('.offer-banner p');
-    if(offerEl) offerEl.textContent = 'وفّر ' + saving + ' ريال عند الاشتراك السنوي — بدل ' + mNow + ' ريال شهرياً ادفع ' + yPM + ' ريال فقط!';
+    if(offerEl) offerEl.textContent = 'توفّر ' + saving + ' ريال عند الاشتراك السنوي — بدل ' + mNow + ' ريال شهرياً ادفع ' + yPM + ' ريال فقط!';
   }
 })();
         function subscribe(plan){window.location.href='register.html'}

@@ -60,27 +60,8 @@
     </style>
 
     <style>
-      /* Banner + Nav fix */
-      body > [id^="madarek-"] { position:relative; z-index:60; }
+      .hero-bg::before, .hero-bg::after, .cta-section::before, .cta-section::after { pointer-events:none; }
     </style>
-    <script>
-    // Push fixed nav below banners
-    window.addEventListener('load', function(){
-      setTimeout(function(){
-        var nav = document.getElementById('mainNav');
-        if(!nav) return;
-        var banners = document.querySelectorAll('body > [id^="madarek-"]');
-        var h = 0;
-        for(var i=0; i<banners.length; i++) h += banners[i].offsetHeight;
-        if(h > 0){
-          nav.style.top = h + 'px';
-          // Also adjust hero padding
-          var hero = document.querySelector('.hero-bg');
-          if(hero) hero.style.paddingTop = (h + 112) + 'px'; // 112 = pt-28
-        }
-      }, 500);
-    });
-    </script>
 </head>
 <body class="text-white" style="font-family:'Tajawal',sans-serif" data-page="index">
 
@@ -128,11 +109,11 @@
                         استعد لاختبارات القدرات والتحصيلي مع بنك أسئلة شامل، إحصائيات دقيقة، ورسائل تحفيزية بلهجتك
                     </p>
                     <div class="flex flex-wrap gap-3 mb-10">
-                        <a href="register.html" onclick="window.location.href='register.html'" class="btn-primary px-7 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
+                        <a href="register.html" class="btn-primary px-7 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
                             ابدأ مجاناً الحين
                             <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         </a>
-                        <a href="pricing.html" onclick="window.location.href='pricing.html'" class="btn-ghost px-7 py-3.5 rounded-xl font-bold text-sm">شوف الباقات</a>
+                        <a href="pricing.html" class="btn-ghost px-7 py-3.5 rounded-xl font-bold text-sm">شوف الباقات</a>
                     </div>
                     <div class="flex gap-5">
                         <div>
@@ -237,10 +218,10 @@
             </div>
             <div class="grid sm:grid-cols-3 gap-4 reveal">
                 <div class="glass p-6 text-center"><span class="text-3xl block mb-2">🆓</span><h3 class="font-bold mb-1">مجاني</h3><p class="text-3xl font-black mb-1">0 <span class="text-sm text-purple-200/70">ريال</span></p><p class="text-purple-200/60 text-xs mb-4">10 أسئلة مجانية</p><a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center">ابدأ الآن</a></div>
-                <div class="glass p-6 text-center relative" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)"><div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">الأكثر شعبية</div><span class="text-3xl block mb-2 mt-1">📅</span><h3 class="font-bold mb-1">شهري</h3><p class="text-3xl font-black text-indigo-400 mb-1"><span id="idx-monthly-price">29</span> <span class="text-sm text-purple-200/70">ريال</span></p><p class="text-purple-200/60 text-xs mb-4">أسئلة غير محدودة</p><a href="register.html" class="btn-primary block w-full py-2.5 rounded-xl text-sm font-bold text-center">اشترك</a></div>
-                <div class="glass p-6 text-center"><span class="text-3xl block mb-2">💎</span><h3 class="font-bold mb-1">سنوي</h3><p class="text-3xl font-black text-emerald-400 mb-1"><span id="idx-yearly-pm">19</span> <span class="text-sm text-purple-200/70">ريال/شهر</span></p><p class="text-purple-200/60 text-xs mb-4" id="idx-yearly-save">وفّر 120 ريال</p><a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center" style="border-color:rgba(16,185,129,0.3);color:#34d399">اشترك</a></div>
+                <div class="glass p-6 text-center relative" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)"><div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">الأكثر شعبية</div><span class="text-3xl block mb-2 mt-1">📅</span><h3 class="font-bold mb-1">شهري</h3><div id="idx-monthly-orig-wrap" class="hidden"><span class="text-sm line-through text-purple-200/40" id="idx-monthly-orig"></span></div><p class="text-4xl font-black text-indigo-400 mb-1"><span id="idx-monthly-price">29</span> <span class="text-sm text-purple-200/70">ريال</span></p><p class="text-purple-200/60 text-xs mb-4">أسئلة غير محدودة</p><a href="register.html" class="btn-primary block w-full py-2.5 rounded-xl text-sm font-bold text-center">اشترك</a></div>
+                <div class="glass p-6 text-center relative"><div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white whitespace-nowrap" style="background:linear-gradient(135deg,#10b981,#14b8a6)">💎 أفضل قيمة</div><span class="text-3xl block mb-2 mt-1">💎</span><h3 class="font-bold mb-1">سنوي</h3><div id="idx-yearly-orig-wrap" class="hidden"><span class="text-sm line-through text-purple-200/40" id="idx-yearly-orig"></span></div><p class="text-4xl font-black text-emerald-400 mb-0.5"><span id="idx-yearly-pm">19</span> <span class="text-sm text-purple-200/70">ريال/شهر</span></p><p class="text-purple-200/50 text-xs mb-1" id="idx-yearly-total"></p><p class="text-emerald-400/80 text-xs font-bold mb-3" id="idx-yearly-save">وفّر 120 ريال</p><a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center" style="border-color:rgba(16,185,129,0.3);color:#34d399">اشترك</a></div>
             </div>
-            <div class="text-center mt-6 reveal"><a href="pricing.html" class="text-indigo-400/70 text-sm hover:text-indigo-300 transition">شوف المقارنة الكاملة ←</a></div>
+            <div class="text-center mt-6 reveal"><a href="pricing.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);color:#818cf8">شوف المقارنة الكاملة <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></a></div>
         </div>
     </section>
 
@@ -254,6 +235,11 @@
                 <div class="flex flex-wrap gap-3 justify-center relative z-10">
                     <a href="register.html" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm">ابدأ مجاناً الحين</a>
                     <a href="login.html" class="btn-ghost px-8 py-3.5 rounded-xl font-bold text-sm">عندك حساب؟ ادخل</a>
+                </div>
+                <div class="flex items-center justify-center gap-4 sm:gap-6 mt-6 relative z-10 flex-wrap">
+                    <span class="text-purple-200/40 text-xs">✓ بدون بطاقة</span>
+                    <span class="text-purple-200/40 text-xs">✓ إلغاء وقت ما تبي</span>
+                    <span class="text-purple-200/40 text-xs">✓ بياناتك محمية</span>
                 </div>
             </div>
         </div>
@@ -362,12 +348,17 @@
         else if(yCur>0){yNow=yCur;}
         else{yNow=yOrig;}
         
-        if(mNow>0){var e=document.getElementById('idx-monthly-price');if(e)e.textContent=mNow;}
+        if(mNow>0){
+          var e=document.getElementById('idx-monthly-price');if(e)e.textContent=mNow;
+          if(mOrig>0&&mOrig>mNow){var mo=document.getElementById('idx-monthly-orig');var mw=document.getElementById('idx-monthly-orig-wrap');if(mo)mo.textContent=mOrig+' ريال';if(mw)mw.classList.remove('hidden');}
+        }
         if(yNow>0){
           var yPM=Math.round(yNow/12);
           var e2=document.getElementById('idx-yearly-pm');if(e2)e2.textContent=yPM;
+          var yt=document.getElementById('idx-yearly-total');if(yt)yt.textContent='يُدفع '+yNow+' ريال فقط لسنة كاملة';
+          if(yOrig>0&&yOrig>yNow){var yOrigPM=Math.round(yOrig/12);var yo=document.getElementById('idx-yearly-orig');var yw=document.getElementById('idx-yearly-orig-wrap');if(yo)yo.textContent=yOrigPM+' ريال/شهر';if(yw)yw.classList.remove('hidden');}
           var saving=mNow*12-yNow;
-          var e3=document.getElementById('idx-yearly-save');if(e3&&saving>0)e3.textContent='وفّر '+saving+' ريال';
+          var e3=document.getElementById('idx-yearly-save');if(e3&&saving>0)e3.textContent='توفّر '+saving+' ريال';
         }
       });
     })();

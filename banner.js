@@ -149,7 +149,16 @@
       closeBtn.onclick = function(){
         bar.remove();
         localStorage.setItem(closeKey, '1');
-        document.body.style.paddingTop = '0';
+        var w = document.getElementById('madarek-banner-wrapper');
+        if(w) {
+          var newH = w.offsetHeight;
+          document.body.style.paddingTop = newH + 'px';
+          var n = document.getElementById('mainNav');
+          if(n && getComputedStyle(n).position === 'fixed') n.style.top = newH + 'px';
+          if(newH === 0) { w.remove(); document.body.style.paddingTop = '0'; }
+        } else {
+          document.body.style.paddingTop = '0';
+        }
       };
       bar.appendChild(closeBtn);
       bar.style.paddingLeft = '40px';
@@ -237,6 +246,23 @@
             totalHeight += intBar.offsetHeight;
           }
         }
+      }
+    }
+
+    // ─── Make banners fixed with header ───
+    if(totalHeight > 0) {
+      var wrapper = document.createElement('div');
+      wrapper.id = 'madarek-banner-wrapper';
+      wrapper.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;';
+      var bannerEls = document.querySelectorAll('body > [id^="madarek-"]');
+      for(var b = 0; b < bannerEls.length; b++) wrapper.appendChild(bannerEls[b]);
+      document.body.insertBefore(wrapper, document.body.firstChild);
+      var wH = wrapper.offsetHeight;
+      document.body.style.paddingTop = wH + 'px';
+      var nav = document.getElementById('mainNav');
+      if(nav) {
+        var cs = getComputedStyle(nav);
+        if(cs.position === 'fixed') nav.style.top = wH + 'px';
       }
     }
   }
