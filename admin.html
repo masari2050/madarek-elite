@@ -566,11 +566,38 @@
     <div class="glass p-6 mb-4">
         <h3 class="font-bold text-base mb-4">💰 الأسعار والخصومات</h3>
         <p class="text-purple-200/60 text-xs mb-4">حط السعر الأصلي والحالي — لو الحالي أقل بيظهر خط على الأصلي في صفحة الباقات</p>
-        <div class="mb-4 p-4 rounded-xl" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1)"><p class="text-indigo-400 font-bold text-sm mb-2">📅 الشهري</p><div class="grid grid-cols-2 gap-3"><div><label class="text-purple-200/70 text-xs mb-1 block">الأصلي</label><input type="number" id="st-mo" class="inp" value="39"></div><div><label class="text-purple-200/70 text-xs mb-1 block">الحالي</label><input type="number" id="st-m" class="inp" value="29"></div></div></div>
-        <div class="mb-4 p-4 rounded-xl" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.1)"><p class="text-emerald-400 font-bold text-sm mb-2">💎 السنوي (الإجمالي للسنة)</p><div class="grid grid-cols-2 gap-3"><div><label class="text-purple-200/70 text-xs mb-1 block">الأصلي السنوي (ريال)</label><input type="number" id="st-yo" class="inp" value="348"></div><div><label class="text-purple-200/70 text-xs mb-1 block">الحالي السنوي (ريال)</label><input type="number" id="st-y" class="inp" value="228"></div></div><p class="text-purple-200/50 text-xs mt-2">* السعر الشهري يتحسب تلقائياً (÷12)</p></div>
-        <button class="bp" onclick="savePrice()">💾 حفظ الأسعار</button>
-    </div>
-    <div class="glass p-6 mb-4"><h3 class="font-bold text-base mb-3">🆓 حد الأسئلة المجانية</h3><input type="number" id="st-fl" class="inp" value="10" style="max-width:120px"><button class="bp mt-2" onclick="saveSt('free_limit',$('st-fl').value)">حفظ</button></div>
+
+        <div class="mb-4 pb-4 border-b border-white/10">
+          <p class="text-sm font-bold mb-3 text-indigo-300">📅 الشهري</p>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div><label class="text-xs text-purple-200/60 block mb-1">الأصلي</label><div class="input-group"><span>﷼</span><input type="number" id="price_monthly_original" class="admin-input" placeholder="115"></div></div>
+            <div><label class="text-xs text-purple-200/60 block mb-1">الحالي</label><div class="input-group"><span>﷼</span><input type="number" id="price_monthly_current" class="admin-input" placeholder=""></div></div>
+          </div>
+        </div>
+
+        <div class="mb-4 pb-4 border-b border-white/10">
+          <p class="text-sm font-bold mb-3 text-emerald-300">💎 السنوي (الإجمالي للسنة)</p>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div><label class="text-xs text-purple-200/60 block mb-1">الأصلي السنوي (ريال)</label><div class="input-group"><span>﷼</span><input type="number" id="price_yearly_original" class="admin-input" placeholder="348"></div></div>
+            <div><label class="text-xs text-purple-200/60 block mb-1">الحالي السنوي (ريال)</label><div class="input-group"><span>﷼</span><input type="number" id="price_yearly_current" class="admin-input" placeholder="228"></div></div>
+          </div>
+          <p class="text-purple-200/40 text-xs">* السعر الشهري يتحسب تلقائياً (÷12)</p>
+        </div>
+
+        <!-- خصم بالنسبة مع تواريخ -->
+        <div class="mb-4 pb-4 border-b border-white/10">
+          <p class="text-sm font-bold mb-3 text-yellow-300">🏷️ خصم موسمي (بالنسبة %)</p>
+          <p class="text-purple-200/60 text-xs mb-3">بيظهر شريط "عرض محدود" + نسبة الخصم + عداد تنازلي في صفحة الباقات</p>
+          <div class="grid grid-cols-3 gap-3 mb-3">
+            <div><label class="text-xs text-purple-200/60 block mb-1">نسبة الخصم %</label><input type="number" id="discount_percent" class="admin-input" placeholder="0" min="0" max="100"></div>
+            <div><label class="text-xs text-purple-200/60 block mb-1">تاريخ البداية</label><input type="datetime-local" id="discount_from" class="admin-input" style="font-size:11px;"></div>
+            <div><label class="text-xs text-purple-200/60 block mb-1">تاريخ النهاية</label><input type="datetime-local" id="discount_to" class="admin-input" style="font-size:11px;"></div>
+          </div>
+          <div><label class="text-xs text-purple-200/60 block mb-1">رسالة تحفيزية (اختياري)</label><input type="text" id="discount_label" class="admin-input" placeholder="عرض رمضان — ينتهي قريباً!"></div>
+        </div>
+
+        <button onclick="savePrices()" class="btn-primary w-full">💾 حفظ الأسعار</button>
+    </div><div class="glass p-6 mb-4"><h3 class="font-bold text-base mb-3">🆓 حد الأسئلة المجانية</h3><input type="number" id="st-fl" class="inp" value="10" style="max-width:120px"><button class="bp mt-2" onclick="saveSt('free_limit',$('st-fl').value)">حفظ</button></div>
 </div>
 
 </div><!-- end mc -->
@@ -1733,6 +1760,7 @@ document.addEventListener('DOMContentLoaded',function(){
     // Banner live preview
     // updatePreview مربوط مباشرة في oninput
     init();
+    loadPrices();
     // ✅ تحميل عداد البلاغات عند الفتح
     setTimeout(function(){loadReportsBadge()},2000);
 });
