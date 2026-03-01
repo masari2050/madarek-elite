@@ -44,7 +44,7 @@
         @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.35)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.6)}}
     </style>
 </head>
-<body class="font-tajawal text-white">
+<body class="font-tajawal text-white" data-page="register">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
@@ -153,5 +153,6 @@
         function resetBtn(){document.getElementById('submitBtn').disabled=false;document.getElementById('submit-text').classList.remove('hidden');document.getElementById('submit-spinner').classList.add('hidden')}
         (async function(){try{const{data:{session}}=await sb.auth.getSession();if(session)window.location.href='dashboard.html'}catch(e){}})();
     </script>
+    <script src="banner.js"></script>
 </body>
 </html>
