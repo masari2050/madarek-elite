@@ -174,8 +174,10 @@
     function buildSmartExplanation(q, isCorrect) {
         var correctAnswer = (q.choices||[])[q.correct_index] || '';
         var exp = (q.explanation || '').trim();
+        var expImg = (q.explanation_image || '').trim();
         return '<div class="exp-box">' +
             (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + exp + '</div>' : '') +
+            (expImg ? '<div style="margin-top:8px;background:rgba(255,255,255,0.95);border-radius:12px;padding:6px;overflow:hidden"><img src="' + expImg + '" style="width:100%;border-radius:8px;display:block"></div>' : '') +
             (!isCorrect ? '<div class="exp-correct">✅ الإجابة الصحيحة: ' + correctAnswer + '</div>' : '') +
         '</div>';
     }

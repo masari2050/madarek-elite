@@ -66,6 +66,32 @@
         .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
         .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
         .madarek-logo .tag{font-size:9px;color:rgba(196,181,253,0.4);margin-top:1px;display:block;font-family:'Tajawal',sans-serif}
+        /* ── Question list rows ── */
+        .q-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:.75rem;transition:all .15s}
+        .q-row:hover{background:rgba(255,255,255,0.06);border-color:rgba(99,102,241,0.2)}
+        .q-row .q-img{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,0.1)}
+        .q-row .q-body{flex:1;min-width:0}
+        .q-row .q-text{font-size:13px;color:rgba(226,232,240,0.9);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;line-height:1.4}
+        .q-row .q-meta{display:flex;align-items:center;gap:6px}
+        .q-row .q-num{color:rgba(196,181,253,0.25);font-size:10px;font-weight:700;min-width:20px}
+        .q-row .q-actions{display:flex;gap:3px;flex-shrink:0}
+        .q-row .q-actions button{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:13px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);cursor:pointer;transition:all .15s;color:#c4b5fd}
+        .q-row .q-actions button:hover{background:rgba(99,102,241,0.15);border-color:rgba(99,102,241,0.3)}
+        .q-row .q-actions .q-del{color:#f87171}
+        .q-row .q-actions .q-del:hover{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3)}
+        /* ── Report cards ── */
+        .r-card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:.875rem;padding:14px 16px;transition:all .15s}
+        .r-card:hover{border-color:rgba(251,191,36,0.2);background:rgba(255,255,255,0.04)}
+        .r-card .r-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+        .r-card .r-q{font-size:13px;color:#e2e8f0;font-weight:600;line-height:1.5;flex:1;min-width:0}
+        .r-card .r-date{font-size:10px;color:rgba(196,181,253,0.35);flex-shrink:0;white-space:nowrap}
+        .r-card .r-reason{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.12);border-radius:8px;padding:6px 10px;font-size:12px;color:rgba(251,191,36,0.8);margin-top:8px;display:flex;align-items:center;gap:6px}
+        .r-card .r-foot{display:flex;gap:6px;margin-top:10px;justify-content:flex-start}
+        .r-card .r-foot button{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;border:1px solid}
+        .r-card .r-btn-edit{background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.2);color:#a5b4fc}
+        .r-card .r-btn-edit:hover{background:rgba(99,102,241,0.18)}
+        .r-card .r-btn-del{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#f87171}
+        .r-card .r-btn-del:hover{background:rgba(239,68,68,0.18)}
         /* ✅ Duplicate warning */
         .dup-warn{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:.75rem;padding:12px 16px;margin-top:8px;display:none}
 
@@ -1270,9 +1296,18 @@ async function loadQ(){
     _allQCache=data.map(function(q){return{id:q.id,question_text:q.question_text}});
     if(s)data=data.filter(function(q){return (q.question_text||'').toLowerCase().includes(s)});
     var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'},h='';
-    data.forEach(function(q){
-        var img=q.image_url?'<img src="'+q.image_url+'" class="w-16 h-16 rounded-lg object-cover ml-2 flex-shrink-0">':'';
-        h+='<div class="glass p-4"><div class="flex items-start justify-between gap-3"><div class="flex-1 flex gap-3">'+img+'<div><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'">'+(sn[q.section]||'')+'</span>'+(q.sub_section?'<span class="text-purple-200/60 text-xs mr-2">'+q.sub_section+'</span>':'')+'<p class="text-sm text-white leading-relaxed mt-1">'+(q.question_text||'سؤال بالصورة').substring(0,100)+'</p></div></div><div class="flex gap-1 flex-shrink-0"><button class="bs qact" data-a="preview" data-id="'+q.id+'">👁️</button><button class="bs qact" data-a="edit" data-id="'+q.id+'">✏️</button><button class="bd qact" data-a="del" data-id="'+q.id+'">🗑️</button></div></div></div>'
+    data.forEach(function(q,idx){
+        var img=q.image_url?'<img class="q-img" src="'+q.image_url+'">':'';
+        var num=data.length-idx;
+        h+='<div class="q-row">'
+          +'<span class="q-num">#'+num+'</span>'
+          +img
+          +'<div class="q-body">'
+          +'<div class="q-meta"><span class="bg bg-'+(q.section==='quant'?'m':q.section==='verbal'?'y':'f')+'" style="font-size:10px;padding:2px 8px">'+(sn[q.section]||'')+'</span>'+(q.sub_section?'<span style="font-size:10px;color:rgba(196,181,253,0.45)">'+q.sub_section+'</span>':'')+'</div>'
+          +'<p class="q-text">'+(q.question_text||'سؤال بالصورة')+'</p>'
+          +'</div>'
+          +'<div class="q-actions"><button class="qact" data-a="preview" data-id="'+q.id+'" title="معاينة">👁️</button><button class="qact" data-a="edit" data-id="'+q.id+'" title="تعديل">✏️</button><button class="q-del qact" data-a="del" data-id="'+q.id+'" title="حذف">🗑️</button></div>'
+          +'</div>';
     });
     $('q-list').innerHTML=h||'<p class="text-purple-200/60 text-center py-8">لا توجد أسئلة</p>';
     document.querySelectorAll('.qact').forEach(function(btn){
@@ -1353,7 +1388,7 @@ async function previewQ(id){
         var isCorrect=i===q.correct_index;
         h+='<div class="flex items-center gap-3 p-3 rounded-xl" style="background:'+(isCorrect?'rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3)':'rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)')+'"><span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0" style="background:'+(isCorrect?'#10b981':'rgba(99,102,241,0.3)')+';color:#fff">'+letters[i]+'</span><span class="text-white text-sm '+(isCorrect?'font-bold':'')+'">'+(c||'—')+'</span>'+(isCorrect?' <span class="text-emerald-400 text-xs mr-auto">✓</span>':'')+'</div>';
     });
-    if(q.explanation)h+='<div class="p-3 rounded-xl" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15)"><p class="text-yellow-200/70 text-xs font-bold mb-1">💡 الشرح</p><p class="text-purple-200/60 text-sm">'+q.explanation+'</p></div>';
+    if(q.explanation||q.explanation_image){h+='<div class="p-3 rounded-xl" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15)"><p class="text-yellow-200/70 text-xs font-bold mb-1">💡 الشرح</p>';if(q.explanation)h+='<p class="text-purple-200/60 text-sm">'+q.explanation+'</p>';if(q.explanation_image)h+='<div class="mt-2 rounded-lg overflow-hidden" style="background:rgba(255,255,255,0.95);padding:6px"><img src="'+q.explanation_image+'" class="w-full rounded-lg"></div>';h+='</div>';}
     $('pv-body').innerHTML=h;$('previewM').classList.remove('hidden');
 }
 
@@ -1578,20 +1613,22 @@ async function loadR(){
     if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-200/60">ما فيه بلاغات</div>';return}
     var h='';
     data.forEach(function(r){
-        var qText=r.questions?r.questions.question_text.substring(0,100)+'...':'(سؤال محذوف)';
+        var qText=r.questions?(r.questions.question_text||'سؤال بالصورة').substring(0,120):'(سؤال محذوف)';
         var qId=r.questions?r.questions.id:null;
-        var editBtn=qId?'<button class="bs" style="font-size:.8rem;padding:6px 12px" onclick="editQfromReport(\''+qId+'\',\''+r.id+'\')">✏️ تعديل السؤال</button>':'';
-        h+='<div class="glass p-4">'
-          +'<div class="flex items-start justify-between gap-3">'
-          +'<div class="flex-1">'
-          +'<p class="text-white text-sm font-bold">'+qText+'</p>'
-          +'<p class="text-purple-200/70 text-xs mt-1">السبب: <span class="text-yellow-300">'+(r.reason||'—')+'</span></p>'
-          +'<p class="text-purple-200/50 text-xs mt-1">'+( r.reported_at?new Date(r.reported_at).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'')+'</p>'
+        var qSec=r.questions?r.questions.section:'';
+        var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
+        var secBadge=qSec?'<span class="bg bg-'+(qSec==='quant'?'m':qSec==='verbal'?'y':'f')+'" style="font-size:10px;padding:2px 8px">'+(sn[qSec]||'')+'</span>':'';
+        var dateStr=r.reported_at?new Date(r.reported_at).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+        h+='<div class="r-card">'
+          +'<div class="r-head">'
+          +'<div style="flex:1;min-width:0">'+secBadge+'<p class="r-q" style="margin-top:6px">'+qText+'</p></div>'
+          +'<span class="r-date">'+dateStr+'</span>'
           +'</div>'
-          +'<div class="flex gap-2 flex-shrink-0">'
-          +editBtn
-          +'<button class="bd" style="font-size:.8rem;padding:6px 12px" onclick="delR(\''+r.id+'\')">✕ رفض</button>'
-          +'</div></div></div>';
+          +(r.reason?'<div class="r-reason"><span>⚠️</span> '+r.reason+'</div>':'')
+          +'<div class="r-foot">'
+          +(qId?'<button class="r-btn-edit" onclick="editQfromReport(\''+qId+'\',\''+r.id+'\')">✏️ تعديل السؤال</button>':'')
+          +'<button class="r-btn-del" onclick="delR(\''+r.id+'\')">✕ رفض البلاغ</button>'
+          +'</div></div>';
     });
     $('r-list').innerHTML=h;
 }

@@ -158,7 +158,7 @@
                     '</div>' +
                     '<h3 class="text-base font-bold text-gray-800 mb-3 leading-relaxed">' + m.question_text + '</h3>' +
                     '<div class="space-y-2 mb-4">' + optionsHtml + '</div>' +
-                    '<div class="explanation-box"><h4 class="font-bold text-blue-800 text-sm mb-1">💡 الشرح:</h4><p class="text-blue-700 text-sm leading-relaxed">' + formatExplanation(m.explanation || 'لا يوجد شرح') + '</p></div>';
+                    '<div class="explanation-box"><h4 class="font-bold text-blue-800 text-sm mb-1">💡 الشرح:</h4><p class="text-blue-700 text-sm leading-relaxed">' + formatExplanation(m.explanation || 'لا يوجد شرح') + '</p>' + (m.explanation_image ? '<div style="margin-top:8px;border-radius:8px;overflow:hidden"><img src="' + m.explanation_image + '" style="width:100%;border-radius:8px;display:block"></div>' : '') + '</div>';
                 container.appendChild(card);
             });
             document.getElementById('loadingState').classList.add('hidden');
