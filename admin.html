@@ -94,6 +94,18 @@
         .r-card .r-btn-del:hover{background:rgba(239,68,68,0.18)}
         /* ✅ Duplicate warning */
         .dup-warn{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:.75rem;padding:12px 16px;margin-top:8px;display:none}
+        /* ═══ Performance Dashboard ═══ */
+        .perf-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:20px;transition:all .2s}
+        .perf-card:hover{border-color:rgba(99,102,241,0.25);transform:translateY(-2px)}
+        .perf-emp{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:1rem;padding:16px;margin-bottom:12px}
+        .perf-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:6px}
+        .perf-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+        .perf-log{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:.75rem;transition:background .15s}
+        .perf-log:hover{background:rgba(255,255,255,0.03)}
+        .perf-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+        .perf-tab{padding:8px 16px;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid transparent}
+        .perf-tab.active{background:rgba(99,102,241,0.2);color:#a5b4fc;border-color:rgba(99,102,241,0.3)}
+        .perf-tab:not(.active){background:rgba(255,255,255,0.04);color:rgba(196,181,253,0.5)}
 
         /* ══════════════════════════════════════
            ✅ RICH TEXT EDITOR — محرر النصوص
@@ -192,6 +204,7 @@
     <div class="sb-link" data-tab="finance" data-perm="finance"><span>💰</span><span>المالية</span></div>
     <div class="sb-link" data-tab="reports" data-perm="reports"><span>🚩</span><span>البلاغات</span><span id="reports-badge" class="hidden mr-auto text-xs font-black px-2 py-0.5 rounded-full" style="background:rgba(239,68,68,0.25);color:#f87171;min-width:20px;text-align:center"></span></div>
     <div class="sb-link" data-tab="staff" data-perm="staff"><span>🔑</span><span>الموظفين</span></div>
+    <div class="sb-link" data-tab="performance" data-perm="staff"><span>📊</span><span>أداء الموظفين</span></div>
     <div class="sb-link" data-tab="settings" data-perm="settings"><span>⚙️</span><span>الإعدادات</span></div>
     <div class="mt-4 p-4 border-t border-purple-500/10">
         <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='admin-login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
@@ -610,6 +623,42 @@
 
         <button onclick="savePrices()" class="btn-primary w-full">💾 حفظ الأسعار</button>
     </div><div class="glass p-6 mb-4"><h3 class="font-bold text-base mb-3">🆓 حد الأسئلة المجانية</h3><input type="number" id="st-fl" class="inp" value="10" style="max-width:120px"><button class="bp mt-2" onclick="saveSt('free_limit',$('st-fl').value)">حفظ</button></div>
+</div>
+
+<!-- ═══ أداء الموظفين ═══ -->
+<div id="t-performance" class="tab">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-black">📊 أداء الموظفين</h2>
+        <div class="flex gap-2">
+            <button class="perf-tab active" onclick="switchPerfPeriod('today',this)">اليوم</button>
+            <button class="perf-tab" onclick="switchPerfPeriod('week',this)">هالأسبوع</button>
+            <button class="perf-tab" onclick="switchPerfPeriod('month',this)">هالشهر</button>
+            <button class="perf-tab" onclick="switchPerfPeriod('all',this)">الكل</button>
+        </div>
+    </div>
+
+    <!-- ملخص عام -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">أسئلة مُدخلة</p><p class="text-3xl font-black text-indigo-400" id="pf-q-add">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">أسئلة معدّلة</p><p class="text-3xl font-black text-purple-400" id="pf-q-edit">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">بلاغات محلولة</p><p class="text-3xl font-black text-emerald-400" id="pf-r-done">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">إجراءات أخرى</p><p class="text-3xl font-black text-yellow-400" id="pf-other">-</p></div>
+    </div>
+
+    <!-- أداء كل موظف -->
+    <div class="glass p-6 mb-6">
+        <h3 class="font-bold text-base mb-4">👥 أداء الموظفين بالتفصيل</h3>
+        <div id="pf-employees" class="space-y-3"></div>
+    </div>
+
+    <!-- سجل النشاط -->
+    <div class="glass p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base">🕐 سجل النشاط التفصيلي</h3>
+            <span class="text-purple-200/40 text-xs" id="pf-log-count"></span>
+        </div>
+        <div id="pf-activity-log" class="space-y-1" style="max-height:500px;overflow-y:auto"></div>
+    </div>
 </div>
 
 </div><!-- end mc -->
@@ -1169,11 +1218,13 @@ async function saveStaff(){
         if(!u){toast('ما لقينا حساب بهذا الإيميل',false);return}
         targetId=u.id;
     }
+    var newRole=_staffRole==='admin'?'admin':'staff';
     var{error}=await sb.from('profiles').update({
-        role:_staffRole==='admin'?'admin':'staff',
+        role:newRole,
         permissions:perms
     }).eq('id',targetId);
     if(error){toast('خطأ: '+error.message,false);return}
+    logActivity(uid?'edit_staff':'add_staff','staff',targetId,{role:newRole});
     toast('تم الحفظ ✓',true);
     closeStaffModal();
     loadST();
@@ -1189,11 +1240,25 @@ document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
         $('t-'+t).classList.add('on');this.classList.add('on');
         if(t==='overview')loadOV();if(t==='questions')loadQ();if(t==='users')loadU();
         if(t==='coupons')loadC();if(t==='finance')loadF();if(t==='reports')loadR();
-        if(t==='staff')loadST();if(t==='settings')loadSet();
+        if(t==='staff')loadST();if(t==='settings')loadSet();if(t==='performance')loadPerf();
     });
 });
 
 function toast(m,ok){var t=$('toast');t.textContent=m;t.className='toast '+(ok?'tok':'ter');setTimeout(function(){t.classList.add('hidden')},3000)}
+
+// ══════════════════════════════════════════
+// ✅ سجل نشاط الموظفين — Activity Log
+// ══════════════════════════════════════════
+function logActivity(actionType, targetType, targetId, details){
+    if(!me)return;
+    sb.from('admin_activity_log').insert({
+        user_id: me.id,
+        action_type: actionType,
+        target_type: targetType,
+        target_id: String(targetId||''),
+        details: details||{}
+    }).then(function(){}).catch(function(){});
+}
 
 // ✅ نظرة عامة موسّعة
 async function loadOV(){
@@ -1448,23 +1513,28 @@ async function saveQ2(){
         image_url:imgUrl||null
     };
     if(!obj.choices[0]){toast('املأ الخيارات',false);return}
-    var{error}=id?await sb.from('questions').update(obj).eq('id',id):await sb.from('questions').insert(obj);
-    if(error){toast('خطأ: '+error.message,false);return}
+    var isEdit=!!id;
+    var res=isEdit?await sb.from('questions').update(obj).eq('id',id):await sb.from('questions').insert(obj).select('id').single();
+    if(res.error){toast('خطأ: '+res.error.message,false);return}
+    var newId=isEdit?id:(res.data?res.data.id:'new');
     // ✅ تحديث الكاش
     _allQCache=_allQCache.filter(function(q){return q.id!=id});
-    _allQCache.push({id:id||'new',question_text:qTextPlain});
-    toast(id?'تم التحديث ✓':'تم الإضافة ✓',true);
+    _allQCache.push({id:newId,question_text:qTextPlain});
+    // ✅ تسجيل النشاط
+    logActivity(isEdit?'edit_question':'add_question','question',newId,{section:obj.section,sub_section:obj.sub_section});
+    toast(isEdit?'تم التحديث ✓':'تم الإضافة ✓',true);
     $('questionM').classList.add('hidden');
     // ✅ إذا كان التعديل من البلاغات → احذف البلاغ تلقائياً
     if(_reportEditId){
         await sb.from('reports').delete().eq('id',_reportEditId);
+        logActivity('resolve_report','report',_reportEditId,{question_id:newId});
         _reportEditId=null;
         toast('✅ تم حفظ السؤال وإزالة البلاغ',true);
         loadR(); // تحديث عداد البلاغات
     }
     loadQ();
 }
-async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);toast('تم الحذف',true);loadQ()}
+async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);logActivity('delete_question','question',id);toast('تم الحذف',true);loadQ()}
 
 // ✅ إصلاح مشكلة subscription_type — يحدد monthly/yearly بناءً على subscription_end
 async function fixSubscriptionType(userId, currentType, endDate){
@@ -1535,6 +1605,7 @@ async function saveU2(){
 
     var{error}=await sb.from('profiles').update(updateData).eq('id',id);
     if(error){toast('خطأ: '+error.message,false);return}
+    logActivity('edit_user','user',id,{subscription_type:updateData.subscription_type,role:updateData.role});
 
     // ✅ تغيير كلمة السر عبر Supabase Admin API (إذا متاحة)
     var pw=$('um-pw').value.trim();
@@ -1579,7 +1650,7 @@ async function loadC(){
     $('c-list').innerHTML=h;
 }
 var _couponsCache={};
-async function delC(id){if(!confirm('حذف الكوبون؟'))return;await sb.from('coupons').delete().eq('id',id);toast('تم',true);loadC()}
+async function delC(id){if(!confirm('حذف الكوبون؟'))return;var c=_couponsCache[id];await sb.from('coupons').delete().eq('id',id);logActivity('delete_coupon','coupon',id,{code:c?c.code:''});toast('تم',true);loadC()}
 function editCById(id){var c=_couponsCache[id];if(c)editC(c);}
 
 // ✅ تعديل الكوبون
@@ -1647,7 +1718,7 @@ async function editQfromReport(qid, reportId){
     toast('ℹ️ عدّل السؤال واضغط حفظ — سيُزال البلاغ تلقائياً', true);
 }
 
-async function delR(id){await sb.from('reports').delete().eq('id',id);toast('تم رفض البلاغ',true);loadR()}
+async function delR(id){await sb.from('reports').delete().eq('id',id);logActivity('reject_report','report',id);toast('تم رفض البلاغ',true);loadR()}
 
 async function loadST(){
     var{data}=await sb.from('profiles').select('*').in('role',['admin','staff']).order('created_at');
@@ -1672,7 +1743,7 @@ async function loadST(){
     $('st-list').innerHTML=rows||'<tr><td colspan="5" class="p-6 text-center" style="color:rgba(196,181,253,0.4)">لا يوجد موظفين</td></tr>';
 }
 function editST(s){openStaffModal(s)}
-async function rmST(id){if(!confirm('إزالة هذا الموظف؟'))return;await sb.from('profiles').update({role:'user',permissions:null}).eq('id',id);toast('تم الإزالة',true);loadST()}
+async function rmST(id){if(!confirm('إزالة هذا الموظف؟'))return;await sb.from('profiles').update({role:'user',permissions:null}).eq('id',id);logActivity('remove_staff','staff',id);toast('تم الإزالة',true);loadST()}
 
 async function loadSet(){
     var{data}=await sb.from('site_settings').select('*');
@@ -1816,6 +1887,7 @@ async function saveBanner(n){
     await saveSt(dbPfx+'to',     (document.getElementById(pfx+'to')||{}).value||'');
     await saveSt(dbPfx+'link',   (document.getElementById(pfx+'link')||{}).value||'');
     await saveSt(dbPfx+'link_text',(document.getElementById(pfx+'link-text')||{}).value||'');
+    logActivity('edit_banner','settings',n===2?'banner2':'banner1',{type:n===2?'internal':'public'});
     toast('✅ تم حفظ البنر '+(n===2?'الداخلي':'العام'), true);
 }
 async function loadBannerSettings(n){
@@ -1849,6 +1921,7 @@ async function savePrices(){
             var val=el?el.value:'';
             await saveSt(keys[i].key, val);
         }
+        logActivity('edit_prices','settings','prices');
         toast('✅ تم حفظ الأسعار والخصومات',true);
     }catch(e){
         toast('❌ خطأ: '+e.message,false);
@@ -1882,6 +1955,176 @@ async function loadReportsBadge(){
         else{badge.classList.add('hidden')}
     }
     if($('s-r'))$('s-r').textContent=count||0;
+}
+
+// ══════════════════════════════════════════
+// ✅ حفظ الكوبون (إنشاء + تعديل)
+// ══════════════════════════════════════════
+async function saveC2(){
+    var id=$('cm-id').value;
+    var code=($('cm-c').value||'').trim().toUpperCase();
+    if(!code){toast('اكتب كود الكوبون',false);return}
+    var obj={
+        code:code,
+        plan_type:$('cm-plan').value||'all',
+        discount_type:$('cm-t').value,
+        discount_value:$('cm-t').value==='free'?100:parseInt($('cm-v').value)||0,
+        duration_months:parseInt($('cm-dur').value)||12,
+        max_uses:parseInt($('cm-x').value)||100,
+        expires_at:$('cm-e').value||null
+    };
+    var isEdit=!!id;
+    var{error}=isEdit?await sb.from('coupons').update(obj).eq('id',id):await sb.from('coupons').insert(obj);
+    if(error){toast('خطأ: '+error.message,false);return}
+    logActivity(isEdit?'edit_coupon':'add_coupon','coupon',id||code,{code:code});
+    toast(isEdit?'تم تحديث الكوبون ✓':'تم إنشاء الكوبون ✓',true);
+    $('couponM').classList.add('hidden');
+    $('cm-id').value='';
+    $('cm-title').textContent='كوبون جديد';
+    $('cm-save-btn').textContent='💾 إنشاء الكوبون';
+    loadC();
+}
+
+// ══════════════════════════════════════════
+// ✅ أداء الموظفين — Performance Dashboard
+// ══════════════════════════════════════════
+var _perfPeriod='today';
+
+function switchPerfPeriod(period,btn){
+    _perfPeriod=period;
+    document.querySelectorAll('.perf-tab').forEach(function(t){t.classList.remove('active')});
+    if(btn)btn.classList.add('active');
+    loadPerf();
+}
+
+async function loadPerf(){
+    var now=new Date();
+    var riyadhOff=3*60*60*1000;
+    var rNow=new Date(now.getTime()+riyadhOff);
+    var fromDate=null;
+    if(_perfPeriod==='today'){
+        var d=new Date(rNow);d.setUTCHours(0,0,0,0);
+        fromDate=new Date(d.getTime()-riyadhOff).toISOString();
+    }else if(_perfPeriod==='week'){
+        var d=new Date(rNow);d.setUTCDate(d.getUTCDate()-d.getUTCDay());d.setUTCHours(0,0,0,0);
+        fromDate=new Date(d.getTime()-riyadhOff).toISOString();
+    }else if(_perfPeriod==='month'){
+        var d=new Date(rNow);d.setUTCDate(1);d.setUTCHours(0,0,0,0);
+        fromDate=new Date(d.getTime()-riyadhOff).toISOString();
+    }
+    // جلب السجلات
+    var qr=sb.from('admin_activity_log').select('*').order('created_at',{ascending:false});
+    if(fromDate)qr=qr.gte('created_at',fromDate);
+    var{data:logs}=await qr.limit(500);
+    if(!logs)logs=[];
+    // جلب أسماء الموظفين
+    var{data:staff}=await sb.from('profiles').select('id,full_name,avatar_emoji,role').in('role',['admin','staff']);
+    if(!staff)staff=[];
+    var staffMap={};
+    staff.forEach(function(s){staffMap[s.id]=s});
+
+    // ملخص عام
+    var qAdd=0,qEdit=0,rDone=0,other=0;
+    logs.forEach(function(l){
+        if(l.action_type==='add_question')qAdd++;
+        else if(l.action_type==='edit_question')qEdit++;
+        else if(l.action_type==='resolve_report'||l.action_type==='reject_report')rDone++;
+        else other++;
+    });
+    $('pf-q-add').textContent=qAdd;
+    $('pf-q-edit').textContent=qEdit;
+    $('pf-r-done').textContent=rDone;
+    $('pf-other').textContent=other;
+
+    // أداء كل موظف
+    var empStats={};
+    logs.forEach(function(l){
+        if(!empStats[l.user_id])empStats[l.user_id]={add:0,edit:0,report:0,other:0,total:0};
+        var e=empStats[l.user_id];
+        e.total++;
+        if(l.action_type==='add_question')e.add++;
+        else if(l.action_type==='edit_question')e.edit++;
+        else if(l.action_type==='resolve_report'||l.action_type==='reject_report')e.report++;
+        else e.other++;
+    });
+
+    var maxTotal=1;
+    Object.values(empStats).forEach(function(e){if(e.total>maxTotal)maxTotal=e.total});
+
+    var empKeys=Object.keys(empStats).sort(function(a,b){return empStats[b].total-empStats[a].total});
+    var empH='';
+    empKeys.forEach(function(uid,i){
+        var s=staffMap[uid]||{full_name:'موظف محذوف',avatar_emoji:'👤'};
+        var e=empStats[uid];
+        var pct=Math.round(e.total/maxTotal*100);
+        var medal=i<3?('<span style="font-size:1.2rem">'+['🥇','🥈','🥉'][i]+'</span>'):'<span style="color:rgba(196,181,253,0.3);font-size:.85rem;font-weight:900;min-width:24px;display:inline-block;text-align:center">'+(i+1)+'</span>';
+        empH+='<div class="perf-emp">'
+            +'<div class="flex items-center gap-3 mb-3">'
+            +medal
+            +'<span class="text-lg">'+(s.avatar_emoji||'👤')+'</span>'
+            +'<div class="flex-1"><p class="text-white font-bold text-sm">'+(s.full_name||'—')+'</p>'
+            +'<p class="text-purple-200/50 text-xs">'+(s.role==='admin'?'أدمن':'موظف')+'</p></div>'
+            +'<div class="text-left"><p class="text-2xl font-black text-indigo-400">'+e.total+'</p><p class="text-purple-200/40 text-[10px]">إجراء</p></div>'
+            +'</div>'
+            +'<div class="grid grid-cols-4 gap-2 text-center mb-2">'
+            +'<div><p class="text-lg font-black text-indigo-400">'+e.add+'</p><p class="text-purple-200/50 text-[10px]">إضافة سؤال</p></div>'
+            +'<div><p class="text-lg font-black text-purple-400">'+e.edit+'</p><p class="text-purple-200/50 text-[10px]">تعديل</p></div>'
+            +'<div><p class="text-lg font-black text-emerald-400">'+e.report+'</p><p class="text-purple-200/50 text-[10px]">بلاغ</p></div>'
+            +'<div><p class="text-lg font-black text-yellow-400">'+e.other+'</p><p class="text-purple-200/50 text-[10px]">أخرى</p></div>'
+            +'</div>'
+            +'<div class="perf-bar"><div class="perf-bar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>'
+            +'</div>';
+    });
+    $('pf-employees').innerHTML=empH||'<p class="text-purple-200/60 text-center py-6">لا يوجد نشاط في هذه الفترة</p>';
+
+    // سجل النشاط التفصيلي
+    var actionNames={
+        add_question:'📝 أضاف سؤال',
+        edit_question:'✏️ عدّل سؤال',
+        delete_question:'🗑️ حذف سؤال',
+        resolve_report:'✅ حل بلاغ',
+        reject_report:'❌ رفض بلاغ',
+        edit_user:'👤 عدّل عضو',
+        add_staff:'🔑 أضاف موظف',
+        edit_staff:'🔑 عدّل موظف',
+        remove_staff:'🚫 أزال موظف',
+        add_coupon:'🎟️ أنشأ كوبون',
+        edit_coupon:'🎟️ عدّل كوبون',
+        delete_coupon:'🗑️ حذف كوبون',
+        edit_banner:'📢 عدّل البنر',
+        edit_prices:'💰 عدّل الأسعار',
+        edit_settings:'⚙️ عدّل إعدادات'
+    };
+    var dotColors={
+        add_question:'#6366f1',edit_question:'#8b5cf6',delete_question:'#ef4444',
+        resolve_report:'#10b981',reject_report:'#f59e0b',
+        edit_user:'#60a5fa',add_staff:'#a78bfa',edit_staff:'#a78bfa',remove_staff:'#ef4444',
+        add_coupon:'#10b981',edit_coupon:'#8b5cf6',delete_coupon:'#ef4444',
+        edit_banner:'#f59e0b',edit_prices:'#fbbf24',edit_settings:'#60a5fa'
+    };
+
+    var logH='';
+    logs.slice(0,100).forEach(function(l){
+        var s=staffMap[l.user_id]||{full_name:'مجهول',avatar_emoji:'👤'};
+        var d=new Date(l.created_at);
+        var timeStr=d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+        var dateStr=d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+        var det='';
+        if(l.details){
+            if(l.details.section){var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};det=' — '+(sn[l.details.section]||l.details.section)}
+            if(l.details.code)det=' — '+l.details.code;
+            if(l.details.role)det=' — '+l.details.role;
+        }
+        logH+='<div class="perf-log">'
+            +'<div class="perf-dot" style="background:'+(dotColors[l.action_type]||'#818cf8')+'"></div>'
+            +'<div class="flex-1">'
+            +'<p class="text-white text-sm"><span class="font-bold">'+(s.full_name||'—')+'</span> <span class="text-purple-200/60">'+(actionNames[l.action_type]||l.action_type)+'</span><span class="text-purple-200/40 text-xs">'+det+'</span></p>'
+            +'</div>'
+            +'<p class="text-purple-200/40 text-xs flex-shrink-0">'+timeStr+' <span class="text-purple-200/25">'+dateStr+'</span></p>'
+            +'</div>';
+    });
+    $('pf-activity-log').innerHTML=logH||'<p class="text-purple-200/60 text-center py-6">لا يوجد نشاط مسجّل</p>';
+    $('pf-log-count').textContent=logs.length+' إجراء';
 }
 </script>
 </body>
