@@ -205,6 +205,7 @@
     <div class="sb-link" data-tab="reports" data-perm="reports"><span>🚩</span><span>البلاغات</span><span id="reports-badge" class="hidden mr-auto text-xs font-black px-2 py-0.5 rounded-full" style="background:rgba(239,68,68,0.25);color:#f87171;min-width:20px;text-align:center"></span></div>
     <div class="sb-link" data-tab="staff" data-perm="staff"><span>🔑</span><span>الموظفين</span></div>
     <div class="sb-link" data-tab="performance" data-perm="staff"><span>📊</span><span>أداء الموظفين</span></div>
+    <div class="sb-link" data-tab="analytics"><span>📈</span><span>تحليلات الزوار</span><span id="notif-badge" class="hidden mr-auto text-xs font-black px-2 py-0.5 rounded-full" style="background:rgba(16,185,129,0.25);color:#34d399;min-width:20px;text-align:center"></span></div>
     <div class="sb-link" data-tab="settings" data-perm="settings"><span>⚙️</span><span>الإعدادات</span></div>
     <div class="mt-4 p-4 border-t border-purple-500/10">
         <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='admin-login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
@@ -326,6 +327,101 @@
 <div id="t-staff" class="tab">
     <div class="flex items-center justify-between mb-5"><h2 class="text-2xl font-black">🔑 الموظفين</h2><button class="bp" onclick="openStaffModal()">+ إضافة موظف</button></div>
     <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الاسم</th><th class="text-right p-3 text-purple-300/50">الإيميل</th><th class="text-center p-3 text-purple-300/50">الدور</th><th class="text-center p-3 text-purple-300/50">الصلاحيات</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="st-list"></tbody></table></div>
+</div>
+
+<!-- ═══ تحليلات الزوار ═══ -->
+<div id="t-analytics" class="tab">
+    <div class="flex items-center justify-between mb-5">
+        <h2 class="text-2xl font-black">📈 تحليلات الزوار</h2>
+        <button class="bp" onclick="loadAnalytics()">🔄 تحديث</button>
+    </div>
+
+    <!-- إحصائيات لحظية -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="sc glass p-5 text-center" style="border-color:rgba(16,185,129,0.2)">
+            <p class="text-emerald-400/70 text-xs mb-1">🟢 متصل الآن</p>
+            <p class="text-4xl font-black text-emerald-400" id="an-online">-</p>
+        </div>
+        <div class="sc glass p-5 text-center" style="border-color:rgba(99,102,241,0.2)">
+            <p class="text-indigo-400/70 text-xs mb-1">👁️ زوار اليوم</p>
+            <p class="text-4xl font-black text-indigo-400" id="an-visitors">-</p>
+        </div>
+        <div class="sc glass p-5 text-center" style="border-color:rgba(139,92,246,0.2)">
+            <p class="text-purple-400/70 text-xs mb-1">📄 مشاهدات اليوم</p>
+            <p class="text-4xl font-black text-purple-400" id="an-pageviews">-</p>
+        </div>
+        <div class="sc glass p-5 text-center" style="border-color:rgba(245,158,11,0.2)">
+            <p class="text-yellow-400/70 text-xs mb-1">💪 تدربوا اليوم</p>
+            <p class="text-4xl font-black text-yellow-400" id="an-practiced">-</p>
+        </div>
+    </div>
+
+    <!-- النمو -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="glass p-5 text-center">
+            <p class="text-purple-300/50 text-xs mb-1">أعضاء جدد اليوم</p>
+            <p class="text-3xl font-black text-indigo-400" id="an-new-today">-</p>
+        </div>
+        <div class="glass p-5 text-center">
+            <p class="text-purple-300/50 text-xs mb-1">أعضاء جدد هالأسبوع</p>
+            <p class="text-3xl font-black text-purple-400" id="an-new-week">-</p>
+        </div>
+        <div class="glass p-5 text-center">
+            <p class="text-purple-300/50 text-xs mb-1">أعضاء جدد هالشهر</p>
+            <p class="text-3xl font-black text-emerald-400" id="an-new-month">-</p>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4 mb-6">
+        <!-- الأجهزة -->
+        <div class="glass p-6">
+            <h3 class="font-bold text-base mb-4">📱 نوع الأجهزة</h3>
+            <div id="an-devices" class="space-y-3"></div>
+        </div>
+        <!-- أكثر الصفحات زيارة -->
+        <div class="glass p-6">
+            <h3 class="font-bold text-base mb-4">🔥 أكثر الصفحات زيارة</h3>
+            <div id="an-pages" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- 🔔 الإشعارات -->
+    <div class="glass p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base">🔔 إشعارات التسجيل الجديدة</h3>
+            <button class="bs text-xs" onclick="markAllNotifRead()">✓ قراءة الكل</button>
+        </div>
+        <div id="an-notifs" class="space-y-2" style="max-height:400px;overflow-y:auto"></div>
+    </div>
+
+    <!-- تفاصيل المستخدمين -->
+    <div class="glass p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base">👥 تفاصيل المستخدمين (آخر دخول + الأسئلة)</h3>
+            <input type="text" class="inp" id="an-search-user" placeholder="🔍 ابحث باسم أو إيميل..." style="max-width:260px" oninput="filterUserDetails()">
+        </div>
+        <div style="overflow-x:auto">
+            <table class="w-full text-sm" id="an-users-table">
+                <thead>
+                    <tr class="text-purple-300/50 text-xs">
+                        <th class="text-right p-2 font-bold">العضو</th>
+                        <th class="text-center p-2 font-bold">الاشتراك</th>
+                        <th class="text-center p-2 font-bold">أسئلة حلها</th>
+                        <th class="text-center p-2 font-bold">نسبة الصح</th>
+                        <th class="text-center p-2 font-bold">آخر تدريب</th>
+                        <th class="text-center p-2 font-bold">آخر دخول</th>
+                        <th class="text-center p-2 font-bold">تاريخ التسجيل</th>
+                    </tr>
+                </thead>
+                <tbody id="an-users-body"></tbody>
+            </table>
+        </div>
+        <div class="flex justify-center gap-3 mt-4">
+            <button class="bs" id="an-prev-btn" onclick="loadUserDetails(anUsersPage-1)" disabled>← السابق</button>
+            <span class="text-purple-200/40 text-sm py-2" id="an-page-num">صفحة 1</span>
+            <button class="bs" id="an-next-btn" onclick="loadUserDetails(anUsersPage+1)">التالي →</button>
+        </div>
+    </div>
 </div>
 
 <!-- ═══ الإعدادات ═══ -->
@@ -2158,6 +2254,186 @@ async function loadPerf(){
     $('pf-activity-log').innerHTML=logH||'<p class="text-purple-200/60 text-center py-6">لا يوجد نشاط مسجّل</p>';
     $('pf-log-count').textContent=logs.length+' إجراء';
 }
+
+/* ═══════════════════════════════════════
+   📈 تحليلات الزوار + 🔔 الإشعارات
+═══════════════════════════════════════ */
+var anUsersPage = 0;
+var anUsersData = [];
+
+async function loadAnalytics(){
+    // 1) جلب الإحصائيات عبر RPC
+    var{data:stats,error}=await sb.rpc('get_admin_analytics',{days_back:30});
+    if(error){console.log('analytics error',error);return}
+
+    $('an-online').textContent = stats.online_now || 0;
+    $('an-visitors').textContent = stats.visitors_today || 0;
+    $('an-pageviews').textContent = stats.total_page_views_today || 0;
+    $('an-practiced').textContent = stats.active_today || 0;
+    $('an-new-today').textContent = stats.new_users_today || 0;
+    $('an-new-week').textContent = stats.new_users_week || 0;
+    $('an-new-month').textContent = stats.new_users_month || 0;
+
+    // الأجهزة
+    var devH = '';
+    var totalDev = 0;
+    (stats.device_breakdown||[]).forEach(function(d){totalDev+=d.count});
+    (stats.device_breakdown||[]).forEach(function(d){
+        var pct = totalDev > 0 ? Math.round(d.count/totalDev*100) : 0;
+        var icon = d.device === 'mobile' ? '📱' : '💻';
+        var name = d.device === 'mobile' ? 'جوال' : 'كمبيوتر';
+        var color = d.device === 'mobile' ? '#6366f1' : '#10b981';
+        devH += '<div><div class="flex justify-between mb-1"><span class="text-white text-sm font-bold">'+icon+' '+name+'</span><span class="text-purple-200/60 text-sm">'+pct+'% <span class="text-purple-200/30">('+d.count+')</span></span></div>'
+            + '<div class="perf-bar"><div class="perf-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+    });
+    $('an-devices').innerHTML = devH || '<p class="text-purple-200/50 text-center py-4">لا توجد بيانات بعد</p>';
+
+    // أكثر الصفحات زيارة
+    var pageNames = {'/':'الرئيسية','/index':'الرئيسية','/dashboard':'لوحة التحكم','/practice':'التدريب','/select-section':'اختيار القسم','/pricing':'الأسعار','/stats':'الإحصائيات','/profile':'الملف الشخصي','/login':'تسجيل الدخول','/register':'التسجيل','/leaderboard':'المتصدرون','/mistakes':'مراجعة الأخطاء','/contact':'تواصل معنا'};
+    var pagesH = '';
+    (stats.top_pages||[]).forEach(function(p,i){
+        var name = pageNames[p.page_path] || p.page_path;
+        var medal = i < 3 ? ['🥇','🥈','🥉'][i] : '<span class="text-purple-200/30">'+(i+1)+'</span>';
+        pagesH += '<div class="flex items-center gap-3 py-2 '+(i<(stats.top_pages||[]).length-1?'border-b border-purple-500/10':'')+'">'
+            + '<span class="text-lg min-w-[28px] text-center">'+medal+'</span>'
+            + '<span class="text-white text-sm font-bold flex-1">'+name+'</span>'
+            + '<span class="text-purple-200/60 text-sm font-bold">'+p.views+' <span class="text-purple-200/30 text-xs">زيارة</span></span></div>';
+    });
+    $('an-pages').innerHTML = pagesH || '<p class="text-purple-200/50 text-center py-4">لا توجد بيانات بعد</p>';
+
+    // الإشعارات
+    loadNotifications();
+
+    // تفاصيل المستخدمين
+    loadUserDetails(0);
+}
+
+async function loadNotifications(){
+    var{data:notifs}=await sb.from('admin_notifications').select('*').order('created_at',{ascending:false}).limit(50);
+    if(!notifs) notifs=[];
+
+    var unread = notifs.filter(function(n){return !n.is_read}).length;
+    var badge = $('notif-badge');
+    if(unread > 0){
+        badge.textContent = unread;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+
+    var h = '';
+    notifs.forEach(function(n){
+        var d = new Date(n.created_at);
+        var timeStr = d.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+        var dateStr = d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+        var isNew = !n.is_read;
+        var meta = n.metadata || {};
+        var icon = n.type === 'new_signup' ? '🎉' : '🔔';
+        h += '<div class="flex items-center gap-3 p-3 rounded-xl '+(isNew?'bg-emerald-500/5 border border-emerald-500/15':'bg-white/[0.02] border border-white/[0.04]')+'">'
+            + '<span class="text-2xl">'+icon+'</span>'
+            + '<span class="text-lg">'+(meta.avatar||'👤')+'</span>'
+            + '<div class="flex-1 min-w-0">'
+            + '<p class="text-white text-sm font-bold">'+n.title+'</p>'
+            + '<p class="text-purple-200/50 text-xs truncate">'+(n.body||'')+(meta.email?' — '+meta.email:'')+'</p>'
+            + '</div>'
+            + '<div class="text-left flex-shrink-0">'
+            + '<p class="text-purple-200/40 text-xs">'+timeStr+'</p>'
+            + '<p class="text-purple-200/25 text-[10px]">'+dateStr+'</p>'
+            + '</div>'
+            + (isNew?'<div class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0"></div>':'')
+            + '</div>';
+    });
+    $('an-notifs').innerHTML = h || '<p class="text-purple-200/50 text-center py-6">لا توجد إشعارات</p>';
+}
+
+async function markAllNotifRead(){
+    await sb.from('admin_notifications').update({is_read:true}).eq('is_read',false);
+    toast('تم قراءة جميع الإشعارات','ok');
+    loadNotifications();
+}
+
+async function loadUserDetails(page){
+    if(page < 0) page = 0;
+    anUsersPage = page;
+    var{data:users}=await sb.rpc('get_users_details',{page_num:page,page_size:30});
+    if(!users) users=[];
+    anUsersData = users;
+
+    renderUserDetails(users);
+
+    $('an-page-num').textContent = 'صفحة ' + (page+1);
+    $('an-prev-btn').disabled = page === 0;
+    $('an-next-btn').disabled = users.length < 30;
+}
+
+function renderUserDetails(users){
+    var subBadges = {
+        free: '<span class="bg bg-f">مجاني</span>',
+        monthly: '<span class="bg bg-m">شهري</span>',
+        yearly: '<span class="bg bg-y">سنوي</span>'
+    };
+
+    var h = '';
+    users.forEach(function(u){
+        var lastSeen = u.last_seen_at ? timeAgo(u.last_seen_at) : '<span class="text-purple-200/30">—</span>';
+        var lastPractice = u.last_practice ? timeAgo(u.last_practice) : '<span class="text-purple-200/30">—</span>';
+        var regDate = new Date(u.created_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric',year:'numeric'});
+        var isOnline = u.last_seen_at && (Date.now() - new Date(u.last_seen_at).getTime()) < 300000;
+        var accColor = u.accuracy >= 70 ? 'text-emerald-400' : u.accuracy >= 40 ? 'text-yellow-400' : 'text-red-400';
+
+        h += '<tr class="tr">'
+            + '<td class="p-2"><div class="flex items-center gap-2">'
+            + '<span class="text-lg">'+(u.avatar_emoji||'👤')+'</span>'
+            + '<div><p class="text-white text-sm font-bold">'+(u.full_name||'بدون اسم')+(isOnline?' <span class="online-dot"></span>':'')+'</p>'
+            + '<p class="text-purple-200/40 text-xs truncate" style="max-width:160px">'+(u.email||'')+'</p></div></div></td>'
+            + '<td class="p-2 text-center">'+(subBadges[u.subscription_type]||subBadges.free)+'</td>'
+            + '<td class="p-2 text-center"><span class="text-white font-bold">'+u.total_attempts+'</span></td>'
+            + '<td class="p-2 text-center"><span class="'+accColor+' font-bold">'+u.accuracy+'%</span></td>'
+            + '<td class="p-2 text-center text-purple-200/60 text-xs">'+lastPractice+'</td>'
+            + '<td class="p-2 text-center text-purple-200/60 text-xs">'+lastSeen+'</td>'
+            + '<td class="p-2 text-center text-purple-200/40 text-xs">'+regDate+'</td>'
+            + '</tr>';
+    });
+    $('an-users-body').innerHTML = h || '<tr><td colspan="7" class="text-center text-purple-200/50 py-6">لا يوجد أعضاء</td></tr>';
+}
+
+function filterUserDetails(){
+    var q = ($('an-search-user').value||'').toLowerCase().trim();
+    if(!q){renderUserDetails(anUsersData);return}
+    var filtered = anUsersData.filter(function(u){
+        return (u.full_name||'').toLowerCase().indexOf(q)!==-1 || (u.email||'').toLowerCase().indexOf(q)!==-1;
+    });
+    renderUserDetails(filtered);
+}
+
+function timeAgo(dateStr){
+    var diff = Date.now() - new Date(dateStr).getTime();
+    var mins = Math.floor(diff/60000);
+    if(mins < 1) return '<span class="text-emerald-400 font-bold">الآن</span>';
+    if(mins < 60) return 'قبل '+mins+' د';
+    var hours = Math.floor(mins/60);
+    if(hours < 24) return 'قبل '+hours+' س';
+    var days = Math.floor(hours/24);
+    if(days < 30) return 'قبل '+days+' يوم';
+    return 'قبل '+ Math.floor(days/30) +' شهر';
+}
+
+// ─── تحميل تلقائي عند فتح التاب ───
+var origSwitchTab = null;
+document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
+    el.addEventListener('click',function(){
+        if(el.dataset.tab === 'analytics'){
+            setTimeout(loadAnalytics, 100);
+        }
+    });
+});
+
+// ─── تحديث الإشعارات كل 30 ثانية ───
+setInterval(function(){
+    if(!document.hidden){
+        loadNotifications().catch(function(){});
+    }
+}, 30000);
 </script>
 </body>
 </html>
