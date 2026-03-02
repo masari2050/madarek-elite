@@ -330,13 +330,16 @@
 
         /* ---------- الاشتراك والدفع ---------- */
         async function subscribe(plan){
-            // ١. تحقق من تسجيل الدخول
+            // ١. تحقق من تسجيل الدخول وتجديد الجلسة
             var{data:{session}}=await sb.auth.getSession();
             if(!session){
                 localStorage.setItem('madarek_plan',plan);
                 window.location.href='register.html';
                 return;
             }
+
+            // تجديد التوكن عشان نتأكد إنه صالح
+            await sb.auth.refreshSession();
 
             showPayLoading(true);
 
@@ -351,9 +354,17 @@
                     body:{plan:plan,coupon:couponCode}
                 });
 
-                if(error||!data||data.error){
+                if(error){
                     showPayLoading(false);
-                    alert((data&&data.error)||'حدث خطأ في إنشاء عملية الدفع — حاول مرة ثانية');
+                    var errMsg='حدث خطأ في إنشاء عملية الدفع';
+                    try{var errBody=await error.context.json();errMsg=errBody.error||errMsg}catch(e2){}
+                    alert(errMsg);
+                    return;
+                }
+
+                if(!data||data.error){
+                    showPayLoading(false);
+                    alert((data&&data.error)||'حدث خطأ — حاول مرة ثانية');
                     return;
                 }
 
@@ -369,6 +380,7 @@
                 window.location.href=data.paymentUrl;
             }catch(e){
                 showPayLoading(false);
+                console.error('Subscribe error:',e);
                 alert('حدث خطأ، حاول مرة ثانية');
             }
         }
