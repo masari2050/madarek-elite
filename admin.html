@@ -731,7 +731,10 @@
             <input type="hidden" id="exp-img-url" value="">
         </div>
 
-        <button class="bp w-full" onclick="saveQ2()">💾 حفظ السؤال</button>
+        <div class="flex gap-2">
+            <button class="bp flex-1" onclick="saveQ2()">💾 حفظ السؤال</button>
+            <button id="qm-del-btn" class="bd hidden" onclick="delQfromModal()" style="padding:10px 16px;font-size:.85rem">🗑️ حذف</button>
+        </div>
     </div>
 </div></div>
 
@@ -1388,6 +1391,9 @@ async function loadQ(){
 function openQM(q){
     $('qmT').textContent=q?'تعديل السؤال':'إضافة سؤال';
     $('qm-id').value=q?q.id:'';
+    // ✅ زر الحذف يظهر بس في التعديل
+    var delBtn=$('qm-del-btn');
+    if(delBtn){if(q&&q.id){delBtn.classList.remove('hidden');delBtn.dataset.qid=q.id}else{delBtn.classList.add('hidden')}}
     $('qm-sec').value=q?q.section:'quant';
 
 updateSubSec();
@@ -1534,6 +1540,20 @@ async function saveQ2(){
     }
     loadQ();
 }
+// ✅ حذف السؤال من داخل المودال
+async function delQfromModal(){
+    var id=$('qm-del-btn').dataset.qid;
+    if(!id||!confirm('متأكد تبي تحذف السؤال نهائياً؟'))return;
+    await sb.from('attempts').delete().eq('question_id',id);
+    await sb.from('reports').delete().eq('question_id',id);
+    await sb.from('questions').delete().eq('id',id);
+    logActivity('delete_question','question',id);
+    toast('تم حذف السؤال ✓',true);
+    $('questionM').classList.add('hidden');
+    if(_reportEditId){_reportEditId=null;loadR();}
+    loadQ();
+}
+
 async function delQ(id){if(!confirm('متأكد؟'))return;await sb.from('attempts').delete().eq('question_id',id);await sb.from('reports').delete().eq('question_id',id);await sb.from('questions').delete().eq('id',id);logActivity('delete_question','question',id);toast('تم الحذف',true);loadQ()}
 
 // ✅ إصلاح مشكلة subscription_type — يحدد monthly/yearly بناءً على subscription_end
@@ -1698,6 +1718,7 @@ async function loadR(){
           +(r.reason?'<div class="r-reason"><span>⚠️</span> '+r.reason+'</div>':'')
           +'<div class="r-foot">'
           +(qId?'<button class="r-btn-edit" onclick="editQfromReport(\''+qId+'\',\''+r.id+'\')">✏️ تعديل السؤال</button>':'')
+          +(qId?'<button class="r-btn-del" onclick="delQfromReport(\''+qId+'\',\''+r.id+'\')">🗑️ حذف السؤال</button>':'')
           +'<button class="r-btn-del" onclick="delR(\''+r.id+'\')">✕ رفض البلاغ</button>'
           +'</div></div>';
     });
@@ -1719,6 +1740,17 @@ async function editQfromReport(qid, reportId){
 }
 
 async function delR(id){await sb.from('reports').delete().eq('id',id);logActivity('reject_report','report',id);toast('تم رفض البلاغ',true);loadR()}
+
+// ✅ حذف السؤال + البلاغ من صفحة البلاغات
+async function delQfromReport(qid,rid){
+    if(!confirm('متأكد تبي تحذف السؤال نهائياً مع البلاغ؟'))return;
+    await sb.from('attempts').delete().eq('question_id',qid);
+    await sb.from('reports').delete().eq('question_id',qid);
+    await sb.from('questions').delete().eq('id',qid);
+    logActivity('delete_question','question',qid,{from_report:rid});
+    toast('تم حذف السؤال والبلاغ ✓',true);
+    loadR();
+}
 
 async function loadST(){
     var{data}=await sb.from('profiles').select('*').in('role',['admin','staff']).order('created_at');
