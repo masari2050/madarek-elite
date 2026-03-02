@@ -329,7 +329,34 @@
         }
 
         /* ---------- الاشتراك والدفع ---------- */
+        /* 🔒 الوضع المؤقت: true = الدفع الإلكتروني جاهز | false = قريباً */
+        var PAYMENT_ENABLED = false;
+
+        function showComingSoon(plan){
+            var planName = plan==='yearly' ? 'السنوي' : 'الشهري';
+            var overlay = document.createElement('div');
+            overlay.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(15,10,46,0.95);display:flex;align-items:center;justify-content:center;padding:20px';
+            overlay.onclick=function(e){if(e.target===overlay)overlay.remove()};
+            overlay.innerHTML='<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px);border-radius:1.5rem;padding:40px 32px;max-width:420px;width:100%;text-align:center">'
+                +'<div style="width:70px;height:70px;margin:0 auto 16px;border-radius:50%;background:rgba(99,102,241,0.15);border:2px solid rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center;font-size:32px">🚀</div>'
+                +'<h3 style="font-size:22px;font-weight:900;margin-bottom:8px;color:#fff">الدفع الإلكتروني قريباً!</h3>'
+                +'<p style="color:rgba(196,181,253,0.7);font-size:14px;margin-bottom:6px;line-height:1.7">نجهّز لك بوابة دفع آمنة تدعم مدى وفيزا وأبل باي وغيرها</p>'
+                +'<p style="color:rgba(196,181,253,0.5);font-size:13px;margin-bottom:24px">للاشتراك ال'+planName+' الحين — تواصل معنا مباشرة:</p>'
+                +'<a href="https://wa.me/966553339885?text=السلام عليكم، أبي أشترك بالخطة ال'+planName+'" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#25d366,#128c7e);box-shadow:0 8px 25px rgba(37,211,102,0.3);transition:all .3s">'
+                +'<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.228-2.006l-.365-.27-2.645.887.887-2.645-.27-.365A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>'
+                +'تواصل عبر واتساب</a>'
+                +'<p style="color:rgba(196,181,253,0.35);font-size:11px;margin-top:16px">أو استخدم كوبون <b style="color:rgba(196,181,253,0.6)">RAMADAN26</b> لشهر مجاناً!</p>'
+                +'</div>';
+            document.body.appendChild(overlay);
+        }
+
         async function subscribe(plan){
+            /* ── لو الدفع الإلكتروني مو جاهز — نعرض رسالة حلوة ── */
+            if(!PAYMENT_ENABLED){
+                showComingSoon(plan);
+                return;
+            }
+
             // ١. تحقق من تسجيل الدخول وتجديد الجلسة
             var{data:{session}}=await sb.auth.getSession();
             if(!session){
@@ -390,5 +417,6 @@
         document.getElementById('couponInput').addEventListener('keypress',function(e){if(e.key==='Enter')applyCoupon()});
     </script>
         <script src="banner.js"></script>
+    <script src="whatsapp-widget.js"></script>
 </body>
 </html>
