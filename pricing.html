@@ -314,7 +314,65 @@
     if(offerEl) offerEl.textContent = 'توفّر ' + saving + ' ريال عند الاشتراك السنوي — بدل ' + mNow + ' ريال شهرياً ادفع ' + yPM + ' ريال فقط!';
   }
 })();
-        function subscribe(plan){window.location.href='register.html'}
+        /* ---------- حالة التحميل أثناء إنشاء عملية الدفع ---------- */
+        var _payOverlay=null;
+        function showPayLoading(on){
+            if(on){
+                if(_payOverlay)return;
+                _payOverlay=document.createElement('div');
+                _payOverlay.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(15,10,46,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px';
+                _payOverlay.innerHTML='<svg class="animate-spin" style="width:48px;height:48px;color:#818cf8" fill="none" viewBox="0 0 24 24"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg><p style="color:#c7d2fe;font-size:15px;font-weight:700">جاري تحويلك لصفحة الدفع...</p><p style="color:rgba(196,181,253,0.5);font-size:12px">لا تقفل الصفحة</p>';
+                document.body.appendChild(_payOverlay);
+            }else{
+                if(_payOverlay){_payOverlay.remove();_payOverlay=null}
+            }
+        }
+
+        /* ---------- الاشتراك والدفع ---------- */
+        async function subscribe(plan){
+            // ١. تحقق من تسجيل الدخول
+            var{data:{session}}=await sb.auth.getSession();
+            if(!session){
+                localStorage.setItem('madarek_plan',plan);
+                window.location.href='register.html';
+                return;
+            }
+
+            showPayLoading(true);
+
+            // ٢. جلب الكوبون لو موجود
+            var couponRaw=localStorage.getItem('khawariz_coupon');
+            var couponCode=null;
+            try{var cp=JSON.parse(couponRaw);couponCode=cp?cp.code:null}catch(e){}
+
+            // ٣. استدعاء Edge Function لإنشاء عملية الدفع
+            try{
+                var{data,error}=await sb.functions.invoke('create-payment',{
+                    body:{plan:plan,coupon:couponCode}
+                });
+
+                if(error||!data||data.error){
+                    showPayLoading(false);
+                    alert((data&&data.error)||'حدث خطأ في إنشاء عملية الدفع — حاول مرة ثانية');
+                    return;
+                }
+
+                // ٤. لو الكوبون خلّاه مجاني
+                if(data.free){
+                    localStorage.removeItem('khawariz_coupon');
+                    window.location.href='select-section.html';
+                    return;
+                }
+
+                // ٥. التحويل لصفحة ماي فاتورة
+                localStorage.removeItem('khawariz_coupon');
+                window.location.href=data.paymentUrl;
+            }catch(e){
+                showPayLoading(false);
+                alert('حدث خطأ، حاول مرة ثانية');
+            }
+        }
+
         function toggleFaq(el){el.classList.toggle('open')}
         async function applyCoupon(){var code=document.getElementById('couponInput').value.trim().toUpperCase();if(!code)return;var btn=document.getElementById('couponBtn');btn.textContent='...';btn.disabled=true;document.getElementById('couponResult').classList.remove('hidden');document.getElementById('couponSuccess').classList.add('hidden');document.getElementById('couponError').classList.add('hidden');try{var{data,error}=await sb.from('coupons').select('*').eq('code',code).single();if(error||!data){document.getElementById('couponErrMsg').textContent='الكود غير صحيح أو غير موجود';document.getElementById('couponError').classList.remove('hidden')}else if(data.expires_at&&new Date(data.expires_at)<new Date()){document.getElementById('couponErrMsg').textContent='هالكوبون منتهي الصلاحية';document.getElementById('couponError').classList.remove('hidden')}else if(data.max_uses&&data.used_count>=data.max_uses){document.getElementById('couponErrMsg').textContent='هالكوبون وصل الحد الأقصى للاستخدام';document.getElementById('couponError').classList.remove('hidden')}else{var dt=data.discount_type==='percentage'?'خصم '+data.discount_value+'% على اشتراكك':'خصم '+data.discount_value+' ريال على اشتراكك';document.getElementById('couponMsg').textContent='✓ '+dt;document.getElementById('couponSuccess').classList.remove('hidden');localStorage.setItem('khawariz_coupon',JSON.stringify({code:data.code,type:data.discount_type,value:data.discount_value}));await sb.from('coupons').update({used_count:(data.used_count||0)+1}).eq('id',data.id);if(data.discount_type==='percentage'&&data.discount_value>=100){var{data:{session}}=await sb.auth.getSession();if(session){await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>'}else{document.getElementById('couponMsg').innerHTML='✓ '+dt+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>'}}}}catch(e){document.getElementById('couponErrMsg').textContent='حدث خطأ، حاول مرة ثانية';document.getElementById('couponError').classList.remove('hidden')}btn.textContent='تحقق';btn.disabled=false}
         document.getElementById('couponInput').addEventListener('keypress',function(e){if(e.key==='Enter')applyCoupon()});

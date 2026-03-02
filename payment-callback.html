@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجة الدفع - مدارك النخبة</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.5rem}
+        @keyframes pulse-ring{0%{transform:scale(0.8);opacity:1}100%{transform:scale(2);opacity:0}}
+        @keyframes check-draw{0%{stroke-dashoffset:50}100%{stroke-dashoffset:0}}
+        .success-ring{animation:pulse-ring 1.5s ease-out infinite}
+        .check-mark{stroke-dasharray:50;stroke-dashoffset:50;animation:check-draw 0.6s ease 0.3s forwards}
+    </style>
+</head>
+<body class="text-white p-4">
+    <div class="glass p-8 sm:p-10 max-w-md w-full text-center">
+        <!-- Loading State -->
+        <div id="state-loading">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style="background:rgba(99,102,241,0.15);border:2px solid rgba(99,102,241,0.3)">
+                <svg class="animate-spin w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            </div>
+            <h2 class="text-xl font-black mb-2">جاري التحقق من الدفع...</h2>
+            <p class="text-purple-200/60 text-sm">انتظر لحظة</p>
+        </div>
+
+        <!-- Success State -->
+        <div id="state-success" class="hidden">
+            <div class="relative w-20 h-20 mx-auto mb-6">
+                <div class="absolute inset-0 rounded-full success-ring" style="background:rgba(16,185,129,0.1);border:2px solid rgba(16,185,129,0.3)"></div>
+                <div class="w-20 h-20 rounded-full flex items-center justify-center" style="background:rgba(16,185,129,0.15);border:2px solid rgba(16,185,129,0.4)">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><path class="check-mark" d="M5 13l4 4L19 7" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </div>
+            <h2 class="text-2xl font-black text-emerald-400 mb-2">🎉 تم الدفع بنجاح!</h2>
+            <p class="text-purple-200/70 text-sm mb-1" id="success-plan"></p>
+            <p class="text-purple-200/50 text-xs mb-6" id="success-detail"></p>
+            <a href="select-section.html" class="inline-block w-full py-3.5 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#10b981,#14b8a6)">🚀 ابدأ التدريب الآن</a>
+            <a href="dashboard.html" class="block mt-3 text-purple-200/50 text-xs hover:text-purple-200/70 transition">أو اذهب للوحة التحكم ←</a>
+        </div>
+
+        <!-- Error State -->
+        <div id="state-error" class="hidden">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style="background:rgba(239,68,68,0.15);border:2px solid rgba(239,68,68,0.3)">
+                <span class="text-4xl">❌</span>
+            </div>
+            <h2 class="text-xl font-black text-red-400 mb-2">لم يتم الدفع</h2>
+            <p class="text-purple-200/60 text-sm mb-6" id="error-msg">حدث خطأ أثناء عملية الدفع. حاول مرة ثانية.</p>
+            <a href="pricing.html" class="inline-block w-full py-3.5 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">← ارجع لصفحة الأسعار</a>
+            <a href="https://wa.me/966553339885" class="block mt-3 text-purple-200/50 text-xs hover:text-purple-200/70 transition">تحتاج مساعدة؟ تواصل معنا 💬</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    var sb = window.supabase.createClient(
+        'https://czzcmbxejxbotjemyuqf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+    );
+
+    function show(id){ document.querySelectorAll('[id^="state-"]').forEach(function(el){el.classList.add('hidden')}); document.getElementById(id).classList.remove('hidden'); }
+
+    (async function(){
+        // Get paymentId from URL
+        var params = new URLSearchParams(window.location.search);
+        var paymentId = params.get('paymentId') || params.get('Id');
+        var errorParam = params.get('error');
+
+        // If error from MyFatoorah
+        if(errorParam){
+            show('state-error');
+            return;
+        }
+
+        if(!paymentId){
+            show('state-error');
+            document.getElementById('error-msg').textContent = 'رابط غير صحيح — ما لقينا بيانات الدفع';
+            return;
+        }
+
+        // Check user session
+        var{data:{session}} = await sb.auth.getSession();
+        if(!session){
+            show('state-error');
+            document.getElementById('error-msg').textContent = 'سجّل دخول أولاً عشان نتحقق من الدفع';
+            return;
+        }
+
+        try{
+            // Call Edge Function to verify payment
+            var{data, error} = await sb.functions.invoke('verify-payment', {
+                body: { paymentId: paymentId }
+            });
+
+            if(error || !data || data.error){
+                show('state-error');
+                document.getElementById('error-msg').textContent = (data && data.error) || 'فشل التحقق من الدفع. تواصل معنا لو الخصم طُلع من حسابك.';
+                return;
+            }
+
+            if(data.status === 'paid'){
+                show('state-success');
+                var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';
+                document.getElementById('success-plan').textContent = 'تم تفعيل اشتراكك ال' + planName + ' بنجاح!';
+                document.getElementById('success-detail').textContent = 'المبلغ: ' + data.amount + ' ريال — ينتهي: ' + (data.expires || '');
+            } else {
+                show('state-error');
+                document.getElementById('error-msg').textContent = 'الدفع لم يكتمل. حالة الدفع: ' + (data.status || 'غير معروف');
+            }
+        }catch(e){
+            show('state-error');
+            document.getElementById('error-msg').textContent = 'حدث خطأ — حاول مرة ثانية أو تواصل معنا';
+        }
+    })();
+    </script>
+</body>
+</html>
