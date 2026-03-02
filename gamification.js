@@ -429,7 +429,12 @@
     //  توليد HTML لمعاينة المتصدرين
     // ══════════════════════════════════════
     function renderLeaderboardPreview(data, currentUserId){
-        if(!data || !data.length) return '<p style="text-align:center;color:rgba(196,181,253,0.4);font-size:12px">\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A \u0628\u0639\u062F</p>';
+        if(!data || !data.length) return '<div style="text-align:center;padding:16px 8px">'
+            + '<p style="font-size:32px;margin-bottom:8px">\uD83C\uDFC5</p>'
+            + '<p style="font-family:Cairo,sans-serif;font-size:14px;font-weight:900;color:rgba(196,181,253,0.6)">\u0643\u0646 \u0623\u0648\u0644 \u0627\u0644\u0645\u062A\u0635\u062F\u0631\u064A\u0646!</p>'
+            + '<p style="font-size:11px;color:rgba(196,181,253,0.3);margin-top:4px">\u0627\u0628\u062F\u0623 \u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0648\u062A\u0646\u0627\u0641\u0633 \u0645\u0639 \u0632\u0645\u0644\u0627\u0626\u0643</p>'
+            + '<a href="select-section.html" style="display:inline-block;margin-top:12px;padding:8px 20px;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;text-decoration:none">\u0627\u0628\u062F\u0623 \u0627\u0644\u062A\u062F\u0631\u064A\u0628 \uD83D\uDE80</a>'
+            + '</div>';
         var medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49']; // 🥇🥈🥉
         var html = '';
         var top3 = data.slice(0, 3);

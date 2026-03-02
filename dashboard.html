@@ -123,15 +123,16 @@
             </div>
         </div>
 
-        <!-- Weekly Progress -->
+        <!-- الهدف الأسبوعي -->
         <div class="animate-in delay-5 card-glass rounded-2xl p-5 mb-5">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-base font-bold">تقدمك هذا الأسبوع</h3>
-                <span class="text-purple-300/50 text-sm"><span id="weeklyCount">0</span> سؤال</span>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-base font-bold flex items-center gap-2"><span>🎯</span> الهدف الأسبوعي</h3>
+                <span style="font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;color:#818cf8"><span id="weeklyCount">0</span> / 50</span>
             </div>
-            <div class="progress-track h-3">
+            <div class="progress-track h-3 mb-2">
                 <div id="progressBar" class="progress-fill h-3" style="width:0%"></div>
             </div>
+            <p id="weeklyMsg" class="text-xs" style="color:rgba(196,181,253,0.4)">حل 50 سؤال هالأسبوع عشان تتقدم!</p>
         </div>
 
         <!-- Action Buttons -->
@@ -249,6 +250,14 @@
                 const weekly = allAttempts?.filter(a => new Date(a.answered_at) > oneWeekAgo).length || 0;
                 document.getElementById('weeklyCount').textContent = weekly;
                 document.getElementById('progressBar').style.width = Math.min((weekly / 50) * 100, 100) + '%';
+                var wMsg = document.getElementById('weeklyMsg');
+                if(wMsg){
+                    if(weekly >= 50) wMsg.innerHTML = '<span style="color:#4ade80;font-weight:700">🏆 أحسنت! حققت الهدف الأسبوعي — استمر!</span>';
+                    else if(weekly >= 30) wMsg.innerHTML = '<span style="color:#fbbf24;font-weight:700">💪 قربت! باقي ' + (50 - weekly) + ' سؤال بس</span>';
+                    else if(weekly >= 10) wMsg.textContent = '📈 بداية حلوة! كمّل واوصل لـ 50 هالأسبوع';
+                    else if(weekly > 0) wMsg.textContent = '🚀 حلو إنك بدأت! حاول توصل 50 سؤال';
+                    else wMsg.textContent = '🎯 حل 50 سؤال هالأسبوع عشان تتقدم!';
+                }
 
                 // ── Streak ──
                 if(window.Gamification){
