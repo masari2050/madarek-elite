@@ -542,15 +542,21 @@
     <div class="glass p-6 mb-4">
         <h3 class="font-bold text-base mb-4">👁️ معاينة مباشرة</h3>
         <div id="engage-preview" class="flex justify-center">
-            <div style="max-width:520px;width:100%;direction:rtl;font-family:Tajawal,sans-serif">
-                <div id="engage-preview-card" style="background:rgba(15,10,46,0.95);backdrop-filter:blur(16px);border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1.5px solid #f59e0b55;box-shadow:0 0 20px #f59e0b15,0 4px 16px rgba(0,0,0,0.3)">
-                    <span id="eng-prev-emoji" style="font-size:28px">🎁</span>
-                    <span id="eng-prev-text" style="flex:1;font-size:14px;color:rgba(255,255,255,0.9);font-weight:500;line-height:1.5">عرض رمضان! خصم 50% على كل الباقات</span>
-                    <div style="display:flex;align-items:center;gap:6px">
-                        <span id="eng-prev-code" style="background:rgba(255,255,255,0.08);border:1px dashed #f59e0b;border-radius:10px;padding:6px 14px;font-family:monospace;font-weight:900;font-size:14px;color:#f59e0b;letter-spacing:1.5px;direction:ltr">RAMADAN26</span>
-                        <button style="background:#f59e0b;border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:default">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        </button>
+            <div style="width:300px;direction:rtl;font-family:Tajawal,sans-serif;position:relative">
+                <!-- توهج خلفي -->
+                <div id="eng-prev-glow" style="position:absolute;inset:-15px;border-radius:28px;background:radial-gradient(ellipse at center,#f59e0b,transparent 70%);opacity:0.12;filter:blur(15px);z-index:0"></div>
+                <!-- البطاقة -->
+                <div id="engage-preview-card" style="position:relative;z-index:1;border-radius:20px;padding:2px;background:conic-gradient(from 0deg,#f59e0b,transparent 20%,transparent 50%,#f59e0b,transparent 70%);overflow:hidden">
+                    <div style="background:linear-gradient(160deg,rgba(15,10,50,0.97),rgba(22,15,60,0.95),rgba(15,10,46,0.97));border-radius:18px;padding:24px 18px 18px;text-align:center">
+                        <span id="eng-prev-emoji" style="font-size:38px;display:block;margin-bottom:10px">🎁</span>
+                        <span id="eng-prev-text" style="font-size:14px;color:rgba(255,255,255,0.9);font-weight:600;line-height:1.7;display:block;margin-bottom:14px">عرض رمضان! خصم 50% على كل الباقات</span>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">
+                            <span id="eng-prev-code" style="background:rgba(255,255,255,0.06);border:1.5px dashed #f59e0b;border-radius:12px;padding:7px 16px;font-family:monospace;font-weight:900;font-size:16px;color:#f59e0b;letter-spacing:2px;direction:ltr">RAMADAN26</span>
+                            <button id="eng-prev-copy-btn" style="background:#f59e0b;border:none;border-radius:12px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:default;box-shadow:0 4px 12px rgba(245,158,11,0.3)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            </button>
+                        </div>
+                        <p style="font-size:10px;color:rgba(255,255,255,0.3);margin:0">📋 انسخ الكوبون واحصل على الخصم</p>
                     </div>
                 </div>
             </div>
@@ -2223,10 +2229,21 @@ function updateEngagePreview(){
     var pe = $('eng-prev-emoji'); if(pe) pe.textContent = emoji;
     var pt = $('eng-prev-text'); if(pt) pt.textContent = text;
     var pc = $('eng-prev-code'); if(pc){ pc.textContent = code; pc.style.color = color; pc.style.borderColor = color; }
+    // تحديث الحدود المتوهجة
     var card = $('engage-preview-card');
     if(card){
-        card.style.borderColor = color + '55';
-        card.style.boxShadow = '0 0 20px ' + color + '15, 0 4px 16px rgba(0,0,0,0.3)';
+        card.style.background = 'conic-gradient(from 0deg,' + color + ',transparent 20%,transparent 50%,' + color + ',transparent 70%)';
+    }
+    // تحديث التوهج الخلفي
+    var glow = $('eng-prev-glow');
+    if(glow){
+        glow.style.background = 'radial-gradient(ellipse at center,' + color + ',transparent 70%)';
+    }
+    // تحديث زر النسخ
+    var copyBtn = $('eng-prev-copy-btn');
+    if(copyBtn){
+        copyBtn.style.background = color;
+        copyBtn.style.boxShadow = '0 4px 12px ' + color + '4d';
     }
 }
 // ربط المعاينة بالحقول

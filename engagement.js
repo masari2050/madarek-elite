@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════
-   🎯 مدارك النخبة — نظام التفاعل الذكي v2
-   شريط أنيق مع كوبون + تتبع + تحويل
+   🎯 مدارك النخبة — نظام التفاعل الذكي v3
+   بطاقة أنيقة مع حدود متوهجة + كوبون + تتبع
 ═══════════════════════════════════════ */
 (function(){
   'use strict';
@@ -34,7 +34,7 @@
   var defaultMessages = {
     firstVisit: { emoji: '👋', text: 'أهلاً فيك! جرّب حل سؤال مجاني وشف مستواك', btn: 'جرّب الحين', link: 'select-section.html', color: '#6366f1' },
     returnVisitor: { emoji: '🔥', text: 'حياك مرة ثانية! سجّل حساب مجاني وتابع تقدّمك', btn: 'سجّل مجاناً', link: 'register.html', color: '#10b981' },
-    pricing: { emoji: '🎁', text: 'عرض حصري! استخدم كوبون RAMADAN26 واحصل على شهر مجاناً', coupon: 'RAMADAN26', color: '#f59e0b' },
+    pricing: { emoji: '🎁', text: 'عرض حصري! استخدم الكوبون واحصل على خصم مميز', coupon: 'RAMADAN26', color: '#f59e0b' },
     loggedIdle: { emoji: '📚', text: 'الاختبار يحتاج ممارسة مستمرة — حل أسئلة اليوم وطوّر مستواك!', btn: 'تدرّب الحين', link: 'select-section.html', color: '#6366f1' },
     idle: [
       { emoji: '📝', text: 'الممارسة العملية أقوى طريقة للاستعداد — جرّب تحل سؤال الحين!', color: '#8b5cf6' },
@@ -81,29 +81,26 @@
   // ─── نسخ الكوبون + التحويل ───
   function copyCoupon(code, btnEl, link){
     navigator.clipboard.writeText(code).then(function(){
-      // تغيير الأيقون لعلامة صح
-      btnEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+      btnEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+      btnEl.style.background = 'rgba(52,211,153,0.2)';
       trackCouponEvent(code, 'copy');
-
-      // بعد ثانية يتحول لصفحة الأسعار
       setTimeout(function(){
         var targetLink = link || 'pricing.html';
         if(!isLoggedIn && targetLink.indexOf('pricing') !== -1){
-          // مو مسجّل → يروح التسجيل أولاً ثم الأسعار
           window.location.href = 'register.html?redirect=pricing&coupon=' + encodeURIComponent(code);
         } else {
           window.location.href = targetLink + (targetLink.indexOf('?') === -1 ? '?' : '&') + 'coupon=' + encodeURIComponent(code);
         }
       }, 800);
     }).catch(function(){
-      // fallback لو clipboard ما اشتغل
       var input = document.createElement('input');
       input.value = code;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
       input.remove();
-      btnEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+      btnEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+      btnEl.style.background = 'rgba(52,211,153,0.2)';
       trackCouponEvent(code, 'copy');
       setTimeout(function(){
         var targetLink = link || 'pricing.html';
@@ -116,14 +113,12 @@
     });
   }
 
-  // ─── إنشاء البوب أب الأنيق ───
+  // ─── إنشاء البوب أب — بطاقة أنيقة مع حدود متوهجة ───
   function showPopup(msg){
-    // تحقق من الكولداون
     var cooldown = (msg._cooldown || 5) * 60000;
     var lastPopup = parseInt(localStorage.getItem(LAST_POPUP) || '0');
     if(Date.now() - lastPopup < cooldown) return;
 
-    // تحقق إذا أغلقه قبل (كوكي الجلسة)
     var closedKey = POPUP_CLOSED + '_' + (msg.coupon || 'default');
     if(sessionStorage.getItem(closedKey)) return;
 
@@ -132,134 +127,179 @@
     var color = msg.color || '#6366f1';
     var autoHide = (msg._autoHide || 15) * 1000;
 
-    // تتبع المشاهدة
     if(msg.coupon) trackCouponEvent(msg.coupon, 'view');
 
-    // ─── إنشاء CSS ───
-    if(!document.getElementById('engage-style-v2')){
+    // ─── CSS البطاقة ───
+    if(!document.getElementById('engage-style-v3')){
       var style = document.createElement('style');
-      style.id = 'engage-style-v2';
+      style.id = 'engage-style-v3';
       style.textContent = [
-        '@keyframes engSlideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}',
-        '@keyframes engGlow{0%{box-shadow:0 0 8px var(--eng-glow,#6366f1)12,0 2px 12px rgba(0,0,0,0.2)}100%{box-shadow:0 0 18px var(--eng-glow,#6366f1)22,0 2px 12px rgba(0,0,0,0.2)}}',
-        '#engage-bar{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9997;max-width:440px;width:calc(100% - 24px);animation:engSlideIn .5s ease;direction:rtl;font-family:Tajawal,sans-serif}',
-        '#engage-bar .eng-card{background:rgba(15,10,46,0.95);backdrop-filter:blur(16px);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:nowrap;border:1.5px solid transparent;background-image:linear-gradient(rgba(15,10,46,0.95),rgba(15,10,46,0.95)),linear-gradient(135deg,var(--eng-glow)55,var(--eng-glow)15,var(--eng-glow)55);background-origin:border-box;background-clip:padding-box,border-box;animation:engGlow 2.5s ease-in-out infinite alternate}',
-        '#engage-bar .eng-emoji{font-size:22px;flex-shrink:0;line-height:1}',
-        '#engage-bar .eng-text{flex:1;min-width:0;font-size:12px;color:rgba(255,255,255,0.85);font-weight:500;line-height:1.5}',
-        '#engage-bar .eng-coupon{display:flex;align-items:center;gap:4px;flex-shrink:0}',
-        '#engage-bar .eng-code{background:rgba(255,255,255,0.08);border:1px dashed var(--eng-glow);border-radius:8px;padding:4px 10px;font-family:monospace;font-weight:900;font-size:12px;color:var(--eng-glow);letter-spacing:1px;direction:ltr;user-select:all}',
-        '#engage-bar .eng-copy{background:var(--eng-glow);border:none;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,opacity .2s;flex-shrink:0}',
-        '#engage-bar .eng-copy:hover{transform:scale(1.1);opacity:0.9}',
-        '#engage-bar .eng-btn{background:var(--eng-glow);color:#fff;border:none;padding:6px 14px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .2s;white-space:nowrap;font-family:Tajawal,sans-serif}',
-        '#engage-bar .eng-btn:hover{transform:scale(1.05)}',
-        '#engage-bar .eng-close{position:absolute;top:-6px;left:-6px;background:rgba(30,21,80,0.9);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);width:20px;height:20px;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color .2s}',
-        '#engage-bar .eng-close:hover{color:#fff}',
-        '@media(max-width:640px){#engage-bar{bottom:72px;max-width:none;width:calc(100% - 16px)}#engage-bar .eng-card{padding:8px 10px;gap:6px;flex-wrap:wrap}#engage-bar .eng-emoji{font-size:18px}#engage-bar .eng-text{font-size:11px;flex:1;min-width:60%}#engage-bar .eng-coupon{gap:4px}#engage-bar .eng-code{font-size:11px;padding:3px 8px}#engage-bar .eng-copy{width:26px;height:26px}}'
+        '@keyframes engPopIn{0%{opacity:0;transform:scale(0.8) translateY(30px)}60%{transform:scale(1.02) translateY(-4px)}100%{opacity:1;transform:scale(1) translateY(0)}}',
+        '@keyframes engGlow{0%,100%{opacity:0.6}50%{opacity:1}}',
+        '@keyframes engSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}',
+        '@keyframes engShine{0%{transform:translateX(-100%) rotate(25deg)}100%{transform:translateX(200%) rotate(25deg)}}',
+        '@keyframes engFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}',
+
+        /* الخلفية الشفافة */
+        '#engage-overlay{position:fixed;inset:0;z-index:9996;pointer-events:none}',
+
+        /* حاوي البطاقة */
+        '#engage-popup{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9997;width:340px;max-width:calc(100vw - 24px);animation:engPopIn .6s cubic-bezier(.34,1.56,.64,1);direction:rtl;font-family:Tajawal,sans-serif}',
+
+        /* البطاقة مع الحدود المتوهجة */
+        '#engage-popup .eng-card{position:relative;border-radius:20px;padding:28px 22px 22px;text-align:center;overflow:hidden}',
+
+        /* طبقة الخلفية */
+        '#engage-popup .eng-bg{position:absolute;inset:2px;border-radius:18px;background:linear-gradient(160deg,rgba(15,10,50,0.97),rgba(22,15,60,0.95),rgba(15,10,46,0.97));backdrop-filter:blur(20px);z-index:1}',
+
+        /* الحدود المتوهجة — دائرة متحركة */
+        '#engage-popup .eng-border{position:absolute;inset:0;border-radius:20px;padding:2px;overflow:hidden;z-index:0}',
+        '#engage-popup .eng-border::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent 0%,var(--eng-glow) 10%,transparent 20%,transparent 50%,var(--eng-glow) 60%,transparent 70%);animation:engSpin 3s linear infinite}',
+        '#engage-popup .eng-border::after{content:"";position:absolute;inset:2px;border-radius:18px;background:linear-gradient(160deg,rgba(15,10,50,0.97),rgba(22,15,60,0.95));z-index:1}',
+
+        /* توهج خلفي */
+        '#engage-popup .eng-glow-bg{position:absolute;inset:-20px;border-radius:30px;background:radial-gradient(ellipse at center,var(--eng-glow),transparent 70%);opacity:0.15;animation:engGlow 3s ease-in-out infinite;z-index:-1;filter:blur(20px)}',
+
+        /* المحتوى */
+        '#engage-popup .eng-content{position:relative;z-index:2}',
+
+        /* الإيموجي */
+        '#engage-popup .eng-emoji{font-size:42px;line-height:1;margin-bottom:12px;display:block;animation:engFloat 3s ease-in-out infinite}',
+
+        /* النص */
+        '#engage-popup .eng-text{font-size:15px;font-weight:600;color:rgba(255,255,255,0.9);line-height:1.7;margin-bottom:16px;display:block}',
+
+        /* كود الكوبون */
+        '#engage-popup .eng-coupon-box{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}',
+        '#engage-popup .eng-code{background:rgba(255,255,255,0.06);border:1.5px dashed var(--eng-glow);border-radius:12px;padding:8px 18px;font-family:monospace;font-weight:900;font-size:18px;color:var(--eng-glow);letter-spacing:2px;direction:ltr;user-select:all}',
+        '#engage-popup .eng-copy-btn{background:var(--eng-glow);border:none;border-radius:12px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;flex-shrink:0;box-shadow:0 4px 15px color-mix(in srgb,var(--eng-glow) 40%,transparent)}',
+        '#engage-popup .eng-copy-btn:hover{transform:scale(1.1);box-shadow:0 6px 20px color-mix(in srgb,var(--eng-glow) 50%,transparent)}',
+        '#engage-popup .eng-copy-btn:active{transform:scale(0.95)}',
+
+        /* نص مساعد تحت الكوبون */
+        '#engage-popup .eng-hint{font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:0;margin-top:-6px}',
+
+        /* الزر العادي */
+        '#engage-popup .eng-btn{display:inline-block;background:var(--eng-glow);color:#fff;border:none;padding:10px 28px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;font-family:Tajawal,sans-serif;box-shadow:0 6px 20px color-mix(in srgb,var(--eng-glow) 35%,transparent)}',
+        '#engage-popup .eng-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px color-mix(in srgb,var(--eng-glow) 50%,transparent)}',
+
+        /* شريط لامع */
+        '#engage-popup .eng-shine{position:absolute;top:0;right:0;bottom:0;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);animation:engShine 4s ease-in-out infinite;z-index:3;pointer-events:none}',
+
+        /* زر الإغلاق */
+        '#engage-popup .eng-close{position:absolute;top:8px;left:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:4;line-height:1}',
+        '#engage-popup .eng-close:hover{color:#fff;background:rgba(255,255,255,0.12)}',
+
+        /* موبايل */
+        '@media(max-width:480px){',
+        '  #engage-popup{bottom:72px;width:calc(100vw - 20px)}',
+        '  #engage-popup .eng-card{padding:22px 16px 18px}',
+        '  #engage-popup .eng-emoji{font-size:36px;margin-bottom:10px}',
+        '  #engage-popup .eng-text{font-size:13px;margin-bottom:12px}',
+        '  #engage-popup .eng-code{font-size:15px;padding:7px 14px}',
+        '  #engage-popup .eng-copy-btn{width:38px;height:38px}',
+        '  #engage-popup .eng-btn{font-size:13px;padding:9px 22px}',
+        '}'
       ].join('\n');
       document.head.appendChild(style);
     }
 
-    // ─── إنشاء العناصر ───
-    var old = document.getElementById('engage-bar');
+    // ─── إزالة بوب أب قديم ───
+    var old = document.getElementById('engage-popup');
     if(old) old.remove();
 
-    var container = document.createElement('div');
-    container.id = 'engage-bar';
-    container.style.setProperty('--eng-glow', color);
+    // ─── بناء البطاقة ───
+    var popup = document.createElement('div');
+    popup.id = 'engage-popup';
+    popup.style.setProperty('--eng-glow', color);
 
-    var card = document.createElement('div');
-    card.className = 'eng-card';
-    card.style.position = 'relative';
+    var html = '';
+    html += '<div class="eng-glow-bg"></div>';
+    html += '<div class="eng-card">';
+    html += '  <div class="eng-border"></div>';
+    html += '  <div class="eng-bg"></div>';
+    html += '  <div class="eng-shine"></div>';
 
     // زر الإغلاق
-    var closeBtn = document.createElement('button');
-    closeBtn.className = 'eng-close';
-    closeBtn.innerHTML = '✕';
-    closeBtn.onclick = function(){
-      container.style.transition = 'opacity .4s, transform .4s';
-      container.style.opacity = '0';
-      container.style.transform = 'translateX(-50%) translateY(20px)';
-      sessionStorage.setItem(closedKey, '1');
-      setTimeout(function(){ container.remove(); }, 400);
-    };
-    card.appendChild(closeBtn);
+    html += '  <button class="eng-close" id="eng-close-btn">✕</button>';
 
-    // الإيموجي
-    var emoji = document.createElement('span');
-    emoji.className = 'eng-emoji';
-    emoji.textContent = msg.emoji || '🎁';
-    card.appendChild(emoji);
+    // المحتوى
+    html += '  <div class="eng-content">';
+    html += '    <span class="eng-emoji">' + (msg.emoji || '🎁') + '</span>';
+    html += '    <span class="eng-text">' + msg.text + '</span>';
 
-    // النص
-    var text = document.createElement('span');
-    text.className = 'eng-text';
-    text.textContent = msg.text;
-    card.appendChild(text);
-
-    // الكوبون (لو فيه)
+    // كوبون
     if(msg.coupon){
-      var couponWrap = document.createElement('div');
-      couponWrap.className = 'eng-coupon';
-
-      var codeEl = document.createElement('span');
-      codeEl.className = 'eng-code';
-      codeEl.textContent = msg.coupon;
-      couponWrap.appendChild(codeEl);
-
-      var copyBtn = document.createElement('button');
-      copyBtn.className = 'eng-copy';
-      copyBtn.title = 'انسخ الكوبون';
-      copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-      copyBtn.onclick = function(){ copyCoupon(msg.coupon, copyBtn, msg.link); };
-      couponWrap.appendChild(copyBtn);
-
-      card.appendChild(couponWrap);
+      html += '    <div class="eng-coupon-box">';
+      html += '      <span class="eng-code">' + msg.coupon + '</span>';
+      html += '      <button class="eng-copy-btn" id="eng-copy-btn" title="انسخ الكوبون">';
+      html += '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      html += '      </button>';
+      html += '    </div>';
+      html += '    <p class="eng-hint">📋 انسخ الكوبون واحصل على الخصم</p>';
     }
-    // زر عادي (بدون كوبون)
+    // زر عادي
     else if(msg.btn){
-      var btnEl = document.createElement('a');
-      btnEl.className = 'eng-btn';
-      btnEl.textContent = msg.btn;
-      btnEl.href = msg.link || '#';
-      if(!msg.link){
-        btnEl.onclick = function(e){ e.preventDefault(); closeBtn.click(); };
-      }
-      card.appendChild(btnEl);
+      html += '    <a class="eng-btn" href="' + (msg.link || '#') + '" id="eng-action-btn">' + msg.btn + '</a>';
     }
 
-    container.appendChild(card);
-    document.body.appendChild(container);
+    html += '  </div>'; // eng-content
+    html += '</div>'; // eng-card
+
+    popup.innerHTML = html;
+    document.body.appendChild(popup);
+
+    // ─── الأحداث ───
+    var closeBtn = document.getElementById('eng-close-btn');
+    if(closeBtn){
+      closeBtn.onclick = function(){
+        popup.style.transition = 'opacity .4s, transform .4s';
+        popup.style.opacity = '0';
+        popup.style.transform = 'translateX(-50%) scale(0.9) translateY(20px)';
+        sessionStorage.setItem(closedKey, '1');
+        setTimeout(function(){ popup.remove(); }, 400);
+      };
+    }
+
+    if(msg.coupon){
+      var copyBtn = document.getElementById('eng-copy-btn');
+      if(copyBtn){
+        copyBtn.onclick = function(){ copyCoupon(msg.coupon, copyBtn, msg.link); };
+      }
+    }
+
+    if(!msg.coupon && msg.btn && !msg.link){
+      var actionBtn = document.getElementById('eng-action-btn');
+      if(actionBtn){
+        actionBtn.onclick = function(e){ e.preventDefault(); closeBtn.click(); };
+      }
+    }
 
     // إخفاء تلقائي
     setTimeout(function(){
-      if(container.parentNode){
-        container.style.transition = 'opacity .4s, transform .4s';
-        container.style.opacity = '0';
-        container.style.transform = 'translateX(-50%) translateY(20px)';
-        setTimeout(function(){ container.remove(); }, 400);
+      if(popup.parentNode){
+        popup.style.transition = 'opacity .4s, transform .4s';
+        popup.style.opacity = '0';
+        popup.style.transform = 'translateX(-50%) scale(0.9) translateY(20px)';
+        setTimeout(function(){ popup.remove(); }, 400);
       }
     }, autoHide);
   }
 
   // ─── تحديد الرسالة بناءً على حالة الزائر (fallback) ───
   function getDefaultMessage(){
-    // 1️⃣ زائر أول مرة
     if(visits === 1 && !isLoggedIn){
       return { msg: defaultMessages.firstVisit, delay: 5000 };
     }
-    // 2️⃣ صفحة الأسعار
     if(currentPage === 'pricing'){
       return { msg: defaultMessages.pricing, delay: 10000 };
     }
-    // 3️⃣ زائر راجع بدون حساب
     if(visits > 2 && !isLoggedIn && currentPage !== 'login' && currentPage !== 'register'){
       return { msg: defaultMessages.returnVisitor, delay: 8000 };
     }
-    // 4️⃣ مسجّل idle
     if(isLoggedIn && (currentPage === 'dashboard' || currentPage === 'index')){
       return { msg: defaultMessages.loggedIdle, delay: 30000 };
     }
-    // 5️⃣ idle عام
     if(!isLoggedIn){
       var randomMsg = defaultMessages.idle[Math.floor(Math.random() * defaultMessages.idle.length)];
       randomMsg.btn = 'ابدأ الحين';
@@ -273,25 +313,20 @@
   async function init(){
     var settings = await fetchEngageSettings();
 
-    // لو فيه إعدادات من الأدمن
     if(settings && settings.engage_mode && settings.engage_mode !== 'off'){
-      // تحقق من الفترة الزمنية
       if(settings.engage_mode === 'range'){
         var now = new Date();
         if(settings.engage_from && new Date(settings.engage_from) > now) return;
         if(settings.engage_to && new Date(settings.engage_to) < now) return;
       }
 
-      // تحقق من الصفحات المستهدفة
       var pages = settings.engage_pages || 'all';
       if(pages !== 'all' && pages.indexOf(currentPage) === -1) return;
 
-      // تحقق من الجمهور المستهدف
       var target = settings.engage_target || 'all';
       if(target === 'visitors' && isLoggedIn) return;
       if(target === 'logged' && !isLoggedIn) return;
 
-      // بناء الرسالة
       var adminMsg = {
         emoji: settings.engage_emoji || '🎁',
         text: settings.engage_text || '',
@@ -300,12 +335,10 @@
         _autoHide: parseInt(settings.engage_auto_hide) || 15
       };
 
-      // الكوبون
       if(settings.engage_coupon_enabled === 'true' && settings.engage_coupon_code){
         adminMsg.coupon = settings.engage_coupon_code.toUpperCase();
         adminMsg.link = settings.engage_btn_link || 'pricing.html';
       }
-      // زر عادي (بدون كوبون)
       else if(settings.engage_btn_text){
         adminMsg.btn = settings.engage_btn_text;
         adminMsg.link = settings.engage_btn_link || null;
@@ -315,7 +348,6 @@
       setTimeout(function(){ showPopup(adminMsg); }, delay);
 
     } else {
-      // fallback: الرسائل الافتراضية
       var def = getDefaultMessage();
       if(def){
         def.msg._cooldown = 5;
@@ -325,7 +357,6 @@
     }
   }
 
-  // انتظر تحميل الصفحة
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', init);
   } else {
