@@ -359,9 +359,9 @@
                 'https://czzcmbxejxbotjemyuqf.supabase.co',
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
             );
-            var { data } = await sb.from('questions').select('id');
-            if (data && data.length > 0) {
-                document.getElementById('liveQuestions').textContent = data.length + '+';
+            var { count } = await sb.from('questions').select('id', {count:'exact', head:true});
+            if (count && count > 0) {
+                document.getElementById('liveQuestions').textContent = count + '+';
             }
         } catch(e){}
     })();

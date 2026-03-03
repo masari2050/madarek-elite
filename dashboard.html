@@ -237,7 +237,7 @@
             const quotes = ['كل سؤال تحله خطوة أقرب لحلمك','النجاح يحتاج للجهد والإصرار','أنت قادر على تحقيق أهدافك','ثق بنفسك، أنت أقوى مما تتخيل','كل يوم تدريب، كل يوم تطور','حلمك قريب، استمر واجتهد'];
             document.getElementById('motivationalQuote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
             try {
-                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at').eq('user_id', currentUser.id);
+                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at').eq('user_id', currentUser.id).limit(50000);
                 const total = allAttempts?.length || 0;
                 const correct = allAttempts?.filter(a => a.is_correct).length || 0;
                 const wrong = total - correct;

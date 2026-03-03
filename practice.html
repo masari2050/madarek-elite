@@ -214,8 +214,8 @@
             var questions=[];
             if(sel==='mix'){
                 // كمي + لفظي بالتناوب
-                var r1=await sb.from('questions').select('*').eq('section','quant');
-                var r2=await sb.from('questions').select('*').eq('section','verbal');
+                var r1=await sb.from('questions').select('*').eq('section','quant').limit(50000);
+                var r2=await sb.from('questions').select('*').eq('section','verbal').limit(50000);
                 var qList=shuffleArray(r1.data||[]);
                 var vList=shuffleArray(r2.data||[]);
                 var cnt2=parseInt(localStorage.getItem('khawariz_question_count'))||10;
@@ -229,7 +229,7 @@
                     if(ii<vSlice.length) questions.push(vSlice[ii]);
                 }
             } else {
-                var r=await sb.from('questions').select('*').eq('section',sel);
+                var r=await sb.from('questions').select('*').eq('section',sel).limit(50000);
                 if(r.error)throw r.error;
                 questions=r.data||[];
             }

@@ -1305,7 +1305,7 @@ function checkDuplicateLive(){
 async function scanDuplicates(){
     var btn=document.querySelector('[onclick="scanDuplicates()"]');
     if(btn){btn.textContent='⏳ جاري الفحص...';btn.disabled=true;}
-    var{data}=await sb.from('questions').select('id,question_text,section');
+    var{data}=await sb.from('questions').select('id,question_text,section').limit(50000);
     if(btn){btn.textContent='فحص الآن';btn.disabled=false;}
     if(!data||data.length<2){
         $('dup-scan-result').classList.remove('hidden');
@@ -1372,7 +1372,7 @@ async function init(){
     _applyPerms();
     loadOV();
     // ✅ تحميل كاش الأسئلة
-    sb.from('questions').select('id,question_text').then(function(r){if(r.data)_allQCache=r.data});
+    sb.from('questions').select('id,question_text').limit(50000).then(function(r){if(r.data)_allQCache=r.data});
 }
 
 function _hasPerm(perm){
@@ -1504,13 +1504,13 @@ function logActivity(actionType, targetType, targetId, details){
 
 // ✅ نظرة عامة موسّعة
 async function loadOV(){
-    var[{data:q},{data:u},{data:a},{data:r}]=await Promise.all([
-        sb.from('questions').select('section,sub_section'),
+    var[{data:q,count:qCount},{data:u},{data:a},{data:r}]=await Promise.all([
+        sb.from('questions').select('section,sub_section', {count:'exact'}).limit(50000),
         sb.from('profiles').select('id,full_name,email,avatar_emoji,created_at,subscription_type'),
         sb.from('attempts').select('id,user_id,is_correct,question_id,created_at').order('created_at',{ascending:false}).limit(500),
         sb.from('reports').select('id')
     ]);
-    $('s-q').textContent=q?q.length:0;
+    $('s-q').textContent=qCount||0;
     $('s-u').textContent=u?u.length:0;
     $('s-a').textContent=a?a.length:0;
     $('s-r').textContent=r?r.length:0;
@@ -1535,7 +1535,7 @@ async function loadOV(){
     }
 
     if(q){var c={quant:0,verbal:0,tahsili:0};q.forEach(function(x){if(c[x.section]!==undefined)c[x.section]++});
-    var nm={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'التحصيلي'},cl={quant:'#6366f1',verbal:'#10b981',tahsili:'#8b5cf6'},tot=q.length||1,h='';
+    var nm={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'التحصيلي'},cl={quant:'#6366f1',verbal:'#10b981',tahsili:'#8b5cf6'},tot=qCount||q.length||1,h='';
     for(var k in c){var p=Math.round(c[k]/tot*100);h+='<div class="flex items-center justify-between text-sm mb-1"><span class="text-purple-200/70">'+nm[k]+'</span><span class="font-bold text-white">'+c[k]+'</span></div><div class="h-2 rounded-full mb-3" style="background:rgba(255,255,255,0.06)"><div class="h-full rounded-full" style="width:'+p+'%;background:'+cl[k]+'"></div></div>'}
     $('d-sec').innerHTML=h}
 
