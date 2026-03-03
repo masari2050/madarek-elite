@@ -206,6 +206,7 @@
     <div class="sb-link" data-tab="staff" data-perm="staff"><span>🔑</span><span>الموظفين</span></div>
     <div class="sb-link" data-tab="performance" data-perm="staff"><span>📊</span><span>أداء الموظفين</span></div>
     <div class="sb-link" data-tab="analytics"><span>📈</span><span>تحليلات الزوار</span><span id="notif-badge" class="hidden mr-auto text-xs font-black px-2 py-0.5 rounded-full" style="background:rgba(16,185,129,0.25);color:#34d399;min-width:20px;text-align:center"></span></div>
+    <div class="sb-link" data-tab="engage" data-perm="settings"><span>💬</span><span>البوب أب التفاعلي</span></div>
     <div class="sb-link" data-tab="settings" data-perm="settings"><span>⚙️</span><span>الإعدادات</span></div>
     <div class="mt-4 p-4 border-t border-purple-500/10">
         <div class="sb-link" onclick="sb.auth.signOut().then(function(){location.href='admin-login.html'})" style="color:#f87171"><span>🚪</span><span>تسجيل خروج</span></div>
@@ -303,7 +304,7 @@
         <p class="text-indigo-300 text-sm font-bold mb-1">ℹ️ كيف تشتغل مدة الكوبون؟</p>
         <p class="text-purple-200/60 text-xs">مدة الكوبون = مدة الاشتراك اللي يحصل عليها العضو. مثلاً: كوبون "شهر واحد" ← العضو يشترك شهر مجاناً بغض النظر عن الباقة. كوبون "سنة" ← يشترك سنة كاملة.</p>
     </div>
-    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الكود</th><th class="text-center p-3 text-purple-300/50">الخصم</th><th class="text-center p-3 text-purple-300/50">يطبّق على</th><th class="text-center p-3 text-purple-300/50">مدة الاشتراك</th><th class="text-center p-3 text-purple-300/50">الاستخدام</th><th class="text-center p-3 text-purple-300/50">الحالة</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="c-list"></tbody></table></div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50">الكود</th><th class="text-center p-3 text-purple-300/50">الخصم</th><th class="text-center p-3 text-purple-300/50">يطبّق على</th><th class="text-center p-3 text-purple-300/50">مدة الاشتراك</th><th class="text-center p-3 text-purple-300/50">الاستخدام</th><th class="text-center p-3 text-purple-300/50">📊 إحصائيات</th><th class="text-center p-3 text-purple-300/50">الحالة</th><th class="text-center p-3 text-purple-300/50">إجراء</th></tr></thead><tbody id="c-list"></tbody></table></div>
 </div>
 
 <!-- ═══ المالية ═══ -->
@@ -422,6 +423,142 @@
             <button class="bs" id="an-next-btn" onclick="loadUserDetails(anUsersPage+1)">التالي →</button>
         </div>
     </div>
+</div>
+
+<!-- ═══ البوب أب التفاعلي ═══ -->
+<div id="t-engage" class="tab">
+    <h2 class="text-2xl font-black mb-5">💬 البوب أب التفاعلي</h2>
+
+    <!-- وضع التشغيل -->
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">🔧 وضع التشغيل</h3>
+        <div class="flex gap-4 flex-wrap mb-4">
+            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="engage-mode" value="always" checked class="accent-indigo-500"><span class="text-sm">دائماً</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="engage-mode" value="range" class="accent-indigo-500"><span class="text-sm">فترة محددة</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="engage-mode" value="off" class="accent-indigo-500"><span class="text-sm">إيقاف</span></label>
+        </div>
+        <div id="engage-range-wrap" class="grid grid-cols-2 gap-3 hidden">
+            <div><label class="block text-xs text-purple-200/50 mb-1">من</label><input type="datetime-local" id="st-eng-from" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div><label class="block text-xs text-purple-200/50 mb-1">إلى</label><input type="datetime-local" id="st-eng-to" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+        </div>
+    </div>
+
+    <!-- النص والإيموجي -->
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">✏️ محتوى البوب أب</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+            <div><label class="block text-xs text-purple-200/50 mb-1">الإيموجي</label><input type="text" id="st-eng-emoji" value="🎁" maxlength="4" class="w-full text-center text-2xl rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div class="md:col-span-3"><label class="block text-xs text-purple-200/50 mb-1">النص</label><input type="text" id="st-eng-text" placeholder="مثال: عرض رمضان! خصم 50% على كل الباقات" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs text-purple-200/50">إيموجي سريع:</span>
+            <button type="button" onclick="$('st-eng-emoji').value='🎁'" class="text-xl hover:scale-125 transition-transform">🎁</button>
+            <button type="button" onclick="$('st-eng-emoji').value='🔥'" class="text-xl hover:scale-125 transition-transform">🔥</button>
+            <button type="button" onclick="$('st-eng-emoji').value='⚡'" class="text-xl hover:scale-125 transition-transform">⚡</button>
+            <button type="button" onclick="$('st-eng-emoji').value='🎯'" class="text-xl hover:scale-125 transition-transform">🎯</button>
+            <button type="button" onclick="$('st-eng-emoji').value='💰'" class="text-xl hover:scale-125 transition-transform">💰</button>
+            <button type="button" onclick="$('st-eng-emoji').value='🏆'" class="text-xl hover:scale-125 transition-transform">🏆</button>
+            <button type="button" onclick="$('st-eng-emoji').value='👋'" class="text-xl hover:scale-125 transition-transform">👋</button>
+            <button type="button" onclick="$('st-eng-emoji').value='🌙'" class="text-xl hover:scale-125 transition-transform">🌙</button>
+        </div>
+    </div>
+
+    <!-- الكوبون -->
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">🎟️ الكوبون</h3>
+        <div class="flex items-center gap-3 mb-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="st-eng-coupon-enabled" class="accent-indigo-500" onchange="$('engage-coupon-fields').classList.toggle('hidden',!this.checked)">
+                <span class="text-sm">عرض كوبون في البوب أب</span>
+            </label>
+        </div>
+        <div id="engage-coupon-fields" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div><label class="block text-xs text-purple-200/50 mb-1">كود الكوبون</label><input type="text" id="st-eng-coupon-code" placeholder="مثال: RAMADAN26" class="w-full text-sm rounded-lg px-3 py-2 uppercase tracking-wider font-mono font-bold" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff" dir="ltr"></div>
+                <div><label class="block text-xs text-purple-200/50 mb-1">رابط التحويل بعد النسخ</label><input type="text" id="st-eng-btn-link" value="pricing.html" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff" dir="ltr"></div>
+            </div>
+            <p class="text-xs text-purple-200/40">⚡ لما الزائر يضغط نسخ: ينسخ الكود → يتحول لصفحة الأسعار → الكوبون يتطبّق تلقائياً</p>
+        </div>
+    </div>
+
+    <!-- زر بدون كوبون -->
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">🔗 زر (بديل الكوبون)</h3>
+        <p class="text-xs text-purple-200/40 mb-3">يظهر فقط إذا الكوبون معطّل — زر عادي مع رابط</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div><label class="block text-xs text-purple-200/50 mb-1">نص الزر</label><input type="text" id="st-eng-btn-text" placeholder="مثال: اشترك الحين" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div><label class="block text-xs text-purple-200/50 mb-1">رابط الزر</label><input type="text" id="st-eng-alt-link" placeholder="pricing.html" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff" dir="ltr"></div>
+        </div>
+    </div>
+
+    <!-- التصميم والاستهداف -->
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">🎨 التصميم والاستهداف</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <div>
+                <label class="block text-xs text-purple-200/50 mb-1">لون التوهج</label>
+                <div class="flex items-center gap-2">
+                    <input type="color" id="st-eng-color" value="#f59e0b" class="w-10 h-10 rounded-lg cursor-pointer border-0" style="background:transparent">
+                    <input type="text" id="st-eng-color-txt" value="#f59e0b" class="flex-1 text-xs rounded-lg px-2 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff" dir="ltr" oninput="$('st-eng-color').value=this.value">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs text-purple-200/50 mb-1">الجمهور</label>
+                <select id="st-eng-target" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff">
+                    <option value="all">الكل</option>
+                    <option value="visitors">الزوار فقط</option>
+                    <option value="logged">المسجّلين فقط</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-purple-200/50 mb-1">الصفحات</label>
+                <select id="st-eng-pages" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff">
+                    <option value="all">كل الصفحات</option>
+                    <option value="index">الرئيسية فقط</option>
+                    <option value="pricing">الأسعار فقط</option>
+                    <option value="index,pricing">الرئيسية + الأسعار</option>
+                    <option value="dashboard">لوحة الطالب فقط</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-purple-200/50 mb-1">لون سريع</label>
+                <div class="flex gap-1 flex-wrap mt-1">
+                    <button type="button" onclick="$('st-eng-color').value='#f59e0b';$('st-eng-color-txt').value='#f59e0b'" class="w-7 h-7 rounded-lg border border-white/10" style="background:#f59e0b" title="ذهبي"></button>
+                    <button type="button" onclick="$('st-eng-color').value='#6366f1';$('st-eng-color-txt').value='#6366f1'" class="w-7 h-7 rounded-lg border border-white/10" style="background:#6366f1" title="بنفسجي"></button>
+                    <button type="button" onclick="$('st-eng-color').value='#10b981';$('st-eng-color-txt').value='#10b981'" class="w-7 h-7 rounded-lg border border-white/10" style="background:#10b981" title="أخضر"></button>
+                    <button type="button" onclick="$('st-eng-color').value='#ef4444';$('st-eng-color-txt').value='#ef4444'" class="w-7 h-7 rounded-lg border border-white/10" style="background:#ef4444" title="أحمر"></button>
+                    <button type="button" onclick="$('st-eng-color').value='#ec4899';$('st-eng-color-txt').value='#ec4899'" class="w-7 h-7 rounded-lg border border-white/10" style="background:#ec4899" title="وردي"></button>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-purple-200/50 mb-1">تأخير الظهور (ثواني)</label><input type="number" id="st-eng-delay" value="10" min="1" max="120" class="w-full text-sm rounded-lg px-3 py-2 text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div><label class="block text-xs text-purple-200/50 mb-1">إخفاء تلقائي (ثواني)</label><input type="number" id="st-eng-auto-hide" value="15" min="5" max="120" class="w-full text-sm rounded-lg px-3 py-2 text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div><label class="block text-xs text-purple-200/50 mb-1">الانتظار بين بوب أب (دقائق)</label><input type="number" id="st-eng-cooldown" value="5" min="1" max="60" class="w-full text-sm rounded-lg px-3 py-2 text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+        </div>
+    </div>
+
+    <!-- معاينة مباشرة -->
+    <div class="glass p-6 mb-4">
+        <h3 class="font-bold text-base mb-4">👁️ معاينة مباشرة</h3>
+        <div id="engage-preview" class="flex justify-center">
+            <div style="max-width:520px;width:100%;direction:rtl;font-family:Tajawal,sans-serif">
+                <div id="engage-preview-card" style="background:rgba(15,10,46,0.95);backdrop-filter:blur(16px);border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1.5px solid #f59e0b55;box-shadow:0 0 20px #f59e0b15,0 4px 16px rgba(0,0,0,0.3)">
+                    <span id="eng-prev-emoji" style="font-size:28px">🎁</span>
+                    <span id="eng-prev-text" style="flex:1;font-size:14px;color:rgba(255,255,255,0.9);font-weight:500;line-height:1.5">عرض رمضان! خصم 50% على كل الباقات</span>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <span id="eng-prev-code" style="background:rgba(255,255,255,0.08);border:1px dashed #f59e0b;border-radius:10px;padding:6px 14px;font-family:monospace;font-weight:900;font-size:14px;color:#f59e0b;letter-spacing:1.5px;direction:ltr">RAMADAN26</span>
+                        <button style="background:#f59e0b;border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:default">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر الحفظ -->
+    <button class="bp w-full py-3 text-base font-black" onclick="saveEngage()">💾 حفظ إعدادات البوب أب</button>
 </div>
 
 <!-- ═══ الإعدادات ═══ -->
@@ -1738,11 +1875,17 @@ async function saveU2(){
 // ✅ الكوبونات — عداد استخدام حقيقي + زر تعديل
 async function loadC(){
     var{data}=await sb.from('coupons').select('*').order('created_at',{ascending:false});
-    if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="7" class="p-6 text-center text-purple-200/60">لا توجد كوبونات</td></tr>';return}
+    if(!data||!data.length){$('c-list').innerHTML='<tr><td colspan="8" class="p-6 text-center text-purple-200/60">لا توجد كوبونات</td></tr>';return}
     var realUse={};
     try{
         var{data:pu}=await sb.from('profiles').select('used_coupon').not('used_coupon','is',null);
         if(pu)pu.forEach(function(p){if(p.used_coupon)realUse[p.used_coupon.toUpperCase()]=(realUse[p.used_coupon.toUpperCase()]||0)+1});
+    }catch(e){}
+    // جلب إحصائيات الكوبونات
+    var couponStats={};
+    try{
+        var{data:stats}=await sb.rpc('get_coupon_stats');
+        if(stats)stats.forEach(function(s){couponStats[s.coupon_code]={views:s.views||0,copies:s.copies||0,uses:s.uses||0};});
     }catch(e){}
     var planN={all:'الكل',monthly:'شهري',yearly:'سنوي'};
     var durN={'1':'شهر','3':'3 أشهر','6':'6 أشهر','12':'سنة'};
@@ -1751,12 +1894,15 @@ async function loadC(){
         var ok=!c.expires_at||new Date(c.expires_at)>new Date();
         var n=Math.max(realUse[c.code]||0,c.used_count||0);
         var ud='<span class="font-bold '+(n>0?'text-emerald-400':'text-purple-200/60')+'">'+n+'</span><span class="text-purple-200/40">/'+(c.max_uses||'∞')+'</span>';
+        var cs=couponStats[c.code]||{views:0,copies:0,uses:0};
+        var statsHtml='<span class="text-purple-200/40 text-xs" title="مشاهدات">👁️'+cs.views+'</span> <span class="text-purple-200/40 text-xs" title="نسخ">📋'+cs.copies+'</span> <span class="text-purple-200/40 text-xs" title="استخدام">✅'+cs.uses+'</span>';
         _couponsCache[c.id]=c;
         h+='<tr class="tr"><td class="p-3 font-bold text-indigo-300 text-base">'+c.code+'</td>'
         +'<td class="p-3 text-center">'+(c.discount_type==='free'?'<span class="bg bg-y">مجاني</span>':c.discount_value+(c.discount_type==='percentage'?'%':' ر'))+'</td>'
         +'<td class="p-3 text-center text-purple-200/70 text-xs">'+(planN[c.plan_type]||'الكل')+'</td>'
         +'<td class="p-3 text-center"><span class="bg bg-m">'+(durN[String(c.duration_months)]||c.duration_months+' شهر')+'</span></td>'
         +'<td class="p-3 text-center">'+ud+'</td>'
+        +'<td class="p-3 text-center whitespace-nowrap">'+statsHtml+'</td>'
         +'<td class="p-3 text-center"><span class="bg '+(ok?'bg-y':'bg-f')+'">'+(ok?'فعّال':'منتهي')+'</span></td>'
         +'<td class="p-3 text-center whitespace-nowrap">'
         +'<button class="bs" data-cid="'+c.id+'" onclick="editCById(this.dataset.cid)" style="font-size:.8rem;padding:5px 10px;margin-left:4px">✏️</button>'
@@ -1912,6 +2058,22 @@ async function loadSet(){
         if(s.key==='banner2_to'){var el=$('st-ban2-to');if(el)el.value=v;}
         if(s.key==='banner2_link'){var el=$('st-ban2-link');if(el)el.value=v;}
         if(s.key==='banner2_link_text'){var el=$('st-ban2-link-text');if(el)el.value=v;}
+        // === البوب أب التفاعلي ===
+        if(s.key==='engage_mode'){var m=v||'always';document.querySelectorAll('[name="engage-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});var w=$('engage-range-wrap');if(w)w.classList.toggle('hidden',m!=='range');}
+        if(s.key==='engage_from'){var el=$('st-eng-from');if(el)el.value=v;}
+        if(s.key==='engage_to'){var el=$('st-eng-to');if(el)el.value=v;}
+        if(s.key==='engage_text'){var el=$('st-eng-text');if(el)el.value=v;updateEngagePreview();}
+        if(s.key==='engage_emoji'){var el=$('st-eng-emoji');if(el)el.value=v||'🎁';updateEngagePreview();}
+        if(s.key==='engage_color'){var el=$('st-eng-color');var el2=$('st-eng-color-txt');if(el)el.value=v||'#f59e0b';if(el2)el2.value=v||'#f59e0b';updateEngagePreview();}
+        if(s.key==='engage_coupon_enabled'){var el=$('st-eng-coupon-enabled');if(el){el.checked=(v==='true');var f=$('engage-coupon-fields');if(f)f.classList.toggle('hidden',v!=='true');}}
+        if(s.key==='engage_coupon_code'){var el=$('st-eng-coupon-code');if(el)el.value=v;updateEngagePreview();}
+        if(s.key==='engage_btn_text'){var el=$('st-eng-btn-text');if(el)el.value=v;}
+        if(s.key==='engage_btn_link'){var el=$('st-eng-btn-link');if(el)el.value=v||'pricing.html';}
+        if(s.key==='engage_pages'){var el=$('st-eng-pages');if(el)el.value=v||'all';}
+        if(s.key==='engage_target'){var el=$('st-eng-target');if(el)el.value=v||'all';}
+        if(s.key==='engage_delay'){var el=$('st-eng-delay');if(el)el.value=v||'10';}
+        if(s.key==='engage_auto_hide'){var el=$('st-eng-auto-hide');if(el)el.value=v||'15';}
+        if(s.key==='engage_cooldown'){var el=$('st-eng-cooldown');if(el)el.value=v||'5';}
         // === الأسعار ===
         if(s.key==='free_limit')$('st-fl').value=v||'10';
         if(s.key==='price_monthly_original'){var el=$('price_monthly_original');if(el)el.value=v;}
@@ -2018,6 +2180,60 @@ async function saveBanner(n){
     logActivity('edit_banner','settings',n===2?'banner2':'banner1',{type:n===2?'internal':'public'});
     toast('✅ تم حفظ البنر '+(n===2?'الداخلي':'العام'), true);
 }
+
+// ═══ حفظ إعدادات البوب أب التفاعلي ═══
+async function saveEngage(){
+    var modeEl = document.querySelector('input[name="engage-mode"]:checked');
+    var mode = modeEl ? modeEl.value : 'always';
+    await saveSt('engage_mode', mode);
+    await saveSt('engage_from', ($('st-eng-from')||{}).value||'');
+    await saveSt('engage_to', ($('st-eng-to')||{}).value||'');
+    await saveSt('engage_text', ($('st-eng-text')||{}).value||'');
+    await saveSt('engage_emoji', ($('st-eng-emoji')||{}).value||'🎁');
+    await saveSt('engage_color', ($('st-eng-color')||{}).value||'#f59e0b');
+    await saveSt('engage_coupon_enabled', String(($('st-eng-coupon-enabled')||{}).checked||false));
+    await saveSt('engage_coupon_code', ($('st-eng-coupon-code')||{}).value||'');
+    await saveSt('engage_btn_text', ($('st-eng-btn-text')||{}).value||'');
+    await saveSt('engage_btn_link', ($('st-eng-btn-link')||{}).value||'pricing.html');
+    await saveSt('engage_pages', ($('st-eng-pages')||{}).value||'all');
+    await saveSt('engage_target', ($('st-eng-target')||{}).value||'all');
+    await saveSt('engage_delay', ($('st-eng-delay')||{}).value||'10');
+    await saveSt('engage_auto_hide', ($('st-eng-auto-hide')||{}).value||'15');
+    await saveSt('engage_cooldown', ($('st-eng-cooldown')||{}).value||'5');
+    logActivity('edit_engage','settings','engage_popup',{mode:mode});
+    toast('✅ تم حفظ إعدادات البوب أب', true);
+}
+
+// تبديل حقول الفترة الزمنية للبوب أب
+document.querySelectorAll('[name="engage-mode"]').forEach(function(r){
+    r.addEventListener('change', function(){
+        var wrap = $('engage-range-wrap');
+        if(wrap) wrap.classList.toggle('hidden', this.value !== 'range');
+    });
+});
+
+// تحديث المعاينة المباشرة للبوب أب
+function updateEngagePreview(){
+    var emoji = ($('st-eng-emoji')||{}).value || '🎁';
+    var text = ($('st-eng-text')||{}).value || 'نص البوب أب';
+    var color = ($('st-eng-color')||{}).value || '#f59e0b';
+    var code = ($('st-eng-coupon-code')||{}).value || 'CODE';
+    var couponEnabled = ($('st-eng-coupon-enabled')||{}).checked;
+
+    var pe = $('eng-prev-emoji'); if(pe) pe.textContent = emoji;
+    var pt = $('eng-prev-text'); if(pt) pt.textContent = text;
+    var pc = $('eng-prev-code'); if(pc){ pc.textContent = code; pc.style.color = color; pc.style.borderColor = color; }
+    var card = $('engage-preview-card');
+    if(card){
+        card.style.borderColor = color + '55';
+        card.style.boxShadow = '0 0 20px ' + color + '15, 0 4px 16px rgba(0,0,0,0.3)';
+    }
+}
+// ربط المعاينة بالحقول
+['st-eng-emoji','st-eng-text','st-eng-color','st-eng-coupon-code'].forEach(function(id){
+    var el = $(id);
+    if(el) el.addEventListener('input', updateEngagePreview);
+});
 async function loadBannerSettings(n){
     var pfx = n===2 ? 'st-ban2-' : 'st-ban-';
     var dbPfx = n===2 ? 'banner2_' : 'banner_';

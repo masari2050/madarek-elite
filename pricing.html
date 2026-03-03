@@ -349,7 +349,7 @@
                 +'<a href="https://wa.me/966553339885?text=السلام عليكم، أبي أشترك بالخطة ال'+planName+'" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#25d366,#128c7e);box-shadow:0 8px 25px rgba(37,211,102,0.3);transition:all .3s">'
                 +'<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.325 0-4.47-.744-6.228-2.006l-.365-.27-2.645.887.887-2.645-.27-.365A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>'
                 +'تواصل عبر واتساب</a>'
-                +'<p style="color:rgba(196,181,253,0.35);font-size:11px;margin-top:16px">أو استخدم كوبون <b style="color:rgba(196,181,253,0.6)">RAMADAN26</b> لشهر مجاناً!</p>'
+                +'<p style="color:rgba(196,181,253,0.35);font-size:11px;margin-top:16px">أو استخدم كوبون خصم إن وجد لديك</p>'
                 +'</div>';
             document.body.appendChild(overlay);
         }
@@ -419,6 +419,27 @@
         function toggleFaq(el){el.classList.toggle('open')}
         async function applyCoupon(){var code=document.getElementById('couponInput').value.trim().toUpperCase();if(!code)return;var btn=document.getElementById('couponBtn');btn.textContent='...';btn.disabled=true;document.getElementById('couponResult').classList.remove('hidden');document.getElementById('couponSuccess').classList.add('hidden');document.getElementById('couponError').classList.add('hidden');try{var{data,error}=await sb.from('coupons').select('*').eq('code',code).single();if(error||!data){document.getElementById('couponErrMsg').textContent='الكود غير صحيح أو غير موجود';document.getElementById('couponError').classList.remove('hidden')}else if(data.expires_at&&new Date(data.expires_at)<new Date()){document.getElementById('couponErrMsg').textContent='هالكوبون منتهي الصلاحية';document.getElementById('couponError').classList.remove('hidden')}else if(data.max_uses&&data.used_count>=data.max_uses){document.getElementById('couponErrMsg').textContent='هالكوبون وصل الحد الأقصى للاستخدام';document.getElementById('couponError').classList.remove('hidden')}else{var dt=data.discount_type==='percentage'?'خصم '+data.discount_value+'% على اشتراكك':'خصم '+data.discount_value+' ريال على اشتراكك';document.getElementById('couponMsg').textContent='✓ '+dt;document.getElementById('couponSuccess').classList.remove('hidden');localStorage.setItem('khawariz_coupon',JSON.stringify({code:data.code,type:data.discount_type,value:data.discount_value}));await sb.from('coupons').update({used_count:(data.used_count||0)+1}).eq('id',data.id);if(data.discount_type==='percentage'&&data.discount_value>=100){var{data:{session}}=await sb.auth.getSession();if(session){await sb.from('profiles').update({subscription_type:'yearly'}).eq('id',session.user.id);document.getElementById('couponMsg').innerHTML='✓ تم تفعيل اشتراكك السنوي مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>'}else{document.getElementById('couponMsg').innerHTML='✓ '+dt+'<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>'}}}}catch(e){document.getElementById('couponErrMsg').textContent='حدث خطأ، حاول مرة ثانية';document.getElementById('couponError').classList.remove('hidden')}btn.textContent='تحقق';btn.disabled=false}
         document.getElementById('couponInput').addEventListener('keypress',function(e){if(e.key==='Enter')applyCoupon()});
+
+        // ═══ تطبيق الكوبون تلقائياً من URL ═══
+        (function(){
+            var params = new URLSearchParams(window.location.search);
+            var couponFromUrl = params.get('coupon');
+            if(couponFromUrl){
+                couponFromUrl = couponFromUrl.trim().toUpperCase();
+                document.getElementById('couponInput').value = couponFromUrl;
+                // بانر يبيّن إن الكوبون تم تطبيقه
+                var banner = document.createElement('div');
+                banner.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9999;background:linear-gradient(135deg,#10b981,#059669);padding:12px 24px;border-radius:14px;font-size:14px;font-weight:700;color:#fff;box-shadow:0 8px 30px rgba(16,185,129,0.3);animation:engSlideIn .5s ease;direction:rtl;font-family:Tajawal,sans-serif;white-space:nowrap';
+                banner.innerHTML = '🎁 تم تطبيق كوبون <b style="letter-spacing:1px;margin:0 6px;font-family:monospace">' + couponFromUrl + '</b> — اضغط تحقق لمعرفة الخصم!';
+                var style = document.createElement('style');
+                style.textContent = '@keyframes engSlideIn{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+                document.head.appendChild(style);
+                document.body.appendChild(banner);
+                setTimeout(function(){ banner.style.transition='opacity .5s'; banner.style.opacity='0'; setTimeout(function(){banner.remove()},500); }, 8000);
+                // تطبيق تلقائي بعد تحميل الصفحة
+                setTimeout(function(){ applyCoupon(); }, 1500);
+            }
+        })();
     </script>
         <script src="banner.js"></script>
     <script src="whatsapp-widget.js"></script>
