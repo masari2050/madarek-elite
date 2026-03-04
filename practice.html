@@ -356,6 +356,9 @@
             if(consecutiveCorrect>storedMax)localStorage.setItem('madarek_max_consecutive',String(consecutiveCorrect));
             updateStats();
 
+            // 📊 تتبع الإجابة
+            if(window.MadarekAnalytics) MadarekAnalytics.track('question_answered',{section:q.section||'',sub_section:q.sub_section||'',is_correct:isCorrect});
+
             document.querySelectorAll('.option-card').forEach(function(card,i){
                 card.style.opacity='1';
                 if(i===correctIdx){card.style.borderColor='#22c55e';card.style.background='#f0fdf4';card.style.boxShadow='0 0 0 3px rgba(34,197,94,0.15)';if(isCorrect&&i===sel)card.classList.add('answer-correct-anim');}

@@ -335,6 +335,7 @@ async function shareNative(){
     if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
       try{
         await navigator.share({files:[file],title:'نتيجتي على مدارك النخبة',text:'تدرّب معي على madarekelite.com'});
+        if(window.MadarekAnalytics) MadarekAnalytics.track('share_result',{method:'native'});
       }catch(e){}
     } else {
       // fallback — تنزيل

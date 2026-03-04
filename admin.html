@@ -346,36 +346,57 @@
 
     <!-- إحصائيات لحظية -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="sc glass p-5 text-center" style="border-color:rgba(16,185,129,0.2)">
-            <p class="text-emerald-400/70 text-xs mb-1">🟢 متصل الآن</p>
+        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(16,185,129,0.15)">
+            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(16,185,129,0.06)"></div>
+            <p class="text-emerald-400/60 text-sm mb-2">🟢 متصل الآن</p>
             <p class="text-4xl font-black text-emerald-400" id="an-online">-</p>
         </div>
-        <div class="sc glass p-5 text-center" style="border-color:rgba(99,102,241,0.2)">
-            <p class="text-indigo-400/70 text-xs mb-1">👁️ زوار اليوم</p>
+        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(99,102,241,0.15)">
+            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(99,102,241,0.06)"></div>
+            <p class="text-indigo-400/60 text-sm mb-2">👁️ زوار اليوم</p>
             <p class="text-4xl font-black text-indigo-400" id="an-visitors">-</p>
         </div>
-        <div class="sc glass p-5 text-center" style="border-color:rgba(139,92,246,0.2)">
-            <p class="text-purple-400/70 text-xs mb-1">📄 مشاهدات اليوم</p>
+        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(139,92,246,0.15)">
+            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(139,92,246,0.06)"></div>
+            <p class="text-purple-400/60 text-sm mb-2">📄 مشاهدات اليوم</p>
             <p class="text-4xl font-black text-purple-400" id="an-pageviews">-</p>
         </div>
-        <div class="sc glass p-5 text-center" style="border-color:rgba(245,158,11,0.2)">
-            <p class="text-yellow-400/70 text-xs mb-1">💪 تدربوا اليوم</p>
+        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(245,158,11,0.15)">
+            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(245,158,11,0.06)"></div>
+            <p class="text-yellow-400/60 text-sm mb-2">💪 تدربوا اليوم</p>
             <p class="text-4xl font-black text-yellow-400" id="an-practiced">-</p>
+        </div>
+    </div>
+
+    <!-- ⚡ آخر النشاطات — القسم الأهم -->
+    <div class="glass p-6 mb-6" style="border:1px solid rgba(99,102,241,0.12)">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base flex items-center gap-2">
+                <span style="display:inline-block;width:9px;height:9px;background:#10b981;border-radius:50%;box-shadow:0 0 8px rgba(16,185,129,0.6);animation:pulse 2s infinite"></span>
+                ⚡ آخر النشاطات
+            </h3>
+            <span class="text-purple-200/30 text-xs">تحديث تلقائي</span>
+        </div>
+        <div id="an-activity-feed" style="max-height:420px;overflow-y:auto" class="space-y-0.5">
+            <p class="text-purple-200/40 text-center py-8">جاري التحميل...</p>
         </div>
     </div>
 
     <!-- النمو -->
     <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="glass p-5 text-center">
-            <p class="text-purple-300/50 text-xs mb-1">أعضاء جدد اليوم</p>
+        <div class="glass p-5 text-center relative overflow-hidden">
+            <div style="position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:rgba(99,102,241,0.05)"></div>
+            <p class="text-purple-300/50 text-sm mb-2">أعضاء جدد اليوم</p>
             <p class="text-3xl font-black text-indigo-400" id="an-new-today">-</p>
         </div>
-        <div class="glass p-5 text-center">
-            <p class="text-purple-300/50 text-xs mb-1">أعضاء جدد هالأسبوع</p>
+        <div class="glass p-5 text-center relative overflow-hidden">
+            <div style="position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:rgba(139,92,246,0.05)"></div>
+            <p class="text-purple-300/50 text-sm mb-2">أعضاء جدد هالأسبوع</p>
             <p class="text-3xl font-black text-purple-400" id="an-new-week">-</p>
         </div>
-        <div class="glass p-5 text-center">
-            <p class="text-purple-300/50 text-xs mb-1">أعضاء جدد هالشهر</p>
+        <div class="glass p-5 text-center relative overflow-hidden">
+            <div style="position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:rgba(16,185,129,0.05)"></div>
+            <p class="text-purple-300/50 text-sm mb-2">أعضاء جدد هالشهر</p>
             <p class="text-3xl font-black text-emerald-400" id="an-new-month">-</p>
         </div>
     </div>
@@ -2592,11 +2613,85 @@ async function loadAnalytics(){
     });
     $('an-pages').innerHTML = pagesH || '<p class="text-purple-200/50 text-center py-4">لا توجد بيانات بعد</p>';
 
+    // آخر النشاطات
+    loadActivityFeed();
+
     // الإشعارات
     loadNotifications();
 
     // تفاصيل المستخدمين
     loadUserDetails(0);
+}
+
+var _actPageNames = {'/':'الرئيسية','/index':'الرئيسية','/dashboard':'لوحة الطالب','/practice':'التدريب','/select-section':'اختيار القسم','/pricing':'الأسعار','/stats':'الإحصائيات','/profile':'الملف الشخصي','/login':'تسجيل الدخول','/register':'التسجيل','/leaderboard':'المتصدرون','/mistakes':'مراجعة الأخطاء','/contact':'تواصل معنا','/share-result':'مشاركة النتيجة','/results':'النتائج','/admin':'لوحة التحكم','/admin-login':'دخول الإدارة'};
+
+async function loadActivityFeed(){
+    var{data:events}=await sb.from('analytics_events')
+        .select('event_type,page_path,metadata,user_id,anonymous_id,device,created_at')
+        .order('created_at',{ascending:false})
+        .limit(50);
+    if(!events) events=[];
+
+    // فلترة page_exit — مو مفيد للعرض
+    events = events.filter(function(e){return e.event_type !== 'page_exit'});
+
+    // جلب أسماء المستخدمين المعروفين
+    var userIds = [];
+    events.forEach(function(e){if(e.user_id && userIds.indexOf(e.user_id)===-1) userIds.push(e.user_id)});
+    var userMap = {};
+    if(userIds.length > 0){
+        var{data:profiles}=await sb.from('profiles').select('id,full_name,avatar_emoji').in('id',userIds.slice(0,50));
+        if(profiles) profiles.forEach(function(p){userMap[p.id]=p});
+    }
+
+    var h = '';
+    events.forEach(function(e){
+        var icon,color,text;
+        var meta = e.metadata || {};
+        switch(e.event_type){
+            case 'question_answered':
+                var secN = meta.section==='quant'?'الكمي':meta.section==='verbal'?'اللفظي':meta.section==='tahsili'?'التحصيلي':'';
+                icon = meta.is_correct ? '✅' : '❌';
+                color = meta.is_correct ? '#10b981' : '#ef4444';
+                text = 'حل سؤال في '+secN+(meta.sub_section?' — '+meta.sub_section:'');
+                break;
+            case 'share_result':
+                icon = '↗️'; color = '#f59e0b';
+                text = 'شارك نتيجته';
+                break;
+            case 'page_view':
+                icon = '👁️'; color = '#8b5cf6';
+                var pgName = _actPageNames[e.page_path] || e.page_path || 'صفحة';
+                text = 'زار '+pgName;
+                break;
+            default:
+                icon = '📌'; color = '#64748b';
+                text = e.event_type;
+        }
+
+        var who, whoIcon;
+        if(e.user_id && userMap[e.user_id]){
+            var u = userMap[e.user_id];
+            whoIcon = u.avatar_emoji || '👤';
+            who = escHtml(u.full_name || 'عضو');
+        } else if(e.user_id){
+            whoIcon = '👤'; who = 'عضو';
+        } else {
+            whoIcon = '👻'; who = 'زائر';
+        }
+        var devIcon = e.device === 'mobile' ? '📱' : '💻';
+        var time = timeAgo(e.created_at);
+
+        h += '<div class="flex items-center gap-3 py-2.5 px-3 rounded-lg" style="transition:background 0.15s" onmouseenter="this.style.background=\'rgba(255,255,255,0.03)\'" onmouseleave="this.style.background=\'transparent\'">'
+            + '<span class="text-lg flex-shrink-0">'+icon+'</span>'
+            + '<div class="flex-1 min-w-0">'
+            + '<p class="text-white text-sm"><span class="font-bold">'+whoIcon+' '+who+'</span> '+text+'</p>'
+            + '<p class="text-purple-200/30 text-xs mt-0.5">'+devIcon+' '+time+'</p>'
+            + '</div>'
+            + '</div>';
+    });
+
+    $('an-activity-feed').innerHTML = h || '<p class="text-purple-200/50 text-center py-6">لا توجد نشاطات بعد — ستظهر هنا تلقائياً عند تصفّح الزوار أو حل الأسئلة</p>';
 }
 
 async function loadNotifications(){
@@ -2719,10 +2814,11 @@ document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
     });
 });
 
-// ─── تحديث الإشعارات كل 30 ثانية ───
+// ─── تحديث الإشعارات + النشاطات كل 30 ثانية ───
 setInterval(function(){
     if(!document.hidden){
         loadNotifications().catch(function(){});
+        loadActivityFeed().catch(function(){});
     }
 }, 30000);
 </script>
