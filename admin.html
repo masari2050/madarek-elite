@@ -2089,8 +2089,27 @@ async function loadF(){
 
 // ✅ البلاغات محسّنة — مع زر تعديل السؤال
 async function loadR(){
-    var{data}=await sb.from('reports').select('*,questions(id,question_text,section)').order('reported_at',{ascending:false});
-    if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-200/60">ما فيه بلاغات</div>';return}
+    // محاولة أولى: مع ربط الأسئلة
+    var{data,error}=await sb.from('reports').select('*,questions(id,question_text,section)').order('reported_at',{ascending:false});
+    // fallback: لو الربط فشل، نجلب البلاغات بدون ربط
+    if(error||data===null){
+        console.warn('Reports join failed:',error);
+        var r2=await sb.from('reports').select('*').order('created_at',{ascending:false});
+        if(!r2.error&&r2.data){
+            // نجلب بيانات الأسئلة بشكل منفصل
+            data=[];
+            for(var i=0;i<r2.data.length;i++){
+                var rep=r2.data[i];
+                rep.questions=null;
+                if(rep.question_id){
+                    var{data:qd}=await sb.from('questions').select('id,question_text,section').eq('id',rep.question_id).single();
+                    if(qd)rep.questions=qd;
+                }
+                data.push(rep);
+            }
+        }
+    }
+    if(!data||!data.length){$('r-list').innerHTML='<div class="glass p-8 text-center text-purple-200/60">ما فيه بلاغات</div>';$('r-count-title').textContent='';loadReportsBadge();return}
     var h='';
     data.forEach(function(r){
         var qText=r.questions?(r.questions.question_text||'سؤال بالصورة').substring(0,120):'(سؤال محذوف)';
@@ -2098,7 +2117,8 @@ async function loadR(){
         var qSec=r.questions?r.questions.section:'';
         var sn={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
         var secBadge=qSec?'<span class="bg bg-'+(qSec==='quant'?'m':qSec==='verbal'?'y':'f')+'" style="font-size:10px;padding:2px 8px">'+(sn[qSec]||'')+'</span>':'';
-        var dateStr=r.reported_at?new Date(r.reported_at).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+        var rDate=r.reported_at||r.created_at||'';
+        var dateStr=rDate?new Date(rDate).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
         h+='<div class="r-card">'
           +'<div class="r-head">'
           +'<div style="flex:1;min-width:0">'+secBadge+'<p class="r-q" style="margin-top:6px">'+qText+'</p></div>'
@@ -2112,6 +2132,8 @@ async function loadR(){
           +'</div></div>';
     });
     $('r-list').innerHTML=h;
+    $('r-count-title').textContent='('+data.length+')';
+    loadReportsBadge();
 }
 
 // ✅ فتح تعديل السؤال من البلاغات
