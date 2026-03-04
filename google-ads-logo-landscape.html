@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 0; background: transparent; }
+  .logo-container {
+    width: 1200px;
+    height: 300px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #2d2564 50%, #1e1b4b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    direction: rtl;
+    padding: 0 60px;
+  }
+  .icon-wrapper {
+    width: 180px;
+    height: 180px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+  }
+  .icon-wrapper svg { width: 120px; height: 120px; }
+  .text-container { text-align: right; }
+  .name {
+    font-family: 'Cairo', sans-serif;
+    font-size: 80px;
+    font-weight: 900;
+    background: linear-gradient(110deg, #c7d2fe, #e0e7ff, #818cf8, #c4b5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+  }
+  .tagline {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 32px;
+    color: rgba(196, 181, 253, 0.6);
+    margin-top: 0;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Tajawal:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="logo-container">
+  <div class="icon-wrapper">
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M10 48 L10 28 L20 37 L32 14 L44 37 L54 28 L54 48 Z"
+            stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,0.15)"/>
+      <line x1="8" y1="52" x2="56" y2="52" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="text-container">
+    <div class="name">مدارك النخبة</div>
+    <div class="tagline">قدرات · تحصيلي</div>
+  </div>
+</div>
+</body>
+</html>

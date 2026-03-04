@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0a2e">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google Ads Tag -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17989685111"></script>
@@ -101,6 +103,7 @@
     </div>
 
 </div>
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const sb = window.supabase.createClient(

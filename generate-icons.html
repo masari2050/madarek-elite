@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد أيقونات PWA — مدارك النخبة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        *{font-family:'Tajawal',sans-serif;margin:0;padding:0;box-sizing:border-box}
+        body{background:#0d0825;color:#fff;padding:40px 20px;text-align:center}
+        h1{font-size:28px;margin-bottom:10px}
+        p{color:rgba(196,181,253,0.6);margin-bottom:30px}
+        .icons{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin-bottom:30px}
+        .icon-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px;text-align:center}
+        .icon-box canvas{border-radius:12px;margin-bottom:10px}
+        .icon-box p{color:#a5b4fc;font-size:14px;font-weight:700;margin-bottom:8px}
+        .btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:10px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Tajawal'}
+        .btn:hover{opacity:0.9}
+        .btn-all{background:linear-gradient(135deg,#10b981,#059669);padding:14px 40px;font-size:16px;margin-top:10px}
+    </style>
+</head>
+<body>
+    <h1>توليد أيقونات التطبيق</h1>
+    <p>اضغط "حفظ الكل" عشان تنزل الأيقونات — أو حفظ كل وحدة لحالها</p>
+    <div class="icons" id="icons"></div>
+    <button class="btn btn-all" onclick="downloadAll()">📥 حفظ الكل</button>
+
+    <script>
+        var sizes = [192, 512];
+        var svgContent = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(%23g)"/><path d="M10 48 L10 28 L20 37 L32 14 L44 37 L54 28 L54 48 Z" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,0.1)"/><line x1="8" y1="52" x2="56" y2="52" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg>';
+
+        var canvases = {};
+
+        sizes.forEach(function(size) {
+            var box = document.createElement('div');
+            box.className = 'icon-box';
+
+            var canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.style.width = Math.min(size, 200) + 'px';
+            canvas.style.height = Math.min(size, 200) + 'px';
+
+            var label = document.createElement('p');
+            label.textContent = size + 'x' + size;
+
+            var btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.textContent = '💾 حفظ';
+            btn.onclick = function() { downloadIcon(size); };
+
+            box.appendChild(canvas);
+            box.appendChild(label);
+            box.appendChild(btn);
+            document.getElementById('icons').appendChild(box);
+
+            // رسم الأيقونة مع خلفية موف غامق
+            var ctx = canvas.getContext('2d');
+            // خلفية بدرجات الموف (نفس ستايل الموقع)
+            var grad = ctx.createLinearGradient(0, 0, size, size);
+            grad.addColorStop(0, '#5b4ed4');
+            grad.addColorStop(0.5, '#4338ca');
+            grad.addColorStop(1, '#312e81');
+            ctx.fillStyle = grad;
+            // مربع بزوايا مدوّرة
+            var r = size * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(r, 0);
+            ctx.lineTo(size - r, 0);
+            ctx.quadraticCurveTo(size, 0, size, r);
+            ctx.lineTo(size, size - r);
+            ctx.quadraticCurveTo(size, size, size - r, size);
+            ctx.lineTo(r, size);
+            ctx.quadraticCurveTo(0, size, 0, size - r);
+            ctx.lineTo(0, r);
+            ctx.quadraticCurveTo(0, 0, r, 0);
+            ctx.closePath();
+            ctx.fill();
+            // رسم الشعار SVG فوق الخلفية
+            var img = new Image();
+            var blob = new Blob([svgContent], {type: 'image/svg+xml'});
+            var url = URL.createObjectURL(blob);
+            img.onload = function() {
+                // رسم الشعار بحجم أصغر في المنتصف (70%)
+                var pad = size * 0.15;
+                var iSize = size - pad * 2;
+                ctx.drawImage(img, pad, pad, iSize, iSize);
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+            canvases[size] = canvas;
+        });
+
+        function downloadIcon(size) {
+            var canvas = canvases[size];
+            var link = document.createElement('a');
+            link.download = 'icon-' + size + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            sizes.forEach(function(size, i) {
+                setTimeout(function() { downloadIcon(size); }, i * 500);
+            });
+        }
+    </script>
+</body>
+</html>
