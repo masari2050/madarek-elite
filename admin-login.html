@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>دخول الإدارة - مدارك النخبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,6 +31,10 @@
         .eye-btn{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,.3);transition:.2s;background:none;border:none;padding:0}
         .eye-btn:hover{color:rgba(255,255,255,.6)}
         .spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin-r .7s linear infinite;vertical-align:middle;margin-left:6px}
+        .otp-input{text-align:center;font-size:1.5rem;letter-spacing:.5rem;direction:ltr}
+        .qr-wrap{background:#fff;padding:10px;border-radius:14px;display:inline-block}
+        .secret-code{font-size:.7rem;color:#a5b4fc;background:rgba(99,102,241,.1);padding:4px 14px;border-radius:8px;user-select:all;display:inline-block;direction:ltr;font-family:monospace}
+        @keyframes pulseGreen{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 8px rgba(34,197,94,0)}}
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
@@ -69,35 +74,98 @@
 
         <div id="errBox" class="err-box hidden mb-5"></div>
 
-        <div class="space-y-4">
-            <div>
-                <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">البريد الإلكتروني</label>
-                <input type="email" id="email" class="inp" placeholder="example@email.com" autocomplete="email">
+        <!-- ═══ قسم تسجيل الدخول ═══ -->
+        <div id="loginSection">
+            <div class="space-y-4">
+                <div>
+                    <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">البريد الإلكتروني</label>
+                    <input type="email" id="email" class="inp" placeholder="example@email.com" autocomplete="email">
+                </div>
+                <div>
+                    <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">كلمة المرور</label>
+                    <div class="pass-wrap">
+                        <input type="password" id="password" class="inp" placeholder="••••••••"
+                            style="padding-left:3rem" autocomplete="current-password"
+                            onkeydown="if(event.key==='Enter')doLogin()">
+                        <button class="eye-btn" onclick="togglePass()" type="button">
+                            <svg id="eyeIco" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button id="loginBtn" class="btn" onclick="doLogin()">
+                    🔐 دخول لوحة الإدارة
+                </button>
             </div>
-            <div>
-                <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">كلمة المرور</label>
-                <div class="pass-wrap">
-                    <input type="password" id="password" class="inp" placeholder="••••••••"
-                        style="padding-left:3rem" autocomplete="current-password"
-                        onkeydown="if(event.key==='Enter')doLogin()">
-                    <button class="eye-btn" onclick="togglePass()" type="button">
-                        <svg id="eyeIco" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </button>
+
+            <div style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.12);border-radius:.75rem;padding:.75rem 1rem;margin-top:1.5rem;text-align:center">
+                <p style="color:rgba(251,191,36,.75);font-size:.8rem;font-weight:700">⚠️ هذه الصفحة للمسؤولين فقط</p>
+                <p style="color:rgba(255,255,255,.25);font-size:.75rem;margin-top:3px">المحاولات غير المصرح بها يتم تسجيلها</p>
+            </div>
+        </div>
+
+        <!-- ═══ قسم تفعيل المصادقة الثنائية (أول مرة) ═══ -->
+        <div id="mfaEnrollSection" class="hidden">
+            <div class="text-center mb-5">
+                <div style="font-size:2.5rem;margin-bottom:8px">🔐</div>
+                <h3 class="text-white font-black text-lg">تفعيل المصادقة الثنائية</h3>
+                <p style="color:rgba(196,181,253,.45);font-size:.8rem;margin-top:6px;line-height:1.6">
+                    للحفاظ على أمان لوحة التحكم<br>
+                    امسح الرمز بتطبيق <strong style="color:#a5b4fc">Google Authenticator</strong>
+                </p>
+            </div>
+
+            <div class="flex justify-center mb-4">
+                <div class="qr-wrap">
+                    <img id="qrCode" alt="QR Code" style="width:170px;height:170px">
                 </div>
             </div>
 
-            <button id="loginBtn" class="btn" onclick="doLogin()">
-                🔐 دخول لوحة الإدارة
-            </button>
+            <div class="text-center mb-5">
+                <p style="color:rgba(196,181,253,.3);font-size:.7rem;margin-bottom:6px">أو أدخل المفتاح يدوياً:</p>
+                <code id="mfaSecret" class="secret-code"></code>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">رمز التحقق من التطبيق</label>
+                    <input type="text" id="enrollCode" class="inp otp-input" placeholder="000000"
+                        maxlength="6" inputmode="numeric" autocomplete="one-time-code"
+                        onkeydown="if(event.key==='Enter')verifyEnrollment()">
+                </div>
+                <button id="enrollBtn" class="btn" onclick="verifyEnrollment()">✅ تأكيد وتفعيل</button>
+            </div>
+
+            <div style="background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:.75rem;padding:.75rem 1rem;margin-top:1.5rem;text-align:center">
+                <p style="color:rgba(34,197,94,.7);font-size:.75rem;line-height:1.6">
+                    بعد التفعيل، بتحتاج تطبيق المصادقة في كل مرة تسجّل دخول
+                </p>
+            </div>
         </div>
 
-        <div style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.12);border-radius:.75rem;padding:.75rem 1rem;margin-top:1.5rem;text-align:center">
-            <p style="color:rgba(251,191,36,.75);font-size:.8rem;font-weight:700">⚠️ هذه الصفحة للمسؤولين فقط</p>
-            <p style="color:rgba(255,255,255,.25);font-size:.75rem;margin-top:3px">المحاولات غير المصرح بها يتم تسجيلها</p>
+        <!-- ═══ قسم التحقق من الرمز (كل مرة يسجّل دخول) ═══ -->
+        <div id="mfaVerifySection" class="hidden">
+            <div class="text-center mb-6">
+                <div style="font-size:2.5rem;margin-bottom:8px">🔑</div>
+                <h3 class="text-white font-black text-lg">رمز التحقق</h3>
+                <p style="color:rgba(196,181,253,.45);font-size:.85rem;margin-top:6px">
+                    أدخل الرمز من تطبيق المصادقة
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <input type="text" id="verifyCode" class="inp otp-input" placeholder="000000"
+                        maxlength="6" inputmode="numeric" autocomplete="one-time-code"
+                        onkeydown="if(event.key==='Enter')verifyMfa()">
+                </div>
+                <button id="verifyBtn" class="btn" onclick="verifyMfa()">🔐 تحقق ودخول</button>
+            </div>
         </div>
+
     </div>
 
     <div class="text-center mt-5">
@@ -112,20 +180,36 @@ var sb=window.supabase.createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
 );
 
+// ═══ متغيرات MFA ═══
+var _mfaFactorId=null;
+var _mfaChallengeId=null;
+
 // بانر عدم الصلاحية
 if(window.location.search.includes('denied')){
     document.getElementById('deniedBanner').classList.remove('hidden');
 }
 
-// لو عنده سيشن نشط — تحقق مباشرة
+// لو عنده سيشن نشط — تحقق من المصادقة الثنائية
 (async function(){
-    var{data:{session}}=await sb.auth.getSession();
-    if(!session)return;
-    var{data:p}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
-    // ══ الحل الجذري: admin أو staff كلاهم يدخلون ══
-    if(p&&(p.role==='admin'||p.role==='staff')){
-        location.href='admin.html';
-    }
+    try{
+        var{data:{session}}=await sb.auth.getSession();
+        if(!session)return;
+        var{data:p}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
+        if(!p||!(p.role==='admin'||p.role==='staff'))return;
+
+        // تحقق من مستوى المصادقة
+        var{data:aal}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+        if(aal&&aal.currentLevel==='aal2'){
+            // مصادقة كاملة — دخول مباشر
+            location.href='admin.html';
+        }else if(aal&&aal.nextLevel==='aal2'&&aal.currentLevel==='aal1'){
+            // MFA مفعّل لكن ما تم التحقق — اعرض شاشة الرمز
+            await showMfaScreen();
+        }else{
+            // ما فيه MFA — دخول مباشر
+            location.href='admin.html';
+        }
+    }catch(e){}
 })();
 
 function showErr(msg){
@@ -133,7 +217,7 @@ function showErr(msg){
     b.textContent=msg;
     b.classList.remove('hidden');
     b.classList.remove('shake');
-    void b.offsetWidth; // restart animation
+    void b.offsetWidth;
     b.classList.add('shake');
 }
 
@@ -149,17 +233,17 @@ function togglePass(){
     }
 }
 
-// 🔒 حماية من brute force
-var _adminAttempts = 0;
-var _adminLocked = false;
-var _adminLockTime = 0;
+// ═══ حماية من brute force ═══
+var _adminAttempts=0;
+var _adminLocked=false;
+var _adminLockTime=0;
 
 async function doLogin(){
-    // 🔒 تحقق من القفل
+    // تحقق من القفل
     if(_adminLocked){
-        var remaining = Math.ceil((_adminLockTime - Date.now()) / 1000);
-        if(remaining > 0){ showErr('كثرت المحاولات. انتظر ' + remaining + ' ثانية'); return; }
-        _adminLocked = false; _adminAttempts = 0;
+        var remaining=Math.ceil((_adminLockTime-Date.now())/1000);
+        if(remaining>0){showErr('كثرت المحاولات. انتظر '+remaining+' ثانية');return}
+        _adminLocked=false;_adminAttempts=0;
     }
     var email=document.getElementById('email').value.trim();
     var pass=document.getElementById('password').value;
@@ -177,10 +261,9 @@ async function doLogin(){
 
         if(error){
             _adminAttempts++;
-            // 🔒 قفل تصاعدي: 3 محاولات=60 ثانية، 6=5 دقائق
-            if(_adminAttempts >= 6){ _adminLocked=true; _adminLockTime=Date.now()+300000; showErr('تم قفل الدخول لمدة 5 دقائق — حماية أمنية'); }
-            else if(_adminAttempts >= 3){ _adminLocked=true; _adminLockTime=Date.now()+60000; showErr('كثرت المحاولات — انتظر دقيقة'); }
-            else { showErr('الإيميل أو كلمة المرور غلط'); }
+            if(_adminAttempts>=6){_adminLocked=true;_adminLockTime=Date.now()+300000;showErr('تم قفل الدخول لمدة 5 دقائق — حماية أمنية')}
+            else if(_adminAttempts>=3){_adminLocked=true;_adminLockTime=Date.now()+60000;showErr('كثرت المحاولات — انتظر دقيقة')}
+            else{showErr('الإيميل أو كلمة المرور غلط')}
             btn.disabled=false;
             btn.innerHTML='🔐 دخول لوحة الإدارة';
             return;
@@ -192,8 +275,7 @@ async function doLogin(){
             .eq('id',data.user.id)
             .single();
 
-        // ══ الحل الجذري: admin أو staff ══
-        var allowed = profile && (profile.role==='admin' || profile.role==='staff');
+        var allowed=profile&&(profile.role==='admin'||profile.role==='staff');
 
         if(!allowed){
             await sb.auth.signOut();
@@ -203,14 +285,125 @@ async function doLogin(){
             return;
         }
 
-        // 3. نجح
-        btn.innerHTML='✅ جاري التوجيه...';
-        location.href='admin.html';
+        // 3. فحص المصادقة الثنائية
+        btn.innerHTML='<span class="spin"></span> جاري تحقق الأمان...';
+        await showMfaScreen();
 
     }catch(e){
         showErr('حصل خطأ غير متوقع، حاول مرة ثانية');
         btn.disabled=false;
         btn.innerHTML='🔐 دخول لوحة الإدارة';
+    }
+}
+
+// ═══ عرض شاشة MFA المناسبة ═══
+async function showMfaScreen(){
+    try{
+        var{data:factorsData}=await sb.auth.mfa.listFactors();
+        var totpFactors=(factorsData&&factorsData.totp)?factorsData.totp:[];
+        var verifiedFactors=totpFactors.filter(function(f){return f.status==='verified'});
+
+        // إخفاء قسم الدخول
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('errBox').classList.add('hidden');
+
+        if(verifiedFactors.length>0){
+            // ═══ المستخدم عنده MFA — اعرض شاشة الرمز ═══
+            _mfaFactorId=verifiedFactors[0].id;
+            var{data:challenge,error:chErr}=await sb.auth.mfa.challenge({factorId:_mfaFactorId});
+            if(chErr){showErr('خطأ في المصادقة الثنائية');return}
+            _mfaChallengeId=challenge.id;
+            document.getElementById('mfaVerifySection').classList.remove('hidden');
+            setTimeout(function(){document.getElementById('verifyCode').focus()},100);
+
+        }else{
+            // ═══ أول مرة — اعرض شاشة التفعيل مع QR ═══
+            var{data:enrollData,error:enErr}=await sb.auth.mfa.enroll({
+                factorType:'totp',
+                friendlyName:'مدارك النخبة'
+            });
+            if(enErr){
+                // لو MFA مو مدعوم — دخول مباشر
+                location.href='admin.html';
+                return;
+            }
+            _mfaFactorId=enrollData.id;
+            document.getElementById('qrCode').src=enrollData.totp.qr_code;
+            document.getElementById('mfaSecret').textContent=enrollData.totp.secret;
+            document.getElementById('mfaEnrollSection').classList.remove('hidden');
+            setTimeout(function(){document.getElementById('enrollCode').focus()},100);
+        }
+    }catch(e){
+        // MFA API غير متاح — دخول مباشر
+        location.href='admin.html';
+    }
+}
+
+// ═══ تأكيد تفعيل MFA (أول مرة) ═══
+async function verifyEnrollment(){
+    var code=document.getElementById('enrollCode').value.trim();
+    if(!code||code.length<6){showErr('أدخل الرمز المكوّن من 6 أرقام');return}
+
+    var btn=document.getElementById('enrollBtn');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spin"></span> جاري التحقق...';
+    document.getElementById('errBox').classList.add('hidden');
+
+    try{
+        var{data:challenge,error:chErr}=await sb.auth.mfa.challenge({factorId:_mfaFactorId});
+        if(chErr)throw chErr;
+
+        var{data:vData,error:vErr}=await sb.auth.mfa.verify({
+            factorId:_mfaFactorId,
+            challengeId:challenge.id,
+            code:code
+        });
+        if(vErr)throw vErr;
+
+        btn.innerHTML='✅ تم التفعيل!';
+        btn.style.background='linear-gradient(135deg,#22c55e,#16a34a)';
+        setTimeout(function(){location.href='admin.html'},600);
+    }catch(e){
+        showErr('الرمز غلط — تأكد من التطبيق وحاول مرة ثانية');
+        btn.disabled=false;
+        btn.innerHTML='✅ تأكيد وتفعيل';
+        document.getElementById('enrollCode').value='';
+        document.getElementById('enrollCode').focus();
+    }
+}
+
+// ═══ التحقق من رمز MFA (كل تسجيل دخول) ═══
+async function verifyMfa(){
+    var code=document.getElementById('verifyCode').value.trim();
+    if(!code||code.length<6){showErr('أدخل الرمز المكوّن من 6 أرقام');return}
+
+    var btn=document.getElementById('verifyBtn');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spin"></span> جاري التحقق...';
+    document.getElementById('errBox').classList.add('hidden');
+
+    try{
+        var{data:vData,error:vErr}=await sb.auth.mfa.verify({
+            factorId:_mfaFactorId,
+            challengeId:_mfaChallengeId,
+            code:code
+        });
+        if(vErr)throw vErr;
+
+        btn.innerHTML='✅ تم التحقق!';
+        btn.style.background='linear-gradient(135deg,#22c55e,#16a34a)';
+        setTimeout(function(){location.href='admin.html'},600);
+    }catch(e){
+        showErr('الرمز غلط — حاول مرة ثانية');
+        btn.disabled=false;
+        btn.innerHTML='🔐 تحقق ودخول';
+        document.getElementById('verifyCode').value='';
+        document.getElementById('verifyCode').focus();
+        // تحديث التحدي
+        try{
+            var{data:ch}=await sb.auth.mfa.challenge({factorId:_mfaFactorId});
+            if(ch)_mfaChallengeId=ch.id;
+        }catch(e2){}
     }
 }
 </script>

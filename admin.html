@@ -1378,6 +1378,8 @@ async function init(){
     if(!session){location.href='admin-login.html';return}
     var{data:p}=await sb.from('profiles').select('role,full_name,permissions').eq('id',session.user.id).single();
     if(!p||(p.role!=='admin'&&p.role!=='staff')){location.href='admin-login.html';return}
+    // 🔒 فحص MFA — لو مفعّل لازم يكون AAL2
+    try{var{data:aal}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();if(aal&&aal.nextLevel==='aal2'&&aal.currentLevel!=='aal2'){location.href='admin-login.html';return}}catch(e){}
     me={id:session.user.id,...p};
     if(p.role==='staff'&&p.permissions){
         _myPerms=typeof p.permissions==='string'?JSON.parse(p.permissions):p.permissions;
