@@ -188,8 +188,19 @@
                 window.location.href = 'dashboard.html';
             }
         })();
+        // 🔒 حماية من محاولات تسجيل الدخول المتكررة (brute force)
+        var _loginAttempts = 0;
+        var _loginLocked = false;
+        var _loginLockTime = 0;
+
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            // 🔒 تحقق من القفل
+            if(_loginLocked){
+                var remaining = Math.ceil((_loginLockTime - Date.now()) / 1000);
+                if(remaining > 0){ showToast('كثرت المحاولات. انتظر ' + remaining + ' ثانية'); return; }
+                _loginLocked = false; _loginAttempts = 0;
+            }
             var em = document.getElementById('email').value.trim();
             var p = document.getElementById('password').value;
             if (!em || !p) { showToast('الرجاء ملء جميع الحقول'); return; }
@@ -198,13 +209,18 @@
             try {
                 var { data, error } = await sb.auth.signInWithPassword({ email: em, password: p });
                 if (error) throw error;
+                _loginAttempts = 0; // نجاح — نصفّر العداد
                 localStorage.setItem('khawariz_user', JSON.stringify({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name || '' }));
                 window.location.href = 'dashboard.html';
             } catch (error) {
-                var msg = 'حدث خطأ غير متوقع';
-                if ((error.message || '').includes('Invalid')) msg = 'البريد أو كلمة المرور غلط';
-                else if ((error.message || '').includes('not confirmed')) msg = 'البريد ما تأكد بعد';
-                showToast(msg);
+                _loginAttempts++;
+                // 🔒 بعد 5 محاولات فاشلة — قفل 30 ثانية، بعد 10 — قفل 120 ثانية
+                if(_loginAttempts >= 10){ _loginLocked = true; _loginLockTime = Date.now() + 120000; showToast('كثرت المحاولات الخاطئة. حاول بعد دقيقتين'); }
+                else if(_loginAttempts >= 5){ _loginLocked = true; _loginLockTime = Date.now() + 30000; showToast('كثرت المحاولات. انتظر 30 ثانية'); }
+                else {
+                    // 🔒 رسالة موحّدة (ما نفرّق بين بريد غلط وباسورد غلط)
+                    showToast('البريد أو كلمة المرور غلط');
+                }
                 btn.disabled = false; btn.textContent = 'تسجيل الدخول';
             }
         });

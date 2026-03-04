@@ -420,7 +420,18 @@
         }
 
         function toggleFaq(el){el.classList.toggle('open')}
+        // 🔒 حماية: حد محاولات الكوبون + تحقق سيرفر ذرّي
+        var _couponAttempts = 0;
+        var _couponLocked = false;
+        var _couponLockTime = 0;
+
         async function applyCoupon(){
+            // 🔒 حماية من spam الكوبونات
+            if(_couponLocked){
+                var rem=Math.ceil((_couponLockTime-Date.now())/1000);
+                if(rem>0){document.getElementById('couponErrMsg').textContent='انتظر '+rem+' ثانية قبل المحاولة';document.getElementById('couponError').classList.remove('hidden');return;}
+                _couponLocked=false;_couponAttempts=0;
+            }
             var code = document.getElementById('couponInput').value.trim().toUpperCase();
             if(!code) return;
             var btn = document.getElementById('couponBtn');
@@ -430,18 +441,19 @@
             document.getElementById('couponSuccess').classList.add('hidden');
             document.getElementById('couponError').classList.add('hidden');
             try {
-                var {data, error} = await sb.from('coupons').select('*').eq('code', code).single();
-                if(error || !data){
-                    document.getElementById('couponErrMsg').textContent = 'الكود غير صحيح أو غير موجود';
+                // 🔒 محاولة استخدام الدالة الذرّية أولاً (سيرفر)
+                var {data:rpcResult, error:rpcErr} = await sb.rpc('apply_coupon', {p_code: code});
+
+                if(rpcErr) throw rpcErr;
+
+                if(rpcResult && rpcResult.error){
+                    _couponAttempts++;
+                    if(_couponAttempts>=5){_couponLocked=true;_couponLockTime=Date.now()+60000;}
+                    document.getElementById('couponErrMsg').textContent = rpcResult.error;
                     document.getElementById('couponError').classList.remove('hidden');
-                } else if(data.expires_at && new Date(data.expires_at) < new Date()){
-                    document.getElementById('couponErrMsg').textContent = 'هالكوبون منتهي الصلاحية';
-                    document.getElementById('couponError').classList.remove('hidden');
-                } else if(data.max_uses && data.used_count >= data.max_uses){
-                    document.getElementById('couponErrMsg').textContent = 'هالكوبون وصل الحد الأقصى للاستخدام';
-                    document.getElementById('couponError').classList.remove('hidden');
-                } else {
-                    // تحديد اسم الباقة من plan_type الكوبون
+                } else if(rpcResult && rpcResult.success){
+                    _couponAttempts=0;
+                    var data = rpcResult;
                     var planType = data.plan_type || 'all';
                     var planLabel = planType === 'monthly' ? 'الشهري' : planType === 'yearly' ? 'السنوي' : '';
                     var planSuffix = planLabel ? ' على الاشتراك ' + planLabel : ' على اشتراكك';
@@ -450,15 +462,13 @@
                         : 'خصم ' + data.discount_value + ' ريال' + planSuffix;
                     document.getElementById('couponMsg').textContent = '✓ ' + dt;
                     document.getElementById('couponSuccess').classList.remove('hidden');
-                    // حفظ الكوبون مع plan_type
                     localStorage.setItem('khawariz_coupon', JSON.stringify({
                         code: data.code,
                         type: data.discount_type,
                         value: data.discount_value,
                         plan_type: planType
                     }));
-                    await sb.from('coupons').update({used_count: (data.used_count || 0) + 1}).eq('id', data.id);
-                    // لو الخصم 100% — نفعّل الاشتراك بناءً على plan_type الكوبون
+                    // لو الخصم 100% — نفعّل الاشتراك
                     if(data.discount_type === 'percentage' && data.discount_value >= 100){
                         var subType = planType === 'yearly' ? 'yearly' : 'monthly';
                         var subLabel = subType === 'yearly' ? 'السنوي' : 'الشهري';
@@ -472,8 +482,34 @@
                     }
                 }
             } catch(e){
-                document.getElementById('couponErrMsg').textContent = 'حدث خطأ، حاول مرة ثانية';
-                document.getElementById('couponError').classList.remove('hidden');
+                // fallback: لو الدالة مو موجودة بعد — نستخدم الطريقة القديمة مؤقتاً
+                console.warn('apply_coupon RPC not available, using fallback');
+                try{
+                    var {data, error} = await sb.from('coupons').select('*').eq('code', code).single();
+                    if(error || !data){
+                        document.getElementById('couponErrMsg').textContent = 'الكود غير صحيح أو غير موجود';
+                        document.getElementById('couponError').classList.remove('hidden');
+                    } else if(data.expires_at && new Date(data.expires_at) < new Date()){
+                        document.getElementById('couponErrMsg').textContent = 'هالكوبون منتهي الصلاحية';
+                        document.getElementById('couponError').classList.remove('hidden');
+                    } else if(data.max_uses && data.used_count >= data.max_uses){
+                        document.getElementById('couponErrMsg').textContent = 'هالكوبون وصل الحد الأقصى';
+                        document.getElementById('couponError').classList.remove('hidden');
+                    } else {
+                        var planType = data.plan_type || 'all';
+                        var planLabel = planType === 'monthly' ? 'الشهري' : planType === 'yearly' ? 'السنوي' : '';
+                        var dt = data.discount_type === 'percentage'
+                            ? 'خصم ' + data.discount_value + '% على الاشتراك ' + planLabel
+                            : 'خصم ' + data.discount_value + ' ريال';
+                        document.getElementById('couponMsg').textContent = '✓ ' + dt;
+                        document.getElementById('couponSuccess').classList.remove('hidden');
+                        localStorage.setItem('khawariz_coupon', JSON.stringify({code:data.code,type:data.discount_type,value:data.discount_value,plan_type:planType}));
+                        await sb.from('coupons').update({used_count: (data.used_count || 0) + 1}).eq('id', data.id);
+                    }
+                }catch(e2){
+                    document.getElementById('couponErrMsg').textContent = 'حدث خطأ، حاول مرة ثانية';
+                    document.getElementById('couponError').classList.remove('hidden');
+                }
             }
             btn.textContent = 'تحقق';
             btn.disabled = false;

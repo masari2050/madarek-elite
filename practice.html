@@ -174,14 +174,18 @@
     var userSubscription='free', totalAttemptsCount=0;
     const SECONDS_PER_QUESTION=60, FREE_LIMIT=10;
 
+    // 🔒 الشرح يجي من السيرفر (مو من المتصفح)
     function buildSmartExplanation(q, isCorrect) {
-        var correctAnswer = (q.choices||[])[q.correct_index] || '';
-        var exp = (q.explanation || '').trim();
-        var expImg = (q.explanation_image || '').trim();
+        var sr=q._serverResult||{};
+        var correctAnswer = sr.correct_answer || '';
+        var exp = (sr.explanation || '').trim();
+        var expImg = (sr.explanation_image || '').trim();
+        // 🔒 تنظيف النصوص من أكواد خبيثة
+        function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
         return '<div class="exp-box">' +
-            (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + exp + '</div>' : '') +
-            (expImg ? '<div style="margin-top:8px;background:rgba(255,255,255,0.95);border-radius:12px;padding:6px;overflow:hidden"><img src="' + expImg + '" style="width:100%;border-radius:8px;display:block"></div>' : '') +
-            (!isCorrect ? '<div class="exp-correct">✅ الإجابة الصحيحة: ' + correctAnswer + '</div>' : '') +
+            (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + esc(exp) + '</div>' : '') +
+            (expImg ? '<div style="margin-top:8px;background:rgba(255,255,255,0.95);border-radius:12px;padding:6px;overflow:hidden"><img src="' + encodeURI(expImg) + '" style="width:100%;border-radius:8px;display:block"></div>' : '') +
+            (!isCorrect ? '<div class="exp-correct">✅ الإجابة الصحيحة: ' + esc(correctAnswer) + '</div>' : '') +
         '</div>';
     }
     // ════════════════════════════════════════════
@@ -210,29 +214,30 @@
     function showPaywall(){ document.getElementById('loadingState').classList.add('hidden'); document.getElementById('paywallModal').classList.remove('hidden'); }
     function closePaywall(){ location.href='dashboard.html'; }
 
+    // 🔒 جلب الأسئلة بدون الأجوبة الصحيحة (حماية من الغش)
+    var SAFE_COLUMNS='id,question_text,choices,image_url,section,sub_section';
+
     async function loadQuestions(){
         var sel=localStorage.getItem('khawariz_selected_section');
         if(!sel){location.href='select-section.html';return false;}
         try{
             var questions=[];
             if(sel==='mix'){
-                // كمي + لفظي بالتناوب
-                var r1=await sb.from('questions').select('*').eq('section','quant').limit(50000);
-                var r2=await sb.from('questions').select('*').eq('section','verbal').limit(50000);
+                var r1=await sb.from('questions').select(SAFE_COLUMNS).eq('section','quant').limit(50000);
+                var r2=await sb.from('questions').select(SAFE_COLUMNS).eq('section','verbal').limit(50000);
                 var qList=shuffleArray(r1.data||[]);
                 var vList=shuffleArray(r2.data||[]);
                 var cnt2=parseInt(localStorage.getItem('khawariz_question_count'))||10;
                 var half=Math.ceil(cnt2/2);
                 var qSlice=qList.slice(0,half);
                 var vSlice=vList.slice(0,cnt2-half);
-                // تناوب: كمي، لفظي، كمي، لفظي...
                 var maxLen=Math.max(qSlice.length,vSlice.length);
                 for(var ii=0;ii<maxLen;ii++){
                     if(ii<qSlice.length) questions.push(qSlice[ii]);
                     if(ii<vSlice.length) questions.push(vSlice[ii]);
                 }
             } else {
-                var r=await sb.from('questions').select('*').eq('section',sel).limit(50000);
+                var r=await sb.from('questions').select(SAFE_COLUMNS).eq('section',sel).limit(50000);
                 if(r.error)throw r.error;
                 questions=r.data||[];
             }
@@ -314,28 +319,60 @@
         document.getElementById('feedbackCard').classList.add('hidden');
     }
 
+    // 🔒 التحقق من الإجابة عبر السيرفر (ما نثق بالمتصفح)
     async function selectOption(sel){
         if(hasAnswered)return;
         hasAnswered=true;
         var q=currentQuestions[currentQuestionIndex];
-        var isCorrect=sel===q.correct_index;
 
-        playSound(isCorrect);
-        if(isCorrect){correctCount++;consecutiveCorrect++;}else{wrongCount++;consecutiveCorrect=0;}
-        totalAttemptsCount++;
-        // تحديث أعلى تتابع صحيح (بادج قنّاص)
-        var storedMax=parseInt(localStorage.getItem('madarek_max_consecutive')||'0',10);
-        if(consecutiveCorrect>storedMax)localStorage.setItem('madarek_max_consecutive',String(consecutiveCorrect));
-        updateStats();
-
-        document.querySelectorAll('.option-card').forEach(function(card,i){
-            card.onclick=null;card.style.cursor='default';
-            if(i===q.correct_index){card.style.borderColor='#22c55e';card.style.background='#f0fdf4';card.style.boxShadow='0 0 0 3px rgba(34,197,94,0.15)';if(isCorrect&&i===sel)card.classList.add('answer-correct-anim');}
-            else if(i===sel&&!isCorrect){card.style.borderColor='#ef4444';card.style.background='#fef2f2';card.style.boxShadow='0 0 0 3px rgba(239,68,68,0.15)';}
+        // تعطيل الخيارات فوراً
+        document.querySelectorAll('.option-card').forEach(function(card){
+            card.onclick=null;card.style.cursor='default';card.style.opacity='0.7';
         });
 
-        showFeedback(isCorrect,q,sel);
-        saveAttempt(q.id,sel,isCorrect);
+        // 🔒 إرسال الإجابة للسيرفر والتحقق هناك
+        try{
+            var {data:result,error}=await sb.rpc('submit_answer',{
+                p_question_id:q.id,
+                p_selected_answer:sel
+            });
+
+            if(error)throw error;
+            if(result&&result.error){
+                if(result.error==='free_limit_reached'){showPaywall();return;}
+                alert(result.error);return;
+            }
+
+            var isCorrect=result.is_correct;
+            var correctIdx=result.correct_index;
+
+            // تخزين البيانات المرجعة من السيرفر مؤقتاً للعرض
+            q._serverResult=result;
+
+            playSound(isCorrect);
+            if(isCorrect){correctCount++;consecutiveCorrect++;}else{wrongCount++;consecutiveCorrect=0;}
+            totalAttemptsCount++;
+            var storedMax=parseInt(localStorage.getItem('madarek_max_consecutive')||'0',10);
+            if(consecutiveCorrect>storedMax)localStorage.setItem('madarek_max_consecutive',String(consecutiveCorrect));
+            updateStats();
+
+            document.querySelectorAll('.option-card').forEach(function(card,i){
+                card.style.opacity='1';
+                if(i===correctIdx){card.style.borderColor='#22c55e';card.style.background='#f0fdf4';card.style.boxShadow='0 0 0 3px rgba(34,197,94,0.15)';if(isCorrect&&i===sel)card.classList.add('answer-correct-anim');}
+                else if(i===sel&&!isCorrect){card.style.borderColor='#ef4444';card.style.background='#fef2f2';card.style.boxShadow='0 0 0 3px rgba(239,68,68,0.15)';}
+            });
+
+            showFeedback(isCorrect,q,sel);
+        }catch(e){
+            console.error('submit_answer error:',e);
+            // fallback للطريقة القديمة لو الدالة مو موجودة بعد
+            hasAnswered=false;
+            document.querySelectorAll('.option-card').forEach(function(card,i){
+                card.style.opacity='1';card.style.cursor='pointer';
+                card.onclick=function(){selectOption(i);};
+            });
+            alert('حدث خطأ، حاول مرة ثانية');
+        }
     }
 
     function showFeedback(isCorrect,q,selectedIndex){
@@ -360,9 +397,7 @@
         displayQuestion();
     }
 
-    async function saveAttempt(qId,ans,ok){
-        try{ await sb.from('attempts').insert({user_id:currentUser.id,question_id:qId,selected_answer:ans,is_correct:ok,answered_at:new Date().toISOString()}); }catch(e){}
-    }
+    // 🔒 saveAttempt لم يعد مطلوباً — السيرفر يحفظ المحاولة عبر submit_answer
 
     async function reportQuestion(){
         var q=currentQuestions[currentQuestionIndex];

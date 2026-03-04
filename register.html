@@ -153,11 +153,14 @@
         function selectGender(g){document.getElementById('gender').value=g;const m=document.getElementById('maleBtn'),f=document.getElementById('femaleBtn');m.className='gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2';f.className='gender-btn rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2';if(g==='male')m.classList.add('male-active');else f.classList.add('female-active')}
         async function handleRegister(){const btn=document.getElementById('submitBtn');if(btn.disabled)return;const name=document.getElementById('name').value.trim(),email=document.getElementById('email').value.trim(),pw=document.getElementById('password').value,cpw=document.getElementById('confirmPassword').value,gender=document.getElementById('gender').value,terms=document.getElementById('terms').checked;if(!name){showToast('ادخل اسمك الكامل','⚠️');return}if(!email){showToast('ادخل بريدك الإلكتروني','⚠️');return}if(!pw){showToast('ادخل كلمة المرور','⚠️');return}if(pw.length<6){showToast('كلمة المرور لازم تكون 6 أحرف على الأقل','⚠️');return}if(pw!==cpw){showToast('كلمات المرور ما تتطابق','⚠️');return}if(!terms){showToast('لازم توافق على الشروط والأحكام','⚠️');return}btn.disabled=true;document.getElementById('submit-text').classList.add('hidden');document.getElementById('submit-spinner').classList.remove('hidden');try{const{data,error}=await sb.auth.signUp({email,password:pw,options:{data:{name,gender}}});if(error){if(error.message.includes('already registered'))showToast('هذا البريد الإلكتروني مسجل مسبقاً','⚠️');else if(error.message.includes('Invalid email'))showToast('البريد الإلكتروني غير صحيح','⚠️');else showToast('حدث خطأ: '+error.message,'❌');resetBtn();return}showToast('تم إنشاء الحساب بنجاح!','🎉');document.getElementById('submit-text').textContent='✅ تم بنجاح! جاري التحويل...';document.getElementById('submit-text').classList.remove('hidden');document.getElementById('submit-spinner').classList.add('hidden');setTimeout(function(){window.location.href=getRedirectUrl()},1500)}catch(err){showToast('حدث خطأ غير متوقع','❌');resetBtn()}}
         function resetBtn(){document.getElementById('submitBtn').disabled=false;document.getElementById('submit-text').classList.remove('hidden');document.getElementById('submit-spinner').classList.add('hidden')}
-        // ═══ تحويل ذكي بعد التسجيل (دعم الكوبون) ═══
+        // 🔒 تحويل ذكي بعد التسجيل (مع حماية من Open Redirect)
+        var ALLOWED_REDIRECTS = ['pricing','dashboard','select-section','profile','stats'];
         function getRedirectUrl(){
             var params = new URLSearchParams(window.location.search);
             var redirect = params.get('redirect');
             var coupon = params.get('coupon');
+            // 🔒 تحقق: فقط صفحات معروفة مسموح بالتحويل لها
+            if(redirect && ALLOWED_REDIRECTS.indexOf(redirect) === -1) redirect = null;
             if(redirect === 'pricing' && coupon){
                 return 'pricing.html?coupon=' + encodeURIComponent(coupon);
             }

@@ -149,7 +149,18 @@ function togglePass(){
     }
 }
 
+// 🔒 حماية من brute force
+var _adminAttempts = 0;
+var _adminLocked = false;
+var _adminLockTime = 0;
+
 async function doLogin(){
+    // 🔒 تحقق من القفل
+    if(_adminLocked){
+        var remaining = Math.ceil((_adminLockTime - Date.now()) / 1000);
+        if(remaining > 0){ showErr('كثرت المحاولات. انتظر ' + remaining + ' ثانية'); return; }
+        _adminLocked = false; _adminAttempts = 0;
+    }
     var email=document.getElementById('email').value.trim();
     var pass=document.getElementById('password').value;
     var btn=document.getElementById('loginBtn');
@@ -162,14 +173,14 @@ async function doLogin(){
     btn.innerHTML='<span class="spin"></span> جاري التحقق...';
 
     try{
-        // 1. تسجيل الدخول
         var{data,error}=await sb.auth.signInWithPassword({email,password:pass});
 
         if(error){
-            var msg='الإيميل أو كلمة المرور غلط';
-            if(error.message.includes('Email not confirmed'))msg='الإيميل غير مفعّل — راجع بريدك';
-            else if(error.message.includes('Too many'))msg='محاولات كثيرة — انتظر قليلاً';
-            showErr(msg);
+            _adminAttempts++;
+            // 🔒 قفل تصاعدي: 3 محاولات=60 ثانية، 6=5 دقائق
+            if(_adminAttempts >= 6){ _adminLocked=true; _adminLockTime=Date.now()+300000; showErr('تم قفل الدخول لمدة 5 دقائق — حماية أمنية'); }
+            else if(_adminAttempts >= 3){ _adminLocked=true; _adminLockTime=Date.now()+60000; showErr('كثرت المحاولات — انتظر دقيقة'); }
+            else { showErr('الإيميل أو كلمة المرور غلط'); }
             btn.disabled=false;
             btn.innerHTML='🔐 دخول لوحة الإدارة';
             return;
