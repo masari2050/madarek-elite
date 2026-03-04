@@ -275,6 +275,17 @@
         </div>
     </div>
 
+    <!-- 📅 سجل الإنجاز اليومي -->
+    <div class="glass p-4 mb-4" id="achievement-log-wrap">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-sm">📅 سجل الإنجاز</h3>
+            <input type="date" id="log-date-input" class="text-xs rounded-lg px-3 py-1.5" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff" onchange="loadDayLog(this.value)">
+        </div>
+        <div id="day-log-result" class="text-center">
+            <p class="text-purple-200/25 text-xs py-3">اختر تاريخ لعرض إنجاز اليوم</p>
+        </div>
+    </div>
+
     <!-- ✅ أداة الكشف عن المكررات -->
     <div class="dup-tool-wrap mb-4">
         <div class="flex items-center justify-between mb-3">
@@ -1547,12 +1558,16 @@ async function loadSecStats(){
     var c={quant:0,verbal:0,tahsili:0};
     q.forEach(function(x){if(c[x.section]!==undefined)c[x.section]++});
     var GOAL=2000;
-    var h24=new Date(Date.now()-24*60*60*1000);
+    // اليوم = من 12:00 ص حتى الآن (بدل 24 ساعة متحركة)
+    var today=new Date();today.setHours(0,0,0,0);
     var r24={quant:0,verbal:0,tahsili:0};
-    q.forEach(function(x){if(x.created_at&&new Date(x.created_at)>=h24&&r24[x.section]!==undefined)r24[x.section]++});
+    q.forEach(function(x){if(x.created_at&&new Date(x.created_at)>=today&&r24[x.section]!==undefined)r24[x.section]++});
     var nm={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'التحصيلي'};
     var cl={quant:'#6366f1',verbal:'#10b981',tahsili:'#8b5cf6'};
     var secEmoji={quant:'🔢',verbal:'📖',tahsili:'🎓'};
+    var todayStr=new Date().toLocaleDateString('ar-SA',{day:'numeric',month:'long',year:'numeric'});
+    var motivs=['كل سؤال تضيفه يخدم المشروع أكثر 🚀','الدقة بإدخال الأسئلة والمحتوى ذات أهمية عالية 🎯','نجاح المشروع بمدى اجتهادك 💪','جودة المحتوى تعكس احترافية الفريق ✨','كل إضافة ترفع مستوى المنصة 📈','شغلك اليوم يبني أساس قوي للمشروع 🏗️','التفاصيل الدقيقة تصنع الفرق الكبير 💎','اجتهادك واضح — واصل بنفس المستوى 🔥','محتوى قوي = منصة قوية — وأنت السبب 🏆','كل سؤال مراجع ومدقّق يرفع ثقة المستخدم 📋','أنت ركيزة أساسية في بناء هالمنصة 🤝','استمر — الشغل المتقن يتكلم عن نفسه ⭐'];
+    var dayMotiv=motivs[Math.floor(Math.random()*motivs.length)];
     var secCards='';
     ['quant','verbal','tahsili'].forEach(function(k){
         var count=c[k],pct=Math.min(Math.round(count/GOAL*100),100),added=r24[k];
@@ -1564,9 +1579,17 @@ async function loadSecStats(){
         secCards+='<div style="text-align:center;margin-bottom:16px"><div style="font-size:3rem;font-weight:900;color:'+cl[k]+';line-height:1">'+count.toLocaleString('ar-SA')+'</div>';
         secCards+='<div style="color:rgba(196,181,253,.5);font-size:.85rem;margin-top:6px">سؤال</div></div>';
         if(added>0){
-            secCards+='<div style="text-align:center;margin-bottom:16px"><span style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:24px;font-size:.9rem;font-weight:800;background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25);box-shadow:0 0 16px rgba(34,197,94,.12)"><span style="font-size:1.1rem">🚀</span> +'+added+' خلال 24 ساعة</span></div>';
+            secCards+='<div style="text-align:center;margin-bottom:16px">';
+            secCards+='<div style="color:rgba(196,181,253,.3);font-size:.7rem;margin-bottom:6px">إنجاز اليوم — '+todayStr+'</div>';
+            secCards+='<span style="display:inline-flex;align-items:center;gap:6px;padding:8px 20px;border-radius:24px;font-size:1rem;font-weight:800;background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25);box-shadow:0 0 16px rgba(34,197,94,.12)"><span style="font-size:1.1rem">🚀</span> +'+added+' سؤال</span>';
+            secCards+='<div style="color:rgba(196,181,253,.35);font-size:.75rem;margin-top:8px;font-style:italic">'+dayMotiv+'</div>';
+            secCards+='</div>';
         }else{
-            secCards+='<div style="text-align:center;margin-bottom:16px"><span style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:24px;font-size:.85rem;font-weight:600;background:rgba(255,255,255,.04);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.06)">لا جديد اليوم</span></div>';
+            secCards+='<div style="text-align:center;margin-bottom:16px">';
+            secCards+='<div style="color:rgba(196,181,253,.25);font-size:.7rem;margin-bottom:6px">'+todayStr+'</div>';
+            secCards+='<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:24px;font-size:.85rem;font-weight:600;background:rgba(255,255,255,.04);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.06)">لا جديد بعد اليوم ⏳</span>';
+            secCards+='<div style="color:rgba(196,181,253,.25);font-size:.7rem;margin-top:6px">يلّا نبدأ! 💪</div>';
+            secCards+='</div>';
         }
         secCards+='<div style="margin-bottom:8px"><div style="background:rgba(255,255,255,.06);border-radius:9999px;height:10px;overflow:hidden"><div style="height:100%;border-radius:9999px;background:linear-gradient(90deg,'+cl[k]+','+cl[k]+'bb);width:'+pct+'%;transition:width 1.5s ease"></div></div></div>';
         var pctLabel=pct>=100?'🏆 أنجزنا المرحلة الأولى! نكمّل':'المرحلة الأولى — '+GOAL.toLocaleString('ar-SA')+' سؤال';
@@ -1575,6 +1598,43 @@ async function loadSecStats(){
     });
     $('d-sec-cards').innerHTML=secCards;
 }
+// 📅 سجل الإنجاز — بحث بالتاريخ
+async function loadDayLog(dateStr){
+    if(!dateStr)return;
+    var el=$('day-log-result');
+    el.innerHTML='<p class="text-purple-200/30 text-xs py-2">جاري البحث...</p>';
+    var start=dateStr+'T00:00:00';
+    var end=dateStr+'T23:59:59';
+    var{data:q}=await sb.from('questions').select('section').gte('created_at',start).lte('created_at',end);
+    if(!q)q=[];
+    var c={quant:0,verbal:0,tahsili:0};
+    q.forEach(function(x){if(c[x.section]!==undefined)c[x.section]++});
+    var total=c.quant+c.verbal+c.tahsili;
+    var dateLabel=new Date(dateStr).toLocaleDateString('ar-SA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    var cl={quant:'#6366f1',verbal:'#10b981',tahsili:'#8b5cf6'};
+    var h='<div style="margin-bottom:10px"><span style="color:rgba(196,181,253,.4);font-size:.75rem">'+dateLabel+'</span></div>';
+    if(total===0){
+        h+='<div style="color:rgba(255,255,255,.25);font-size:.9rem;padding:8px 0">لم تُضف أسئلة في هذا اليوم</div>';
+    }else{
+        h+='<div style="font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:8px">'+total+' <span style="font-size:.85rem;color:rgba(196,181,253,.4)">سؤال</span></div>';
+        h+='<div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap">';
+        [{k:'quant',n:'كمي',e:'🔢'},{k:'verbal',n:'لفظي',e:'📖'},{k:'tahsili',n:'تحصيلي',e:'🎓'}].forEach(function(s){
+            h+='<div style="text-align:center"><span style="font-size:1.4rem;font-weight:900;color:'+cl[s.k]+'">'+c[s.k]+'</span><div style="font-size:.7rem;color:rgba(196,181,253,.35);margin-top:2px">'+s.e+' '+s.n+'</div></div>';
+        });
+        h+='</div>';
+    }
+    el.innerHTML=h;
+}
+
+// تحديث تلقائي كل 60 ثانية + عند العودة للصفحة
+setInterval(function(){
+    if(!document.hidden && $('t-questions') && $('t-questions').classList.contains('on'))
+        loadSecStats();
+},60000);
+document.addEventListener('visibilitychange',function(){
+    if(!document.hidden && $('t-questions') && $('t-questions').classList.contains('on'))
+        loadSecStats();
+});
 
 // ✅ نظرة عامة موسّعة
 async function loadOV(){
