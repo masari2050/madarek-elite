@@ -221,7 +221,7 @@
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-black">📊 نظرة عامة</h2>
         <!-- ✅ أونلاين الحين -->
-        <div class="glass px-4 py-2 flex items-center gap-2">
+        <div class="glass px-4 py-2 flex items-center gap-2" data-admin-only>
             <span class="online-dot"></span>
             <span class="text-sm text-emerald-400 font-bold" id="s-online">0</span>
             <span class="text-sm text-purple-200/60">متصل الآن</span>
@@ -229,15 +229,15 @@
     </div>
 
     <!-- الإحصائيات الرئيسية -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="ov-stats-grid">
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">إجمالي الأسئلة</p><p class="text-4xl font-black text-indigo-400" id="s-q">-</p></div>
-        <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">الأعضاء</p><p class="text-4xl font-black text-emerald-400" id="s-u">-</p></div>
+        <div class="sc glass p-5 text-center" data-admin-only><p class="text-purple-300/50 text-sm mb-1">الأعضاء</p><p class="text-4xl font-black text-emerald-400" id="s-u">-</p></div>
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">إجمالي المحاولات</p><p class="text-4xl font-black text-purple-400" id="s-a">-</p></div>
         <div class="sc glass p-5 text-center"><p class="text-purple-300/50 text-sm mb-1">البلاغات</p><p class="text-4xl font-black text-red-400" id="s-r">-</p></div>
     </div>
 
     <!-- ✅ إحصائيات الاشتراكات -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-admin-only>
         <div class="glass p-4 text-center" style="border-color:rgba(16,185,129,0.2)"><p class="text-emerald-400/70 text-xs mb-1">مشتركين فعالين</p><p class="text-3xl font-black text-emerald-400" id="ov-active">-</p></div>
         <div class="glass p-4 text-center" style="border-color:rgba(99,102,241,0.2)"><p class="text-indigo-400/70 text-xs mb-1">شهري</p><p class="text-3xl font-black text-indigo-400" id="ov-monthly">-</p></div>
         <div class="glass p-4 text-center" style="border-color:rgba(139,92,246,0.2)"><p class="text-purple-400/70 text-xs mb-1">سنوي</p><p class="text-3xl font-black text-purple-400" id="ov-yearly">-</p></div>
@@ -248,14 +248,14 @@
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">📝 الأسئلة حسب القسم</h3><div id="d-sec" class="space-y-3"></div></div>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">🔥 أكثر سؤال يغلطون فيه</h3><div id="d-hard" class="text-purple-300/50">جاري التحميل...</div></div>
     </div>
-    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+    <div class="grid lg:grid-cols-3 gap-4 mb-6" data-admin-only>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">🏆 أكثر حلولاً</h3><div id="d-top"></div></div>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">🎯 أعلى نسبة صح</h3><div id="d-acc"></div></div>
         <div class="glass p-6"><h3 class="font-bold text-base mb-4">⚡ أنشط (آخر 7 أيام)</h3><div id="d-act"></div></div>
     </div>
-    <div class="grid lg:grid-cols-2 gap-4 mb-6">
+    <div class="grid lg:grid-cols-2 gap-4 mb-6" id="ov-bottom-grid">
         <div class="glass p-6 text-center"><h3 class="font-bold text-base mb-4">📈 نسبة النجاح العامة</h3><p class="text-5xl font-black text-emerald-400" id="d-rate">-</p><p class="text-purple-200/70 text-sm mt-1">من إجمالي المحاولات</p></div>
-        <div class="glass p-6"><h3 class="font-bold text-base mb-4">🆕 أحدث الأعضاء</h3><div id="d-new"></div></div>
+        <div class="glass p-6" data-admin-only><h3 class="font-bold text-base mb-4">🆕 أحدث الأعضاء</h3><div id="d-new"></div></div>
     </div>
     <!-- ✅ آخر نشاط -->
     <div class="glass p-6">
@@ -1434,6 +1434,13 @@ function _applyPerms(){
     document.querySelectorAll('.sb-link[data-perm]').forEach(function(el){
         el.style.display=_hasPerm(el.dataset.perm)?'':'none';
     });
+    // إخفاء أقسام الأدمن عن الموظفين
+    if(me && me.role==='staff'){
+        document.querySelectorAll('[data-admin-only]').forEach(function(el){el.style.display='none'});
+        // ضبط الشبكات بعد الإخفاء
+        var sg=$('ov-stats-grid');if(sg)sg.className=sg.className.replace('lg:grid-cols-4','lg:grid-cols-3');
+        var bg=$('ov-bottom-grid');if(bg)bg.className=bg.className.replace('lg:grid-cols-2','lg:grid-cols-1');
+    }
 }
 
 // ✅ فحص التكرار
