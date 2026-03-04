@@ -339,116 +339,111 @@
 
 <!-- ═══ تحليلات الزوار ═══ -->
 <div id="t-analytics" class="tab">
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex items-center justify-between mb-4">
         <h2 class="text-2xl font-black">📈 تحليلات الزوار</h2>
         <button class="bp" onclick="loadAnalytics()">🔄 تحديث</button>
     </div>
 
-    <!-- إحصائيات لحظية -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(16,185,129,0.15)">
-            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(16,185,129,0.06)"></div>
-            <p class="text-emerald-400/60 text-sm mb-2">🟢 متصل الآن</p>
-            <p class="text-4xl font-black text-emerald-400" id="an-online">-</p>
+    <!-- ─── شريط الإحصائيات المدمج ─── -->
+    <div class="glass p-4 mb-4">
+        <div class="grid grid-cols-4 lg:grid-cols-7 gap-3">
+            <div class="text-center">
+                <p class="text-emerald-400/50 text-[10px] mb-0.5">🟢 متصل</p>
+                <p class="text-2xl font-black text-emerald-400" id="an-online">-</p>
+            </div>
+            <div class="text-center">
+                <p class="text-indigo-400/50 text-[10px] mb-0.5">👁️ زوار اليوم</p>
+                <p class="text-2xl font-black text-indigo-400" id="an-visitors">-</p>
+            </div>
+            <div class="text-center">
+                <p class="text-purple-400/50 text-[10px] mb-0.5">📄 مشاهدات</p>
+                <p class="text-2xl font-black text-purple-400" id="an-pageviews">-</p>
+            </div>
+            <div class="text-center">
+                <p class="text-yellow-400/50 text-[10px] mb-0.5">💪 تدربوا</p>
+                <p class="text-2xl font-black text-yellow-400" id="an-practiced">-</p>
+            </div>
+            <div class="text-center hidden lg:block" style="border-right:1px solid rgba(255,255,255,0.05);padding-right:12px">
+                <p class="text-purple-200/30 text-[10px] mb-0.5">جدد اليوم</p>
+                <p class="text-xl font-black text-indigo-400" id="an-new-today">-</p>
+            </div>
+            <div class="text-center hidden lg:block">
+                <p class="text-purple-200/30 text-[10px] mb-0.5">جدد الأسبوع</p>
+                <p class="text-xl font-black text-purple-400" id="an-new-week">-</p>
+            </div>
+            <div class="text-center hidden lg:block">
+                <p class="text-purple-200/30 text-[10px] mb-0.5">جدد الشهر</p>
+                <p class="text-xl font-black text-emerald-400" id="an-new-month">-</p>
+            </div>
         </div>
-        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(99,102,241,0.15)">
-            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(99,102,241,0.06)"></div>
-            <p class="text-indigo-400/60 text-sm mb-2">👁️ زوار اليوم</p>
-            <p class="text-4xl font-black text-indigo-400" id="an-visitors">-</p>
-        </div>
-        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(139,92,246,0.15)">
-            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(139,92,246,0.06)"></div>
-            <p class="text-purple-400/60 text-sm mb-2">📄 مشاهدات اليوم</p>
-            <p class="text-4xl font-black text-purple-400" id="an-pageviews">-</p>
-        </div>
-        <div class="glass p-5 text-center relative overflow-hidden" style="border:1px solid rgba(245,158,11,0.15)">
-            <div style="position:absolute;top:-25px;right:-25px;width:70px;height:70px;border-radius:50%;background:rgba(245,158,11,0.06)"></div>
-            <p class="text-yellow-400/60 text-sm mb-2">💪 تدربوا اليوم</p>
-            <p class="text-4xl font-black text-yellow-400" id="an-practiced">-</p>
-        </div>
-    </div>
-
-    <!-- ⚡ آخر النشاطات — القسم الأهم -->
-    <div class="glass p-6 mb-6" style="border:1px solid rgba(99,102,241,0.12)">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-base flex items-center gap-2">
-                <span style="display:inline-block;width:9px;height:9px;background:#10b981;border-radius:50%;box-shadow:0 0 8px rgba(16,185,129,0.6);animation:pulse 2s infinite"></span>
-                ⚡ آخر النشاطات
-            </h3>
-            <span class="text-purple-200/30 text-xs">تحديث تلقائي</span>
-        </div>
-        <div id="an-activity-feed" style="max-height:420px;overflow-y:auto" class="space-y-0.5">
-            <p class="text-purple-200/40 text-center py-8">جاري التحميل...</p>
-        </div>
-    </div>
-
-    <!-- النمو -->
-    <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="glass p-5 text-center relative overflow-hidden">
-            <div style="position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:rgba(99,102,241,0.05)"></div>
-            <p class="text-purple-300/50 text-sm mb-2">أعضاء جدد اليوم</p>
-            <p class="text-3xl font-black text-indigo-400" id="an-new-today">-</p>
-        </div>
-        <div class="glass p-5 text-center relative overflow-hidden">
-            <div style="position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:rgba(139,92,246,0.05)"></div>
-            <p class="text-purple-300/50 text-sm mb-2">أعضاء جدد هالأسبوع</p>
-            <p class="text-3xl font-black text-purple-400" id="an-new-week">-</p>
-        </div>
-        <div class="glass p-5 text-center relative overflow-hidden">
-            <div style="position:absolute;bottom:-20px;left:-20px;width:60px;height:60px;border-radius:50%;background:rgba(16,185,129,0.05)"></div>
-            <p class="text-purple-300/50 text-sm mb-2">أعضاء جدد هالشهر</p>
-            <p class="text-3xl font-black text-emerald-400" id="an-new-month">-</p>
+        <!-- موبايل: أعضاء جدد -->
+        <div class="grid grid-cols-3 gap-3 mt-3 lg:hidden" style="border-top:1px solid rgba(255,255,255,0.05);padding-top:10px">
+            <div class="text-center"><p class="text-purple-200/30 text-[10px]">جدد اليوم</p><p class="text-lg font-black text-indigo-400" id="an-new-today-m">-</p></div>
+            <div class="text-center"><p class="text-purple-200/30 text-[10px]">جدد الأسبوع</p><p class="text-lg font-black text-purple-400" id="an-new-week-m">-</p></div>
+            <div class="text-center"><p class="text-purple-200/30 text-[10px]">جدد الشهر</p><p class="text-lg font-black text-emerald-400" id="an-new-month-m">-</p></div>
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-2 gap-4 mb-6">
-        <!-- الأجهزة -->
-        <div class="glass p-6">
-            <h3 class="font-bold text-base mb-4">📱 نوع الأجهزة</h3>
-            <div id="an-devices" class="space-y-3"></div>
+    <!-- ─── النشاطات + المستخدمين ─── -->
+    <div class="grid lg:grid-cols-5 gap-4 mb-4">
+        <!-- آخر النشاطات -->
+        <div class="lg:col-span-2 glass p-4">
+            <div class="flex items-center gap-2 mb-3">
+                <span style="width:7px;height:7px;background:#10b981;border-radius:50%;box-shadow:0 0 6px #10b981;display:inline-block;animation:pulse 2s infinite"></span>
+                <h3 class="font-bold text-sm">آخر النشاطات</h3>
+                <span class="text-purple-200/20 text-[10px] mr-auto">مباشر</span>
+            </div>
+            <div id="an-activity-feed" style="max-height:340px;overflow-y:auto">
+                <p class="text-purple-200/30 text-center py-6 text-xs">جاري التحميل...</p>
+            </div>
         </div>
-        <!-- أكثر الصفحات زيارة -->
-        <div class="glass p-6">
-            <h3 class="font-bold text-base mb-4">🔥 أكثر الصفحات زيارة</h3>
-            <div id="an-pages" class="space-y-2"></div>
+
+        <!-- تفاصيل المستخدمين -->
+        <div class="lg:col-span-3 glass p-4">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold text-sm">👥 المستخدمين</h3>
+                <input type="text" class="inp" id="an-search-user" placeholder="🔍 بحث..." style="max-width:160px;font-size:11px;padding:5px 10px" oninput="filterUserDetails()">
+            </div>
+            <div style="overflow-x:auto">
+                <table class="w-full text-sm" id="an-users-table">
+                    <thead>
+                        <tr class="text-purple-300/50 text-xs">
+                            <th class="text-right p-2 font-bold">العضو</th>
+                            <th class="text-center p-2 font-bold">الاشتراك</th>
+                            <th class="text-center p-2 font-bold">أسئلة حلها</th>
+                            <th class="text-center p-2 font-bold">نسبة الصح</th>
+                            <th class="text-center p-2 font-bold">آخر تدريب</th>
+                            <th class="text-center p-2 font-bold">آخر دخول</th>
+                            <th class="text-center p-2 font-bold">تاريخ التسجيل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="an-users-body"></tbody>
+                </table>
+            </div>
+            <div class="flex justify-center gap-2 mt-3">
+                <button class="bs text-xs" id="an-prev-btn" onclick="loadUserDetails(anUsersPage-1)" disabled>← السابق</button>
+                <span class="text-purple-200/30 text-xs py-1" id="an-page-num">صفحة 1</span>
+                <button class="bs text-xs" id="an-next-btn" onclick="loadUserDetails(anUsersPage+1)">التالي →</button>
+            </div>
         </div>
     </div>
 
-    <!-- 🔔 الإشعارات -->
-    <div class="glass p-6 mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-base">🔔 إشعارات التسجيل الجديدة</h3>
-            <button class="bs text-xs" onclick="markAllNotifRead()">✓ قراءة الكل</button>
+    <!-- ─── الأجهزة + الصفحات + الإشعارات ─── -->
+    <div class="grid lg:grid-cols-3 gap-4">
+        <div class="glass p-4">
+            <h3 class="font-bold text-sm mb-2">📱 الأجهزة</h3>
+            <div id="an-devices" class="space-y-2"></div>
         </div>
-        <div id="an-notifs" class="space-y-2" style="max-height:400px;overflow-y:auto"></div>
-    </div>
-
-    <!-- تفاصيل المستخدمين -->
-    <div class="glass p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-base">👥 تفاصيل المستخدمين (آخر دخول + الأسئلة)</h3>
-            <input type="text" class="inp" id="an-search-user" placeholder="🔍 ابحث باسم أو إيميل..." style="max-width:260px" oninput="filterUserDetails()">
+        <div class="glass p-4">
+            <h3 class="font-bold text-sm mb-2">🔥 أكثر الصفحات</h3>
+            <div id="an-pages" class="space-y-1"></div>
         </div>
-        <div style="overflow-x:auto">
-            <table class="w-full text-sm" id="an-users-table">
-                <thead>
-                    <tr class="text-purple-300/50 text-xs">
-                        <th class="text-right p-2 font-bold">العضو</th>
-                        <th class="text-center p-2 font-bold">الاشتراك</th>
-                        <th class="text-center p-2 font-bold">أسئلة حلها</th>
-                        <th class="text-center p-2 font-bold">نسبة الصح</th>
-                        <th class="text-center p-2 font-bold">آخر تدريب</th>
-                        <th class="text-center p-2 font-bold">آخر دخول</th>
-                        <th class="text-center p-2 font-bold">تاريخ التسجيل</th>
-                    </tr>
-                </thead>
-                <tbody id="an-users-body"></tbody>
-            </table>
-        </div>
-        <div class="flex justify-center gap-3 mt-4">
-            <button class="bs" id="an-prev-btn" onclick="loadUserDetails(anUsersPage-1)" disabled>← السابق</button>
-            <span class="text-purple-200/40 text-sm py-2" id="an-page-num">صفحة 1</span>
-            <button class="bs" id="an-next-btn" onclick="loadUserDetails(anUsersPage+1)">التالي →</button>
+        <div class="glass p-4">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-sm">🔔 إشعارات</h3>
+                <button class="text-purple-200/30 text-[10px] hover:text-purple-200/60" onclick="markAllNotifRead()">قراءة الكل</button>
+            </div>
+            <div id="an-notifs" style="max-height:220px;overflow-y:auto" class="space-y-1.5"></div>
         </div>
     </div>
 </div>
@@ -2585,8 +2580,12 @@ async function loadAnalytics(){
     $('an-new-today').textContent = stats.new_users_today || 0;
     $('an-new-week').textContent = stats.new_users_week || 0;
     $('an-new-month').textContent = stats.new_users_month || 0;
+    // موبايل
+    var ntm=$('an-new-today-m');if(ntm)ntm.textContent=stats.new_users_today||0;
+    var nwm=$('an-new-week-m');if(nwm)nwm.textContent=stats.new_users_week||0;
+    var nmm=$('an-new-month-m');if(nmm)nmm.textContent=stats.new_users_month||0;
 
-    // الأجهزة
+    // الأجهزة — مدمج
     var devH = '';
     var totalDev = 0;
     (stats.device_breakdown||[]).forEach(function(d){totalDev+=d.count});
@@ -2595,23 +2594,28 @@ async function loadAnalytics(){
         var icon = d.device === 'mobile' ? '📱' : '💻';
         var name = d.device === 'mobile' ? 'جوال' : 'كمبيوتر';
         var color = d.device === 'mobile' ? '#6366f1' : '#10b981';
-        devH += '<div><div class="flex justify-between mb-1"><span class="text-white text-sm font-bold">'+icon+' '+name+'</span><span class="text-purple-200/60 text-sm">'+pct+'% <span class="text-purple-200/30">('+d.count+')</span></span></div>'
-            + '<div class="perf-bar"><div class="perf-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+        devH += '<div class="flex items-center gap-2 py-1.5"><span class="text-sm">'+icon+'</span>'
+            + '<span class="text-white text-xs font-bold flex-1">'+name+'</span>'
+            + '<span class="text-xs font-bold" style="color:'+color+'">'+pct+'%</span>'
+            + '<span class="text-purple-200/25 text-[10px]">('+d.count+')</span>'
+            + '<div class="flex-1" style="max-width:80px;height:4px;background:rgba(255,255,255,0.05);border-radius:2px"><div style="width:'+pct+'%;height:100%;background:'+color+';border-radius:2px"></div></div>'
+            + '</div>';
     });
-    $('an-devices').innerHTML = devH || '<p class="text-purple-200/50 text-center py-4">لا توجد بيانات بعد</p>';
+    $('an-devices').innerHTML = devH || '<p class="text-purple-200/30 text-center py-3 text-xs">لا توجد بيانات</p>';
 
-    // أكثر الصفحات زيارة
+    // أكثر الصفحات — أول 6 فقط
     var pageNames = {'/':'الرئيسية','/index':'الرئيسية','/dashboard':'لوحة التحكم','/practice':'التدريب','/select-section':'اختيار القسم','/pricing':'الأسعار','/stats':'الإحصائيات','/profile':'الملف الشخصي','/login':'تسجيل الدخول','/register':'التسجيل','/leaderboard':'المتصدرون','/mistakes':'مراجعة الأخطاء','/contact':'تواصل معنا'};
     var pagesH = '';
-    (stats.top_pages||[]).forEach(function(p,i){
+    var topPages = (stats.top_pages||[]).slice(0,6);
+    topPages.forEach(function(p,i){
         var name = pageNames[p.page_path] || p.page_path;
-        var medal = i < 3 ? ['🥇','🥈','🥉'][i] : '<span class="text-purple-200/30">'+(i+1)+'</span>';
-        pagesH += '<div class="flex items-center gap-3 py-2 '+(i<(stats.top_pages||[]).length-1?'border-b border-purple-500/10':'')+'">'
-            + '<span class="text-lg min-w-[28px] text-center">'+medal+'</span>'
-            + '<span class="text-white text-sm font-bold flex-1">'+name+'</span>'
-            + '<span class="text-purple-200/60 text-sm font-bold">'+p.views+' <span class="text-purple-200/30 text-xs">زيارة</span></span></div>';
+        var medal = i < 3 ? ['🥇','🥈','🥉'][i] : '<span class="text-purple-200/25 text-[10px]">'+(i+1)+'</span>';
+        pagesH += '<div class="flex items-center gap-2 py-1.5">'
+            + '<span class="text-sm min-w-[20px] text-center">'+medal+'</span>'
+            + '<span class="text-white text-xs font-bold flex-1">'+name+'</span>'
+            + '<span class="text-purple-200/40 text-[11px] font-bold">'+p.views+'</span></div>';
     });
-    $('an-pages').innerHTML = pagesH || '<p class="text-purple-200/50 text-center py-4">لا توجد بيانات بعد</p>';
+    $('an-pages').innerHTML = pagesH || '<p class="text-purple-200/30 text-center py-3 text-xs">لا توجد بيانات</p>';
 
     // آخر النشاطات
     loadActivityFeed();
@@ -2682,16 +2686,14 @@ async function loadActivityFeed(){
         var devIcon = e.device === 'mobile' ? '📱' : '💻';
         var time = timeAgo(e.created_at);
 
-        h += '<div class="flex items-center gap-3 py-2.5 px-3 rounded-lg" style="transition:background 0.15s" onmouseenter="this.style.background=\'rgba(255,255,255,0.03)\'" onmouseleave="this.style.background=\'transparent\'">'
-            + '<span class="text-lg flex-shrink-0">'+icon+'</span>'
-            + '<div class="flex-1 min-w-0">'
-            + '<p class="text-white text-sm"><span class="font-bold">'+whoIcon+' '+who+'</span> '+text+'</p>'
-            + '<p class="text-purple-200/30 text-xs mt-0.5">'+devIcon+' '+time+'</p>'
-            + '</div>'
+        h += '<div class="flex items-center gap-2 py-1.5 px-2 rounded" style="border-bottom:1px solid rgba(255,255,255,0.02)">'
+            + '<span class="text-sm flex-shrink-0">'+icon+'</span>'
+            + '<p class="text-white text-xs flex-1 min-w-0 truncate"><span class="font-bold">'+whoIcon+' '+who+'</span> '+text+'</p>'
+            + '<span class="text-purple-200/25 text-[10px] flex-shrink-0 whitespace-nowrap">'+devIcon+' '+time+'</span>'
             + '</div>';
     });
 
-    $('an-activity-feed').innerHTML = h || '<p class="text-purple-200/50 text-center py-6">لا توجد نشاطات بعد — ستظهر هنا تلقائياً عند تصفّح الزوار أو حل الأسئلة</p>';
+    $('an-activity-feed').innerHTML = h || '<p class="text-purple-200/30 text-center py-4 text-xs">لا توجد نشاطات بعد</p>';
 }
 
 async function loadNotifications(){
@@ -2715,21 +2717,17 @@ async function loadNotifications(){
         var isNew = !n.is_read;
         var meta = n.metadata || {};
         var icon = n.type === 'new_signup' ? '🎉' : '🔔';
-        h += '<div class="flex items-center gap-3 p-3 rounded-xl '+(isNew?'bg-emerald-500/5 border border-emerald-500/15':'bg-white/[0.02] border border-white/[0.04]')+'">'
-            + '<span class="text-2xl">'+icon+'</span>'
-            + '<span class="text-lg">'+(meta.avatar||'👤')+'</span>'
+        h += '<div class="flex items-center gap-2 p-2 rounded-lg '+(isNew?'bg-emerald-500/5 border border-emerald-500/10':'bg-white/[0.02]')+'">'
+            + '<span class="text-sm">'+(meta.avatar||'👤')+'</span>'
             + '<div class="flex-1 min-w-0">'
-            + '<p class="text-white text-sm font-bold">'+n.title+'</p>'
-            + '<p class="text-purple-200/50 text-xs truncate">'+(n.body||'')+(meta.email?' — '+meta.email:'')+'</p>'
+            + '<p class="text-white text-xs font-bold truncate">'+n.title+'</p>'
+            + '<p class="text-purple-200/30 text-[10px] truncate">'+(n.body||'')+'</p>'
             + '</div>'
-            + '<div class="text-left flex-shrink-0">'
-            + '<p class="text-purple-200/40 text-xs">'+timeStr+'</p>'
-            + '<p class="text-purple-200/25 text-[10px]">'+dateStr+'</p>'
-            + '</div>'
-            + (isNew?'<div class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0"></div>':'')
+            + '<span class="text-purple-200/25 text-[10px] flex-shrink-0">'+timeStr+'</span>'
+            + (isNew?'<div class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></div>':'')
             + '</div>';
     });
-    $('an-notifs').innerHTML = h || '<p class="text-purple-200/50 text-center py-6">لا توجد إشعارات</p>';
+    $('an-notifs').innerHTML = h || '<p class="text-purple-200/30 text-center py-4 text-xs">لا توجد إشعارات</p>';
 }
 
 async function markAllNotifRead(){
