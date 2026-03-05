@@ -369,15 +369,12 @@
             }
 
             // ١. تحقق من تسجيل الدخول وتجديد الجلسة
-            var{data:{session}}=await sb.auth.getSession();
-            if(!session){
+            var{data:refreshData,error:refreshErr}=await sb.auth.refreshSession();
+            if(refreshErr||!refreshData.session){
                 localStorage.setItem('madarek_plan',plan);
-                window.location.href='register.html';
+                window.location.href='login.html';
                 return;
             }
-
-            // تجديد التوكن عشان نتأكد إنه صالح
-            await sb.auth.refreshSession();
 
             showPayLoading(true);
 
@@ -395,13 +392,20 @@
                 if(error){
                     showPayLoading(false);
                     var errMsg='حدث خطأ في إنشاء عملية الدفع';
-                    try{var errBody=await error.context.json();errMsg=errBody.error||errMsg}catch(e2){}
+                    // v2: error.context = parsed body | v1: error.context = Response
+                    try{
+                        var ctx=error.context;
+                        if(ctx&&typeof ctx==='object'&&ctx.error) errMsg=ctx.error;
+                        else if(ctx&&typeof ctx.json==='function'){var b=await ctx.json();errMsg=b.error||errMsg}
+                    }catch(e2){}
+                    console.error('Payment error:',JSON.stringify(error.context),error.message);
                     alert(errMsg);
                     return;
                 }
 
                 if(!data||data.error){
                     showPayLoading(false);
+                    console.error('Payment data error:',JSON.stringify(data));
                     alert((data&&data.error)||'حدث خطأ — حاول مرة ثانية');
                     return;
                 }
@@ -445,6 +449,8 @@
             document.getElementById('couponSuccess').classList.add('hidden');
             document.getElementById('couponError').classList.add('hidden');
             try {
+                // تجديد الجلسة عشان ما يطلع خطأ 406/401
+                await sb.auth.refreshSession();
                 // التحقق فقط بدون زيادة العداد — Edge Function هي اللي تزيده عند الدفع
                 var {data, error} = await sb.from('coupons').select('*').eq('code', code).single();
                 if(error || !data){
