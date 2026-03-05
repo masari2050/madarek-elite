@@ -172,6 +172,13 @@
         .rev-exp-toggle{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12);border-radius:10px;padding:8px 14px;margin-top:10px;cursor:pointer;text-align:center;font-size:.8rem;color:rgba(165,180,252,0.7);font-weight:700;transition:all .15s}
         .rev-exp-toggle:hover{background:rgba(99,102,241,0.12)}
         .rev-report-modal{background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);position:fixed;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;padding:16px}
+        .rev-card.reviewed{opacity:0.55;border-right-color:#10b981!important}
+        .rev-card.reviewed:hover{opacity:0.8}
+        .rev-card .rev-check{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:.75rem;font-weight:700;color:#34d399;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)}
+        .rev-filter-btn{padding:6px 14px;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(196,181,253,0.5)}
+        .rev-filter-btn.active{background:rgba(99,102,241,0.2);color:#a5b4fc;border-color:rgba(99,102,241,0.3)}
+        .rev-progress{height:8px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:8px}
+        .rev-progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#10b981,#14b8a6);transition:width .4s ease}
         /* ✅ أداة الكشف عن التكرار */
         .dup-tool-wrap{background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:1rem;padding:16px;margin-bottom:16px}
         .dup-result-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:.75rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);margin-top:8px}
@@ -978,11 +985,28 @@
     </div>
 
     <!-- إحصائيات -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
         <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">إجمالي الأسئلة</p><p class="text-3xl font-black text-indigo-400" id="rev-total">-</p></div>
-        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">فيها شرح</p><p class="text-3xl font-black text-emerald-400" id="rev-with-exp">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">تمت مراجعتها</p><p class="text-3xl font-black text-emerald-400" id="rev-reviewed">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">لم تُراجع</p><p class="text-3xl font-black text-orange-400" id="rev-pending">-</p></div>
         <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">بدون شرح</p><p class="text-3xl font-black text-yellow-400" id="rev-no-exp">-</p></div>
         <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">فيها صورة</p><p class="text-3xl font-black text-purple-400" id="rev-with-img">-</p></div>
+    </div>
+
+    <!-- شريط تقدم المراجعة -->
+    <div class="glass p-4 mb-4">
+        <div class="flex items-center justify-between mb-1">
+            <span class="text-sm font-bold text-purple-200/70" id="rev-progress-text">تقدم المراجعة</span>
+            <span class="text-sm font-black text-emerald-400" id="rev-progress-pct">0%</span>
+        </div>
+        <div class="rev-progress"><div class="rev-progress-fill" id="rev-progress-bar" style="width:0%"></div></div>
+    </div>
+
+    <!-- فلتر حالة المراجعة -->
+    <div class="flex gap-2 mb-4">
+        <button class="rev-filter-btn active" onclick="setRevFilter('all',this)">الكل</button>
+        <button class="rev-filter-btn" onclick="setRevFilter('pending',this)">لم تُراجع</button>
+        <button class="rev-filter-btn" onclick="setRevFilter('reviewed',this)">تمت مراجعتها</button>
     </div>
 
     <!-- مفتاح الجودة -->
@@ -2736,6 +2760,34 @@ async function loadPerf(){
    🔍 مراجعة الأسئلة — Review Questions
 ═══════════════════════════════════════ */
 var _revPeriod='week';
+var _revStatusFilter='all';
+
+// نظام تتبع المراجعة (localStorage)
+function getReviewedIds(){
+    try{var d=JSON.parse(localStorage.getItem('madarek_reviewed')||'{}');return d}catch(e){return{}}
+}
+function markReviewed(qid){
+    var d=getReviewedIds();
+    d[qid]=Date.now();
+    localStorage.setItem('madarek_reviewed',JSON.stringify(d));
+    loadReview();
+}
+function unmarkReviewed(qid){
+    var d=getReviewedIds();
+    delete d[qid];
+    localStorage.setItem('madarek_reviewed',JSON.stringify(d));
+    loadReview();
+}
+function isReviewed(qid){
+    return !!getReviewedIds()[qid];
+}
+function setRevFilter(f,btn){
+    _revStatusFilter=f;
+    document.querySelectorAll('.rev-filter-btn').forEach(function(b){b.classList.remove('active')});
+    if(btn)btn.classList.add('active');
+    loadReview();
+}
+
 var _revSubSections={
     quant:['الجبر والمعادلات','النسبة والتناسب','الهندسة','الإحصاء','الأعداد','التحليل'],
     verbal:['التناظر اللفظي','إكمال الجمل','الاستيعاب المقروء','الخطأ السياقي'],
@@ -2799,15 +2851,38 @@ async function loadReview(){
     }
 
     // إحصائيات
-    var withExp=0,noExp=0,withImg=0;
+    var reviewedIds=getReviewedIds();
+    var withExp=0,noExp=0,withImg=0,reviewedCount=0;
     data.forEach(function(q){
         if(q.explanation&&q.explanation.trim().length>5)withExp++;else noExp++;
         if(q.image_url)withImg++;
+        if(reviewedIds[q.id])reviewedCount++;
     });
+    var pendingCount=data.length-reviewedCount;
+    var pct=data.length>0?Math.round(reviewedCount/data.length*100):0;
+
     document.getElementById('rev-total').textContent=data.length;
-    document.getElementById('rev-with-exp').textContent=withExp;
+    document.getElementById('rev-reviewed').textContent=reviewedCount;
+    document.getElementById('rev-pending').textContent=pendingCount;
     document.getElementById('rev-no-exp').textContent=noExp;
     document.getElementById('rev-with-img').textContent=withImg;
+    document.getElementById('rev-progress-text').textContent='راجعت '+reviewedCount+' من '+data.length;
+    document.getElementById('rev-progress-pct').textContent=pct+'%';
+    document.getElementById('rev-progress-bar').style.width=pct+'%';
+
+    // فلتر حسب حالة المراجعة
+    if(_revStatusFilter==='pending'){
+        data=data.filter(function(q){return !reviewedIds[q.id]});
+    }else if(_revStatusFilter==='reviewed'){
+        data=data.filter(function(q){return !!reviewedIds[q.id]});
+    }else{
+        // ترتيب: غير المُراجَع أولاً، المُراجَع تحت
+        data.sort(function(a,b){
+            var aR=reviewedIds[a.id]?1:0;
+            var bR=reviewedIds[b.id]?1:0;
+            return aR-bR;
+        });
+    }
 
     // عرض الأسئلة
     var list=document.getElementById('rev-list');
@@ -2832,15 +2907,17 @@ async function loadReview(){
         var hasChoices=choices.length===4&&choices[0];
         var createdDate=q.created_at?new Date(q.created_at).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
 
-        // مؤشر الجودة
+        // مؤشر الجودة + حالة المراجعة
         var quality='quality-good';
         if(!hasText&&!q.image_url||!hasChoices)quality='quality-bad';
         else if(!hasExp)quality='quality-warn';
+        var qReviewed=!!reviewedIds[q.id];
 
-        h+='<div class="rev-card '+quality+'">';
+        h+='<div class="rev-card '+quality+(qReviewed?' reviewed':'')+'">';
         // header
         h+='<div class="flex items-start justify-between gap-3">';
         h+='<div class="flex items-center gap-2 flex-wrap">';
+        if(qReviewed)h+='<span class="rev-check">✅ تمت المراجعة</span>';
         h+='<span class="bg bg-m">'+(secNames[q.section]||q.section)+'</span>';
         if(q.sub_section)h+='<span class="text-purple-200/50 text-xs font-bold">'+escHtml(q.sub_section)+'</span>';
         h+='<span class="text-purple-200/25 text-[10px]">#'+(data.length-idx)+'</span>';
@@ -2879,6 +2956,11 @@ async function loadReview(){
 
         // أزرار الإجراءات
         h+='<div class="rev-actions">';
+        if(qReviewed){
+            h+='<button style="background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:#34d399" onclick="unmarkReviewed(\''+q.id+'\')">↩️ إلغاء المراجعة</button>';
+        }else{
+            h+='<button style="background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:#34d399" onclick="markReviewed(\''+q.id+'\')">✅ صح</button>';
+        }
         h+='<button style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.2);color:#a5b4fc" onclick="editQ(\''+q.id+'\')">✏️ تعديل</button>';
         h+='<button style="background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2);color:#fbbf24" onclick="openRevReport(\''+q.id+'\',this)">🚩 تبليغ</button>';
         h+='<button style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#f87171" onclick="delQ(\''+q.id+'\')">🗑️ حذف</button>';
