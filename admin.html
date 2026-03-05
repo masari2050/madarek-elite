@@ -156,6 +156,22 @@
             user-select:text;
         }
 
+        /* ═══ Review Cards ═══ */
+        .rev-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:1rem;padding:20px;transition:all .2s}
+        .rev-card:hover{border-color:rgba(99,102,241,0.25)}
+        .rev-card .rev-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+        .rev-card .rev-choice{padding:8px 12px;border-radius:10px;font-size:.85rem;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:rgba(226,232,240,0.8)}
+        .rev-card .rev-choice.correct{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:#34d399;font-weight:700}
+        .rev-card .rev-exp{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12);border-radius:10px;padding:12px 16px;margin-top:12px;font-size:.85rem;color:rgba(196,181,253,0.8);line-height:1.7;max-height:200px;overflow-y:auto}
+        .rev-card .rev-no-exp{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:.8rem;color:rgba(251,191,36,0.7);text-align:center}
+        .rev-card .rev-actions{display:flex;gap:6px;margin-top:14px}
+        .rev-card .rev-actions button{padding:7px 16px;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;border:1px solid}
+        .rev-card.quality-good{border-right:3px solid #10b981}
+        .rev-card.quality-warn{border-right:3px solid #f59e0b}
+        .rev-card.quality-bad{border-right:3px solid #ef4444}
+        .rev-exp-toggle{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12);border-radius:10px;padding:8px 14px;margin-top:10px;cursor:pointer;text-align:center;font-size:.8rem;color:rgba(165,180,252,0.7);font-weight:700;transition:all .15s}
+        .rev-exp-toggle:hover{background:rgba(99,102,241,0.12)}
+        .rev-report-modal{background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);position:fixed;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;padding:16px}
         /* ✅ أداة الكشف عن التكرار */
         .dup-tool-wrap{background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:1rem;padding:16px;margin-bottom:16px}
         .dup-result-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:.75rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);margin-top:8px}
@@ -199,6 +215,7 @@
     </div>
     <div class="sb-link on" data-tab="overview"><span>📊</span><span>نظرة عامة</span></div>
     <div class="sb-link" data-tab="questions" data-perm="questions"><span>📝</span><span>الأسئلة</span></div>
+    <div class="sb-link" data-tab="review" data-perm="questions"><span>🔍</span><span>مراجعة الأسئلة</span></div>
     <div class="sb-link" data-tab="users" data-perm="users"><span>👥</span><span>الأعضاء</span></div>
     <div class="sb-link" data-tab="coupons" data-perm="coupons"><span>🎟️</span><span>الكوبونات</span></div>
     <div class="sb-link" data-tab="finance" data-perm="finance"><span>💰</span><span>المالية</span></div>
@@ -934,6 +951,70 @@
     </div>
 </div>
 
+<!-- ═══ مراجعة الأسئلة ═══ -->
+<div id="t-review" class="tab">
+    <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <h2 class="text-2xl font-black">🔍 مراجعة الأسئلة</h2>
+        <div class="flex gap-2 flex-wrap">
+            <button class="perf-tab active" onclick="switchRevPeriod('week',this)">آخر أسبوع</button>
+            <button class="perf-tab" onclick="switchRevPeriod('today',this)">اليوم</button>
+            <button class="perf-tab" onclick="switchRevPeriod('month',this)">آخر شهر</button>
+            <button class="perf-tab" onclick="switchRevPeriod('all',this)">الكل</button>
+        </div>
+    </div>
+
+    <!-- فلاتر -->
+    <div class="flex gap-3 mb-4 flex-wrap">
+        <select id="rev-sec" class="inp" style="max-width:180px" onchange="loadReview()">
+            <option value="all">كل الأقسام</option>
+            <option value="quant">كمي</option>
+            <option value="verbal">لفظي</option>
+            <option value="tahsili">تحصيلي</option>
+        </select>
+        <select id="rev-sub" class="inp" style="max-width:200px" onchange="loadReview()">
+            <option value="all">كل الأقسام الفرعية</option>
+        </select>
+        <input type="text" id="rev-search" class="inp" style="max-width:260px" placeholder="بحث في الأسئلة..." oninput="loadReview()">
+    </div>
+
+    <!-- إحصائيات -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">إجمالي الأسئلة</p><p class="text-3xl font-black text-indigo-400" id="rev-total">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">فيها شرح</p><p class="text-3xl font-black text-emerald-400" id="rev-with-exp">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">بدون شرح</p><p class="text-3xl font-black text-yellow-400" id="rev-no-exp">-</p></div>
+        <div class="perf-card text-center"><p class="text-purple-300/50 text-xs mb-1">فيها صورة</p><p class="text-3xl font-black text-purple-400" id="rev-with-img">-</p></div>
+    </div>
+
+    <!-- مفتاح الجودة -->
+    <div class="flex gap-4 mb-4 flex-wrap text-xs text-purple-200/50">
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#10b981;margin-left:4px"></span> سؤال كامل (شرح + خيارات)</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#f59e0b;margin-left:4px"></span> ينقصه شرح</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#ef4444;margin-left:4px"></span> ناقص (بدون نص أو خيارات)</span>
+    </div>
+
+    <!-- قائمة المراجعة -->
+    <div id="rev-list" class="space-y-4"></div>
+    <p id="rev-empty" class="hidden text-center text-purple-200/40 py-12 text-lg">لا توجد أسئلة في هذه الفترة</p>
+</div>
+
+<!-- مودال تبليغ من المراجعة -->
+<div id="revReportM" class="rev-report-modal hidden">
+    <div class="mbox" style="max-width:420px">
+        <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-lg">🚩 تبليغ عن سؤال</h3><button onclick="$('revReportM').classList.add('hidden')" class="text-purple-200/60 hover:text-white text-lg">✕</button></div>
+        <input type="hidden" id="rev-report-qid">
+        <p id="rev-report-qtext" class="text-sm text-purple-200/60 mb-3 p-3 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);max-height:80px;overflow:hidden"></p>
+        <label class="text-purple-300/50 text-sm mb-2 block">سبب التبليغ:</label>
+        <div class="grid grid-cols-2 gap-2 mb-3">
+            <button class="rev-reason-btn bs text-xs" onclick="selectRevReason(this)" data-reason="الإجابة الصحيحة خطأ">❌ الإجابة خطأ</button>
+            <button class="rev-reason-btn bs text-xs" onclick="selectRevReason(this)" data-reason="نص السؤال غير واضح">❓ سؤال غير واضح</button>
+            <button class="rev-reason-btn bs text-xs" onclick="selectRevReason(this)" data-reason="الشرح يحتاج تعديل">📝 الشرح يحتاج تعديل</button>
+            <button class="rev-reason-btn bs text-xs" onclick="selectRevReason(this)" data-reason="سؤال مكرر">🔁 مكرر</button>
+        </div>
+        <textarea id="rev-report-note" class="inp text-sm" rows="2" placeholder="ملاحظة إضافية (اختياري)..."></textarea>
+        <button class="bp w-full mt-3" onclick="submitRevReport()">🚩 إرسال التبليغ</button>
+    </div>
+</div>
+
 </div><!-- end mc -->
 
 <!-- ═══ Question Modal (✅ محرر نصوص احترافي) ═══ -->
@@ -1538,7 +1619,7 @@ document.querySelectorAll('.sb-link[data-tab]').forEach(function(el){
         $('t-'+t).classList.add('on');this.classList.add('on');
         if(t==='overview')loadOV();if(t==='questions'){loadQ();loadSecStats()}if(t==='users')loadU();
         if(t==='coupons')loadC();if(t==='finance')loadF();if(t==='reports')loadR();
-        if(t==='staff')loadST();if(t==='settings')loadSet();if(t==='performance')loadPerf();
+        if(t==='staff')loadST();if(t==='settings')loadSet();if(t==='performance')loadPerf();if(t==='review')loadReview();
     });
 });
 
@@ -2649,6 +2730,200 @@ async function loadPerf(){
     });
     $('pf-activity-log').innerHTML=logH||'<p class="text-purple-200/60 text-center py-6">لا يوجد نشاط مسجّل</p>';
     $('pf-log-count').textContent=logs.length+' إجراء';
+}
+
+/* ═══════════════════════════════════════
+   🔍 مراجعة الأسئلة — Review Questions
+═══════════════════════════════════════ */
+var _revPeriod='week';
+var _revSubSections={
+    quant:['الجبر والمعادلات','النسبة والتناسب','الهندسة','الإحصاء','الأعداد','التحليل'],
+    verbal:['التناظر اللفظي','إكمال الجمل','الاستيعاب المقروء','الخطأ السياقي'],
+    tahsili:['الرياضيات','الفيزياء','الكيمياء','الأحياء','اللغة الإنجليزية']
+};
+
+function switchRevPeriod(p,btn){
+    _revPeriod=p;
+    document.querySelectorAll('#t-review .perf-tab').forEach(function(b){b.classList.remove('active')});
+    if(btn)btn.classList.add('active');
+    loadReview();
+}
+
+// تحديث الأقسام الفرعية حسب القسم المختار
+(function(){
+    var secSel=document.getElementById('rev-sec');
+    if(secSel)secSel.addEventListener('change',function(){
+        var sub=document.getElementById('rev-sub');
+        sub.innerHTML='<option value="all">كل الأقسام الفرعية</option>';
+        var sec=this.value;
+        if(sec!=='all'&&_revSubSections[sec]){
+            _revSubSections[sec].forEach(function(s){
+                sub.innerHTML+='<option value="'+s+'">'+s+'</option>';
+            });
+        }
+    });
+})();
+
+async function loadReview(){
+    var secF=document.getElementById('rev-sec').value;
+    var subF=document.getElementById('rev-sub').value;
+    var search=document.getElementById('rev-search').value.trim().toLowerCase();
+
+    // حساب تاريخ البداية
+    var fromDate=null;
+    var now=new Date();
+    if(_revPeriod==='today'){
+        var d=new Date(now);d.setHours(0,0,0,0);
+        fromDate=d.toISOString();
+    }else if(_revPeriod==='week'){
+        var d=new Date(now);d.setDate(d.getDate()-7);d.setHours(0,0,0,0);
+        fromDate=d.toISOString();
+    }else if(_revPeriod==='month'){
+        var d=new Date(now);d.setDate(d.getDate()-30);d.setHours(0,0,0,0);
+        fromDate=d.toISOString();
+    }
+
+    var qr=sb.from('questions').select('*').order('created_at',{ascending:false});
+    if(fromDate)qr=qr.gte('created_at',fromDate);
+    if(secF!=='all')qr=qr.eq('section',secF);
+    if(subF!=='all')qr=qr.eq('sub_section',subF);
+
+    var{data,error}=await qr.limit(200);
+    if(error||!data)data=[];
+
+    // بحث نصي
+    if(search){
+        data=data.filter(function(q){
+            return (q.question_text||'').toLowerCase().includes(search);
+        });
+    }
+
+    // إحصائيات
+    var withExp=0,noExp=0,withImg=0;
+    data.forEach(function(q){
+        if(q.explanation&&q.explanation.trim().length>5)withExp++;else noExp++;
+        if(q.image_url)withImg++;
+    });
+    document.getElementById('rev-total').textContent=data.length;
+    document.getElementById('rev-with-exp').textContent=withExp;
+    document.getElementById('rev-no-exp').textContent=noExp;
+    document.getElementById('rev-with-img').textContent=withImg;
+
+    // عرض الأسئلة
+    var list=document.getElementById('rev-list');
+    var empty=document.getElementById('rev-empty');
+
+    if(data.length===0){
+        list.innerHTML='';
+        empty.classList.remove('hidden');
+        return;
+    }
+    empty.classList.add('hidden');
+
+    var secNames={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
+    var choiceLabels=['أ','ب','ج','د'];
+    var h='';
+    data.forEach(function(q,idx){
+        var choices=q.choices||[];
+        if(typeof choices==='string'){try{choices=JSON.parse(choices)}catch(e){choices=[]}}
+        var ci=q.correct_index||0;
+        var hasExp=q.explanation&&q.explanation.trim().length>5;
+        var hasText=q.question_text&&q.question_text.trim().length>3;
+        var hasChoices=choices.length===4&&choices[0];
+        var createdDate=q.created_at?new Date(q.created_at).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+
+        // مؤشر الجودة
+        var quality='quality-good';
+        if(!hasText&&!q.image_url||!hasChoices)quality='quality-bad';
+        else if(!hasExp)quality='quality-warn';
+
+        h+='<div class="rev-card '+quality+'">';
+        // header
+        h+='<div class="flex items-start justify-between gap-3">';
+        h+='<div class="flex items-center gap-2 flex-wrap">';
+        h+='<span class="bg bg-m">'+(secNames[q.section]||q.section)+'</span>';
+        if(q.sub_section)h+='<span class="text-purple-200/50 text-xs font-bold">'+escHtml(q.sub_section)+'</span>';
+        h+='<span class="text-purple-200/25 text-[10px]">#'+(data.length-idx)+'</span>';
+        h+='</div>';
+        h+='<span class="text-purple-200/30 text-xs flex-shrink-0">'+createdDate+'</span>';
+        h+='</div>';
+
+        // صورة السؤال
+        if(q.image_url){
+            h+='<div class="mt-3"><img src="'+escHtml(q.image_url)+'" class="max-h-40 rounded-lg border border-white/10" onerror="this.style.display=\'none\'"></div>';
+        }
+
+        // نص السؤال
+        h+='<div class="mt-3 text-white text-sm leading-relaxed">'+(q.question_text||'<span class="text-purple-200/40">سؤال بالصورة فقط</span>')+'</div>';
+
+        // الخيارات
+        h+='<div class="rev-choices">';
+        choices.forEach(function(c,i){
+            var isCorrect=i===ci;
+            h+='<div class="rev-choice'+(isCorrect?' correct':'')+'">';
+            h+='<span class="font-bold ml-1" style="color:'+(isCorrect?'#34d399':'rgba(196,181,253,0.5)')+'">'+choiceLabels[i]+'. </span>';
+            h+=escHtml(c);
+            if(isCorrect)h+=' <span style="margin-right:4px">✓</span>';
+            h+='</div>';
+        });
+        h+='</div>';
+
+        // الشرح (قابل للطي)
+        if(hasExp){
+            var expId='rev-exp-'+q.id;
+            h+='<div class="rev-exp-toggle" onclick="var e=document.getElementById(\''+expId+'\');e.classList.toggle(\'hidden\');this.textContent=e.classList.contains(\'hidden\')?\'📖 عرض الشرح\':\'📕 إخفاء الشرح\'">📖 عرض الشرح</div>';
+            h+='<div id="'+expId+'" class="rev-exp hidden">'+q.explanation+'</div>';
+        }else{
+            h+='<div class="rev-no-exp">⚠️ بدون شرح — يُفضّل إضافة شرح مبسط</div>';
+        }
+
+        // أزرار الإجراءات
+        h+='<div class="rev-actions">';
+        h+='<button style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.2);color:#a5b4fc" onclick="editQ(\''+q.id+'\')">✏️ تعديل</button>';
+        h+='<button style="background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2);color:#fbbf24" onclick="openRevReport(\''+q.id+'\',this)">🚩 تبليغ</button>';
+        h+='<button style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#f87171" onclick="delQ(\''+q.id+'\')">🗑️ حذف</button>';
+        h+='</div>';
+
+        h+='</div>';
+    });
+    list.innerHTML=h;
+}
+
+// فتح مودال التبليغ
+function openRevReport(qid,btn){
+    var card=btn.closest('.rev-card');
+    var qtext=card.querySelector('.text-white.text-sm');
+    document.getElementById('rev-report-qid').value=qid;
+    document.getElementById('rev-report-qtext').innerHTML=qtext?qtext.innerHTML.substring(0,150):'';
+    document.getElementById('rev-report-note').value='';
+    document.querySelectorAll('.rev-reason-btn').forEach(function(b){b.style.background='rgba(255,255,255,0.06)';b.style.borderColor='rgba(255,255,255,0.1)'});
+    _selectedRevReason='';
+    document.getElementById('revReportM').classList.remove('hidden');
+}
+
+var _selectedRevReason='';
+function selectRevReason(btn){
+    document.querySelectorAll('.rev-reason-btn').forEach(function(b){b.style.background='rgba(255,255,255,0.06)';b.style.borderColor='rgba(255,255,255,0.1)'});
+    btn.style.background='rgba(251,191,36,0.15)';
+    btn.style.borderColor='rgba(251,191,36,0.4)';
+    _selectedRevReason=btn.dataset.reason;
+}
+
+async function submitRevReport(){
+    var qid=document.getElementById('rev-report-qid').value;
+    var note=document.getElementById('rev-report-note').value.trim();
+    var reason=_selectedRevReason||(note||'يحتاج مراجعة');
+    if(!reason&&!note){toast('اختر سبب التبليغ',false);return}
+
+    var{error}=await sb.from('reports').insert({
+        question_id:qid,
+        user_id:me.id,
+        reason:(reason+(note?' — '+note:''))
+    });
+
+    if(error){toast('خطأ: '+error.message,false);return}
+    toast('تم إرسال التبليغ',true);
+    document.getElementById('revReportM').classList.add('hidden');
 }
 
 /* ═══════════════════════════════════════
