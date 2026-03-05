@@ -385,8 +385,10 @@
 
             // ٣. استدعاء Edge Function لإنشاء عملية الدفع
             try{
+                var freshToken=refreshData.session.access_token;
                 var{data,error}=await sb.functions.invoke('create-payment',{
-                    body:{plan:plan,coupon:couponCode}
+                    body:{plan:plan,coupon:couponCode},
+                    headers:{'Authorization':'Bearer '+freshToken}
                 });
 
                 if(error){
