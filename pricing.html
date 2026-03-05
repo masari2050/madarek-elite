@@ -172,6 +172,24 @@
             </div>
         </div>
 
+        <!-- Coupon - بين الباقات وجدول المقارنة -->
+        <div class="animate-in delay-4 mb-10">
+            <div class="max-w-lg mx-auto text-center" style="background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.08));border:1px solid rgba(139,92,246,0.15);border-radius:16px;padding:20px 24px">
+                <div class="flex items-center justify-center gap-2 mb-3">
+                    <span class="text-lg">🎟️</span>
+                    <h3 class="font-bold text-sm text-white">عندك كوبون خصم؟</h3>
+                </div>
+                <div class="flex gap-2 max-w-sm mx-auto">
+                    <input type="text" id="couponInput" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;text-transform:uppercase" placeholder="أدخل الكود هنا">
+                    <button onclick="applyCoupon()" id="couponBtn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">تحقق</button>
+                </div>
+                <div id="couponResult" class="mt-3 hidden">
+                    <div id="couponSuccess" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399"><span id="couponMsg"></span></div>
+                    <div id="couponError" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171"><span id="couponErrMsg"></span></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Comparison Table -->
         <div class="animate-in delay-4 card-glass p-6 sm:p-8 mb-12">
             <h2 class="text-2xl font-black text-center mb-6">مقارنة شاملة</h2>
@@ -221,22 +239,6 @@
             </div>
         </div>
 
-        <!-- Coupon -->
-        <div class="animate-in delay-5 mb-12">
-            <div class="card-glass p-6 max-w-md mx-auto text-center">
-                <span class="text-2xl block mb-2">🎟️</span>
-                <h3 class="font-bold text-base mb-1">عندك كوبون خصم؟</h3>
-                <p class="text-purple-200/70 text-xs mb-4">أدخل الكود وشوف الخصم قبل ما تشترك</p>
-                <div class="flex gap-2">
-                    <input type="text" id="couponInput" class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-center" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;text-transform:uppercase" placeholder="أدخل الكود هنا">
-                    <button onclick="applyCoupon()" id="couponBtn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">تحقق</button>
-                </div>
-                <div id="couponResult" class="mt-3 hidden">
-                    <div id="couponSuccess" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399"><span id="couponMsg"></span></div>
-                    <div id="couponError" class="hidden p-3 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171"><span id="couponErrMsg"></span></div>
-                </div>
-            </div>
-        </div>
 
         <!-- CTA -->
         <div class="animate-in delay-5 text-center">
