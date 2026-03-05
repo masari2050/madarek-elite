@@ -99,6 +99,7 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
     <div class="stat bad"><div class="num" id="s-bad">-</div><div class="label">فيها مشاكل</div></div>
     <div class="stat good"><div class="num" id="s-good">-</div><div class="label">سليمة</div></div>
     <div class="stat fixed"><div class="num" id="s-fixed">-</div><div class="label">تم إصلاحها</div></div>
+    <div class="stat" style="border-color:rgba(168,85,247,0.3)"><div class="num" id="s-dup" style="color:#c084fc">-</div><div class="label">مكررة</div></div>
 </div>
 
 <div class="controls">
@@ -114,6 +115,7 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
     <button class="filter-btn" data-f="katex" onclick="filterResults('katex',this)">KaTeX خام</button>
     <button class="filter-btn" data-f="english" onclick="filterResults('english',this)">إنجليزي غريب</button>
     <button class="filter-btn" data-f="encoding" onclick="filterResults('encoding',this)">ترميز خاطئ</button>
+    <button class="filter-btn" data-f="duplicate" onclick="filterResults('duplicate',this)">مكررة</button>
 </div>
 
 <div class="progress-wrap" id="progress-wrap">
@@ -378,6 +380,24 @@ async function startScan(){
 
     document.getElementById('s-total').textContent=allQ.length;
 
+    // === DUPLICATE DETECTION ===
+    // Build a map of normalized question text → list of question IDs
+    var textMap={};
+    allQ.forEach(function(q){
+        // Normalize: strip HTML, lowercase, remove extra spaces
+        var norm=(q.question_text||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+        if(norm.length<10) return; // too short to compare
+        if(!textMap[norm]) textMap[norm]=[];
+        textMap[norm].push(q.id);
+    });
+    // Mark which IDs are duplicates
+    var duplicateIds={};
+    Object.keys(textMap).forEach(function(key){
+        if(textMap[key].length>1){
+            textMap[key].forEach(function(id){duplicateIds[id]=textMap[key].length});
+        }
+    });
+
     for(var i=0;i<allQ.length;i++){
         var q=allQ[i];
         var issues=[];
@@ -418,6 +438,17 @@ async function startScan(){
             });
         });
 
+        // Check if this question is a duplicate
+        if(duplicateIds[q.id]){
+            issues.push({
+                type:'duplicate',
+                label:'سؤال مكرر',
+                field:'السؤال',
+                snippet:'مكرر '+duplicateIds[q.id]+' مرات',
+                fullText:''
+            });
+        }
+
         if(issues.length>0){
             allBad.push({question:q,issues:issues});
         }
@@ -429,6 +460,10 @@ async function startScan(){
             await new Promise(function(r){setTimeout(r,0)});
         }
     }
+
+    // Count duplicates
+    var dupCount=Object.keys(duplicateIds).length;
+    document.getElementById('s-dup').textContent=dupCount;
 
     document.getElementById('s-bad').textContent=allBad.length;
     document.getElementById('s-good').textContent=allQ.length-allBad.length;
@@ -758,14 +793,21 @@ function viewFull(idx){
 
 function exportCSV(){
     if(allBad.length===0){alert('لا توجد نتائج للتصدير');return}
-    var csv='ID,القسم,السؤال,نوع المشكلة,الحقل\n';
+    var csv='ID,القسم,السؤال,المشاكل,الشرح (أول 200 حرف)\n';
     allBad.forEach(function(item){
         var q=item.question;
+        // Combine all issues into one cell (no duplicates)
+        var issuesList=[];
+        var seen={};
         item.issues.forEach(function(iss){
-            csv+=q.id+','+secNames[q.section]+','
-                +'"'+escCSV(q.question_text||'')+'",'
-                +iss.label+','+iss.field+'\n';
+            var key=iss.label+' ('+iss.field+')';
+            if(!seen[key]){seen[key]=true;issuesList.push(key)}
         });
+        csv+=q.id+','+(secNames[q.section]||q.section)+','
+            +'"'+escCSV(q.question_text||'')+'",'
+            +'"'+escCSV(issuesList.join(' | '))+'",'
+            +'"'+escCSV(q.explanation||'')+'"'
+            +'\n';
     });
     var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
     var a=document.createElement('a');
