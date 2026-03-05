@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فحص جودة الأسئلة - مدارك النخبة</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
+body{background:#0d0825;color:#fff;padding:24px;min-height:100vh}
+h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
+.sub{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:24px}
+
+/* Stats bar */
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 20px;text-align:center;min-width:120px}
+.stat .num{font-size:28px;font-weight:900;color:#a5b4fc}
+.stat .label{font-size:12px;color:#94a3b8;margin-top:2px}
+.stat.bad .num{color:#f87171}
+.stat.good .num{color:#4ade80}
+
+/* Controls */
+.controls{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.btn{padding:10px 24px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;transition:all 0.2s}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 15px rgba(99,102,241,0.3)}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 15px rgba(239,68,68,0.3)}
+.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+/* Filter tabs */
+.filters{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{padding:6px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#94a3b8;cursor:pointer;font-size:13px;font-family:'Tajawal',sans-serif;font-weight:600}
+.filter-btn.active{background:rgba(99,102,241,0.15);border-color:#6366f1;color:#a5b4fc}
+
+/* Progress */
+.progress-wrap{margin-bottom:20px;display:none}
+.progress-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:99px;transition:width 0.3s;width:0}
+.progress-text{text-align:center;color:#94a3b8;font-size:12px;margin-top:6px}
+
+/* Results */
+.results{max-width:900px;margin:0 auto}
+.q-card{
+    background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:16px;margin-bottom:12px;
+    border-right:4px solid #ef4444;
+}
+.q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.q-id{font-size:11px;color:#64748b;font-family:monospace;direction:ltr}
+.q-section{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
+.q-section.quant{background:rgba(99,102,241,0.15);color:#a5b4fc}
+.q-section.verbal{background:rgba(34,197,94,0.15);color:#4ade80}
+.q-section.tahsili{background:rgba(245,158,11,0.15);color:#fbbf24}
+.q-text{font-size:14px;color:#e2e8f0;line-height:1.7;margin-bottom:8px;word-break:break-all}
+.q-issues{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.issue-tag{font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(239,68,68,0.12);color:#fca5a5;font-weight:600}
+.q-field{font-size:12px;color:#94a3b8;margin-bottom:4px}
+.q-field strong{color:#cbd5e1}
+.highlight{background:rgba(239,68,68,0.25);color:#fca5a5;padding:1px 3px;border-radius:3px;font-family:monospace;font-size:12px;direction:ltr;display:inline}
+
+.empty{text-align:center;padding:40px;color:#4ade80;font-size:18px;font-weight:700}
+
+/* Actions */
+.q-actions{display:flex;gap:6px;margin-top:8px}
+.q-btn{padding:4px 12px;border-radius:6px;border:none;font-size:12px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600}
+.q-btn-view{background:rgba(99,102,241,0.15);color:#a5b4fc}
+.q-btn-del{background:rgba(239,68,68,0.15);color:#fca5a5}
+</style>
+</head>
+<body>
+
+<h1>🔍 فحص جودة الأسئلة</h1>
+<p class="sub">فحص تلقائي لجميع الأسئلة — يكشف أكواد HTML، تنسيق خاطئ، ورموز غير منطقية</p>
+
+<div class="stats">
+    <div class="stat"><div class="num" id="s-total">-</div><div class="label">إجمالي الأسئلة</div></div>
+    <div class="stat bad"><div class="num" id="s-bad">-</div><div class="label">فيها مشاكل</div></div>
+    <div class="stat good"><div class="num" id="s-good">-</div><div class="label">سليمة</div></div>
+</div>
+
+<div class="controls">
+    <button class="btn btn-primary" id="scan-btn" onclick="startScan()">🔍 ابدأ الفحص</button>
+    <button class="btn btn-ghost" onclick="exportCSV()">📄 تصدير النتائج</button>
+</div>
+
+<div class="filters">
+    <button class="filter-btn active" data-f="all" onclick="filterResults('all',this)">الكل</button>
+    <button class="filter-btn" data-f="html" onclick="filterResults('html',this)">أكواد HTML</button>
+    <button class="filter-btn" data-f="css" onclick="filterResults('css',this)">تنسيق CSS</button>
+    <button class="filter-btn" data-f="katex" onclick="filterResults('katex',this)">KaTeX خام</button>
+    <button class="filter-btn" data-f="english" onclick="filterResults('english',this)">إنجليزي غريب</button>
+    <button class="filter-btn" data-f="encoding" onclick="filterResults('encoding',this)">ترميز خاطئ</button>
+</div>
+
+<div class="progress-wrap" id="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-text" id="progress-text">جاري الفحص...</div>
+</div>
+
+<div class="results" id="results"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+
+var allBad=[];
+var secNames={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
+
+// Patterns to detect issues
+var checks=[
+    {
+        name:'html',
+        label:'أكواد HTML',
+        pattern:/<\s*(span|div|p|br|strong|em|b|i|u|li|ul|ol|h[1-6]|a|img|table|tr|td|th|font|center|pre|code|blockquote|section|article|header|footer|nav|main|aside|figure|figcaption|sup|sub|mark|del|ins|small|big|abbr|cite|dfn|kbd|samp|var|details|summary|dialog|data|time|ruby|rt|rp|bdi|bdo|wbr|hr|meta|link|style|script|noscript|template|slot)[\s>\/]/i
+    },
+    {
+        name:'css',
+        label:'تنسيق CSS',
+        pattern:/style\s*=\s*["']|font-size|font-family|text-align|color\s*:|background|margin|padding|display\s*:|class\s*=\s*["']|data-start|data-end|data-pm/i
+    },
+    {
+        name:'katex',
+        label:'KaTeX خام',
+        pattern:/class\s*=\s*["']katex|\\frac\{|\\sqrt\{|\\text\{|\\mathbb|\\mathrm|<math\s|xmlns="http:\/\/www\.w3\.org|<annotation|<semantics|<mrow|<msup|<mfrac|\\begin\{|\\end\{|\\left|\\right|\\overline|\\underline/i
+    },
+    {
+        name:'english',
+        label:'إنجليزي غريب',
+        // Detect long English text (not math symbols like x, y, sin, cos, log etc)
+        test:function(text){
+            // Remove known math/science terms
+            var cleaned=text.replace(/\b(sin|cos|tan|log|ln|lim|max|min|cm|km|mm|mg|kg|Hz|pH|DNA|RNA|ATP|NaCl|CO2|H2O|O2|N2|Fe|Cu|Zn|Ca|Na|Cl|mol|sec|amp|watt|volt|ohm|joule|newton|pascal|kelvin|celsius|fahrenheit|mL|dL|nm|pm|AM|PM)\b/gi,'');
+            // Detect 3+ consecutive English words that aren't math
+            var match=cleaned.match(/[a-zA-Z]{4,}(\s+[a-zA-Z]{3,}){2,}/g);
+            return match&&match.length>0;
+        }
+    },
+    {
+        name:'encoding',
+        label:'ترميز خاطئ',
+        pattern:/&amp;|&lt;|&gt;|&nbsp;|&#\d+;|&[a-z]+;|Ã|Â|Ø|Ù|â€|Ã©|Ã¨|Ã¢|Ã®|Ã´|Ã»|Å|Ä|Ö|Ü|ÃŸ|\u00c3|\u00c2|\ufffd/i
+    }
+];
+
+async function startScan(){
+    var btn=document.getElementById('scan-btn');
+    btn.disabled=true;
+    btn.textContent='جاري الفحص...';
+    document.getElementById('progress-wrap').style.display='block';
+    document.getElementById('results').innerHTML='';
+    allBad=[];
+
+    // Fetch all questions
+    var allQ=[];
+    var page=0;
+    var pageSize=1000;
+    var more=true;
+
+    while(more){
+        var{data,error}=await sb.from('questions')
+            .select('id,question_text,choices,explanation,section,sub_section,created_at')
+            .range(page*pageSize,(page+1)*pageSize-1)
+            .order('created_at',{ascending:false});
+        if(error||!data||data.length===0){more=false;break}
+        allQ=allQ.concat(data);
+        if(data.length<pageSize)more=false;
+        page++;
+        document.getElementById('progress-text').textContent='جاري جلب الأسئلة... '+allQ.length+' سؤال';
+    }
+
+    document.getElementById('s-total').textContent=allQ.length;
+
+    // Scan each question
+    for(var i=0;i<allQ.length;i++){
+        var q=allQ[i];
+        var issues=[];
+
+        // Build text to check: question + choices + explanation
+        var textsToCheck=[
+            {field:'السؤال',text:q.question_text||''},
+            {field:'الشرح',text:q.explanation||''}
+        ];
+        if(q.choices&&Array.isArray(q.choices)){
+            q.choices.forEach(function(c,ci){
+                textsToCheck.push({field:'الخيار '+(ci+1),text:c||''});
+            });
+        }
+
+        textsToCheck.forEach(function(item){
+            if(!item.text)return;
+            checks.forEach(function(check){
+                var found=false;
+                if(check.test){
+                    found=check.test(item.text);
+                }else{
+                    found=check.pattern.test(item.text);
+                }
+                if(found){
+                    // Extract the problematic part
+                    var snippet='';
+                    if(check.pattern){
+                        var m=item.text.match(check.pattern);
+                        if(m)snippet=m[0];
+                    }
+                    issues.push({
+                        type:check.name,
+                        label:check.label,
+                        field:item.field,
+                        snippet:snippet,
+                        fullText:item.text
+                    });
+                }
+            });
+        });
+
+        if(issues.length>0){
+            allBad.push({question:q,issues:issues});
+        }
+
+        // Update progress
+        if(i%50===0||i===allQ.length-1){
+            var pct=Math.round((i+1)/allQ.length*100);
+            document.getElementById('progress-fill').style.width=pct+'%';
+            document.getElementById('progress-text').textContent='جاري الفحص... '+pct+'% ('+allBad.length+' مشكلة)';
+            await new Promise(function(r){setTimeout(r,0)});
+        }
+    }
+
+    document.getElementById('s-bad').textContent=allBad.length;
+    document.getElementById('s-good').textContent=allQ.length-allBad.length;
+    document.getElementById('progress-text').textContent='اكتمل الفحص ✅';
+    btn.disabled=false;
+    btn.textContent='🔍 أعد الفحص';
+
+    renderResults('all');
+}
+
+function escH(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderResults(filter){
+    var container=document.getElementById('results');
+    var items=allBad;
+
+    if(filter!=='all'){
+        items=allBad.filter(function(b){
+            return b.issues.some(function(iss){return iss.type===filter});
+        });
+    }
+
+    if(items.length===0){
+        container.innerHTML='<div class="empty">✅ لا توجد مشاكل'+(filter!=='all'?' في هذا التصنيف':'')+'</div>';
+        return;
+    }
+
+    var html='';
+    items.forEach(function(item,idx){
+        var q=item.question;
+        var secClass=q.section||'quant';
+        var secLabel=secNames[q.section]||q.section||'غير محدد';
+        var qText=(q.question_text||'').substring(0,150);
+
+        html+='<div class="q-card" data-id="'+q.id+'">';
+        html+='<div class="q-header">';
+        html+='<span class="q-section '+secClass+'">'+secLabel+'</span>';
+        html+='<span class="q-id">ID: '+q.id+'</span>';
+        html+='</div>';
+        html+='<div class="q-text">'+escH(qText)+(qText.length>=150?'...':'')+'</div>';
+        html+='<div class="q-issues">';
+
+        // Unique issue types
+        var seen={};
+        item.issues.forEach(function(iss){
+            var key=iss.type+'-'+iss.field;
+            if(seen[key])return;
+            seen[key]=true;
+            html+='<span class="issue-tag">'+iss.label+' ('+iss.field+')</span>';
+        });
+        html+='</div>';
+
+        // Show problematic snippets
+        item.issues.forEach(function(iss){
+            if(iss.snippet){
+                html+='<div class="q-field"><strong>'+iss.field+':</strong> <span class="highlight">'+escH(iss.snippet)+'</span></div>';
+            }
+        });
+
+        html+='<div class="q-actions">';
+        html+='<button class="q-btn q-btn-view" onclick="viewFull('+idx+')">👁️ عرض كامل</button>';
+        html+='</div>';
+        html+='</div>';
+    });
+
+    container.innerHTML=html;
+}
+
+function filterResults(f,el){
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+    el.classList.add('active');
+    renderResults(f);
+}
+
+function viewFull(idx){
+    var item=allBad[idx];
+    var q=item.question;
+    var msg='📝 السؤال:\n'+(q.question_text||'')+'\n\n';
+    if(q.choices){
+        msg+='الخيارات:\n';
+        q.choices.forEach(function(c,i){msg+=(i+1)+'. '+(c||'')+'\n'});
+        msg+='\n';
+    }
+    msg+='📖 الشرح:\n'+(q.explanation||'لا يوجد')+'\n\n';
+    msg+='🔴 المشاكل:\n';
+    item.issues.forEach(function(iss){
+        msg+='- '+iss.label+' في '+iss.field+(iss.snippet?' → '+iss.snippet:'')+'\n';
+    });
+    alert(msg);
+}
+
+function exportCSV(){
+    if(allBad.length===0){alert('لا توجد نتائج للتصدير');return}
+    var csv='ID,القسم,السؤال,نوع المشكلة,الحقل\n';
+    allBad.forEach(function(item){
+        var q=item.question;
+        item.issues.forEach(function(iss){
+            csv+=q.id+','+secNames[q.section]+','
+                +'"'+escCSV(q.question_text||'')+'",'
+                +iss.label+','+iss.field+'\n';
+        });
+    });
+    var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='questions-issues.csv';
+    a.click();
+}
+function escCSV(s){return s.replace(/"/g,'""').replace(/\n/g,' ').substring(0,200)}
+</script>
+
+</body>
+</html>
