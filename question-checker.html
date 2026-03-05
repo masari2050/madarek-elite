@@ -18,12 +18,13 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
 .stat .label{font-size:12px;color:#94a3b8;margin-top:2px}
 .stat.bad .num{color:#f87171}
 .stat.good .num{color:#4ade80}
+.stat.fixed .num{color:#fbbf24}
 
 /* Controls */
 .controls{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
 .btn{padding:10px 24px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;transition:all 0.2s}
 .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 15px rgba(99,102,241,0.3)}
-.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 15px rgba(239,68,68,0.3)}
+.btn-fix{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 4px 15px rgba(245,158,11,0.3)}
 .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff}
 .btn:hover{transform:translateY(-1px)}
 .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
@@ -37,6 +38,7 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
 .progress-wrap{margin-bottom:20px;display:none}
 .progress-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:99px;transition:width 0.3s;width:0}
+.progress-fill.fixing{background:linear-gradient(90deg,#f59e0b,#d97706)}
 .progress-text{text-align:center;color:#94a3b8;font-size:12px;margin-top:6px}
 
 /* Results */
@@ -46,6 +48,7 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
     border-radius:14px;padding:16px;margin-bottom:12px;
     border-right:4px solid #ef4444;
 }
+.q-card.card-fixed{border-right-color:#4ade80;opacity:0.6}
 .q-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
 .q-id{font-size:11px;color:#64748b;font-family:monospace;direction:ltr}
 .q-section{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600}
@@ -65,22 +68,42 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
 .q-actions{display:flex;gap:6px;margin-top:8px}
 .q-btn{padding:4px 12px;border-radius:6px;border:none;font-size:12px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600}
 .q-btn-view{background:rgba(99,102,241,0.15);color:#a5b4fc}
-.q-btn-del{background:rgba(239,68,68,0.15);color:#fca5a5}
+.q-btn-fix{background:rgba(245,158,11,0.15);color:#fbbf24}
+.q-btn-fixed{background:rgba(74,222,128,0.15);color:#4ade80;cursor:default}
+
+/* Modal */
+.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:#1a1035;border:1px solid rgba(255,255,255,0.1);border-radius:16px;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:24px}
+.modal h3{font-size:18px;margin-bottom:16px;text-align:center}
+.preview-box{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.8;word-break:break-all}
+.preview-label{font-size:12px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.preview-label.before{color:#f87171}
+.preview-label.after{color:#4ade80}
+.modal-actions{display:flex;gap:10px;justify-content:center;margin-top:16px}
+
+/* Fix log */
+.fix-log{max-width:900px;margin:0 auto;display:none}
+.fix-log-item{font-size:12px;color:#94a3b8;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.fix-log-item.success{color:#4ade80}
+.fix-log-item.error{color:#f87171}
 </style>
 </head>
 <body>
 
 <h1>🔍 فحص جودة الأسئلة</h1>
-<p class="sub">فحص تلقائي لجميع الأسئلة — يكشف أكواد HTML، تنسيق خاطئ، ورموز غير منطقية</p>
+<p class="sub">فحص تلقائي لجميع الأسئلة — يكشف أكواد HTML، تنسيق خاطئ، ورموز غير منطقية — مع تصحيح تلقائي</p>
 
 <div class="stats">
     <div class="stat"><div class="num" id="s-total">-</div><div class="label">إجمالي الأسئلة</div></div>
     <div class="stat bad"><div class="num" id="s-bad">-</div><div class="label">فيها مشاكل</div></div>
     <div class="stat good"><div class="num" id="s-good">-</div><div class="label">سليمة</div></div>
+    <div class="stat fixed"><div class="num" id="s-fixed">-</div><div class="label">تم إصلاحها</div></div>
 </div>
 
 <div class="controls">
     <button class="btn btn-primary" id="scan-btn" onclick="startScan()">🔍 ابدأ الفحص</button>
+    <button class="btn btn-fix" id="fix-btn" onclick="confirmFixAll()" style="display:none">🔧 إصلاح الكل تلقائياً</button>
     <button class="btn btn-ghost" onclick="exportCSV()">📄 تصدير النتائج</button>
 </div>
 
@@ -98,16 +121,195 @@ h1{text-align:center;font-size:24px;font-weight:800;margin-bottom:6px}
     <div class="progress-text" id="progress-text">جاري الفحص...</div>
 </div>
 
+<div class="fix-log" id="fix-log"></div>
 <div class="results" id="results"></div>
+
+<!-- Preview Modal -->
+<div class="modal-bg" id="preview-modal">
+    <div class="modal">
+        <h3 id="modal-title">معاينة التصحيح</h3>
+        <div id="modal-content"></div>
+        <div class="modal-actions">
+            <button class="btn btn-fix" id="modal-fix-btn" onclick="fixSingle()">🔧 تطبيق الإصلاح</button>
+            <button class="btn btn-ghost" onclick="closeModal()">إغلاق</button>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 var sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
 
 var allBad=[];
+var fixedCount=0;
+var fixedIds={};
+var currentPreview=null;
 var secNames={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
 
-// Patterns to detect issues
+// ========================
+// CLEANING FUNCTIONS
+// ========================
+
+function cleanText(text){
+    if(!text) return text;
+    var original=text;
+
+    // === STEP 0: Extract and protect math expressions ===
+    // Protect LaTeX-style formulas: \frac{...}, \sqrt{...}, etc.
+    var mathSlots=[];
+    function protectMath(match){
+        var idx=mathSlots.length;
+        mathSlots.push(match);
+        return '%%MATH'+idx+'%%';
+    }
+    // Protect inline LaTeX expressions like \frac{a}{b}, \sqrt{x}, \text{...}
+    text=text.replace(/\\(?:frac|sqrt|text|mathbb|mathrm|overline|underline|left|right|begin|end)\{[^}]*\}(?:\{[^}]*\})?/g,protectMath);
+    // Protect standalone math symbols that might look like code
+    text=text.replace(/\\(?:times|div|pm|mp|leq|geq|neq|approx|infty|alpha|beta|gamma|delta|theta|pi|sigma|omega|sum|prod|int|lim|log|ln|sin|cos|tan)\b/g,protectMath);
+
+    // === STEP 1: Fix encoding issues ===
+    text=text.replace(/&nbsp;/g,' ');
+    text=text.replace(/&amp;/g,'&');
+    text=text.replace(/&lt;/g,'<');
+    text=text.replace(/&gt;/g,'>');
+    text=text.replace(/&quot;/g,'"');
+    text=text.replace(/&#(\d+);/g,function(_,n){return String.fromCharCode(n)});
+
+    // === STEP 2: Extract text from KaTeX rendered HTML ===
+    // Get the actual math content from annotation tags (LaTeX source)
+    text=text.replace(/<annotation[^>]*encoding="application\/x-tex"[^>]*>([^<]*)<\/annotation>/gi,function(_,latex){
+        return protectMath(latex.trim());
+    });
+    text=text.replace(/<annotation[^>]*>([^<]*)<\/annotation>/gi,'');
+    // Remove the KaTeX HTML rendering (keep only the LaTeX from annotation)
+    text=text.replace(/<span[^>]*class="katex-html"[^>]*>[\s\S]*?<\/span>(?=\s*<\/span>\s*<\/span>)/gi,'');
+    // Remove remaining KaTeX/MathML wrappers but keep inner text
+    text=text.replace(/<semantics[^>]*>(.*?)<\/semantics>/gi,'$1');
+    text=text.replace(/<math[^>]*>(.*?)<\/math>/gi,'$1');
+    text=text.replace(/<mrow[^>]*>(.*?)<\/mrow>/gi,'$1');
+    text=text.replace(/<msup[^>]*>(.*?)<\/msup>/gi,'$1');
+    text=text.replace(/<mfrac[^>]*>(.*?)<\/mfrac>/gi,'$1');
+    text=text.replace(/<mn[^>]*>(.*?)<\/mn>/gi,'$1');
+    text=text.replace(/<mi[^>]*>(.*?)<\/mi>/gi,'$1');
+    text=text.replace(/<mo[^>]*>(.*?)<\/mo>/gi,'$1');
+
+    // === STEP 3: Strip HTML tags but preserve content ===
+    text=text.replace(/<br\s*\/?>/gi,'\n');
+    text=text.replace(/<\/p>\s*<p[^>]*>/gi,'\n\n');
+    text=text.replace(/<p[^>]*>/gi,'');
+    text=text.replace(/<\/p>/gi,'\n');
+    text=text.replace(/<\/div>\s*<div[^>]*>/gi,'\n');
+    text=text.replace(/<div[^>]*>/gi,'');
+    text=text.replace(/<\/div>/gi,'');
+    text=text.replace(/<li[^>]*>/gi,'\n• ');
+    text=text.replace(/<\/li>/gi,'');
+    text=text.replace(/<\/?[uo]l[^>]*>/gi,'\n');
+    text=text.replace(/<hr\s*\/?>/gi,'\n---\n');
+
+    // === STEP 4: Remove all remaining HTML tags ===
+    text=text.replace(/<[^>]+>/g,'');
+
+    // === STEP 5: Restore protected math expressions ===
+    text=text.replace(/%%MATH(\d+)%%/g,function(_,n){return mathSlots[parseInt(n)]});
+
+    // === STEP 6: Clean up whitespace ===
+    text=text.replace(/\n{3,}/g,'\n\n');
+    text=text.replace(/[ \t]{2,}/g,' ');
+    text=text.trim();
+
+    return text;
+}
+
+// Safety check: extract numbers from text to verify nothing lost
+function extractNumbers(text){
+    if(!text) return [];
+    // Remove HTML tags for comparison
+    var plain=text.replace(/<[^>]+>/g,' ');
+    var nums=plain.match(/[\d٠-٩]+(?:[.,/][\d٠-٩]+)*/g)||[];
+    return nums.sort().join(',');
+}
+
+// Safety check: extract Arabic words
+function extractArabicWords(text){
+    if(!text) return '';
+    var plain=text.replace(/<[^>]+>/g,' ');
+    var words=plain.match(/[\u0600-\u06FF\u0750-\u077F]+/g)||[];
+    return words.join(' ');
+}
+
+function getCleanedQuestion(q){
+    var cleaned={};
+    var changed=false;
+    var warnings=[];
+
+    // Clean question_text
+    var newQ=cleanText(q.question_text||'');
+    if(newQ!==(q.question_text||'')){
+        // SAFETY: verify numbers are preserved
+        var numsBefore=extractNumbers(q.question_text);
+        var numsAfter=extractNumbers(newQ);
+        if(numsBefore!==numsAfter){
+            warnings.push('⚠️ أرقام مفقودة في السؤال');
+        }
+        // SAFETY: verify Arabic text is preserved
+        var arBefore=extractArabicWords(q.question_text);
+        var arAfter=extractArabicWords(newQ);
+        if(arAfter.length<arBefore.length*0.7){
+            warnings.push('⚠️ نص عربي مفقود في السؤال');
+        }
+        // SAFETY: don't save if cleaned text is too short (lost content)
+        if(newQ.length>0 && newQ.length<(q.question_text||'').replace(/<[^>]+>/g,'').length*0.3){
+            warnings.push('🚫 السؤال فقد أكثر من 70% من المحتوى — تخطي');
+        }else{
+            cleaned.question_text=newQ;
+            changed=true;
+        }
+    }
+
+    // Clean explanation
+    var newE=cleanText(q.explanation||'');
+    if(newE!==(q.explanation||'')){
+        var numsBefore2=extractNumbers(q.explanation);
+        var numsAfter2=extractNumbers(newE);
+        if(numsBefore2!==numsAfter2){
+            warnings.push('⚠️ أرقام مفقودة في الشرح');
+        }
+        if(newE.length>0 && newE.length<(q.explanation||'').replace(/<[^>]+>/g,'').length*0.3){
+            warnings.push('🚫 الشرح فقد أكثر من 70% من المحتوى — تخطي');
+        }else{
+            cleaned.explanation=newE;
+            changed=true;
+        }
+    }
+
+    // Clean choices
+    if(q.choices&&Array.isArray(q.choices)){
+        var newChoices=q.choices.map(function(c){return cleanText(c||'')});
+        var choicesChanged=false;
+        var choicesSafe=true;
+        q.choices.forEach(function(c,i){
+            if(c!==newChoices[i]){
+                choicesChanged=true;
+                // Safety: choice should not become empty
+                if(newChoices[i].length===0 && c.replace(/<[^>]+>/g,'').trim().length>0){
+                    choicesSafe=false;
+                    warnings.push('🚫 الخيار '+(i+1)+' أصبح فارغ — تخطي');
+                }
+            }
+        });
+        if(choicesChanged && choicesSafe){
+            cleaned.choices=newChoices;
+            changed=true;
+        }
+    }
+
+    return {changed:changed,data:cleaned,warnings:warnings};
+}
+
+// ========================
+// DETECTION PATTERNS
+// ========================
+
 var checks=[
     {
         name:'html',
@@ -127,11 +329,8 @@ var checks=[
     {
         name:'english',
         label:'إنجليزي غريب',
-        // Detect long English text (not math symbols like x, y, sin, cos, log etc)
         test:function(text){
-            // Remove known math/science terms
             var cleaned=text.replace(/\b(sin|cos|tan|log|ln|lim|max|min|cm|km|mm|mg|kg|Hz|pH|DNA|RNA|ATP|NaCl|CO2|H2O|O2|N2|Fe|Cu|Zn|Ca|Na|Cl|mol|sec|amp|watt|volt|ohm|joule|newton|pascal|kelvin|celsius|fahrenheit|mL|dL|nm|pm|AM|PM)\b/gi,'');
-            // Detect 3+ consecutive English words that aren't math
             var match=cleaned.match(/[a-zA-Z]{4,}(\s+[a-zA-Z]{3,}){2,}/g);
             return match&&match.length>0;
         }
@@ -143,15 +342,23 @@ var checks=[
     }
 ];
 
+// ========================
+// SCAN
+// ========================
+
 async function startScan(){
     var btn=document.getElementById('scan-btn');
     btn.disabled=true;
     btn.textContent='جاري الفحص...';
     document.getElementById('progress-wrap').style.display='block';
     document.getElementById('results').innerHTML='';
+    document.getElementById('fix-log').style.display='none';
+    document.getElementById('fix-log').innerHTML='';
     allBad=[];
+    fixedCount=0;
+    fixedIds={};
+    document.getElementById('s-fixed').textContent='-';
 
-    // Fetch all questions
     var allQ=[];
     var page=0;
     var pageSize=1000;
@@ -171,12 +378,10 @@ async function startScan(){
 
     document.getElementById('s-total').textContent=allQ.length;
 
-    // Scan each question
     for(var i=0;i<allQ.length;i++){
         var q=allQ[i];
         var issues=[];
 
-        // Build text to check: question + choices + explanation
         var textsToCheck=[
             {field:'السؤال',text:q.question_text||''},
             {field:'الشرح',text:q.explanation||''}
@@ -197,7 +402,6 @@ async function startScan(){
                     found=check.pattern.test(item.text);
                 }
                 if(found){
-                    // Extract the problematic part
                     var snippet='';
                     if(check.pattern){
                         var m=item.text.match(check.pattern);
@@ -218,7 +422,6 @@ async function startScan(){
             allBad.push({question:q,issues:issues});
         }
 
-        // Update progress
         if(i%50===0||i===allQ.length-1){
             var pct=Math.round((i+1)/allQ.length*100);
             document.getElementById('progress-fill').style.width=pct+'%';
@@ -233,8 +436,235 @@ async function startScan(){
     btn.disabled=false;
     btn.textContent='🔍 أعد الفحص';
 
+    // Show fix button if there are issues
+    if(allBad.length>0){
+        document.getElementById('fix-btn').style.display='inline-block';
+    }else{
+        document.getElementById('fix-btn').style.display='none';
+    }
+
     renderResults('all');
 }
+
+// ========================
+// FIX ALL
+// ========================
+
+function confirmFixAll(){
+    var count=allBad.filter(function(b){return !fixedIds[b.question.id]}).length;
+    if(count===0){alert('كل المشاكل تم إصلاحها! ✅');return}
+
+    var msg='⚠️ تأكيد التصحيح التلقائي\n\n';
+    msg+='سيتم تنظيف '+count+' سؤال من:\n';
+    msg+='• أكواد HTML (div, span, p, ...)\n';
+    msg+='• تنسيقات CSS (style, class, ...)\n';
+    msg+='• ترميزات خاطئة (&nbsp;, &amp;, ...)\n';
+    msg+='• عناصر KaTeX الخام\n\n';
+    msg+='هل تريد المتابعة؟';
+
+    if(confirm(msg)){
+        fixAll();
+    }
+}
+
+async function fixAll(){
+    var btn=document.getElementById('fix-btn');
+    btn.disabled=true;
+    btn.textContent='جاري الإصلاح...';
+
+    var pFill=document.getElementById('progress-fill');
+    var pText=document.getElementById('progress-text');
+    pFill.classList.add('fixing');
+    pFill.style.width='0%';
+    document.getElementById('progress-wrap').style.display='block';
+
+    var logEl=document.getElementById('fix-log');
+    logEl.style.display='block';
+    logEl.innerHTML='';
+
+    var toFix=allBad.filter(function(b){return !fixedIds[b.question.id]});
+    var successCount=0;
+    var skipCount=0;
+    var errorCount=0;
+
+    for(var i=0;i<toFix.length;i++){
+        var item=toFix[i];
+        var q=item.question;
+
+        var result=getCleanedQuestion(q);
+
+        // Show warnings
+        if(result.warnings&&result.warnings.length>0){
+            result.warnings.forEach(function(w){
+                addLog('⚠️ '+q.id.substring(0,8)+'... — '+w,'error');
+            });
+        }
+
+        if(!result.changed){
+            skipCount++;
+            addLog('⏭️ '+q.id.substring(0,8)+'... — لا تغيير مطلوب','');
+        }else{
+            var{error}=await sb.from('questions').update(result.data).eq('id',q.id);
+
+            if(error){
+                errorCount++;
+                addLog('❌ '+q.id.substring(0,8)+'... — خطأ: '+error.message,'error');
+            }else{
+                successCount++;
+                fixedIds[q.id]=true;
+                fixedCount++;
+
+                // Update the local data too
+                if(result.data.question_text!==undefined) q.question_text=result.data.question_text;
+                if(result.data.explanation!==undefined) q.explanation=result.data.explanation;
+                if(result.data.choices!==undefined) q.choices=result.data.choices;
+
+                addLog('✅ '+q.id.substring(0,8)+'... — تم الإصلاح','success');
+            }
+        }
+
+        // Update progress
+        var pct=Math.round((i+1)/toFix.length*100);
+        pFill.style.width=pct+'%';
+        pText.textContent='جاري الإصلاح... '+pct+'% ('+successCount+' تم إصلاحه، '+errorCount+' خطأ)';
+
+        // Prevent blocking UI
+        if(i%10===0){
+            await new Promise(function(r){setTimeout(r,0)});
+        }
+    }
+
+    document.getElementById('s-fixed').textContent=fixedCount;
+    pFill.classList.remove('fixing');
+    pText.textContent='اكتمل الإصلاح ✅ — '+successCount+' تم إصلاحه، '+skipCount+' بدون تغيير، '+errorCount+' خطأ';
+
+    btn.disabled=false;
+    btn.textContent='🔧 إصلاح الكل تلقائياً';
+
+    // Re-render
+    renderResults(document.querySelector('.filter-btn.active').dataset.f);
+}
+
+function addLog(msg,cls){
+    var el=document.getElementById('fix-log');
+    var div=document.createElement('div');
+    div.className='fix-log-item'+(cls?' '+cls:'');
+    div.textContent=msg;
+    el.insertBefore(div,el.firstChild);
+}
+
+// ========================
+// FIX SINGLE (Preview Modal)
+// ========================
+
+function previewFix(idx){
+    var item=allBad[idx];
+    var q=item.question;
+    currentPreview={idx:idx,item:item};
+
+    var content='';
+
+    // Question text
+    var cleanedQ=cleanText(q.question_text||'');
+    if(cleanedQ!==(q.question_text||'')){
+        content+='<div class="preview-label before">🔴 السؤال — قبل:</div>';
+        content+='<div class="preview-box" style="color:#fca5a5">'+escH(q.question_text||'')+'</div>';
+        content+='<div class="preview-label after">🟢 السؤال — بعد:</div>';
+        content+='<div class="preview-box" style="color:#86efac">'+escH(cleanedQ)+'</div>';
+    }
+
+    // Explanation
+    var cleanedE=cleanText(q.explanation||'');
+    if(cleanedE!==(q.explanation||'')){
+        content+='<div class="preview-label before">🔴 الشرح — قبل:</div>';
+        content+='<div class="preview-box" style="color:#fca5a5">'+escH((q.explanation||'').substring(0,500))+'</div>';
+        content+='<div class="preview-label after">🟢 الشرح — بعد:</div>';
+        content+='<div class="preview-box" style="color:#86efac">'+escH(cleanedE.substring(0,500))+'</div>';
+    }
+
+    // Choices
+    if(q.choices&&Array.isArray(q.choices)){
+        q.choices.forEach(function(c,ci){
+            var cleanedC=cleanText(c||'');
+            if(cleanedC!==c){
+                content+='<div class="preview-label before">🔴 الخيار '+(ci+1)+' — قبل:</div>';
+                content+='<div class="preview-box" style="color:#fca5a5">'+escH(c)+'</div>';
+                content+='<div class="preview-label after">🟢 الخيار '+(ci+1)+' — بعد:</div>';
+                content+='<div class="preview-box" style="color:#86efac">'+escH(cleanedC)+'</div>';
+            }
+        });
+    }
+
+    // Show warnings
+    var result=getCleanedQuestion(q);
+    if(result.warnings&&result.warnings.length>0){
+        content+='<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px;margin-top:12px">';
+        content+='<div style="font-weight:700;color:#f87171;margin-bottom:6px">⚠️ تحذيرات الأمان:</div>';
+        result.warnings.forEach(function(w){
+            content+='<div style="font-size:13px;color:#fca5a5;padding:2px 0">'+escH(w)+'</div>';
+        });
+        content+='</div>';
+    }
+
+    if(!content){
+        content='<div class="empty" style="padding:20px;font-size:14px">لا يوجد تغيير مطلوب لهذا السؤال</div>';
+        document.getElementById('modal-fix-btn').style.display='none';
+    }else{
+        document.getElementById('modal-fix-btn').style.display='inline-block';
+    }
+
+    document.getElementById('modal-title').textContent='معاينة التصحيح — '+q.id.substring(0,8)+'...';
+    document.getElementById('modal-content').innerHTML=content;
+    document.getElementById('preview-modal').classList.add('show');
+}
+
+async function fixSingle(){
+    if(!currentPreview)return;
+    var q=currentPreview.item.question;
+    var result=getCleanedQuestion(q);
+
+    if(!result.changed){
+        alert('لا يوجد تغيير مطلوب');
+        return;
+    }
+
+    document.getElementById('modal-fix-btn').disabled=true;
+    document.getElementById('modal-fix-btn').textContent='جاري الحفظ...';
+
+    var{error}=await sb.from('questions').update(result.data).eq('id',q.id);
+
+    if(error){
+        alert('خطأ في الحفظ: '+error.message);
+    }else{
+        fixedIds[q.id]=true;
+        fixedCount++;
+        document.getElementById('s-fixed').textContent=fixedCount;
+
+        if(result.data.question_text!==undefined) q.question_text=result.data.question_text;
+        if(result.data.explanation!==undefined) q.explanation=result.data.explanation;
+        if(result.data.choices!==undefined) q.choices=result.data.choices;
+
+        closeModal();
+        renderResults(document.querySelector('.filter-btn.active').dataset.f);
+    }
+
+    document.getElementById('modal-fix-btn').disabled=false;
+    document.getElementById('modal-fix-btn').textContent='🔧 تطبيق الإصلاح';
+}
+
+function closeModal(){
+    document.getElementById('preview-modal').classList.remove('show');
+    currentPreview=null;
+}
+
+// Close modal on background click
+document.getElementById('preview-modal').addEventListener('click',function(e){
+    if(e.target===this)closeModal();
+});
+
+// ========================
+// RENDER
+// ========================
 
 function escH(s){
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -261,8 +691,12 @@ function renderResults(filter){
         var secClass=q.section||'quant';
         var secLabel=secNames[q.section]||q.section||'غير محدد';
         var qText=(q.question_text||'').substring(0,150);
+        var isFixed=fixedIds[q.id];
 
-        html+='<div class="q-card" data-id="'+q.id+'">';
+        // Find original index in allBad
+        var origIdx=allBad.indexOf(item);
+
+        html+='<div class="q-card'+(isFixed?' card-fixed':'')+'" data-id="'+q.id+'">';
         html+='<div class="q-header">';
         html+='<span class="q-section '+secClass+'">'+secLabel+'</span>';
         html+='<span class="q-id">ID: '+q.id+'</span>';
@@ -270,7 +704,6 @@ function renderResults(filter){
         html+='<div class="q-text">'+escH(qText)+(qText.length>=150?'...':'')+'</div>';
         html+='<div class="q-issues">';
 
-        // Unique issue types
         var seen={};
         item.issues.forEach(function(iss){
             var key=iss.type+'-'+iss.field;
@@ -280,7 +713,6 @@ function renderResults(filter){
         });
         html+='</div>';
 
-        // Show problematic snippets
         item.issues.forEach(function(iss){
             if(iss.snippet){
                 html+='<div class="q-field"><strong>'+iss.field+':</strong> <span class="highlight">'+escH(iss.snippet)+'</span></div>';
@@ -288,7 +720,12 @@ function renderResults(filter){
         });
 
         html+='<div class="q-actions">';
-        html+='<button class="q-btn q-btn-view" onclick="viewFull('+idx+')">👁️ عرض كامل</button>';
+        html+='<button class="q-btn q-btn-view" onclick="viewFull('+origIdx+')">👁️ عرض كامل</button>';
+        if(isFixed){
+            html+='<button class="q-btn q-btn-fixed">✅ تم الإصلاح</button>';
+        }else{
+            html+='<button class="q-btn q-btn-fix" onclick="previewFix('+origIdx+')">🔧 معاينة وإصلاح</button>';
+        }
         html+='</div>';
         html+='</div>';
     });
