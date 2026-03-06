@@ -426,7 +426,7 @@ function safeLink(url){if(!url)return'#';url=String(url).trim();if(url.match(/^[
 
 // COUNTDOWN
 (function(){
-  var end=new Date('2026-03-31T23:59:59').getTime();
+  var end=new Date('2026-03-19T23:59:59').getTime();
   function u(){
     var d=end-Date.now();
     if(d<=0){['cd-days','cd-hours','cd-mins','cd-secs'].forEach(function(id){document.getElementById(id).textContent='00'});return}
