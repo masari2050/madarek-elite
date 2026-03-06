@@ -496,8 +496,8 @@
             <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="engage-mode" value="off" class="accent-indigo-500"><span class="text-sm">إيقاف</span></label>
         </div>
         <div id="engage-range-wrap" class="grid grid-cols-2 gap-3 hidden">
-            <div><label class="block text-xs text-purple-200/50 mb-1">من</label><input type="datetime-local" id="st-eng-from" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
-            <div><label class="block text-xs text-purple-200/50 mb-1">إلى</label><input type="datetime-local" id="st-eng-to" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div><label class="block text-xs text-purple-200/50 mb-1">من</label><input type="text" id="st-eng-from" placeholder="يوم/شهر/سنة ساعة:دقيقة" dir="ltr" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
+            <div><label class="block text-xs text-purple-200/50 mb-1">إلى</label><input type="text" id="st-eng-to" placeholder="يوم/شهر/سنة ساعة:دقيقة" dir="ltr" class="w-full text-sm rounded-lg px-3 py-2" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff"></div>
         </div>
     </div>
 
@@ -2293,6 +2293,11 @@ async function loadST(){
 function editST(s){openStaffModal(s)}
 async function rmST(id){if(!confirm('إزالة هذا الموظف؟'))return;await sb.from('profiles').update({role:'user',permissions:null}).eq('id',id);logActivity('remove_staff','staff',id);toast('تم الإزالة',true);loadST()}
 
+// تحويل ISO → يوم/شهر/سنة ساعة:دقيقة
+function isoToDmy(v){if(!v)return'';try{var d=new Date(v);if(isNaN(d))return v;var dd=String(d.getDate()).padStart(2,'0');var mm=String(d.getMonth()+1).padStart(2,'0');var yy=d.getFullYear();var hh=String(d.getHours()).padStart(2,'0');var mi=String(d.getMinutes()).padStart(2,'0');return dd+'/'+mm+'/'+yy+' '+hh+':'+mi;}catch(e){return v;}}
+// تحويل يوم/شهر/سنة ساعة:دقيقة → ISO
+function dmyToIso(v){if(!v)return'';v=v.trim();var m=v.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\s*(\d{1,2}):(\d{2})$/);if(m)return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0')+'T'+m[4].padStart(2,'0')+':'+m[5];var m2=v.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);if(m2)return m2[3]+'-'+m2[2].padStart(2,'0')+'-'+m2[1].padStart(2,'0')+'T00:00';return v;}
+
 async function loadSet(){
     var{data}=await sb.from('site_settings').select('*');
     if(!data) return;
@@ -2334,8 +2339,8 @@ async function loadSet(){
         if(s.key==='banner2_link_text'){var el=$('st-ban2-link-text');if(el)el.value=v;}
         // === البوب أب التفاعلي ===
         if(s.key==='engage_mode'){var m=v||'always';document.querySelectorAll('[name="engage-mode"]').forEach(function(r){if(r.value===m)r.checked=true;});var w=$('engage-range-wrap');if(w)w.classList.toggle('hidden',m!=='range');}
-        if(s.key==='engage_from'){var el=$('st-eng-from');if(el)el.value=v;}
-        if(s.key==='engage_to'){var el=$('st-eng-to');if(el)el.value=v;}
+        if(s.key==='engage_from'){var el=$('st-eng-from');if(el)el.value=isoToDmy(v);}
+        if(s.key==='engage_to'){var el=$('st-eng-to');if(el)el.value=isoToDmy(v);}
         if(s.key==='engage_text'){var el=$('st-eng-text');if(el)el.value=v;updateEngagePreview();}
         if(s.key==='engage_emoji'){var el=$('st-eng-emoji');if(el)el.value=v||'🎁';updateEngagePreview();}
         if(s.key==='engage_color'){var el=$('st-eng-color');var el2=$('st-eng-color-txt');if(el)el.value=v||'#f59e0b';if(el2)el2.value=v||'#f59e0b';updateEngagePreview();}
@@ -2462,8 +2467,8 @@ async function saveEngage(){
     var fails=0;
     // 🔒 حفظ كل الإعدادات (silent=true عشان ما نعرض 15 toast)
     if(!await saveSt('engage_mode', mode, true)) fails++;
-    if(!await saveSt('engage_from', ($('st-eng-from')||{}).value||'', true)) fails++;
-    if(!await saveSt('engage_to', ($('st-eng-to')||{}).value||'', true)) fails++;
+    if(!await saveSt('engage_from', dmyToIso(($('st-eng-from')||{}).value||''), true)) fails++;
+    if(!await saveSt('engage_to', dmyToIso(($('st-eng-to')||{}).value||''), true)) fails++;
     if(!await saveSt('engage_text', ($('st-eng-text')||{}).value||'', true)) fails++;
     if(!await saveSt('engage_emoji', ($('st-eng-emoji')||{}).value||'🎁', true)) fails++;
     if(!await saveSt('engage_color', ($('st-eng-color')||{}).value||'#f59e0b', true)) fails++;
