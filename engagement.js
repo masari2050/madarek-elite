@@ -30,6 +30,11 @@
   // لا تعرض في صفحات الأدمن أو الكولباك
   if(currentPage.indexOf('admin') !== -1 || currentPage.indexOf('callback') !== -1) return;
 
+  // 🔒 تنظيف XSS
+  function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  // 🔒 تحقق من الروابط — فقط روابط نسبية أو https
+  function safeLink(url){if(!url)return'#';url=String(url).trim();if(url.match(/^[a-zA-Z0-9\-_.]+\.html(\?.*)?$/))return url;if(url.indexOf('https://')===0&&url.indexOf('madarekelite.com')!==-1)return url;return'#';}
+
   // ─── الرسائل الافتراضية (fallback لو ما فيه إعدادات) ───
   var defaultMessages = {
     firstVisit: { emoji: '👋', text: 'أهلاً فيك! جرّب حل سؤال مجاني وشف مستواك', btn: 'جرّب الحين', link: 'select-section.html', color: '#6366f1' },
@@ -80,36 +85,29 @@
 
   // ─── نسخ الكوبون + التحويل ───
   function copyCoupon(code, btnEl, link){
-    navigator.clipboard.writeText(code).then(function(){
+    // 🔒 تنظيف الكود والرابط
+    code = String(code).replace(/[^A-Za-z0-9_\-]/g,'');
+    var targetLink = safeLink(link || 'pricing.html');
+    function onCopied(){
       btnEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
       btnEl.style.background = 'rgba(52,211,153,0.2)';
       trackCouponEvent(code, 'copy');
       setTimeout(function(){
-        var targetLink = link || 'pricing.html';
         if(!isLoggedIn && targetLink.indexOf('pricing') !== -1){
           window.location.href = 'register.html?redirect=pricing&coupon=' + encodeURIComponent(code);
         } else {
           window.location.href = targetLink + (targetLink.indexOf('?') === -1 ? '?' : '&') + 'coupon=' + encodeURIComponent(code);
         }
       }, 800);
-    }).catch(function(){
+    }
+    navigator.clipboard.writeText(code).then(onCopied).catch(function(){
       var input = document.createElement('input');
       input.value = code;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
       input.remove();
-      btnEl.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
-      btnEl.style.background = 'rgba(52,211,153,0.2)';
-      trackCouponEvent(code, 'copy');
-      setTimeout(function(){
-        var targetLink = link || 'pricing.html';
-        if(!isLoggedIn && targetLink.indexOf('pricing') !== -1){
-          window.location.href = 'register.html?redirect=pricing&coupon=' + encodeURIComponent(code);
-        } else {
-          window.location.href = targetLink + (targetLink.indexOf('?') === -1 ? '?' : '&') + 'coupon=' + encodeURIComponent(code);
-        }
-      }, 800);
+      onCopied();
     });
   }
 
@@ -225,13 +223,13 @@
 
     // المحتوى
     html += '  <div class="eng-content">';
-    html += '    <span class="eng-emoji">' + (msg.emoji || '🎁') + '</span>';
-    html += '    <span class="eng-text">' + msg.text + '</span>';
+    html += '    <span class="eng-emoji">' + esc(msg.emoji || '🎁') + '</span>';
+    html += '    <span class="eng-text">' + esc(msg.text) + '</span>';
 
     // كوبون
     if(msg.coupon){
       html += '    <div class="eng-coupon-box">';
-      html += '      <span class="eng-code">' + msg.coupon + '</span>';
+      html += '      <span class="eng-code">' + esc(msg.coupon) + '</span>';
       html += '      <button class="eng-copy-btn" id="eng-copy-btn" title="انسخ الكوبون">';
       html += '        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
       html += '      </button>';
@@ -240,7 +238,7 @@
     }
     // زر عادي
     else if(msg.btn){
-      html += '    <a class="eng-btn" href="' + (msg.link || '#') + '" id="eng-action-btn">' + msg.btn + '</a>';
+      html += '    <a class="eng-btn" href="' + safeLink(msg.link) + '" id="eng-action-btn">' + esc(msg.btn) + '</a>';
     }
 
     html += '  </div>'; // eng-content
