@@ -3,326 +3,479 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مدارك النخبة</title>
+<title>عرض رمضان 🔥 | مدارك النخبة</title>
+<meta name="description" content="منصة تدريب قدرات وتحصيلي — تجميعات متجددة، شرح فوري، إحصائيات ذكية. خصم 60% لفترة محدودة">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f0a2e">
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17989685111"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','AW-17989685111');</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif'],cairo:['Cairo','sans-serif']}}}}</script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{
-  --gold:#fbbf24; --gold2:#f59e0b;
-  --pur:#6366f1; --pur2:#8b5cf6;
-  --lp:#a5b4fc; --sp:#c4b5fd;
-  --font:-apple-system,'Helvetica Neue',Arial,sans-serif;
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);color:#fff;overflow-x:hidden;min-height:100vh}
+
+/* === PARTICLES === */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;opacity:0;animation:particleFloat linear infinite}
+@keyframes particleFloat{0%{opacity:0;transform:translateY(100vh) scale(0)}10%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translateY(-10vh) scale(1)}}
+
+/* === GLOW === */
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(251,191,36,0.3),0 0 40px rgba(99,102,241,0.2)}50%{box-shadow:0 0 40px rgba(251,191,36,0.6),0 0 80px rgba(99,102,241,0.4)}}
+.glow-box{animation:glowPulse 3s ease-in-out infinite}
+
+/* === SCROLL REVEAL === */
+.reveal{opacity:0;transform:translateY(40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:0.15s}
+.reveal-delay-2{transition-delay:0.3s}
+.reveal-delay-3{transition-delay:0.45s}
+.reveal-delay-4{transition-delay:0.6s}
+
+/* === FLOATING === */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes float2{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+.floating{animation:float 4s ease-in-out infinite}
+.floating2{animation:float2 5s ease-in-out infinite}
+
+/* === CTA BUTTON === */
+@keyframes ctaPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(251,191,36,0.5)}50%{transform:scale(1.03);box-shadow:0 0 30px 10px rgba(251,191,36,0.2)}}
+.cta-btn{background:linear-gradient(135deg,#f59e0b,#fbbf24,#f59e0b);color:#0f0a2e;font-weight:800;font-size:1.25rem;padding:1rem 2.5rem;border-radius:9999px;border:none;cursor:pointer;animation:ctaPulse 2s ease-in-out infinite;transition:all .3s;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Tajawal',sans-serif}
+.cta-btn:hover{transform:scale(1.07)!important;box-shadow:0 0 50px rgba(251,191,36,0.5)!important}
+
+/* === COUNTDOWN === */
+.countdown-box{background:rgba(255,255,255,0.06);border:1px solid rgba(251,191,36,0.3);border-radius:1rem;padding:0.75rem 1rem;min-width:70px;text-align:center;backdrop-filter:blur(10px)}
+.countdown-num{font-family:'Cairo',sans-serif;font-size:2rem;font-weight:900;color:#fbbf24;line-height:1}
+.countdown-label{font-size:0.75rem;color:rgba(255,255,255,0.6);margin-top:2px}
+
+/* === FEATURE CARDS === */
+.feature-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:1.25rem;padding:2rem;transition:all .4s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(15px);position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 60%);transition:all .5s;opacity:0}
+.feature-card:hover{border-color:rgba(99,102,241,0.4);transform:translateY(-5px)}
+.feature-card:hover::before{opacity:1}
+
+/* === OFFER CARD === */
+.offer-card{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(99,102,241,0.08));border:2px solid rgba(251,191,36,0.4);border-radius:1.5rem;padding:3rem 2rem;position:relative;overflow:hidden}
+
+/* === COUPON === */
+.coupon-box{background:rgba(0,0,0,0.3);border:2px dashed rgba(251,191,36,0.6);border-radius:1rem;padding:1rem 1.5rem;display:inline-flex;align-items:center;gap:1rem;cursor:pointer;transition:all .3s}
+.coupon-box:hover{border-color:#fbbf24;background:rgba(251,191,36,0.1)}
+.coupon-box.copied{border-color:#10b981;background:rgba(16,185,129,0.1)}
+
+/* === SHIMMER === */
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+.shimmer-text{background:linear-gradient(90deg,#fff,#fbbf24,#fff,#fbbf24,#fff);background-size:200% auto;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite}
+
+/* === SCROLL INDICATOR === */
+@keyframes scrollDown{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(8px);opacity:0.3}}
+.scroll-indicator{animation:scrollDown 1.5s ease-in-out infinite}
+
+/* === PRICE STRIKE === */
+.price-old{position:relative;display:inline-block}
+.price-old::after{content:'';position:absolute;top:50%;left:-5%;width:110%;height:3px;background:#ef4444;transform:rotate(-8deg)}
+
+/* === DISCOUNT BADGE === */
+@keyframes badgePop{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.discount-badge{animation:badgePop 2s ease-in-out infinite}
+
+/* === PHONE MOCKUP === */
+.phone-frame{background:rgba(15,10,46,0.9);border:2px solid rgba(255,255,255,0.15);border-radius:1.5rem;padding:0.75rem;max-width:280px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.phone-screen{background:linear-gradient(180deg,#1a1145,#0f0a2e);border-radius:1rem;padding:1rem;min-height:200px;overflow:hidden}
+
+/* === CONFETTI === */
+@keyframes confettiFall{0%{transform:translateY(-100%) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.confetti{position:fixed;top:-10px;width:10px;height:10px;z-index:9999;pointer-events:none}
+
+@media(max-width:768px){
+  .countdown-num{font-size:1.5rem}
+  .countdown-box{min-width:55px;padding:0.5rem 0.75rem}
+  .cta-btn{font-size:1rem;padding:0.875rem 2rem}
 }
-html{ scroll-behavior:smooth; }
-body{ background:#050310; font-family:var(--font); overflow-x:hidden; color:#fff; }
-/* ══ SECTION ══ */
-section{
-min-height:100svh; position:relative;
-display:flex; flex-direction:column;
-align-items:center; justify-content:center;
-padding:72px 28px 110px; overflow:hidden;
-}
-#s1{background:linear-gradient(160deg,#070512 0%,#0f0b2e 60%,#160835 100%);}
-#s2{background:linear-gradient(160deg,#080520 0%,#0e0a2a 100%);}
-#s3{background:linear-gradient(160deg,#060414 0%,#0d0826 100%);}
-#s4{background:linear-gradient(160deg,#070410 0%,#0d0828 100%);}
-#s5{background:linear-gradient(160deg,#050310 0%,#0a0520 100%);}
-#s6{background:linear-gradient(160deg,#0a0720 0%,#120e35 50%,#1a0a3e 100%);}
-/* orbs */
-.orb{
-position:absolute; border-radius:50%;
-filter:blur(72px); pointer-events:none; z-index:0;
-}
-/* ══ REVEALS ══ */
-.rv{ opacity:0; transform:translateY(44px); transition:opacity .7s ease, transform .75s cubic-bezier(.22,1,.36,1); }
-.rv.on{ opacity:1; transform:none; }
-.rv-z{ opacity:0; transform:scale(.55); transition:opacity .6s ease, transform .7s cubic-bezier(.34,1.56,.64,1); }
-.rv-z.on{ opacity:1; transform:none; }
-.rv-l{ opacity:0; transform:translateX(-46px); transition:opacity .65s ease, transform .7s cubic-bezier(.22,1,.36,1); }
-.rv-l.on{ opacity:1; transform:none; }
-.d1{transition-delay:.1s;} .d2{transition-delay:.25s;} .d3{transition-delay:.4s;}
-.d4{transition-delay:.55s;} .d5{transition-delay:.7s;} .d6{transition-delay:.85s;}
-/* ══ BRAND ══ */
-.brand{
-position:absolute; top:20px; right:20px;
-display:flex; align-items:center; gap:10px; z-index:10;
-}
-.b-ico{
-width:36px; height:36px; border-radius:10px;
-background:linear-gradient(135deg,#1e1b4b,#2d2564);
-border:1.5px solid rgba(99,102,241,.4);
-display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.b-name{font-size:12px;font-weight:700;color:rgba(196,181,253,.4);}
-.sc-n{position:absolute;top:24px;left:20px;font-size:11px;color:rgba(255,255,255,.18);font-weight:700;z-index:10;}
-/* ══ CONTENT ══ */
-.content{position:relative;z-index:2;width:100%;max-width:480px;}
-.tag{font-size:11px;font-weight:700;color:rgba(251,191,36,.6);letter-spacing:3px;text-align:center;margin-bottom:20px;}
-.h1{font-size:clamp(34px,9vw,54px);font-weight:900;line-height:1.25;text-align:center;}
-.h1 .g{color:var(--gold);} .h1 .p{color:var(--lp);}
-.sub{font-size:clamp(14px,3.8vw,18px);color:rgba(196,181,253,.6);text-align:center;line-height:1.8;margin-top:18px;}
-.sub strong{color:#fff;}
-.divider{width:56px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(--gold2),var(--gold));margin:20px auto;}
-/* big stat */
-.big-n{font-size:clamp(110px,30vw,170px);font-weight:900;color:var(--gold);text-align:center;line-height:1;}
-/* bars */
-.bars{width:100%;margin-top:18px;}
-.bar-row{display:flex;align-items:center;justify-content:space-between;direction:rtl;margin-bottom:5px;}
-.bar-lbl{font-size:13px;font-weight:700;}
-.bar-pct{font-size:13px;font-weight:900;}
-.bar-pct.g{color:var(--gold);} .bar-pct.d{color:rgba(196,181,253,.35);}
-.bar-track{width:100%;height:9px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;margin-bottom:14px;}
-.bar-fill{height:100%;border-radius:100px;transform:scaleX(0);transform-origin:right;transition:transform 1.3s cubic-bezier(.4,0,.2,1);}
-.bar-fill.g{background:linear-gradient(90deg,var(--gold),var(--gold2));}
-.bar-fill.d{background:rgba(196,181,253,.22);}
-.bar-fill.go{transform:scaleX(1);}
-.pill{background:rgba(251,191,36,.06);border:1.5px solid rgba(251,191,36,.18);border-radius:14px;padding:14px 18px;text-align:center;margin-top:14px;}
-.pill-t{font-size:14px;font-weight:700;color:rgba(251,191,36,.9);}
-.pill-s{font-size:12px;color:rgba(196,181,253,.45);margin-top:4px;}
-/* steps */
-.steps{width:100%;display:flex;flex-direction:column;gap:10px;margin-top:14px;}
-.step{display:flex;align-items:center;gap:12px;direction:rtl;padding:14px 15px;background:rgba(255,255,255,.03);border:1.5px solid rgba(99,102,241,.12);border-radius:14px;}
-.step-n{width:42px;height:42px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;}
-.pp{background:linear-gradient(135deg,var(--pur),var(--pur2));color:#fff;}
-.gg{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1145;}
-.step-t{font-size:14px;font-weight:700;}
-.step-s{font-size:11px;color:rgba(196,181,253,.45);margin-top:3px;}
-/* quote */
-.q1{font-size:clamp(30px,8.5vw,48px);font-weight:900;color:var(--gold);display:block;}
-.q2{font-size:clamp(26px,7vw,40px);font-weight:900;color:#fff;display:block;margin:4px 0;}
-.q3{font-size:clamp(28px,7.5vw,44px);font-weight:900;color:var(--lp);display:block;}
-.q-sub{font-size:clamp(13px,3.5vw,16px);color:rgba(196,181,253,.52);line-height:1.9;margin-top:18px;text-align:center;}
-.q-sub strong{color:rgba(251,191,36,.85);}
-/* cta */
-.crown-box{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:2px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 10px 30px rgba(99,102,241,.25);}
-.feats{width:100%;display:flex;flex-direction:column;gap:9px;margin-top:14px;}
-.feat{display:flex;align-items:center;gap:11px;direction:rtl;padding:11px 14px;background:rgba(255,255,255,.03);border:1.5px solid rgba(99,102,241,.1);border-radius:12px;}
-.feat-ic{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.fi1{background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.2);}
-.fi2{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.18);}
-.fi3{background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.2);}
-.feat-t{font-size:14px;font-weight:700;}
-.cta-btn{width:100%;background:linear-gradient(135deg,var(--gold2),var(--gold));border-radius:18px;padding:18px;text-align:center;margin-top:16px;cursor:pointer;box-shadow:0 8px 28px rgba(251,191,36,.3);transition:transform .15s,box-shadow .15s;}
-.cta-btn:active{transform:scale(.97);box-shadow:0 4px 14px rgba(251,191,36,.2);}
-.cta-t{font-size:18px;font-weight:900;color:#1a1145;}
-.cta-u{font-size:11px;color:rgba(26,17,69,.55);margin-top:3px;direction:ltr;}
-/* ══ NEXT BUTTON ══ */
-.nxt{
-position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
-display:flex; flex-direction:column; align-items:center; gap:7px;
-background:none; border:none; cursor:pointer; z-index:10;
-padding:6px 16px;
-}
-.nxt-lbl{
-font-family:var(--font); font-size:11px; font-weight:700;
-color:rgba(196,181,253,.4); letter-spacing:1.5px;
-}
-.nxt-ring{
-width:38px; height:38px; border-radius:50%;
-background:rgba(99,102,241,.1);
-border:1.5px solid rgba(99,102,241,.22);
-display:flex; align-items:center; justify-content:center;
-animation:bob 2.2s ease-in-out infinite;
-transition:background .2s, border-color .2s;
-}
-.nxt:active .nxt-ring{background:rgba(99,102,241,.22);}
-@keyframes bob{0%,100%{transform:translateY(0);}55%{transform:translateY(6px);}}
-#s6 .nxt{display:none;}
-/* ══ SIDE DOTS ══ */
-.sdots{
-position:fixed; left:12px; top:50%; transform:translateY(-50%);
-display:flex; flex-direction:column; gap:7px; z-index:100;
-}
-.sdot{
-width:5px; height:5px; border-radius:100px;
-background:rgba(255,255,255,.15); cursor:pointer;
-transition:all .35s cubic-bezier(.34,1.56,.64,1);
-}
-.sdot.on{background:var(--gold);height:18px;}
 </style>
 </head>
 <body>
-<div class="sdots" id="sdots">
-  <div class="sdot on"  onclick="goTo(0)"></div>
-  <div class="sdot"     onclick="goTo(1)"></div>
-  <div class="sdot"     onclick="goTo(2)"></div>
-  <div class="sdot"     onclick="goTo(3)"></div>
-  <div class="sdot"     onclick="goTo(4)"></div>
-  <div class="sdot"     onclick="goTo(5)"></div>
-</div>
-<!-- SVG crown shorthand -->
-<template id="crownSvg">
-  <svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg>
-</template>
-<!-- ── S1 ── -->
-<section id="s1">
-  <div class="orb" style="width:380px;height:380px;top:-100px;right:-80px;background:rgba(99,102,241,.13);"></div>
-  <div class="orb" style="width:260px;height:260px;bottom:0;left:-70px;background:rgba(251,191,36,.07);"></div>
-  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
-  <div class="sc-n">1 / 6</div>
-  <div class="content">
-    <div class="tag rv d1">سؤال واحد قبل ما تكمل</div>
-    <h1 class="h1">
-      <span class="rv d2" style="display:block;">ليش بعض الطلاب</span>
-      <span class="rv d3 g" style="display:block;">يرفعون درجاتهم</span>
-      <span class="rv d4" style="display:block;">وانت لأ؟</span>
-    </h1>
-    <div class="divider rv d5"></div>
-    <p class="sub rv d5">مو ذكاء &nbsp;·&nbsp; مو حظ<br><strong>السر شيء واحد بس ←</strong></p>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- ====== HERO ====== -->
+<section class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 py-12">
+  <div class="mb-6 floating">
+    <img src="favicon.svg" alt="مدارك النخبة" class="w-16 h-16 mx-auto rounded-2xl" style="box-shadow:0 4px 20px rgba(99,102,241,0.25)" onerror="this.style.display='none'">
   </div>
-  <button class="nxt" onclick="goTo(1)">
-    <span class="nxt-lbl">التالي</span>
-    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M6.5 11.5L3 8M6.5 11.5L10 8" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </button>
-</section>
-<!-- ── S2 ── -->
-<section id="s2">
-  <div class="orb" style="width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(99,102,241,.09);"></div>
-  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
-  <div class="sc-n">2 / 6</div>
-  <div class="content" style="text-align:center;">
-    <div class="tag rv d1">الإحصائية اللي تغيّر تفكيرك</div>
-    <div class="big-n rv-z d2">85%</div>
-    <p class="sub rv d3" style="font-size:clamp(14px,4vw,19px);color:rgba(251,191,36,.7);font-weight:700;margin-top:6px;">من الطلاب المتميزين</p>
-    <p class="sub rv d4" style="margin-top:8px;font-size:clamp(15px,4.2vw,20px);color:#fff;font-weight:700;">يتدربون على أسئلة حقيقية<br>قبل الاختبار بأسابيع</p>
-    <div class="divider rv d5"></div>
-    <p class="sub rv d5" style="font-size:13px;">بينما الباقين يقرؤون النظرية<br>هم يحلون ويتدربون ويتحسنون<br><strong style="color:rgba(251,191,36,.85);">الفرق هو الممارسة</strong></p>
+
+  <div class="reveal mb-4">
+    <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold" style="background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">
+      🌙 عرض رمضان المبارك
+    </span>
   </div>
-  <button class="nxt" onclick="goTo(2)">
-    <span class="nxt-lbl">التالي</span>
-    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M6.5 11.5L3 8M6.5 11.5L10 8" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </button>
-</section>
-<!-- ── S3 ── -->
-<section id="s3">
-  <div class="orb" style="width:280px;height:280px;top:-50px;left:-50px;background:rgba(139,92,246,.1);"></div>
-  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
-  <div class="sc-n">3 / 6</div>
-  <div class="content">
-    <h1 class="h1 rv d1" style="font-size:clamp(30px,8.5vw,46px);">اللي يحل أكثر<br>يحصل أكثر</h1>
-    <p class="sub rv d2" style="font-size:12px;margin-top:8px;margin-bottom:0;">مقارنة بين طريقتين للمذاكرة</p>
-    <div class="bars rv d3">
-      <div class="bar-row"><span class="bar-lbl">✅ تدريب + ممارسة</span><span class="bar-pct g">+85%</span></div>
-      <div class="bar-track"><div class="bar-fill g" id="bar1"></div></div>
-      <div class="bar-row"><span class="bar-lbl">📖 قراءة بدون تطبيق</span><span class="bar-pct d">38%</span></div>
-      <div class="bar-track"><div class="bar-fill d" id="bar2" style="width:38%;"></div></div>
-    </div>
-    <div class="pill rv d4">
-      <div class="pill-t">الدماغ يتعلم بالتكرار</div>
-      <div class="pill-s">كل سؤال تحله = خطوة نحو درجتك</div>
+
+  <!-- Main Hook -->
+  <h1 class="reveal text-3xl md:text-5xl font-black mb-3 leading-tight" style="font-family:'Cairo',sans-serif">
+    عندك اختبار<br><span style="color:#fbbf24">قدرات</span> أو <span style="color:#8b5cf6">تحصيلي</span>؟
+  </h1>
+
+  <!-- Typewriter sub-headline -->
+  <div class="reveal reveal-delay-1 text-xl md:text-3xl font-bold mb-6" style="color:rgba(255,255,255,0.85);min-height:2.5rem">
+    <span id="typewriterText"></span><span class="inline-block w-0.5 h-6 md:h-8 bg-yellow-400 align-middle" style="animation:blink .7s step-end infinite"></span>
+  </div>
+  <style>@keyframes blink{50%{opacity:0}}</style>
+
+  <!-- Key Message -->
+  <p class="reveal reveal-delay-2 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed" style="color:rgba(255,255,255,0.65)">
+    كثرة الممارسة وحل التجميعات هي <span class="font-bold text-white">الطريق الحقيقي للدرجة العالية</span>
+    <br>مدارك النخبة تجهزك باختبارات فعلية، شرح فوري، وإحصائيات ذكية 🚀
+  </p>
+
+  <!-- Countdown -->
+  <div class="reveal reveal-delay-3 mb-8">
+    <p class="text-sm mb-3" style="color:rgba(255,255,255,0.5)">⏰ العرض ينتهي خلال</p>
+    <div class="flex gap-3 justify-center" dir="ltr">
+      <div class="countdown-box"><div class="countdown-num" id="cd-days">00</div><div class="countdown-label">يوم</div></div>
+      <div class="countdown-box"><div class="countdown-num" id="cd-hours">00</div><div class="countdown-label">ساعة</div></div>
+      <div class="countdown-box"><div class="countdown-num" id="cd-mins">00</div><div class="countdown-label">دقيقة</div></div>
+      <div class="countdown-box"><div class="countdown-num" id="cd-secs">00</div><div class="countdown-label">ثانية</div></div>
     </div>
   </div>
-  <button class="nxt" onclick="goTo(3)">
-    <span class="nxt-lbl">التالي</span>
-    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M6.5 11.5L3 8M6.5 11.5L10 8" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </button>
-</section>
-<!-- ── S4 ── -->
-<section id="s4">
-  <div class="orb" style="width:260px;height:260px;bottom:-40px;right:-50px;background:rgba(251,191,36,.06);"></div>
-  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
-  <div class="sc-n">4 / 6</div>
-  <div class="content">
-    <h1 class="h1 rv d1" style="font-size:clamp(28px,8vw,42px);">الطريقة الصح <span class="p">للتحضير</span></h1>
-    <p class="sub rv d2" style="font-size:12px;margin-bottom:4px;">3 خطوات يتبعها كل من رفع درجته</p>
-    <div class="steps">
-      <div class="step rv-l d3"><div class="step-n pp">١</div><div><div class="step-t">حل أسئلة حقيقية يومياً</div><div class="step-s">حتى لو 10 أسئلة — الاستمرار هو السر</div></div></div>
-      <div class="step rv-l d4"><div class="step-n pp">٢</div><div><div class="step-t">افهم أخطاءك فوراً</div><div class="step-s">الخطأ اللي تفهمه ما يتكرر في الاختبار</div></div></div>
-      <div class="step rv-l d5"><div class="step-n gg">٣</div><div><div class="step-t">تابع تطورك وتحداه</div><div class="step-s">الإحصائيات تبيّن وين تحتاج تركّز</div></div></div>
-    </div>
+
+  <div class="reveal reveal-delay-4">
+    <a href="pricing.html" class="cta-btn">استغل العرض الحين 🔥</a>
   </div>
-  <button class="nxt" onclick="goTo(4)">
-    <span class="nxt-lbl">التالي</span>
-    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M6.5 11.5L3 8M6.5 11.5L10 8" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </button>
+
+  <div class="absolute bottom-8 scroll-indicator" style="color:rgba(255,255,255,0.3)">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+  </div>
 </section>
-<!-- ── S5 ── -->
-<section id="s5">
-  <div class="orb" style="width:360px;height:360px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(251,191,36,.06);"></div>
-  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
-  <div class="sc-n">5 / 6</div>
-  <div class="content" style="text-align:center;">
-    <span class="q1 rv d2">ما في طالب فاشل</span>
-    <span class="q2 rv d3">في طالب</span>
-    <span class="q3 rv d4">ما تدرّب كفاية</span>
-    <div class="divider rv d5" style="margin-top:22px;"></div>
-    <p class="q-sub rv d6">
-      كل دقيقة تتدرب فيها الحين<br>
-      هي درجة إضافية في اختبارك<br>
-      <strong>الوقت يمشي — ابدأ الحين ←</strong>
+
+
+<!-- ====== PROBLEM / SOLUTION ====== -->
+<section class="relative z-10 py-16 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="reveal text-2xl md:text-4xl font-black mb-6" style="font-family:'Cairo',sans-serif">
+      وقّف البحث عن التجميعات الجامدة ✋
+    </h2>
+    <p class="reveal reveal-delay-1 text-base md:text-lg leading-relaxed mb-8" style="color:rgba(255,255,255,0.65)">
+      تجميعاتنا <span class="font-bold text-white">متجددة وتتفاعل معك</span> — مو مجرد PDF ثابت.
+      <br>كل سؤال تحله يعطيك <span style="color:#fbbf24">شرح فوري</span>، وإحصائياتك تبيّن لك وين تحتاج تركّز.
+      <br>ذكاء واجتهاد — مو حظ وتخمين 💡
     </p>
-  </div>
-  <button class="nxt" onclick="goTo(5)">
-    <span class="nxt-lbl">التالي</span>
-    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v10M6.5 11.5L3 8M6.5 11.5L10 8" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </button>
-</section>
-<!-- ── S6 ── -->
-<section id="s6">
-  <div class="orb" style="width:320px;height:320px;top:-70px;right:-70px;background:rgba(99,102,241,.13);"></div>
-  <div class="orb" style="width:280px;height:280px;bottom:-50px;left:-50px;background:rgba(251,191,36,.08);"></div>
-  <div class="sc-n" style="color:rgba(255,255,255,.14);">6 / 6</div>
-  <div class="content">
-    <div class="rv-z d1 crown-box">
-      <svg viewBox="0 0 36 36" width="40" height="40" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2" stroke-linecap="round"/><circle cx="5" cy="14" r="2" fill="#a5b4fc"/><circle cx="18" cy="7" r="2" fill="#c4b5fd"/><circle cx="31" cy="14" r="2" fill="#a5b4fc"/></svg>
-    </div>
-    <h1 class="h1 rv d2" style="font-size:clamp(22px,6.5vw,36px);margin-bottom:6px;">
-      جاهز ترفع درجتك في<br>
-      <span class="g">القدرات</span> و<span class="p">التحصيلي؟</span>
-    </h1>
-    <p class="sub rv d3" style="font-size:12px;margin-bottom:0;">مدارك النخبة — تدرّبك مو بس تعلّمك</p>
-    <div class="feats rv d4">
-      <div class="feat"><div class="feat-ic fi1">📚</div><span class="feat-t">أسئلة حقيقية لجميع الأقسام</span></div>
-      <div class="feat"><div class="feat-ic fi2">📊</div><span class="feat-t">إحصائياتك + نقاط ضعفك بوضوح</span></div>
-      <div class="feat"><div class="feat-ic fi3">🏆</div><span class="feat-t">نافس زملاءك وتصدّر اللوحة</span></div>
-    </div>
-    <div class="cta-btn rv d5" onclick="window.open('https://madarekelite.com','_blank')">
-      <div class="cta-t">ابدأ تدريبك مجاناً الحين 🚀</div>
-      <div class="cta-u">madarekelite.com</div>
+
+    <!-- Three mini highlights -->
+    <div class="grid grid-cols-3 gap-3 md:gap-6 max-w-xl mx-auto">
+      <div class="reveal text-center p-4 rounded-xl" style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2)">
+        <div class="text-3xl mb-2">💡</div>
+        <div class="text-sm font-bold" style="color:#fbbf24">شرح فوري</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5)">بعد كل سؤال</div>
+      </div>
+      <div class="reveal reveal-delay-1 text-center p-4 rounded-xl" style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2)">
+        <div class="text-3xl mb-2">📊</div>
+        <div class="text-sm font-bold" style="color:#8b5cf6">إحصائيات ذكية</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5)">تبيّن ضعفك</div>
+      </div>
+      <div class="reveal reveal-delay-2 text-center p-4 rounded-xl" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+        <div class="text-3xl mb-2">🔄</div>
+        <div class="text-sm font-bold" style="color:#10b981">تجميعات متجددة</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5)">دايم جديد</div>
+      </div>
     </div>
   </div>
 </section>
+
+
+<!-- ====== FEATURES — FROM REAL APP ====== -->
+<section class="relative z-10 py-16 px-4">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="reveal text-3xl md:text-4xl font-black text-center mb-3" style="font-family:'Cairo',sans-serif">
+      شوف وش <span class="shimmer-text">بتحصل</span> داخل المنصة
+    </h2>
+    <p class="reveal text-center mb-12" style="color:rgba(255,255,255,0.5)">مو مجرد أسئلة — تجربة تدريب متكاملة</p>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Feature 1: شرح فوري -->
+      <div class="feature-card reveal">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl flex-shrink-0">✅</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">شرح فوري بعد كل سؤال</h3>
+            <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.6)">غلطت؟ ما تمر كذا. كل سؤال يجيك شرح مفصّل يوضح لك الحل خطوة بخطوة + الإجابة الصحيحة. تتعلم من أخطاءك فوراً مو بعد أسبوع.</p>
+            <!-- Mini preview -->
+            <div class="mt-4 p-3 rounded-lg text-xs" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">
+              <div class="font-bold mb-1" style="color:#f87171">❌ إجابة خاطئة</div>
+              <div style="color:rgba(255,255,255,0.5)">💡 الشرح: عمر: ٦ × ٢ = ١٢ ساعة. خالد: ٧ × ١ = ٧ ساعات...</div>
+              <div class="mt-1 px-2 py-0.5 rounded inline-block" style="background:rgba(16,185,129,0.2);color:#34d399">✅ الإجابة الصحيحة: القيمة الأولى أكبر</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: إحصائيات -->
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl flex-shrink-0">📊</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">إحصائيات تبيّن جوانب ضعفك</h3>
+            <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.6)">تقرير ذكي يحلل أداءك — يبيّن لك أقوى موضوع وأضعف موضوع. تعرف وين تحتاج تركّز بدل ما تضيع وقتك على اللي تعرفه.</p>
+            <!-- Mini preview -->
+            <div class="mt-4 flex gap-3">
+              <div class="flex-1 p-2 rounded-lg text-center text-xs" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">
+                <div style="color:#fbbf24">🏆</div>
+                <div class="font-bold" style="color:#10b981">أقوى موضوع</div>
+                <div style="color:rgba(255,255,255,0.5)">كيمياء 50%</div>
+              </div>
+              <div class="flex-1 p-2 rounded-lg text-center text-xs" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2)">
+                <div>⚠️</div>
+                <div class="font-bold" style="color:#f87171">يحتاج تركيز</div>
+                <div style="color:rgba(255,255,255,0.5)">رياضيات 11%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: تجميعات متجددة -->
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl flex-shrink-0">🧠</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">تجميعات متجددة — مو PDF جامد</h3>
+            <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.6)">انسَ البحث بين ملفات التلقرام والواتساب. تجميعاتنا تتحدث باستمرار وتتفاعل معك — أسئلة قدرات كمي، لفظي، وتحصيلي بكل المواد. كل فترة محتوى جديد ينزل.</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <span class="px-2 py-1 rounded-full text-xs font-bold" style="background:rgba(99,102,241,0.15);color:#a5b4fc">⚡ قدرات كمي</span>
+              <span class="px-2 py-1 rounded-full text-xs font-bold" style="background:rgba(139,92,246,0.15);color:#c4b5fd">📖 قدرات لفظي</span>
+              <span class="px-2 py-1 rounded-full text-xs font-bold" style="background:rgba(16,185,129,0.15);color:#6ee7b7">🔬 تحصيلي</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 4: لوحة المتصدرين -->
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl flex-shrink-0">🏆</div>
+          <div>
+            <h3 class="text-xl font-bold mb-2">لوحة المتصدرين — تنافس مع زملائك</h3>
+            <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.6)">شوف ترتيبك بين الطلاب واحصد XP مع كل سؤال تحله. المنافسة تحفّزك تستمر وتتحسن. من الأول؟ ممكن أنت</p>
+            <!-- Mini leaderboard -->
+            <div class="mt-4 space-y-2 text-xs">
+              <div class="flex items-center gap-2 p-1.5 rounded-lg" style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2)">
+                <span>🥇</span><span class="font-bold">فيصل</span><span class="mr-auto" style="color:#fbbf24">١١٠ XP</span>
+              </div>
+              <div class="flex items-center gap-2 p-1.5 rounded-lg" style="background:rgba(255,255,255,0.04)">
+                <span>🥈</span><span class="font-bold">فيصل</span><span class="mr-auto" style="color:rgba(255,255,255,0.5)">٦٠ XP</span>
+              </div>
+              <div class="flex items-center gap-2 p-1.5 rounded-lg" style="background:rgba(255,255,255,0.04)">
+                <span>🥉</span><span class="font-bold">Abdullah</span><span class="mr-auto" style="color:rgba(255,255,255,0.5)">٦٠ XP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extra features row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+      <div class="reveal text-center p-4 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
+        <div class="text-2xl mb-2">⏱️</div>
+        <div class="text-xs font-bold">مؤقت حقيقي</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4)">يحاكي ضغط الاختبار</div>
+      </div>
+      <div class="reveal reveal-delay-1 text-center p-4 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
+        <div class="text-2xl mb-2">📱</div>
+        <div class="text-xs font-bold">كل الأجهزة</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4)">جوال، تابلت، كمبيوتر</div>
+      </div>
+      <div class="reveal reveal-delay-2 text-center p-4 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
+        <div class="text-2xl mb-2">🔄</div>
+        <div class="text-xs font-bold">تحديث مستمر</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4)">أسئلة جديدة باستمرار</div>
+      </div>
+      <div class="reveal reveal-delay-3 text-center p-4 rounded-xl" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06)">
+        <div class="text-2xl mb-2">🎯</div>
+        <div class="text-xs font-bold">تدريب مركّز</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4)">اختر القسم وتدرب</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ====== SPECIAL OFFER ====== -->
+<section class="relative z-10 py-16 px-4">
+  <div class="max-w-2xl mx-auto">
+    <div class="offer-card glow-box text-center reveal">
+      <div class="text-5xl mb-4 floating2">🌙</div>
+
+      <h2 class="text-3xl md:text-4xl font-black mb-2" style="font-family:'Cairo',sans-serif;color:#fbbf24">
+        عرض رمضان الخاص 🔥
+      </h2>
+      <p class="mb-6 text-lg" style="color:rgba(255,255,255,0.7)">خصم ما يتكرر — لفترة محدودة</p>
+
+      <!-- Price - BIGGER AND CLEARER -->
+      <div class="mb-6">
+        <div class="price-old mb-2">
+          <span class="text-3xl md:text-4xl font-bold" style="color:rgba(255,255,255,0.5)">59 ريال</span>
+        </div>
+        <div class="text-6xl md:text-7xl font-black" style="font-family:'Cairo',sans-serif;color:#fbbf24">
+          23 <span class="text-2xl md:text-3xl">ريال/شهر</span>
+        </div>
+        <!-- BIGGER discount badge -->
+        <div class="discount-badge inline-block mt-3 px-6 py-2 rounded-full text-xl font-black" style="background:rgba(239,68,68,0.25);color:#ff6b6b;border:2px solid rgba(239,68,68,0.4)">
+          خصم 60% 🔥
+        </div>
+      </div>
+
+      <!-- Coupon -->
+      <p class="text-sm mb-3" style="color:rgba(255,255,255,0.5)">استخدم الكوبون:</p>
+      <div class="coupon-box mx-auto mb-6" id="couponBox" onclick="copyCoupon()">
+        <span class="text-2xl font-black tracking-widest" style="color:#fbbf24;font-family:'Cairo',sans-serif" id="couponText">RAMADAN26</span>
+        <span class="text-sm" style="color:rgba(255,255,255,0.5)" id="copyLabel">📋 نسخ</span>
+      </div>
+
+      <!-- Urgency -->
+      <div class="flex flex-wrap items-center justify-center gap-4 mb-6 text-sm" style="color:rgba(255,255,255,0.6)">
+        <span>⏰ ينتهي قريباً</span>
+      </div>
+
+      <a href="pricing.html" class="cta-btn text-xl">
+        اشترك الحين واستفد 🚀
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ====== MOTIVATION ====== -->
+<section class="relative z-10 py-16 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="reveal text-2xl md:text-3xl font-black mb-6" style="font-family:'Cairo',sans-serif">
+      السر اللي ما يقولونه لك 🤫
+    </h2>
+    <div class="reveal reveal-delay-1 p-6 md:p-8 rounded-2xl" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+      <p class="text-lg md:text-xl leading-relaxed" style="color:rgba(255,255,255,0.8)">
+        الدرجة العالية ما تجي من <span class="line-through" style="color:rgba(255,255,255,0.4)">حظ</span> أو <span class="line-through" style="color:rgba(255,255,255,0.4)">تخمين</span>.
+        <br><br>
+        تجي من <span class="font-black text-white">الممارسة المتكررة</span> — كل ما تحل أسئلة أكثر، كل ما صار عندك <span style="color:#fbbf24">سرعة بديهة</span> وثقة بالإجابة.
+        <br><br>
+        مدارك النخبة تعطيك <span style="color:#8b5cf6">تجميعات تفاعلية</span> — تحل، تشوف الشرح، تعرف نقاط ضعفك، وتركّز عليها. هذا <span class="font-bold" style="color:#10b981">الطريق الحقيقي</span> للدرجة اللي تحلم فيها.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ====== FINAL CTA ====== -->
+<section class="relative z-10 py-20 px-4 text-center">
+  <div class="max-w-2xl mx-auto reveal">
+    <div class="text-5xl mb-6 floating">🎓</div>
+    <h2 class="text-3xl md:text-4xl font-black mb-4" style="font-family:'Cairo',sans-serif">
+      جاهز تبدأ؟
+    </h2>
+    <p class="text-lg mb-8" style="color:rgba(255,255,255,0.6)">
+      انضم للعديد من الطلبة اللي بدأوا يتدربون بذكاء مع مدارك النخبة
+    </p>
+    <a href="pricing.html" class="cta-btn text-xl">
+      ابدأ التدريب الحين 🚀
+    </a>
+    <p class="mt-4 text-xs" style="color:rgba(255,255,255,0.3)">✨ تقدر تلغي اشتراكك بأي وقت</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="relative z-10 py-8 text-center" style="color:rgba(255,255,255,0.25);border-top:1px solid rgba(255,255,255,0.05)">
+  <p class="text-sm">© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
+  <div class="flex justify-center gap-4 mt-3 text-xs">
+    <a href="index.html" style="color:rgba(255,255,255,0.4);text-decoration:none">الرئيسية</a>
+    <a href="pricing.html" style="color:rgba(255,255,255,0.4);text-decoration:none">الأسعار</a>
+    <a href="login.html" style="color:rgba(255,255,255,0.4);text-decoration:none">تسجيل الدخول</a>
+  </div>
+</footer>
+
 <script>
-const secs = [...document.querySelectorAll('section')];
-const dots  = [...document.querySelectorAll('.sdot')];
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting) return;
-    const s=e.target;
-    s.querySelectorAll('.rv,.rv-z,.rv-l').forEach(el=>el.classList.add('on'));
-    setTimeout(()=>{
-      s.querySelector('#bar1')?.classList.add('go');
-      setTimeout(()=>s.querySelector('#bar2')?.classList.add('go'),280);
-    },500);
-    const i=secs.indexOf(s);
-    dots.forEach((d,j)=>d.classList.toggle('on',j===i));
-  });
-},{threshold:0.4});
-secs.forEach(s=>io.observe(s));
-function goTo(i){ secs[i].scrollIntoView({behavior:'smooth'}); }
-// keyboard nav
-document.addEventListener('keydown',e=>{
-  const cur=getActive();
-  if(e.key==='ArrowDown'&&cur<5) goTo(cur+1);
-  if(e.key==='ArrowUp'&&cur>0) goTo(cur-1);
-});
-function getActive(){
-  let best=0,bv=0;
-  secs.forEach((s,i)=>{
-    const r=s.getBoundingClientRect();
-    const v=Math.min(r.bottom,innerHeight)-Math.max(r.top,0);
-    if(v>bv){bv=v;best=i;}
-  });
-  return best;
+// 🔒 Security
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function safeLink(url){if(!url)return'#';url=String(url).trim();if(url.match(/^[a-zA-Z0-9\-_.]+\.html(\?.*)?$/))return url;if(url.indexOf('https://')===0&&url.indexOf('madarekelite.com')!==-1)return url;return'#';}
+
+// PARTICLES
+(function(){
+  var c=document.getElementById('particles');
+  var colors=['rgba(99,102,241,0.6)','rgba(139,92,246,0.5)','rgba(251,191,36,0.4)','rgba(16,185,129,0.3)'];
+  for(var i=0;i<40;i++){var p=document.createElement('div');p.className='particle';var s=Math.random()*4+2;p.style.cssText='width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;background:'+colors[Math.floor(Math.random()*colors.length)]+';animation-duration:'+(Math.random()*15+10)+'s;animation-delay:'+(Math.random()*10)+'s;';c.appendChild(p)}
+})();
+
+// TYPEWRITER
+(function(){
+  var texts=[
+    'الممارسة هي سر الدرجة العالية 💪',
+    'تدرّب بذكاء.. وحقق حلمك 🎯',
+    'وقّف التخمين.. ابدأ التدريب الفعلي 🧠',
+    'شرح فوري + إحصائيات = نجاح مضمون ✅'
+  ];
+  var el=document.getElementById('typewriterText');
+  var idx=0,ch=0,del=false;
+  function type(){
+    var t=texts[idx];
+    if(!del){el.textContent=t.substring(0,ch+1);ch++;if(ch===t.length){setTimeout(function(){del=true;type()},2200);return}}
+    else{el.textContent=t.substring(0,ch-1);ch--;if(ch===0){del=false;idx=(idx+1)%texts.length}}
+    setTimeout(type,del?30:65);
+  }
+  type();
+})();
+
+// COUNTDOWN
+(function(){
+  var end=new Date('2026-03-19T23:59:59').getTime();
+  function u(){
+    var d=end-Date.now();
+    if(d<=0){['cd-days','cd-hours','cd-mins','cd-secs'].forEach(function(id){document.getElementById(id).textContent='00'});return}
+    document.getElementById('cd-days').textContent=String(Math.floor(d/864e5)).padStart(2,'0');
+    document.getElementById('cd-hours').textContent=String(Math.floor(d%864e5/36e5)).padStart(2,'0');
+    document.getElementById('cd-mins').textContent=String(Math.floor(d%36e5/6e4)).padStart(2,'0');
+    document.getElementById('cd-secs').textContent=String(Math.floor(d%6e4/1e3)).padStart(2,'0');
+  }
+  u();setInterval(u,1000);
+})();
+
+// SCROLL REVEAL
+(function(){
+  var r=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var o=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target)}})},{threshold:0.12});
+    r.forEach(function(el){o.observe(el)});
+  }else r.forEach(function(el){el.classList.add('visible')});
+})();
+
+// COUPON COPY + SOUND
+var _sr=false;
+document.addEventListener('click',function(){_sr=true},{once:true});
+document.addEventListener('touchstart',function(){_sr=true},{once:true});
+
+function playPop(){
+  if(!_sr)return;
+  try{var c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.setValueAtTime(800,c.currentTime);o.frequency.exponentialRampToValueAtTime(1200,c.currentTime+0.05);o.frequency.exponentialRampToValueAtTime(600,c.currentTime+0.1);g.gain.setValueAtTime(0.3,c.currentTime);g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.15);o.start(c.currentTime);o.stop(c.currentTime+0.15)}catch(e){}
 }
-// swipe
-let sy=0;
-document.addEventListener('touchstart',e=>sy=e.touches[0].clientY,{passive:true});
-document.addEventListener('touchend',e=>{
-  const dy=e.changedTouches[0].clientY-sy;
-  const cur=getActive();
-  if(dy<-50&&cur<5) goTo(cur+1);
-  if(dy>50&&cur>0) goTo(cur-1);
-},{passive:true});
+
+function copyCoupon(){
+  var code='RAMADAN26';
+  code=String(code).replace(/[^A-Za-z0-9_\-]/g,'');
+  navigator.clipboard.writeText(code).then(function(){
+    var b=document.getElementById('couponBox'),l=document.getElementById('copyLabel');
+    b.classList.add('copied');l.textContent='✅ تم النسخ';playPop();spawnConfetti();
+    setTimeout(function(){b.classList.remove('copied');l.textContent='📋 نسخ'},2500);
+  }).catch(function(){
+    var t=document.createElement('textarea');t.value=code;t.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(t);
+  });
+}
+
+function spawnConfetti(){
+  var cols=['#fbbf24','#6366f1','#8b5cf6','#10b981','#ef4444','#f97316'];
+  for(var i=0;i<30;i++){var c=document.createElement('div');c.className='confetti';c.style.cssText='left:'+Math.random()*100+'%;background:'+cols[Math.floor(Math.random()*cols.length)]+';width:'+(Math.random()*8+5)+'px;height:'+(Math.random()*8+5)+'px;border-radius:'+(Math.random()>.5?'50%':'2px')+';animation:confettiFall '+(Math.random()*2+1.5)+'s linear forwards;animation-delay:'+(Math.random()*.5)+'s;';document.body.appendChild(c);setTimeout(function(el){el.remove()},3500,c)}
+}
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
 </script>
 </body>
 </html>
