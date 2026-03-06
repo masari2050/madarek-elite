@@ -217,16 +217,20 @@
             if(type==='monthly'){planEl.textContent='شهري 🔥';planEl.style.color='#8b5cf6'}
             else if(type==='yearly'){planEl.textContent='سنوي 💎';planEl.style.color='#fbbf24'}
             else{planEl.textContent='مجاني';planEl.style.color='rgba(255,255,255,0.5)'}
-            if(endStr&&type!=='free'){
-                var end=new Date(endStr);
-                var now=new Date();
-                var diff=end-now;
-                var daysLeft=Math.ceil(diff/(1000*60*60*24));
-                var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-                endRow.style.display='flex';
-                endEl.textContent=end.getDate()+' '+months[end.getMonth()]+' '+end.getFullYear();
-                if(daysLeft>0){daysRow.style.display='flex';daysEl.textContent=daysLeft+' يوم';daysEl.style.color=daysLeft<=7?'#f87171':'#fbbf24'}
-                else{daysRow.style.display='flex';daysEl.textContent='منتهي';daysEl.style.color='#f87171'}
+            if(type!=='free'){
+                if(endStr){
+                    var end=new Date(endStr);
+                    var now=new Date();
+                    var diff=end-now;
+                    var daysLeft=Math.ceil(diff/(1000*60*60*24));
+                    var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+                    endRow.style.display='flex';
+                    endEl.textContent=end.getDate()+' '+months[end.getMonth()]+' '+end.getFullYear();
+                    if(daysLeft>0){daysRow.style.display='flex';daysEl.textContent=daysLeft+' يوم';daysEl.style.color=daysLeft<=7?'#f87171':'#fbbf24'}
+                    else{daysRow.style.display='flex';daysEl.textContent='منتهي';daysEl.style.color='#f87171'}
+                }else{
+                    endRow.style.display='none';daysRow.style.display='none';
+                }
                 cancelWrap.style.display='';upgradeWrap.style.display='none';
             }else{
                 endRow.style.display='none';daysRow.style.display='none';
