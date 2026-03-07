@@ -52,11 +52,21 @@
         .exp-label { color: #92400e; font-size: 11px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
         .exp-text { color: #78350f; font-size: 13px; line-height: 1.7; }
         .exp-correct { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; margin-top: 8px; color: #166534; font-size: 12px; font-weight: 700; }
+
+        /* 🔔 Toast - إشعارات بدون تعطيل الصفحة */
+        .toast-container { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: 90%; max-width: 400px; }
+        .toast-msg { pointer-events: auto; padding: 12px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #fff; text-align: center; animation: toastIn 0.3s ease, toastOut 0.3s ease forwards; box-shadow: 0 8px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
+        .toast-error { background: rgba(220,38,38,0.92); }
+        .toast-success { background: rgba(22,163,74,0.92); }
+        .toast-info { background: rgba(99,102,241,0.92); }
+        @keyframes toastIn { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes toastOut { 0%,80%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-20px)} }
     </style>
 </head>
 <body class="font-tajawal text-white" data-page="practice">
+    <div id="toastContainer" class="toast-container"></div>
 
-    
+
 
     <header class="sticky-header">
         <div class="max-w-3xl mx-auto px-4 py-3">
@@ -203,6 +213,20 @@
     // 🔒 تهريب نص بدون أي HTML (للخيارات والإجابات القصيرة)
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+    // 🔔 إشعار غير مزعج (بدل alert اللي يوقف الصفحة)
+    function showToast(msg, type, duration) {
+        type = type || 'info';
+        duration = duration || 3000;
+        var el = document.createElement('div');
+        el.className = 'toast-msg toast-' + type;
+        el.textContent = msg;
+        el.style.animationDuration = '0.3s, 0.3s';
+        el.style.animationDelay = '0s, ' + (duration / 1000 - 0.3) + 's';
+        var container = document.getElementById('toastContainer');
+        if (container) container.appendChild(el);
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, duration);
+    }
+
     // 🔒 الشرح يجي من السيرفر (مو من المتصفح)
     function buildSmartExplanation(q, isCorrect) {
         var sr=q._serverResult||{};
@@ -268,7 +292,7 @@
                 if(r.error)throw r.error;
                 questions=r.data||[];
             }
-            if(!questions.length){alert('ما فيه أسئلة متاحة');location.href='select-section.html';return false;}
+            if(!questions.length){location.href='select-section.html';return false;}
 
             var cnt=parseInt(localStorage.getItem('khawariz_question_count'))||10;
             currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
@@ -347,6 +371,7 @@
     }
 
     // 🔒 التحقق من الإجابة عبر السيرفر (ما نثق بالمتصفح)
+    // ♻️ مع إعادة المحاولة تلقائياً (3 محاولات) وبدون أي alert مزعج
     async function selectOption(sel){
         if(hasAnswered)return;
         hasAnswered=true;
@@ -357,71 +382,91 @@
             card.onclick=null;card.style.cursor='default';card.style.opacity='0.7';
         });
 
-        // 🔒 إرسال الإجابة للسيرفر والتحقق هناك
-        try{
-            // ⏱️ timeout 15 ثانية عشان ما يعلق أبد
-            var rpcPromise=sb.rpc('submit_answer',{
-                p_question_id:q.id,
-                p_selected_answer:sel
-            });
-            var timeoutPromise=new Promise(function(_,reject){setTimeout(function(){reject(new Error('timeout'));},15000);});
-            var {data:result,error}=await Promise.race([rpcPromise,timeoutPromise]);
+        // ♻️ محاولة الإرسال مع retry تلقائي
+        var MAX_RETRIES = 3;
+        var result = null;
+        var lastError = null;
 
-            if(error)throw error;
-            if(result&&result.error){
-                if(result.error==='free_limit_reached'){showPaywall();return;}
-                // لو السؤال مجاوب عليه سابقاً، ننتقل للسؤال التالي تلقائياً
-                if(result.error==='already_answered'||result.error==='already answered'){
-                    hasAnswered=false;
-                    if(currentQuestionIndex<currentQuestions.length-1){currentQuestionIndex++;renderQuestion();}
-                    else{showResults();}
-                    return;
-                }
-                // أي خطأ ثاني نرجع الحالة عشان المستخدم يقدر يحاول مرة ثانية
-                hasAnswered=false;
-                document.querySelectorAll('.option-card').forEach(function(card,i){
-                    card.style.opacity='1';card.style.cursor='pointer';
-                    card.onclick=function(){selectOption(i);};
+        for (var attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                var rpcPromise = sb.rpc('submit_answer', {
+                    p_question_id: q.id,
+                    p_selected_answer: sel
                 });
-                alert('حدث خطأ: ' + result.error);return;
-            }
+                var timeoutMs = attempt === 1 ? 12000 : 8000;
+                var timeoutPromise = new Promise(function(_, reject) {
+                    setTimeout(function() { reject(new Error('timeout')); }, timeoutMs);
+                });
+                var resp = await Promise.race([rpcPromise, timeoutPromise]);
 
-            var isCorrect=result.is_correct;
-            var correctIdx=result.correct_index;
-
-            // تخزين البيانات المرجعة من السيرفر مؤقتاً للعرض
-            q._serverResult=result;
-
-            playSound(isCorrect);
-            if(isCorrect){correctCount++;consecutiveCorrect++;}else{wrongCount++;consecutiveCorrect=0;}
-            totalAttemptsCount++;
-            var storedMax=parseInt(localStorage.getItem('madarek_max_consecutive')||'0',10);
-            if(consecutiveCorrect>storedMax)localStorage.setItem('madarek_max_consecutive',String(consecutiveCorrect));
-            updateStats();
-
-            // 📊 تتبع الإجابة
-            if(window.MadarekAnalytics) MadarekAnalytics.track('question_answered',{section:q.section||'',sub_section:q.sub_section||'',is_correct:isCorrect});
-
-            document.querySelectorAll('.option-card').forEach(function(card,i){
-                card.style.opacity='1';
-                if(i===correctIdx){card.style.borderColor='#22c55e';card.style.background='#f0fdf4';card.style.boxShadow='0 0 0 3px rgba(34,197,94,0.15)';if(isCorrect&&i===sel)card.classList.add('answer-correct-anim');}
-                else if(i===sel&&!isCorrect){card.style.borderColor='#ef4444';card.style.background='#fef2f2';card.style.boxShadow='0 0 0 3px rgba(239,68,68,0.15)';}
-            });
-
-            showFeedback(isCorrect,q,sel);
-        }catch(e){
-            console.error('submit_answer error:',e);
-            hasAnswered=false;
-            document.querySelectorAll('.option-card').forEach(function(card,i){
-                card.style.opacity='1';card.style.cursor='pointer';
-                card.onclick=function(){selectOption(i);};
-            });
-            if(e.message==='timeout'){
-                alert('انتهت مهلة الاتصال، تأكد من الإنترنت وحاول مرة ثانية');
-            }else{
-                alert('حدث خطأ، حاول مرة ثانية');
+                if (resp.error) throw resp.error;
+                result = resp.data;
+                lastError = null;
+                break; // نجح - اطلع من اللوب
+            } catch (e) {
+                lastError = e;
+                console.warn('submit_answer attempt ' + attempt + '/' + MAX_RETRIES + ':', e.message || e);
+                if (attempt < MAX_RETRIES) {
+                    await new Promise(function(r) { setTimeout(r, 800 * attempt); }); // تأخير تصاعدي
+                }
             }
         }
+
+        // 🔒 معالجة النتيجة
+        if (lastError || !result) {
+            // فشلت كل المحاولات - نرجع الحالة بدون إزعاج
+            console.error('submit_answer failed after ' + MAX_RETRIES + ' attempts:', lastError);
+            hasAnswered = false;
+            _restoreOptions();
+            showToast('تعذر إرسال الإجابة، اضغط مرة ثانية', 'error', 2500);
+            return;
+        }
+
+        // معالجة أخطاء منطقية من السيرفر
+        if (result.error) {
+            if (result.error === 'free_limit_reached') { showPaywall(); return; }
+            if (result.error === 'already_answered' || result.error === 'already answered') {
+                hasAnswered = false;
+                if (currentQuestionIndex < currentQuestions.length - 1) { currentQuestionIndex++; displayQuestion(); }
+                else { showResults(); }
+                return;
+            }
+            // أي خطأ ثاني
+            hasAnswered = false;
+            _restoreOptions();
+            showToast('اضغط مرة ثانية', 'info', 2000);
+            return;
+        }
+
+        // ✅ نجحت الإجابة
+        var isCorrect = result.is_correct;
+        var correctIdx = result.correct_index;
+        q._serverResult = result;
+
+        playSound(isCorrect);
+        if (isCorrect) { correctCount++; consecutiveCorrect++; } else { wrongCount++; consecutiveCorrect = 0; }
+        totalAttemptsCount++;
+        var storedMax = parseInt(localStorage.getItem('madarek_max_consecutive') || '0', 10);
+        if (consecutiveCorrect > storedMax) localStorage.setItem('madarek_max_consecutive', String(consecutiveCorrect));
+        updateStats();
+
+        if (window.MadarekAnalytics) MadarekAnalytics.track('question_answered', { section: q.section || '', sub_section: q.sub_section || '', is_correct: isCorrect });
+
+        document.querySelectorAll('.option-card').forEach(function(card, i) {
+            card.style.opacity = '1';
+            if (i === correctIdx) { card.style.borderColor = '#22c55e'; card.style.background = '#f0fdf4'; card.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.15)'; if (isCorrect && i === sel) card.classList.add('answer-correct-anim'); }
+            else if (i === sel && !isCorrect) { card.style.borderColor = '#ef4444'; card.style.background = '#fef2f2'; card.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)'; }
+        });
+
+        showFeedback(isCorrect, q, sel);
+    }
+
+    // 🔄 إرجاع الخيارات للحالة الطبيعية
+    function _restoreOptions() {
+        document.querySelectorAll('.option-card').forEach(function(card, i) {
+            card.style.opacity = '1'; card.style.cursor = 'pointer';
+            card.onclick = function() { selectOption(i); };
+        });
     }
 
     function showFeedback(isCorrect,q,selectedIndex){
@@ -452,7 +497,7 @@
         var q=currentQuestions[currentQuestionIndex];
         var reason=prompt('الرجاء ذكر سبب التبليغ (اختياري):');
         if(reason===null)return;
-        try{ await sb.from('reports').insert({user_id:currentUser.id,question_id:q.id,reason:reason||'لم يحدد سبب',reported_at:new Date().toISOString()}); alert('✅ تم إرسال التبليغ'); }catch(e){ alert('حدث خطأ'); }
+        try{ await sb.from('reports').insert({user_id:currentUser.id,question_id:q.id,reason:reason||'لم يحدد سبب',reported_at:new Date().toISOString()}); showToast('تم إرسال التبليغ', 'success', 2000); }catch(e){ showToast('تعذر إرسال التبليغ', 'error', 2000); }
     }
 
     function updateStats(){
