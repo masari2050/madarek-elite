@@ -307,8 +307,27 @@
     return null;
   }
 
+  // ─── التحقق من اشتراك المستخدم ───
+  var isSubscriber = false;
+  async function checkSubscription(){
+    if(!userId) return;
+    try {
+      var resp = await fetch(SB_URL + '/rest/v1/profiles?select=subscription_type,subscription_end&id=eq.' + userId, {
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+      });
+      if(resp.ok){
+        var data = await resp.json();
+        if(data && data[0] && data[0].subscription_type && data[0].subscription_type !== 'free'){
+          var end = data[0].subscription_end ? new Date(data[0].subscription_end) : null;
+          if(!end || end > new Date()) isSubscriber = true;
+        }
+      }
+    } catch(e){}
+  }
+
   // ─── البدء ───
   async function init(){
+    await checkSubscription();
     var settings = await fetchEngageSettings();
 
     if(settings && settings.engage_mode && settings.engage_mode !== 'off'){
@@ -324,6 +343,9 @@
       var target = settings.engage_target || 'all';
       if(target === 'visitors' && isLoggedIn) return;
       if(target === 'logged' && !isLoggedIn) return;
+
+      // ✅ لا تعرض بوب أب الكوبون للمشتركين
+      if(isSubscriber && settings.engage_coupon_enabled === 'true') return;
 
       var adminMsg = {
         emoji: settings.engage_emoji || '🎁',
