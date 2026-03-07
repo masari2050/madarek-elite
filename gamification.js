@@ -198,9 +198,28 @@
         if(!attempts) return xp;
         var streakBonus = (currentStreak >= 3) ? 5 : 0;
         attempts.forEach(function(a){
-            if(a.is_correct) xp += 10 + streakBonus;
+            if(a.is_correct){
+                xp += 10 + streakBonus;  // صح = 10 + بونس الاستمرار
+            } else {
+                xp += 3;  // خطأ = 3 نقاط (مكافأة المحاولة)
+            }
         });
         return xp;
+    }
+
+    // حساب XP لجلسة واحدة فقط
+    function calculateSessionXP(correct, wrong, currentStreak){
+        var streakBonus = (currentStreak >= 3) ? 5 : 0;
+        var correctXP = correct * (10 + streakBonus);
+        var wrongXP = wrong * 3;
+        var sessionBonus = (correct + wrong >= 10) ? 20 : 0;  // بونس إكمال الجلسة
+        return {
+            correctXP: correctXP,
+            wrongXP: wrongXP,
+            sessionBonus: sessionBonus,
+            streakBonus: streakBonus > 0 ? correct * streakBonus : 0,
+            total: correctXP + wrongXP + sessionBonus
+        };
     }
 
     // ══════════════════════════════════════
@@ -457,6 +476,7 @@
     window.Gamification = {
         calculateStreak: calculateStreak,
         calculateXP: calculateXP,
+        calculateSessionXP: calculateSessionXP,
         calculateBadges: calculateBadges,
         calculateMaxConsecutive: calculateMaxConsecutive,
         getStreakCache: getStreakCache,
