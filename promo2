@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدارك النخبة — ليش مختلفة</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --gold:#fbbf24; --gold2:#f59e0b;
+  --pur:#6366f1; --pur2:#8b5cf6;
+  --lp:#a5b4fc; --sp:#c4b5fd;
+  --red:#f87171; --green:#34d399;
+  --font:-apple-system,'Helvetica Neue',Arial,sans-serif;
+}
+html{ scroll-behavior:smooth; }
+body{ background:#050310; font-family:var(--font); overflow-x:hidden; color:#fff; }
+
+section{
+min-height:100svh; position:relative;
+display:flex; flex-direction:column;
+align-items:center; justify-content:center;
+padding:72px 28px 110px; overflow:hidden;
+}
+#s1{background:linear-gradient(160deg,#070512 0%,#0f0b2e 60%,#160835 100%);}
+#s2{background:linear-gradient(160deg,#080214 0%,#0d0422 100%);}
+#s3{background:linear-gradient(160deg,#060414 0%,#0d0826 100%);}
+#s4{background:linear-gradient(160deg,#040210 0%,#080520 100%);}
+#s5{background:linear-gradient(160deg,#080410 0%,#120820 100%);}
+#s6{background:linear-gradient(160deg,#0a0720 0%,#120e35 50%,#1a0a3e 100%);}
+
+.orb{position:absolute;border-radius:50%;filter:blur(72px);pointer-events:none;z-index:0;}
+
+/* reveals */
+.rv{opacity:0;transform:translateY(44px);transition:opacity .7s ease,transform .75s cubic-bezier(.22,1,.36,1);}
+.rv.on{opacity:1;transform:none;}
+.rv-z{opacity:0;transform:scale(.55);transition:opacity .6s ease,transform .7s cubic-bezier(.34,1.56,.64,1);}
+.rv-z.on{opacity:1;transform:none;}
+.rv-l{opacity:0;transform:translateX(44px);transition:opacity .65s ease,transform .7s cubic-bezier(.22,1,.36,1);}
+.rv-l.on{opacity:1;transform:none;}
+.rv-r{opacity:0;transform:translateX(-44px);transition:opacity .65s ease,transform .7s cubic-bezier(.22,1,.36,1);}
+.rv-r.on{opacity:1;transform:none;}
+.d1{transition-delay:.1s;}.d2{transition-delay:.25s;}.d3{transition-delay:.4s;}
+.d4{transition-delay:.55s;}.d5{transition-delay:.7s;}.d6{transition-delay:.85s;}.d7{transition-delay:1s;}
+
+/* brand */
+.brand{position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;z-index:10;}
+.b-ico{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.b-name{font-size:12px;font-weight:700;color:rgba(196,181,253,.4);}
+.sc-n{position:absolute;top:24px;left:20px;font-size:11px;color:rgba(255,255,255,.18);font-weight:700;z-index:10;}
+
+.content{position:relative;z-index:2;width:100%;max-width:480px;}
+.tag{font-size:11px;font-weight:700;color:rgba(251,191,36,.6);letter-spacing:3px;text-align:center;margin-bottom:20px;}
+.h1{font-size:clamp(32px,9vw,52px);font-weight:900;line-height:1.25;text-align:center;}
+.h1 .g{color:var(–gold);} .h1 .p{color:var(–lp);} .h1 .r{color:var(–red);}
+.sub{font-size:clamp(14px,3.8vw,17px);color:rgba(196,181,253,.6);text-align:center;line-height:1.85;margin-top:18px;}
+.sub strong{color:#fff;}
+.divider{width:56px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(–gold2),var(–gold));margin:20px auto;}
+
+/* VS card */
+.vs-wrap{width:100%;display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.vs-card{
+border-radius:16px;padding:18px 16px;
+display:flex;align-items:flex-start;gap:14px;direction:rtl;
+}
+.vs-card.bad{
+background:rgba(248,113,113,.06);
+border:1.5px solid rgba(248,113,113,.18);
+}
+.vs-card.good{
+background:rgba(52,211,153,.06);
+border:1.5px solid rgba(52,211,153,.2);
+}
+.vs-icon{
+width:44px;height:44px;border-radius:12px;flex-shrink:0;
+display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.vs-card.bad .vs-icon{background:rgba(248,113,113,.1);}
+.vs-card.good .vs-icon{background:rgba(52,211,153,.1);}
+.vs-title{font-size:15px;font-weight:700;margin-bottom:5px;}
+.vs-card.bad .vs-title{color:var(–red);}
+.vs-card.good .vs-title{color:var(–green);}
+.vs-desc{font-size:12px;color:rgba(196,181,253,.5);line-height:1.7;}
+
+/* stats row */
+.stats-row{width:100%;display:flex;gap:10px;margin-top:16px;}
+.stat-box{
+flex:1;border-radius:16px;padding:18px 12px;text-align:center;
+background:rgba(255,255,255,.03);
+border:1.5px solid rgba(99,102,241,.12);
+}
+.stat-n{font-size:clamp(36px,9vw,52px);font-weight:900;color:var(–gold);line-height:1;}
+.stat-u{font-size:10px;color:rgba(251,191,36,.55);font-weight:700;margin-top:3px;}
+.stat-l{font-size:11px;color:rgba(196,181,253,.45);margin-top:6px;line-height:1.5;}
+
+/* feature list */
+.feat-list{width:100%;display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+.feat{
+display:flex;align-items:flex-start;gap:13px;direction:rtl;
+padding:15px 15px;
+background:rgba(255,255,255,.03);
+border:1.5px solid rgba(99,102,241,.1);
+border-radius:14px;
+}
+.feat-ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;margin-top:1px;}
+.fi1{background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.2);}
+.fi2{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.18);}
+.fi3{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);}
+.fi4{background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.2);}
+.feat-body{}
+.feat-t{font-size:14px;font-weight:700;margin-bottom:3px;}
+.feat-s{font-size:11px;color:rgba(196,181,253,.45);line-height:1.6;}
+
+/* quote big */
+.big-q{font-size:clamp(28px,8vw,46px);font-weight:900;text-align:center;line-height:1.35;}
+.big-q .line1{color:#fff;display:block;}
+.big-q .line2{color:var(–gold);display:block;}
+.big-q .line3{color:var(–lp);display:block;margin-top:4px;}
+
+/* comparison table */
+.table{width:100%;margin-top:16px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(99,102,241,.1);}
+.t-row{display:flex;direction:rtl;}
+.t-row.header{background:rgba(99,102,241,.12);}
+.t-row:not(.header){border-top:1px solid rgba(255,255,255,.05);}
+.t-row:not(.header):nth-child(even){background:rgba(255,255,255,.02);}
+.t-cell{flex:1;padding:12px 10px;font-size:12px;text-align:center;}
+.t-row.header .t-cell{font-size:11px;font-weight:700;color:rgba(196,181,253,.6);letter-spacing:1px;}
+.t-cell.topic{flex:1.4;text-align:right;color:rgba(255,255,255,.7);font-weight:600;}
+.t-cell.bad-v{color:var(–red);}
+.t-cell.good-v{color:var(–green);font-weight:700;}
+
+/* CTA */
+.crown-box{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:2px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 10px 30px rgba(99,102,241,.25);}
+.cta-btn{width:100%;background:linear-gradient(135deg,var(–gold2),var(–gold));border-radius:18px;padding:18px;text-align:center;margin-top:16px;cursor:pointer;box-shadow:0 8px 28px rgba(251,191,36,.3);transition:transform .15s;}
+.cta-btn:active{transform:scale(.97);}
+.cta-t{font-size:18px;font-weight:900;color:#1a1145;}
+.cta-u{font-size:11px;color:rgba(26,17,69,.55);margin-top:3px;direction:ltr;}
+
+/* next button */
+.nxt{
+position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+display:flex;flex-direction:row;align-items:center;gap:10px;
+background:none;border:none;cursor:pointer;z-index:10;padding:8px 16px;
+}
+.nxt-lbl{font-family:var(–font);font-size:12px;font-weight:700;color:rgba(196,181,253,.45);letter-spacing:1px;}
+.nxt-ring{
+width:38px;height:38px;border-radius:50%;
+background:rgba(99,102,241,.1);border:1.5px solid rgba(99,102,241,.22);
+display:flex;align-items:center;justify-content:center;
+animation:bob 2.2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateX(0);}55%{transform:translateX(-5px);}}
+#s6 .nxt{display:none;}
+
+/* side dots */
+.sdots{position:fixed;left:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px;z-index:100;}
+.sdot{width:5px;height:5px;border-radius:100px;background:rgba(255,255,255,.15);cursor:pointer;transition:all .35s cubic-bezier(.34,1.56,.64,1);}
+.sdot.on{background:var(–gold);height:18px;}
+</style>
+
+</head>
+<body>
+
+<div class="sdots" id="sdots">
+  <div class="sdot on"  onclick="goTo(0)"></div>
+  <div class="sdot"     onclick="goTo(1)"></div>
+  <div class="sdot"     onclick="goTo(2)"></div>
+  <div class="sdot"     onclick="goTo(3)"></div>
+  <div class="sdot"     onclick="goTo(4)"></div>
+  <div class="sdot"     onclick="goTo(5)"></div>
+</div>
+
+<!-- ── S1: المشكلة ── -->
+
+<section id="s1">
+  <div class="orb" style="width:380px;height:380px;top:-100px;right:-80px;background:rgba(99,102,241,.12);"></div>
+  <div class="orb" style="width:260px;height:260px;bottom:0;left:-70px;background:rgba(248,113,113,.07);"></div>
+  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
+  <div class="sc-n">1 / 6</div>
+  <div class="content">
+    <div class="tag rv d1">المشكلة اللي ما أحد يتكلم عنها</div>
+    <h1 class="h1">
+      <span class="rv d2" style="display:block;">الطالب يذاكر</span>
+      <span class="rv d3 g" style="display:block;">ويذاكر</span>
+      <span class="rv d4 r" style="display:block;">ولا يتحسن</span>
+    </h1>
+    <div class="divider rv d5"></div>
+    <p class="sub rv d5">
+      المواقع والتطبيقات كلها تعطيك<br>
+      <strong>شروح ومحاضرات</strong><br>
+      لكن الاختبار مو عن الفهم فقط —<br>
+      <strong>هو عن الأداء تحت الضغط</strong>
+    </p>
+  </div>
+  <button class="nxt" onclick="goTo(1)">
+    <span class="nxt-lbl">التالي</span>
+    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </button>
+</section>
+
+<!-- ── S2: المقارنة ── -->
+
+<section id="s2">
+  <div class="orb" style="width:300px;height:300px;top:-60px;right:-60px;background:rgba(248,113,113,.09);"></div>
+  <div class="orb" style="width:280px;height:280px;bottom:-40px;left:-40px;background:rgba(52,211,153,.06);"></div>
+  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
+  <div class="sc-n">2 / 6</div>
+  <div class="content">
+    <div class="tag rv d1">الفرق الحقيقي</div>
+    <h1 class="h1 rv d2" style="font-size:clamp(28px,8vw,42px);">باقي المواقع<br>مقابل مدارك النخبة</h1>
+    <div class="vs-wrap">
+      <div class="vs-card bad rv d3">
+        <div class="vs-icon">😴</div>
+        <div>
+          <div class="vs-title">المواقع الثانية</div>
+          <div class="vs-desc">تشرح لك النظرية وتحط لك فيديوهات — بعدها أنت لوحدك. ما أحد يعرف وين تغلط ولا وين تضعف.</div>
+        </div>
+      </div>
+      <div class="vs-card good rv d4">
+        <div class="vs-icon">⚡</div>
+        <div>
+          <div class="vs-title">مدارك النخبة</div>
+          <div class="vs-desc">تحل، نظام يرصد أخطاءك، يعطيك إحصائيات دقيقة، ويركّز تدريبك على نقاط ضعفك بالضبط — مثل مدرب خاص.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="nxt" onclick="goTo(2)">
+    <span class="nxt-lbl">التالي</span>
+    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </button>
+</section>
+
+<!-- ── S3: الإحصائيات ── -->
+
+<section id="s3">
+  <div class="orb" style="width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(99,102,241,.09);"></div>
+  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
+  <div class="sc-n">3 / 6</div>
+  <div class="content">
+    <div class="tag rv d1">وش تحصل بالضبط</div>
+    <h1 class="h1 rv d2" style="font-size:clamp(26px,7.5vw,40px);">إحصائيات <span class="g">تبين لك</span><br>وين أنت فعلاً</h1>
+    <div class="stats-row">
+      <div class="stat-box rv-z d3">
+        <div class="stat-n">900<span style="font-size:.45em;color:rgba(251,191,36,.6);">+</span></div>
+        <div class="stat-u">سؤال</div>
+        <div class="stat-l">من اختبارات حقيقية موثّقة</div>
+      </div>
+      <div class="stat-box rv-z d4">
+        <div class="stat-n" style="font-size:clamp(28px,7vw,40px);">لحظي</div>
+        <div class="stat-u">تحليل</div>
+        <div class="stat-l">تعرف نتيجتك فور ما تنتهي</div>
+      </div>
+      <div class="stat-box rv-z d5">
+        <div class="stat-n">4</div>
+        <div class="stat-u">أقسام</div>
+        <div class="stat-l">كمي ولفظي وتحصيلي وقريباً STEP</div>
+      </div>
+    </div>
+    <p class="sub rv d6" style="font-size:13px;margin-top:14px;">
+      مو بس "حليت كم سؤال"<br>
+      <strong>تعرف وين تقوى ووين تحتاج تركّز</strong>
+    </p>
+  </div>
+  <button class="nxt" onclick="goTo(3)">
+    <span class="nxt-lbl">التالي</span>
+    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </button>
+</section>
+
+<!-- ── S4: المميزات ── -->
+
+<section id="s4">
+  <div class="orb" style="width:260px;height:260px;top:-50px;left:-50px;background:rgba(139,92,246,.1);"></div>
+  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
+  <div class="sc-n">4 / 6</div>
+  <div class="content">
+    <div class="tag rv d1">اللي يخليها مختلفة</div>
+    <h1 class="h1 rv d2" style="font-size:clamp(26px,7.5vw,40px);">نظام <span class="g">تطبيق مستمر</span><br>مو مجرد شروح</h1>
+    <div class="feat-list">
+      <div class="feat rv d3">
+        <div class="feat-ic fi1">🎯</div>
+        <div class="feat-body">
+          <div class="feat-t">تدريب يتكيّف مع ضعفك</div>
+          <div class="feat-s">النظام يرصد وين تغلط ويعطيك أسئلة أكثر في نفس الموضوع — تلقائي</div>
+        </div>
+      </div>
+      <div class="feat rv d4">
+        <div class="feat-ic fi2">📊</div>
+        <div class="feat-body">
+          <div class="feat-t">إحصائيات دقيقة لكل موضوع</div>
+          <div class="feat-s">مو بس درجة كلية — تشوف أداءك في الجبر، التناظر، الاستيعاب، وكل فرع</div>
+        </div>
+      </div>
+      <div class="feat rv d5">
+        <div class="feat-ic fi3">⏱️</div>
+        <div class="feat-body">
+          <div class="feat-t">محاكاة الاختبار الحقيقي</div>
+          <div class="feat-s">نفس عدد الأسئلة والوقت والضغط — تتدرب على الجو الحقيقي قبل يوم الاختبار</div>
+        </div>
+      </div>
+      <div class="feat rv d6">
+        <div class="feat-ic fi4">🏆</div>
+        <div class="feat-body">
+          <div class="feat-t">تنافس وتتحدى</div>
+          <div class="feat-s">لوحة متصدرين + تحدي 1v1 مع زملاءك — يخلي التدريب addictive</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="nxt" onclick="goTo(4)">
+    <span class="nxt-lbl">التالي</span>
+    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </button>
+</section>
+
+<!-- ── S5: الاقتباس ── -->
+
+<section id="s5">
+  <div class="orb" style="width:380px;height:380px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(251,191,36,.06);"></div>
+  <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
+  <div class="sc-n">5 / 6</div>
+  <div class="content" style="text-align:center;">
+    <div class="big-q">
+      <span class="line1 rv d2">الفرق بين طالب</span>
+      <span class="line2 rv d3">يرفع درجته</span>
+      <span class="line3 rv d4">وطالب يظل في نفس المكان</span>
+    </div>
+    <div class="divider rv d5" style="margin-top:24px;"></div>
+    <p class="sub rv d6" style="font-size:clamp(14px,3.8vw,17px);">
+      مو الذكاء ولا الوقت<br>
+      <strong>هو معرفة وين الخلل بالضبط والعمل عليه</strong><br>
+      <span style="color:rgba(251,191,36,.75);">هذا اللي تسويه مدارك النخبة</span>
+    </p>
+  </div>
+  <button class="nxt" onclick="goTo(5)">
+    <span class="nxt-lbl">التالي</span>
+    <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </button>
+</section>
+
+<!-- ── S6: CTA ── -->
+
+<section id="s6">
+  <div class="orb" style="width:320px;height:320px;top:-70px;right:-70px;background:rgba(99,102,241,.13);"></div>
+  <div class="orb" style="width:280px;height:280px;bottom:-50px;left:-50px;background:rgba(251,191,36,.08);"></div>
+  <div class="sc-n" style="color:rgba(255,255,255,.14);">6 / 6</div>
+  <div class="content">
+    <div class="rv-z d1 crown-box">
+      <svg viewBox="0 0 36 36" width="40" height="40" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2" stroke-linecap="round"/><circle cx="5" cy="14" r="2" fill="#a5b4fc"/><circle cx="18" cy="7" r="2" fill="#c4b5fd"/><circle cx="31" cy="14" r="2" fill="#a5b4fc"/></svg>
+    </div>
+    <h1 class="h1 rv d2" style="font-size:clamp(22px,6.5vw,36px);margin-bottom:8px;">
+      جرّب الفرق بنفسك<br>
+      <span class="g">مجاناً</span> — الحين
+    </h1>
+    <p class="sub rv d3" style="font-size:12px;margin-bottom:0;">
+      ابدأ تدريبك، شوف إحصائياتك،<br>
+      واكتشف وين تحتاج تركّز
+    </p>
+    <div class="feat-list rv d4" style="margin-top:14px;">
+      <div class="feat"><div class="feat-ic fi1">✅</div><span class="feat-t">مجاني — ما تحتاج بطاقة</span></div>
+      <div class="feat"><div class="feat-ic fi2">✅</div><span class="feat-t">أسئلة حقيقية من اختبارات سابقة</span></div>
+      <div class="feat"><div class="feat-ic fi3">✅</div><span class="feat-t">إحصائياتك جاهزة فور ما تنتهي</span></div>
+    </div>
+    <div class="cta-btn rv d5" onclick="window.open('https://madarekelite.com','_blank')">
+      <div class="cta-t">ابدأ الحين — مجاناً 🚀</div>
+      <div class="cta-u">madarekelite.com</div>
+    </div>
+  </div>
+</section>
+
+<script>
+const secs=[...document.querySelectorAll('section')];
+const dots=[...document.querySelectorAll('.sdot')];
+
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const s=e.target;
+    s.querySelectorAll('.rv,.rv-z,.rv-l,.rv-r').forEach(el=>el.classList.add('on'));
+    const i=secs.indexOf(s);
+    dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+  });
+},{threshold:0.4});
+secs.forEach(s=>io.observe(s));
+
+function goTo(i){secs[i].scrollIntoView({behavior:'smooth'});}
+
+document.addEventListener('keydown',e=>{
+  const cur=getActive();
+  if(e.key==='ArrowDown'&&cur<5) goTo(cur+1);
+  if(e.key==='ArrowUp'&&cur>0) goTo(cur-1);
+});
+function getActive(){
+  let best=0,bv=0;
+  secs.forEach((s,i)=>{
+    const r=s.getBoundingClientRect();
+    const v=Math.min(r.bottom,innerHeight)-Math.max(r.top,0);
+    if(v>bv){bv=v;best=i;}
+  });
+  return best;
+}
+let sy=0;
+document.addEventListener('touchstart',e=>sy=e.touches[0].clientY,{passive:true});
+document.addEventListener('touchend',e=>{
+  const dy=e.changedTouches[0].clientY-sy;
+  const cur=getActive();
+  if(dy<-50&&cur<5) goTo(cur+1);
+  if(dy>50&&cur>0) goTo(cur-1);
+},{passive:true});
+</script>
+
+</body>
+</html>
