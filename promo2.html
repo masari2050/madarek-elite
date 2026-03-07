@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -16,7 +15,6 @@
 }
 #mde { scroll-behavior:smooth !important; }
 #mde { background:#050310 !important; font-family:var(--font) !important; overflow-x:hidden !important; color:#fff !important; }
-
 #mde section {
 min-height:100svh !important; position:relative !important;
 display:flex !important; flex-direction:column !important;
@@ -30,9 +28,7 @@ color:#fff !important;
 #mde #s4 {background:linear-gradient(160deg,#040210 0%,#080520 100%) !important;}
 #mde #s5 {background:linear-gradient(160deg,#080410 0%,#120820 100%) !important;}
 #mde #s6 {background:linear-gradient(160deg,#0a0720 0%,#120e35 50%,#1a0a3e 100%) !important;}
-
 #mde .orb {position:absolute;border-radius:50%;filter:blur(72px);pointer-events:none;z-index:0;}
-
 /* reveals */
 #mde .rv {opacity:0;transform:translateY(44px);transition:opacity .7s ease,transform .75s cubic-bezier(.22,1,.36,1);}
 #mde .rv.on {opacity:1;transform:none;}
@@ -44,21 +40,18 @@ color:#fff !important;
 #mde .rv-r.on {opacity:1;transform:none;}
 #mde .d1 {transition-delay:.1s;}.d2{transition-delay:.25s;}.d3{transition-delay:.4s;}
 #mde .d4 {transition-delay:.55s;}.d5{transition-delay:.7s;}.d6{transition-delay:.85s;}.d7{transition-delay:1s;}
-
 /* brand */
 #mde .brand {position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:10px;z-index:10;}
 #mde .b-ico {width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 #mde .b-name {font-size:12px;font-weight:700;color:rgba(196,181,253,.4);}
 #mde .sc-n {position:absolute;top:24px;left:20px;font-size:11px;color:rgba(255,255,255,.18);font-weight:700;z-index:10;}
-
 #mde .content {position:relative;z-index:2;width:100%;max-width:480px;}
 #mde .tag {font-size:11px;font-weight:700;color:rgba(251,191,36,.6);letter-spacing:3px;text-align:center;margin-bottom:20px;}
 #mde .h1 {font-size:clamp(32px,9vw,52px);font-weight:900;line-height:1.25;text-align:center;}
-#mde .h1 .g {color:var(–gold);} .h1 .p{color:var(–lp);} .h1 .r{color:var(–red);}
+#mde .h1 .g {color:var(--gold);} .h1 .p{color:var(--lp);} .h1 .r{color:var(--red);}
 #mde .sub {font-size:clamp(14px,3.8vw,17px);color:rgba(196,181,253,.6);text-align:center;line-height:1.85;margin-top:18px;}
 #mde .sub strong {color:#fff;}
-#mde .divider {width:56px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(–gold2),var(–gold));margin:20px auto;}
-
+#mde .divider {width:56px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(--gold2),var(--gold));margin:20px auto;}
 /* VS card */
 #mde .vs-wrap {width:100%;display:flex;flex-direction:column;gap:12px;margin-top:16px;}
 #mde .vs-card {
@@ -80,10 +73,9 @@ display:flex;align-items:center;justify-content:center;font-size:20px;
 #mde .vs-card.bad .vs-icon {background:rgba(248,113,113,.1);}
 #mde .vs-card.good .vs-icon {background:rgba(52,211,153,.1);}
 #mde .vs-title {font-size:15px;font-weight:700;margin-bottom:5px;}
-#mde .vs-card.bad .vs-title {color:var(–red);}
-#mde .vs-card.good .vs-title {color:var(–green);}
+#mde .vs-card.bad .vs-title {color:var(--red);}
+#mde .vs-card.good .vs-title {color:var(--green);}
 #mde .vs-desc {font-size:12px;color:rgba(196,181,253,.5);line-height:1.7;}
-
 /* stats row */
 #mde .stats-row {width:100%;display:flex;gap:10px;margin-top:16px;}
 #mde .stat-box {
@@ -91,10 +83,9 @@ flex:1;border-radius:16px;padding:18px 12px;text-align:center;
 background:rgba(255,255,255,.03);
 border:1.5px solid rgba(99,102,241,.12);
 }
-#mde .stat-n {font-size:clamp(36px,9vw,52px);font-weight:900;color:var(–gold);line-height:1;}
+#mde .stat-n {font-size:clamp(36px,9vw,52px);font-weight:900;color:var(--gold);line-height:1;}
 #mde .stat-u {font-size:10px;color:rgba(251,191,36,.55);font-weight:700;margin-top:3px;}
 #mde .stat-l {font-size:11px;color:rgba(196,181,253,.45);margin-top:6px;line-height:1.5;}
-
 /* feature list */
 #mde .feat-list {width:100%;display:flex;flex-direction:column;gap:10px;margin-top:16px;}
 #mde .feat {
@@ -112,13 +103,11 @@ border-radius:14px;
 #mde .feat-body {}
 #mde .feat-t {font-size:14px;font-weight:700;margin-bottom:3px;}
 #mde .feat-s {font-size:11px;color:rgba(196,181,253,.45);line-height:1.6;}
-
 /* quote big */
 #mde .big-q {font-size:clamp(28px,8vw,46px);font-weight:900;text-align:center;line-height:1.35;}
 #mde .big-q .line1 {color:#fff;display:block;}
-#mde .big-q .line2 {color:var(–gold);display:block;}
-#mde .big-q .line3 {color:var(–lp);display:block;margin-top:4px;}
-
+#mde .big-q .line2 {color:var(--gold);display:block;}
+#mde .big-q .line3 {color:var(--lp);display:block;margin-top:4px;}
 /* comparison table */
 #mde .table {width:100%;margin-top:16px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(99,102,241,.1);}
 #mde .t-row {display:flex;direction:rtl;}
@@ -128,23 +117,21 @@ border-radius:14px;
 #mde .t-cell {flex:1;padding:12px 10px;font-size:12px;text-align:center;}
 #mde .t-row.header .t-cell {font-size:11px;font-weight:700;color:rgba(196,181,253,.6);letter-spacing:1px;}
 #mde .t-cell.topic {flex:1.4;text-align:right;color:rgba(255,255,255,.7);font-weight:600;}
-#mde .t-cell.bad-v {color:var(–red);}
-#mde .t-cell.good-v {color:var(–green);font-weight:700;}
-
+#mde .t-cell.bad-v {color:var(--red);}
+#mde .t-cell.good-v {color:var(--green);font-weight:700;}
 /* CTA */
 #mde .crown-box {width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:2px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 10px 30px rgba(99,102,241,.25);}
-#mde .cta-btn {width:100%;background:linear-gradient(135deg,var(–gold2),var(–gold));border-radius:18px;padding:18px;text-align:center;margin-top:16px;cursor:pointer;box-shadow:0 8px 28px rgba(251,191,36,.3);transition:transform .15s;}
+#mde .cta-btn {width:100%;background:linear-gradient(135deg,var(--gold2),var(--gold));border-radius:18px;padding:18px;text-align:center;margin-top:16px;cursor:pointer;box-shadow:0 8px 28px rgba(251,191,36,.3);transition:transform .15s;}
 .cta-btn:active{transform:scale(.97);}
 #mde .cta-t {font-size:18px;font-weight:900;color:#1a1145;}
 #mde .cta-u {font-size:11px;color:rgba(26,17,69,.55);margin-top:3px;direction:ltr;}
-
 /* next button */
 #mde .nxt {
 position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
 display:flex;flex-direction:row;align-items:center;gap:10px;
 background:none;border:none;cursor:pointer;z-index:10;padding:8px 16px;
 }
-#mde .nxt-lbl {font-family:var(–font);font-size:12px;font-weight:700;color:rgba(196,181,253,.45);letter-spacing:1px;}
+#mde .nxt-lbl {font-family:var(--font);font-size:12px;font-weight:700;color:rgba(196,181,253,.45);letter-spacing:1px;}
 #mde .nxt-ring {
 width:38px;height:38px;border-radius:50%;
 background:rgba(99,102,241,.1);border:1.5px solid rgba(99,102,241,.22);
@@ -153,16 +140,13 @@ animation:bob 2.2s ease-in-out infinite;
 }
 @keyframes bob{0%,100%{transform:translateX(0);}55%{transform:translateX(-5px);}}
 #s6 .nxt{display:none;}
-
 /* side dots */
 #mde .sdots {position:fixed;left:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px;z-index:100;}
 #mde .sdot {width:5px;height:5px;border-radius:100px;background:rgba(255,255,255,.15);cursor:pointer;transition:all .35s cubic-bezier(.34,1.56,.64,1);}
-#mde .sdot.on {background:var(–gold);height:18px;}
+#mde .sdot.on {background:var(--gold);height:18px;}
 </style>
-
 </head>
 <body id="mde">
-
 <div class="sdots" id="sdots">
   <div class="sdot on"  onclick="goTo(0)"></div>
   <div class="sdot"     onclick="goTo(1)"></div>
@@ -171,9 +155,7 @@ animation:bob 2.2s ease-in-out infinite;
   <div class="sdot"     onclick="goTo(4)"></div>
   <div class="sdot"     onclick="goTo(5)"></div>
 </div>
-
-<!-- ── S1: المشكلة ── -->
-
+<!-- S1 -->
 <section id="s1">
   <div class="orb" style="width:380px;height:380px;top:-100px;right:-80px;background:rgba(99,102,241,.12);"></div>
   <div class="orb" style="width:260px;height:260px;bottom:0;left:-70px;background:rgba(248,113,113,.07);"></div>
@@ -199,9 +181,7 @@ animation:bob 2.2s ease-in-out infinite;
     <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   </button>
 </section>
-
-<!-- ── S2: المقارنة ── -->
-
+<!-- S2 -->
 <section id="s2">
   <div class="orb" style="width:300px;height:300px;top:-60px;right:-60px;background:rgba(248,113,113,.09);"></div>
   <div class="orb" style="width:280px;height:280px;bottom:-40px;left:-40px;background:rgba(52,211,153,.06);"></div>
@@ -232,16 +212,14 @@ animation:bob 2.2s ease-in-out infinite;
     <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   </button>
 </section>
-
-<!-- ── S3: الإحصائيات ── -->
-
+<!-- S3 -->
 <section id="s3">
   <div class="orb" style="width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(99,102,241,.09);"></div>
   <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
   <div class="sc-n" style="direction:ltr;">3 / 6</div>
   <div class="content">
     <div class="tag rv d1" style="color:rgba(251,191,36,.6);">وش تحصل بالضبط</div>
-    <h1 class="h1 rv d2" style="font-size:clamp(26px,7.5vw,40px);">إحصائيات <span class=" " style="color:#fbbf24;">تبين لك</span><br>وين أنت فعلاً</h1>
+    <h1 class="h1 rv d2" style="font-size:clamp(26px,7.5vw,40px);">إحصائيات <span style="color:#fbbf24;">تبين لك</span><br>وين أنت فعلاً</h1>
     <div class="stats-row">
       <div class="stat-box rv-z d3">
         <div class="stat-n" style="color:#fbbf24;">900<span style="font-size:.45em;color:rgba(251,191,36,.6);">+</span></div>
@@ -249,7 +227,7 @@ animation:bob 2.2s ease-in-out infinite;
         <div class="stat-l">من اختبارات حقيقية موثّقة</div>
       </div>
       <div class="stat-box rv-z d4">
-        <div class="stat-n" style="color:#fbbf24;" style="font-size:clamp(28px,7vw,40px);">لحظي</div>
+        <div class="stat-n" style="color:#fbbf24;">لحظي</div>
         <div class="stat-u">تحليل</div>
         <div class="stat-l">تعرف نتيجتك فور ما تنتهي</div>
       </div>
@@ -269,16 +247,14 @@ animation:bob 2.2s ease-in-out infinite;
     <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   </button>
 </section>
-
-<!-- ── S4: المميزات ── -->
-
+<!-- S4 -->
 <section id="s4">
   <div class="orb" style="width:260px;height:260px;top:-50px;left:-50px;background:rgba(139,92,246,.1);"></div>
   <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
   <div class="sc-n" style="direction:ltr;">4 / 6</div>
   <div class="content">
     <div class="tag rv d1" style="color:rgba(251,191,36,.6);">اللي يخليها مختلفة</div>
-    <h1 class="h1 rv d2" style="font-size:clamp(26px,7.5vw,40px);">نظام <span class=" " style="color:#fbbf24;">تطبيق مستمر</span><br>مو مجرد شروح</h1>
+    <h1 class="h1 rv d2" style="font-size:clamp(26px,7.5vw,40px);">نظام <span style="color:#fbbf24;">تطبيق مستمر</span><br>مو مجرد شروح</h1>
     <div class="feat-list">
       <div class="feat rv d3">
         <div class="feat-ic fi1">🎯</div>
@@ -315,9 +291,7 @@ animation:bob 2.2s ease-in-out infinite;
     <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   </button>
 </section>
-
-<!-- ── S5: الاقتباس ── -->
-
+<!-- S5 -->
 <section id="s5">
   <div class="orb" style="width:380px;height:380px;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(251,191,36,.06);"></div>
   <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
@@ -340,9 +314,7 @@ animation:bob 2.2s ease-in-out infinite;
     <div class="nxt-ring"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M11.5 6.5L7.5 3M11.5 6.5L7.5 10" stroke="rgba(165,180,252,.65)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   </button>
 </section>
-
-<!-- ── S6: CTA ── -->
-
+<!-- S6 -->
 <section id="s6">
   <div class="orb" style="width:320px;height:320px;top:-70px;right:-70px;background:rgba(99,102,241,.13);"></div>
   <div class="orb" style="width:280px;height:280px;bottom:-50px;left:-50px;background:rgba(251,191,36,.08);"></div>
@@ -353,7 +325,7 @@ animation:bob 2.2s ease-in-out infinite;
     </div>
     <h1 class="h1 rv d2" style="font-size:clamp(22px,6.5vw,36px);margin-bottom:8px;">
       جرّب الفرق بنفسك<br>
-      <span class=" " style="color:#fbbf24;">مجاناً</span> — الحين
+      <span style="color:#fbbf24;">مجاناً</span> — الحين
     </h1>
     <p class="sub rv d3" style="font-size:12px;margin-bottom:0;">
       ابدأ تدريبك، شوف إحصائياتك،<br>
@@ -370,11 +342,9 @@ animation:bob 2.2s ease-in-out infinite;
     </a>
   </div>
 </section>
-
 <script>
 const secs=[...document.querySelectorAll('section')];
 const dots=[...document.querySelectorAll('.sdot')];
-
 const io=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting) return;
@@ -385,9 +355,7 @@ const io=new IntersectionObserver(entries=>{
   });
 },{threshold:0.4});
 secs.forEach(s=>io.observe(s));
-
 function goTo(i){secs[i].scrollIntoView({behavior:'smooth'});}
-
 document.addEventListener('keydown',e=>{
   const cur=getActive();
   if(e.key==='ArrowDown'&&cur<5) goTo(cur+1);
@@ -411,6 +379,5 @@ document.addEventListener('touchend',e=>{
   if(dy>50&&cur>0) goTo(cur-1);
 },{passive:true});
 </script>
-
 </body>
 </html>
