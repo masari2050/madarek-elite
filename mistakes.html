@@ -106,6 +106,33 @@
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
         let currentUser = null, allMistakes = [];
+        // 🔒 تنظيف HTML آمن - يسمح بتاقات التنسيق فقط ويمنع XSS
+        function safeSanitize(html) {
+            if (!html) return '';
+            var ALLOWED = {b:1,br:1,i:1,strong:1,em:1,sup:1,sub:1,code:1,span:1,u:1,p:1,div:1,ul:1,ol:1,li:1};
+            try {
+                var doc = new DOMParser().parseFromString('<div>' + html + '</div>', 'text/html');
+                function walk(node) {
+                    var out = '';
+                    for (var c = node.firstChild; c; c = c.nextSibling) {
+                        if (c.nodeType === 3) {
+                            var d = document.createElement('div'); d.textContent = c.textContent; out += d.innerHTML;
+                        } else if (c.nodeType === 1) {
+                            var tag = c.tagName.toLowerCase();
+                            if (ALLOWED[tag]) {
+                                if (tag === 'br') { out += '<br>'; }
+                                else { out += '<' + tag + '>' + walk(c) + '</' + tag + '>'; }
+                            } else { out += walk(c); }
+                        }
+                    }
+                    return out;
+                }
+                return walk(doc.body.firstChild);
+            } catch(e) {
+                var d = document.createElement('div'); d.textContent = html; return d.innerHTML;
+            }
+        }
+        function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
         async function checkAuth() {
             const { data: { session } } = await sb.auth.getSession();
             if (!session) { window.location.href = 'login.html'; return false; }
@@ -152,16 +179,16 @@
                     var cls = 'opt-neutral', icon = '';
                     if (i === m.correct_index) { cls = 'opt-correct'; icon = '<span class="text-green-600 font-bold text-sm">✓ الإجابة الصحيحة</span>'; }
                     else if (i === m.userAnswer) { cls = 'opt-wrong'; icon = '<span class="text-red-500 font-bold text-sm">✗ إجابتك</span>'; }
-                    optionsHtml += '<div class="' + cls + '"><div class="flex items-center justify-between"><span class="text-gray-700 text-sm">' + (i+1) + '. ' + choice + '</span>' + icon + '</div></div>';
+                    optionsHtml += '<div class="' + cls + '"><div class="flex items-center justify-between"><span class="text-gray-700 text-sm">' + (i+1) + '. ' + esc(choice) + '</span>' + icon + '</div></div>';
                 });
                 card.innerHTML =
                     '<div class="flex items-center justify-between mb-3">' +
-                        '<span class="px-3 py-1 rounded-full text-xs font-bold ' + (sectionBadge[m.section] || '') + '">' + (sectionNames[m.section] || m.section) + '</span>' +
+                        '<span class="px-3 py-1 rounded-full text-xs font-bold ' + (sectionBadge[m.section] || '') + '">' + esc(sectionNames[m.section] || m.section) + '</span>' +
                         '<span class="text-gray-400 text-xs">' + new Date(m.answeredAt).toLocaleDateString('ar-SA') + '</span>' +
                     '</div>' +
-                    '<h3 class="text-base font-bold text-gray-800 mb-3 leading-relaxed">' + m.question_text + '</h3>' +
+                    '<h3 class="text-base font-bold text-gray-800 mb-3 leading-relaxed">' + safeSanitize(m.question_text) + '</h3>' +
                     '<div class="space-y-2 mb-4">' + optionsHtml + '</div>' +
-                    '<div class="explanation-box"><h4 class="font-bold text-blue-800 text-sm mb-1">💡 الشرح:</h4><p class="text-blue-700 text-sm leading-relaxed">' + formatExplanation(m.explanation || 'لا يوجد شرح') + '</p>' + (m.explanation_image ? '<div style="margin-top:8px;border-radius:8px;overflow:hidden"><img src="' + m.explanation_image + '" style="width:100%;border-radius:8px;display:block"></div>' : '') + '</div>';
+                    '<div class="explanation-box"><h4 class="font-bold text-blue-800 text-sm mb-1">💡 الشرح:</h4><p class="text-blue-700 text-sm leading-relaxed">' + safeSanitize(m.explanation || 'لا يوجد شرح') + '</p>' + (m.explanation_image ? '<div style="margin-top:8px;border-radius:8px;overflow:hidden"><img src="' + encodeURI(m.explanation_image) + '" style="width:100%;border-radius:8px;display:block"></div>' : '') + '</div>';
                 container.appendChild(card);
             });
             document.getElementById('loadingState').classList.add('hidden');
