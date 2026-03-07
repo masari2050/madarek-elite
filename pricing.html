@@ -498,14 +498,13 @@
                         var subLabel = subType === 'yearly' ? 'السنوي' : 'الشهري';
                         var {data:{session}} = await sb.auth.getSession();
                         if(session){
-                            // ✅ حساب تاريخ انتهاء الاشتراك من duration_months
+                            // ✅ تفعيل الاشتراك عبر RPC (يتجاوز trigger الحماية)
                             var durMonths = data.duration_months || (subType === 'yearly' ? 12 : 1);
-                            var endDate = new Date();
-                            endDate.setMonth(endDate.getMonth() + durMonths);
-                            await sb.from('profiles').update({
-                                subscription_type: subType,
-                                subscription_end: endDate.toISOString()
-                            }).eq('id', session.user.id);
+                            var rpcRes = await sb.rpc('activate_subscription_by_coupon', {
+                                p_subscription_type: subType,
+                                p_duration_months: durMonths
+                            });
+                            if(rpcRes.error) console.error('activate_subscription_by_coupon error:', rpcRes.error);
                             // ✅ تسجيل عملية الدفع (كوبون مجاني)
                             await sb.from('payments').insert({
                                 user_id: session.user.id,
