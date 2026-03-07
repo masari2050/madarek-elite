@@ -359,15 +359,31 @@
 
         // 🔒 إرسال الإجابة للسيرفر والتحقق هناك
         try{
-            var {data:result,error}=await sb.rpc('submit_answer',{
+            // ⏱️ timeout 15 ثانية عشان ما يعلق أبد
+            var rpcPromise=sb.rpc('submit_answer',{
                 p_question_id:q.id,
                 p_selected_answer:sel
             });
+            var timeoutPromise=new Promise(function(_,reject){setTimeout(function(){reject(new Error('timeout'));},15000);});
+            var {data:result,error}=await Promise.race([rpcPromise,timeoutPromise]);
 
             if(error)throw error;
             if(result&&result.error){
                 if(result.error==='free_limit_reached'){showPaywall();return;}
-                alert(result.error);return;
+                // لو السؤال مجاوب عليه سابقاً، ننتقل للسؤال التالي تلقائياً
+                if(result.error==='already_answered'||result.error==='already answered'){
+                    hasAnswered=false;
+                    if(currentQuestionIndex<currentQuestions.length-1){currentQuestionIndex++;renderQuestion();}
+                    else{showResults();}
+                    return;
+                }
+                // أي خطأ ثاني نرجع الحالة عشان المستخدم يقدر يحاول مرة ثانية
+                hasAnswered=false;
+                document.querySelectorAll('.option-card').forEach(function(card,i){
+                    card.style.opacity='1';card.style.cursor='pointer';
+                    card.onclick=function(){selectOption(i);};
+                });
+                alert('حدث خطأ: ' + result.error);return;
             }
 
             var isCorrect=result.is_correct;
@@ -395,13 +411,16 @@
             showFeedback(isCorrect,q,sel);
         }catch(e){
             console.error('submit_answer error:',e);
-            // fallback للطريقة القديمة لو الدالة مو موجودة بعد
             hasAnswered=false;
             document.querySelectorAll('.option-card').forEach(function(card,i){
                 card.style.opacity='1';card.style.cursor='pointer';
                 card.onclick=function(){selectOption(i);};
             });
-            alert('حدث خطأ، حاول مرة ثانية');
+            if(e.message==='timeout'){
+                alert('انتهت مهلة الاتصال، تأكد من الإنترنت وحاول مرة ثانية');
+            }else{
+                alert('حدث خطأ، حاول مرة ثانية');
+            }
         }
     }
 
