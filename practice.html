@@ -174,16 +174,43 @@
     var userSubscription='free', totalAttemptsCount=0;
     const SECONDS_PER_QUESTION=60, FREE_LIMIT=10;
 
+    // 🔒 تنظيف HTML آمن - يسمح بتاقات التنسيق فقط ويمنع XSS
+    function safeSanitize(html) {
+        if (!html) return '';
+        var ALLOWED = {b:1,br:1,i:1,strong:1,em:1,sup:1,sub:1,code:1,span:1,u:1,p:1,div:1,ul:1,ol:1,li:1};
+        try {
+            var doc = new DOMParser().parseFromString('<div>' + html + '</div>', 'text/html');
+            function walk(node) {
+                var out = '';
+                for (var c = node.firstChild; c; c = c.nextSibling) {
+                    if (c.nodeType === 3) {
+                        var d = document.createElement('div'); d.textContent = c.textContent; out += d.innerHTML;
+                    } else if (c.nodeType === 1) {
+                        var tag = c.tagName.toLowerCase();
+                        if (ALLOWED[tag]) {
+                            if (tag === 'br') { out += '<br>'; }
+                            else { out += '<' + tag + '>' + walk(c) + '</' + tag + '>'; }
+                        } else { out += walk(c); }
+                    }
+                }
+                return out;
+            }
+            return walk(doc.body.firstChild);
+        } catch(e) {
+            var d = document.createElement('div'); d.textContent = html; return d.innerHTML;
+        }
+    }
+    // 🔒 تهريب نص بدون أي HTML (للخيارات والإجابات القصيرة)
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
     // 🔒 الشرح يجي من السيرفر (مو من المتصفح)
     function buildSmartExplanation(q, isCorrect) {
         var sr=q._serverResult||{};
         var correctAnswer = sr.correct_answer || '';
         var exp = (sr.explanation || '').trim();
         var expImg = (sr.explanation_image || '').trim();
-        // 🔒 تنظيف النصوص من أكواد خبيثة
-        function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
         return '<div class="exp-box">' +
-            (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + esc(exp) + '</div>' : '') +
+            (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + safeSanitize(exp) + '</div>' : '') +
             (expImg ? '<div style="margin-top:8px;background:rgba(255,255,255,0.95);border-radius:12px;padding:6px;overflow:hidden"><img src="' + encodeURI(expImg) + '" style="width:100%;border-radius:8px;display:block"></div>' : '') +
             (!isCorrect ? '<div class="exp-correct">✅ الإجابة الصحيحة: ' + esc(correctAnswer) + '</div>' : '') +
         '</div>';
@@ -282,7 +309,7 @@
         document.getElementById('loadingState').classList.add('hidden');
         document.getElementById('questionCard').classList.remove('hidden');
         var cleanText=(q.question_text||'').replace(/\\n/g,' ').replace(/\n/g,' ').trim();
-        document.getElementById('questionText').textContent=cleanText;
+        document.getElementById('questionText').innerHTML=safeSanitize(cleanText);
         document.getElementById('questionNumLabel').textContent='سؤال '+current+' من '+total;
 
         // في المكس: عرض قسم كل سؤال بشكل مستقل
