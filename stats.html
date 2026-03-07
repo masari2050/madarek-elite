@@ -63,6 +63,11 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
 
 <div id="app" style="display:none;max-width:800px;margin:0 auto;padding:20px 16px 60px">
 
+  <div class="fu" style="text-align:center;margin-bottom:18px">
+    <h1 style="font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;margin:0 0 4px">📊 إحصائياتي</h1>
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);margin:0">كل ما زاد تدريبك، صارت إحصائياتك أدق وأشمل</p>
+  </div>
+
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px" class="fu">
 
     <div class="glass" style="padding:20px;display:flex;align-items:center;gap:16px;grid-column:span 2">
@@ -127,8 +132,8 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
 <script>
 var SB=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
-var TN={algebra:'جبر',arithmetic:'حساب',geometry:'هندسة',statistics:'إحصاء',analogy:'تناظر لفظي',comprehension:'استيعاب مقروء',sentence_completion:'إكمال جمل',biology:'أحياء',chemistry:'كيمياء',physics:'فيزياء',math:'رياضيات',other:'أخرى'};
-var TI={algebra:'🔢',arithmetic:'➕',geometry:'📐',statistics:'📊',analogy:'🔗',comprehension:'📚',sentence_completion:'✍️',biology:'🧬',chemistry:'⚗️',physics:'⚡',math:'📏',other:'📌'};
+var TN={algebra:'جبر',arithmetic:'حساب',geometry:'هندسة',statistics:'إحصاء',probability:'احتمالات',patterns:'أنماط',analogy:'تناظر لفظي',comprehension:'استيعاب مقروء',sentence_completion:'إكمال جمل',error_detection:'اكتشاف الخطأ',biology:'أحياء',chemistry:'كيمياء',physics:'فيزياء',math:'رياضيات',other:'أخرى'};
+var TI={algebra:'🔢',arithmetic:'➕',geometry:'📐',statistics:'📊',probability:'🎲',patterns:'🔄',analogy:'🔗',comprehension:'📚',sentence_completion:'✍️',error_detection:'🔍',biology:'🧬',chemistry:'⚗️',physics:'⚡',math:'📏',other:'📌'};
 var SN={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
 var attempts=[],tmap={},activeTab='all';
 async function init(){var sess=await SB.auth.getSession();if(!sess.data.session){location.href='login.html';return}var res=await SB.from('attempts').select('is_correct,answered_at,questions(section,topic)').eq('user_id',sess.data.session.user.id).order('answered_at',{ascending:false});if(!res.data||res.data.length===0){document.getElementById('loadEl').innerHTML='<div style="padding:60px 20px;text-align:center;color:rgba(255,255,255,0.3)"><div style="font-size:48px;margin-bottom:16px">📭</div><div style="margin-bottom:20px;font-size:16px">ما حليت أسئلة بعد!</div><a href="select-section.html" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;text-decoration:none;border-radius:99px;padding:12px 28px;font-weight:700">ابدأ التدريب</a></div>';return}attempts=res.data;buildMap();renderSummary();renderWeaknessAlerts();renderTopics();document.getElementById('loadEl').style.display='none';document.getElementById('app').style.display='block'}
