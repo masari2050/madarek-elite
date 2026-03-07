@@ -1512,6 +1512,8 @@ async function scanDuplicates(){
 
 // 🔒 دالة تنظيف النصوص من XSS
 function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+// 🔒 تنظيف HTML آمن - يسمح بتاقات التنسيق فقط ويمنع XSS
+function safeSanitize(html){if(!html)return'';var ALLOWED={b:1,br:1,i:1,strong:1,em:1,sup:1,sub:1,code:1,span:1,u:1,p:1,div:1,ul:1,ol:1,li:1};try{var doc=new DOMParser().parseFromString('<div>'+html+'</div>','text/html');function walk(n){var o='';for(var c=n.firstChild;c;c=c.nextSibling){if(c.nodeType===3){o+=escHtml(c.textContent);}else if(c.nodeType===1){var t=c.tagName.toLowerCase();if(ALLOWED[t]){if(t==='br'){o+='<br>';}else{o+='<'+t+'>'+walk(c)+'</'+t+'>';}}else{o+=walk(c);}}}return o;}return walk(doc.body.firstChild);}catch(e){return escHtml(html);}}
 
 // 🔒 تحقق مزدوج — يتأكد من الصلاحيات قبل كل عملية حساسة
 async function verifyAdmin(){
@@ -3037,7 +3039,7 @@ async function loadReview(){
         }
 
         // نص السؤال
-        h+='<div class="mt-3 text-white text-sm leading-relaxed">'+(q.question_text||'<span class="text-purple-200/40">سؤال بالصورة فقط</span>')+'</div>';
+        h+='<div class="mt-3 text-white text-sm leading-relaxed">'+(q.question_text?safeSanitize(q.question_text):'<span class="text-purple-200/40">سؤال بالصورة فقط</span>')+'</div>';
 
         // الخيارات
         h+='<div class="rev-choices">';
@@ -3055,7 +3057,7 @@ async function loadReview(){
         if(hasExp){
             var expId='rev-exp-'+q.id;
             h+='<div class="rev-exp-toggle" onclick="var e=document.getElementById(\''+expId+'\');e.classList.toggle(\'hidden\');this.textContent=e.classList.contains(\'hidden\')?\'📖 عرض الشرح\':\'📕 إخفاء الشرح\'">📖 عرض الشرح</div>';
-            h+='<div id="'+expId+'" class="rev-exp hidden">'+q.explanation+'</div>';
+            h+='<div id="'+expId+'" class="rev-exp hidden">'+safeSanitize(q.explanation)+'</div>';
         }else{
             h+='<div class="rev-no-exp">⚠️ بدون شرح — يُفضّل إضافة شرح مبسط</div>';
         }
