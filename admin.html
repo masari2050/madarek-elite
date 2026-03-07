@@ -2112,8 +2112,8 @@ async function loadU(){
         if(!payMap[p.user_id] || (p.coupon_code && !payMap[p.user_id].coupon_code) || (p.status==='paid' && payMap[p.user_id].status!=='paid'))
             payMap[p.user_id]=p;
     })}
-    // ✅ جلب أحداث الكوبونات (view/copy/applied) كمصدر ثاني
-    var{data:cEvents}=await sb.from('coupon_events').select('user_id,coupon_code,event_type').order('created_at',{ascending:false});
+    // ✅ جلب أحداث الكوبونات المُستخدمة فعلاً فقط (applied/use) — وليس مجرد المشاهدة
+    var{data:cEvents}=await sb.from('coupon_events').select('user_id,coupon_code,event_type').in('event_type',['applied','use']).order('created_at',{ascending:false});
     var ceMap={};
     if(cEvents){cEvents.forEach(function(e){
         if(e.user_id && !ceMap[e.user_id]) ceMap[e.user_id]=e;
@@ -3293,8 +3293,8 @@ async function loadUserDetails(page){
     anUsersPage = page;
     var{data:users}=await sb.rpc('get_users_details',{page_num:page,page_size:30});
     if(!users) users=[];
-    // ✅ جلب أحداث الكوبونات كمصدر إضافي
-    var{data:cEvents}=await sb.from('coupon_events').select('user_id,coupon_code,event_type').order('created_at',{ascending:false});
+    // ✅ جلب أحداث الكوبونات المُستخدمة فعلاً فقط (applied/use)
+    var{data:cEvents}=await sb.from('coupon_events').select('user_id,coupon_code,event_type').in('event_type',['applied','use']).order('created_at',{ascending:false});
     var ceMap={};
     if(cEvents){cEvents.forEach(function(e){if(e.user_id && !ceMap[e.user_id]) ceMap[e.user_id]=e})}
     // دمج بيانات الكوبون
