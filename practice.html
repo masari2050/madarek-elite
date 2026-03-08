@@ -437,7 +437,12 @@
             }else{
                 currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
             }
-            timeRemaining=parseInt(localStorage.getItem('khawariz_time_seconds'))||(currentQuestions.length*SECONDS_PER_QUESTION);
+            // التسريبات: الوقت يتحسب على عدد الأسئلة الفعلي (مو الكلي)
+            if(sel==='tasreeb'){
+                timeRemaining=currentQuestions.length*SECONDS_PER_QUESTION;
+            }else{
+                timeRemaining=parseInt(localStorage.getItem('khawariz_time_seconds'))||(currentQuestions.length*SECONDS_PER_QUESTION);
+            }
 
             startTimer();
             await createSession(sel);
