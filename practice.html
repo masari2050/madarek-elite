@@ -310,15 +310,27 @@
         if(!sel){location.href='select-section.html';return false;}
         try{
             var questions=[];
+            var cnt=parseInt(localStorage.getItem('khawariz_question_count'))||10;
+
+            // 🔒 منع تكرار الأسئلة — جلب آخر 1500 إجابة لاستبعاد الأسئلة المجابة مؤخراً
+            var recentIds = {};
+            try {
+                var ra = await sb.from('attempts').select('question_id').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(1500);
+                if (ra.data) ra.data.forEach(function(a) { recentIds[a.question_id] = true; });
+            } catch(e) { console.warn('Could not fetch recent attempts:', e); }
+
             if(sel==='mix'){
                 var r1=await sb.from('questions').select(SAFE_COLUMNS).eq('section','quant').limit(2000);
                 var r2=await sb.from('questions').select(SAFE_COLUMNS).eq('section','verbal').limit(2000);
-                var qList=shuffleArray(r1.data||[]);
-                var vList=shuffleArray(r2.data||[]);
-                var cnt2=parseInt(localStorage.getItem('khawariz_question_count'))||10;
-                var half=Math.ceil(cnt2/2);
+                var half=Math.ceil(cnt/2);
+                // فلترة الأسئلة الجديدة أولاً — لو ما تكفي نستخدم الكل
+                var qAll=r1.data||[], vAll=r2.data||[];
+                var qFresh=qAll.filter(function(q){ return !recentIds[q.id]; });
+                var vFresh=vAll.filter(function(q){ return !recentIds[q.id]; });
+                var qList=shuffleArray(qFresh.length>=half ? qFresh : qAll);
+                var vList=shuffleArray(vFresh.length>=(cnt-half) ? vFresh : vAll);
                 var qSlice=qList.slice(0,half);
-                var vSlice=vList.slice(0,cnt2-half);
+                var vSlice=vList.slice(0,cnt-half);
                 var maxLen=Math.max(qSlice.length,vSlice.length);
                 for(var ii=0;ii<maxLen;ii++){
                     if(ii<qSlice.length) questions.push(qSlice[ii]);
@@ -327,11 +339,12 @@
             } else {
                 var r=await sb.from('questions').select(SAFE_COLUMNS).eq('section',sel).limit(2000);
                 if(r.error)throw r.error;
-                questions=r.data||[];
+                var allQ=r.data||[];
+                var freshQ=allQ.filter(function(q){ return !recentIds[q.id]; });
+                questions = freshQ.length >= cnt ? freshQ : allQ;
             }
             if(!questions.length){location.href='select-section.html';return false;}
 
-            var cnt=parseInt(localStorage.getItem('khawariz_question_count'))||10;
             currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
             timeRemaining=parseInt(localStorage.getItem('khawariz_time_seconds'))||(currentQuestions.length*SECONDS_PER_QUESTION);
 
