@@ -2,12 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="apple-touch-icon" href="favicon.svg">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f0a2e">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f0a2e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مدارك النخبة | إحصائياتي — مدارك النخبة</title>
+<title>مدارك النخبة | إحصائياتي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -21,10 +21,23 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
 .fu{animation:fadeUp .45s ease forwards}
 .tab-btn{transition:all .2s;border-radius:99px;padding:7px 18px;font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.1);background:transparent;cursor:pointer;font-family:Tajawal,sans-serif}
 .tab-btn.on{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border-color:transparent}
-.t-row{border-radius:14px;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);transition:background .2s,transform .2s;margin-bottom:10px}
-.t-row:hover{background:rgba(255,255,255,0.08);transform:translateX(-3px)}
+.t-row{border-radius:14px;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);transition:background .2s;margin-bottom:10px}
+/* Ring */
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.08)}
+.ring-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease}
+/* Sparkline dots */
+.spark{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 1px}
+.spark-g{background:#4ade80}
+.spark-r{background:#f87171}
+.spark-x{background:rgba(255,255,255,0.1)}
+/* Strength map */
+.str-item{padding:10px 12px;border-radius:12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+/* Period dropdown */
+.period-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);cursor:pointer;font-family:Tajawal,sans-serif;transition:all .2s}
+.period-btn.on{background:rgba(99,102,241,0.15);border-color:rgba(99,102,241,0.3);color:#a5b4fc}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .pulse{animation:pulse 1.8s infinite}
+/* Logo anims */
 @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
@@ -38,21 +51,18 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
     <a href="dashboard.html" style="color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:5px">
       <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>رجوع
     </a>
-    <!-- Logo -->
     <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none">
       <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite">
         <div style="position:absolute;inset:3px;border-radius:5px;padding:1.5px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none"></div>
         <svg viewBox="0 0 36 36" width="15" height="15" fill="none">
           <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
           <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/>
-          <circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/>
-          <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+          <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/><circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/><circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
         </svg>
       </div>
       <span style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite">مدارك النخبة</span>
     </a>
-    <button id="rBtn" onclick="showReport()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:99px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:Tajawal,sans-serif">✨ تقرير ذكي</button>
+    <div style="width:60px"></div>
   </div>
 </div>
 
@@ -63,48 +73,72 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
 
 <div id="app" style="display:none;max-width:800px;margin:0 auto;padding:20px 16px 60px">
 
-  <div class="fu" style="text-align:center;margin-bottom:18px">
-    <h1 style="font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;margin:0 0 4px">📊 إحصائياتي</h1>
-    <p style="font-size:13px;color:rgba(255,255,255,0.35);margin:0">كل ما زاد تدريبك، صارت إحصائياتك أدق وأشمل</p>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px" class="fu">
-
-    <div class="glass" style="padding:20px;display:flex;align-items:center;gap:16px;grid-column:span 2">
-      <div style="position:relative;width:96px;height:96px;flex-shrink:0">
-        <svg width="96" height="96" viewBox="0 0 96 96">
-          <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10"/>
-          <circle id="ringEl" cx="48" cy="48" r="40" fill="none" stroke="#7c3aed" stroke-width="10" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1.2s ease,stroke .5s"/>
-        </svg>
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-          <div id="pctEl" style="font-size:21px;font-weight:900">0%</div>
-        </div>
-      </div>
-      <div style="flex:1">
-        <div id="lblEl" style="font-size:19px;font-weight:800;margin-bottom:8px">—</div>
-        <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:13px">
-          <span style="color:#4ade80">✅ <b id="cEl">0</b> صح</span>
-          <span style="color:#f87171">❌ <b id="wEl">0</b> خطأ</span>
-          <span style="color:rgba(255,255,255,0.35)">📝 <b id="tEl">0</b> سؤال</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="glass" style="padding:18px;text-align:center">
-      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:6px">🏆 أقوى موضوع</div>
-      <div id="bIcon" style="font-size:26px">—</div>
-      <div id="bName" style="font-size:13px;font-weight:700;color:#4ade80;margin-top:3px">—</div>
-      <div id="bPct" style="font-size:11px;color:rgba(255,255,255,0.35)">—</div>
-    </div>
-
-    <div class="glass" style="padding:18px;text-align:center">
-      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:6px">⚠️ يحتاج تركيز</div>
-      <div id="kIcon" style="font-size:26px">—</div>
-      <div id="kName" style="font-size:13px;font-weight:700;color:#fbbf24;margin-top:3px">—</div>
-      <div id="kPct" style="font-size:11px;color:rgba(255,255,255,0.35)">—</div>
+  <!-- Title + Period Filter -->
+  <div class="fu" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+    <h1 style="font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;margin:0">📊 إحصائياتي</h1>
+    <div style="display:flex;gap:6px">
+      <button class="period-btn" id="p-week" onclick="setPeriod('week')">هذا الأسبوع</button>
+      <button class="period-btn" id="p-month" onclick="setPeriod('month')">هذا الشهر</button>
+      <button class="period-btn on" id="p-all" onclick="setPeriod('all')">الكل</button>
     </div>
   </div>
 
+  <!-- ═══ Performance Card ═══ -->
+  <div class="glass fu" style="padding:24px;margin-bottom:16px;text-align:center">
+    <!-- Level badge -->
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;margin-bottom:12px" id="levelBadge">
+      <span id="lvlEmoji" style="font-size:18px">🌱</span>
+      <span id="lvlName" style="font-size:13px;font-weight:800">المستوى 1 — مبتدئ</span>
+    </div>
+
+    <!-- Big Ring -->
+    <div style="position:relative;width:120px;height:120px;margin:0 auto 12px">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="50" class="ring-bg" stroke-width="8"/>
+        <circle id="ringEl" cx="60" cy="60" r="50" class="ring-fill" stroke="#7c3aed" stroke-width="8"
+            stroke-dasharray="314.16" stroke-dashoffset="314.16" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div id="pctEl" style="font-family:'Cairo',sans-serif;font-size:28px;font-weight:900;line-height:1">0%</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.35)">نسبة النجاح</div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:flex;justify-content:center;gap:20px;font-size:14px;margin-bottom:12px">
+      <span style="color:#4ade80">✅ <b id="cEl">0</b> صح</span>
+      <span style="color:#f87171">❌ <b id="wEl">0</b> خطأ</span>
+      <span style="color:rgba(255,255,255,0.4)">📝 <b id="tEl">0</b> سؤال</span>
+    </div>
+
+    <!-- Improvement indicator -->
+    <div id="improveBox" class="hidden" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:12px;font-size:13px;font-weight:700">
+      <span id="improveIcon">📈</span>
+      <span id="improveTxt">نسبتك تحسنت</span>
+    </div>
+  </div>
+
+  <!-- ═══ Strength Map ═══ -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px" class="fu">
+    <div class="glass" style="padding:16px">
+      <div style="font-size:12px;font-weight:700;color:#4ade80;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        <span>💪</span> نقاط قوتك
+      </div>
+      <div id="strengthList">
+        <p style="font-size:12px;color:rgba(255,255,255,0.2)">—</p>
+      </div>
+    </div>
+    <div class="glass" style="padding:16px">
+      <div style="font-size:12px;font-weight:700;color:#fbbf24;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        <span>🎯</span> ركّز عليها
+      </div>
+      <div id="weaknessList">
+        <p style="font-size:12px;color:rgba(255,255,255,0.2)">—</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Tabs ═══ -->
   <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" class="fu">
     <button class="tab-btn on" id="tab-all" onclick="switchTab('all')">الكل</button>
     <button class="tab-btn" id="tab-quant" onclick="switchTab('quant')">⚡ كمي</button>
@@ -112,41 +146,315 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
     <button class="tab-btn" id="tab-tahsili" onclick="switchTab('tahsili')">🎓 تحصيلي</button>
   </div>
 
+  <!-- ═══ Topics List ═══ -->
   <div id="topicsEl" class="fu"></div>
 
-  <div id="reportEl" style="display:none;margin-top:20px" class="fu">
-    <div class="glass" style="padding:24px;background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(79,70,229,0.1));border-color:rgba(124,58,237,0.25)">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-        <div style="width:42px;height:42px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">🤖</div>
-        <div>
-          <div style="font-weight:800;font-size:15px">تقريرك الذكي</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35)">تحليل مخصص بناءً على أدائك</div>
-        </div>
-      </div>
-      <div id="reportTxt" style="font-size:14px;line-height:2.1;color:rgba(255,255,255,0.82);white-space:pre-wrap"></div>
-    </div>
-  </div>
+  <!-- ═══ Smart Insights ═══ -->
+  <div id="insightsEl" class="fu" style="margin-top:20px"></div>
 
 </div>
 
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
+<script src="gamification.js"></script>
 <script>
 var SB=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
 var TN={algebra:'جبر',arithmetic:'حساب',geometry:'هندسة',statistics:'إحصاء',probability:'احتمالات',patterns:'أنماط',analogy:'تناظر لفظي',comprehension:'استيعاب مقروء',sentence_completion:'إكمال جمل',error_detection:'اكتشاف الخطأ',biology:'أحياء',chemistry:'كيمياء',physics:'فيزياء',math:'رياضيات',other:'أخرى'};
 var TI={algebra:'🔢',arithmetic:'➕',geometry:'📐',statistics:'📊',probability:'🎲',patterns:'🔄',analogy:'🔗',comprehension:'📚',sentence_completion:'✍️',error_detection:'🔍',biology:'🧬',chemistry:'⚗️',physics:'⚡',math:'📏',other:'📌'};
 var SN={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
-var attempts=[],tmap={},activeTab='all';
-async function init(){var sess=await SB.auth.getSession();if(!sess.data.session){location.href='login.html';return}var res=await SB.from('attempts').select('is_correct,answered_at,questions(section,topic)').eq('user_id',sess.data.session.user.id).order('answered_at',{ascending:false});if(!res.data||res.data.length===0){document.getElementById('loadEl').innerHTML='<div style="padding:60px 20px;text-align:center;color:rgba(255,255,255,0.3)"><div style="font-size:48px;margin-bottom:16px">📭</div><div style="margin-bottom:20px;font-size:16px">ما حليت أسئلة بعد!</div><a href="select-section.html" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;text-decoration:none;border-radius:99px;padding:12px 28px;font-weight:700">ابدأ التدريب</a></div>';return}attempts=res.data;buildMap();renderSummary();renderWeaknessAlerts();renderTopics();document.getElementById('loadEl').style.display='none';document.getElementById('app').style.display='block'}
-function buildMap(){tmap={};attempts.forEach(function(a){if(!a.questions)return;var k=(a.questions.section||'x')+'__'+(a.questions.topic||'other');if(!tmap[k])tmap[k]={s:a.questions.section||'x',t:a.questions.topic||'other',n:0,c:0};tmap[k].n++;if(a.is_correct)tmap[k].c++})}
-function renderSummary(){var tot=attempts.length,cor=attempts.filter(function(a){return a.is_correct}).length,pct=tot>0?Math.round(cor/tot*100):0;document.getElementById('tEl').textContent=tot;document.getElementById('cEl').textContent=cor;document.getElementById('wEl').textContent=tot-cor;document.getElementById('pctEl').textContent=pct+'%';var lbl=pct>=80?'🌟 ممتاز!':pct>=65?'💪 جيد':pct>=50?'📈 متوسط':'🚀 في تطور';document.getElementById('lblEl').textContent=lbl;var color=pct>=70?'#4ade80':pct>=50?'#fbbf24':'#f87171';var ring=document.getElementById('ringEl');ring.style.stroke=color;setTimeout(function(){ring.style.strokeDashoffset=251.2-(pct/100)*251.2},100);var arr=Object.values(tmap).filter(function(x){return x.n>=3});if(arr.length>0){arr.sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});var best=arr[0],worst=arr[arr.length-1];document.getElementById('bIcon').textContent=TI[best.t]||'⭐';document.getElementById('bName').textContent=TN[best.t]||best.t;document.getElementById('bPct').textContent=Math.round(best.c/best.n*100)+'% ('+best.c+'/'+best.n+')';document.getElementById('kIcon').textContent=TI[worst.t]||'⚠️';document.getElementById('kName').textContent=TN[worst.t]||worst.t;document.getElementById('kPct').textContent=Math.round(worst.c/worst.n*100)+'% ('+worst.c+'/'+worst.n+')'}}
-function renderWeaknessAlerts(){var weakList=Object.values(tmap).filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});var el=document.getElementById('weaknessEl');if(!el){el=document.createElement('div');el.id='weaknessEl';el.className='fu';var tabs=document.querySelector('[style*="display:flex;gap:8px;margin-bottom"]')||document.getElementById('tab-all')?.parentNode;if(tabs)tabs.parentNode.insertBefore(el,tabs)}if(weakList.length===0){el.innerHTML='';return}var html='<div class="glass" style="padding:18px;margin-bottom:16px;background:linear-gradient(135deg,rgba(239,68,68,0.06),rgba(251,146,60,0.06));border-color:rgba(239,68,68,0.15)">';html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="font-size:22px">\u26A0\uFE0F</span><div><p style="font-size:14px;font-weight:800;color:#fca5a5">\u0645\u0648\u0627\u0636\u064A\u0639 \u062A\u062D\u062A\u0627\u062C \u062A\u0631\u0643\u064A\u0632\u0643</p><p style="font-size:11px;color:rgba(252,165,165,0.5)">\u0631\u0643\u0651\u0632 \u0639\u0644\u064A\u0647\u0627 \u0639\u0634\u0627\u0646 \u062A\u0631\u0641\u0639 \u0645\u0633\u062A\u0648\u0627\u0643</p></div></div>';weakList.slice(0,3).forEach(function(x){var pct=Math.round(x.c/x.n*100);html+='<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:10px;background:rgba(239,68,68,0.06);margin-bottom:6px">';html+='<div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">'+(TI[x.t]||'\uD83D\uDCCC')+'</span><span style="font-size:13px;font-weight:700">'+(TN[x.t]||x.t)+'</span><span style="font-size:11px;color:rgba(248,113,113,0.7)">'+pct+'%</span></div>';html+='<a href="select-section.html" style="padding:4px 12px;font-size:11px;font-weight:700;color:#818cf8;border:1px solid rgba(99,102,241,0.2);border-radius:8px;text-decoration:none">\u062A\u062F\u0631\u0651\u0628 \u2192</a>';html+='</div>'});html+='<p style="font-size:11px;color:rgba(252,165,165,0.35);margin-top:8px;text-align:center">\uD83D\uDCA1 \u0643\u0644 \u0633\u0624\u0627\u0644 \u062A\u062E\u0637\u0626 \u0641\u064A\u0647 \u0647\u0648 \u0645\u0639\u0644\u0648\u0645\u0629 \u062C\u062F\u064A\u062F\u0629 \u062A\u0633\u0643\u0646 \u062F\u0645\u0627\u063A\u0643 \u2014 \u0631\u0627\u062C\u0639 \u0648\u0639\u0648\u062F \u0623\u0642\u0648\u0649!</p>';html+='</div>';el.innerHTML=html}
-function renderTopics(){var el=document.getElementById('topicsEl');el.innerHTML='';var list=Object.values(tmap).filter(function(x){return activeTab==='all'||x.s===activeTab}).sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});if(list.length===0){el.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px">لا توجد بيانات بعد</div>';return}if(activeTab==='all'){var secs=[];list.forEach(function(x){if(secs.indexOf(x.s)<0)secs.push(x.s)});secs.forEach(function(sec){var h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:rgba(255,255,255,0.25);padding:10px 4px 4px;letter-spacing:1.5px;';h.textContent='— '+(SN[sec]||sec).toUpperCase()+' —';el.appendChild(h);list.filter(function(x){return x.s===sec}).forEach(function(x,i){addRow(x,i,el)})})}else{list.forEach(function(x,i){addRow(x,i,el)})}}
-function addRow(x,i,el){var pct=x.n>0?Math.round(x.c/x.n*100):0,color=pct>=75?'#4ade80':pct>=50?'#fbbf24':'#f87171',label=pct>=75?'ممتاز ✅':pct>=50?'متوسط ⚡':'يراجع ⚠️';var row=document.createElement('div');row.className='t-row';row.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:12px"><div style="width:42px;height:42px;background:rgba(255,255,255,0.06);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">'+(TI[x.t]||'📌')+'</div><div><div style="font-weight:700;font-size:14px">'+(TN[x.t]||x.t)+'</div><div style="font-size:11px;color:rgba(255,255,255,0.3)">'+x.n+' سؤال • '+(SN[x.s]||x.s)+'</div></div></div><div style="text-align:left"><div style="font-size:24px;font-weight:900;color:'+color+';line-height:1.1">'+pct+'%</div><div style="font-size:11px;color:'+color+'">'+label+'</div></div></div><div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,'+color+'60,'+color+');" data-w="'+pct+'"></div></div><div style="display:flex;gap:16px;margin-top:8px;font-size:12px"><span style="color:#4ade8070">✅ '+x.c+' صح</span><span style="color:#f8717170">❌ '+(x.n-x.c)+' خطأ</span></div>';el.appendChild(row);setTimeout(function(){var fill=row.querySelector('.bar-fill');if(fill)fill.style.width=fill.getAttribute('data-w')+'%'},80+i*50)}
-function switchTab(tab){activeTab=tab;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});document.getElementById('tab-'+tab).classList.add('on');renderTopics()}
-function showReport(){var el=document.getElementById('reportEl'),txt=document.getElementById('reportTxt');el.style.display='block';el.scrollIntoView({behavior:'smooth'});var tot=attempts.length,cor=attempts.filter(function(a){return a.is_correct}).length,overall=tot>0?Math.round(cor/tot*100):0,arr=Object.values(tmap);var strong=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)>=70}).sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});var weak=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});var mid=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)>=50&&Math.round(x.c/x.n*100)<70});var r='';if(overall>=80)r+='🌟 أداء رائع! نسبتك '+overall+'% تعكس استعداداً قوياً للاختبار.\n\n';else if(overall>=60)r+='💪 أداء جيد! حققت '+overall+'% من '+tot+' سؤال — أنت على الطريق الصح.\n\n';else if(overall>=40)r+='📈 بداية واعدة! نسبتك '+overall+'% وأمامك مساحة كبيرة للتحسن.\n\n';else r+='🚀 مرحلة البناء! '+overall+'% — كل سؤال تحله يضيف لرصيدك.\n\n';if(strong.length>0){r+='✅ نقاط القوة:\n';strong.forEach(function(x){r+='• '+(TN[x.t]||x.t)+': '+Math.round(x.c/x.n*100)+'% ('+x.c+'/'+x.n+') 🔥\n'});r+='\n'}if(mid.length>0){r+='⚡ تحتاج تطوير:\n';mid.forEach(function(x){r+='• '+(TN[x.t]||x.t)+': '+Math.round(x.c/x.n*100)+'% — زِد التدريب\n'});r+='\n'}if(weak.length>0){r+='⚠️ تحتاج مراجعة عاجلة:\n';weak.forEach(function(x){r+='• '+(TN[x.t]||x.t)+': '+Math.round(x.c/x.n*100)+'% — ركّز هنا أولاً\n'});r+='\n'}r+='📋 خطتك للأسبوع:\n';if(weak.length>0){r+='1. ابدأ بـ '+(TN[weak[0].t]||weak[0].t)+' — 20 سؤال يومياً\n';r+=weak.length>1?'2. راجع '+(TN[weak[1].t]||weak[1].t)+' — 15 سؤال يومياً\n':'2. راجع المواضيع المتوسطة لرفعها\n'}else{r+='1. حافظ على مستواك بـ 20 سؤال يومياً\n2. جرّب وضع محاكاة الاختبار الكامل\n'}r+='3. راجع أخطاءك قبل كل جلسة جديدة\n\n';var tips=['كل سؤال تحله اليوم هو خطوة نحو النتيجة اللي تحلم فيها 🎯','النجاح في قياس مو حظ، هو تراكم جهد متواصل 💫','الفرق بين أين أنت وأين تريد يكمن فيما ستفعله اليوم 🚀','كل يوم تدرب فيه هو يوم تقدمت — استمر! 🌟'];r+=tips[Math.floor(Math.random()*tips.length)];txt.textContent='';var i=0,chars=r.split(''),timer=setInterval(function(){if(i<chars.length)txt.textContent+=chars[i++];else clearInterval(timer)},10)}
+var allAttempts=[],filteredAttempts=[],tmap={},activeTab='all',activePeriod='all';
+
+async function init(){
+    var sess=await SB.auth.getSession();
+    if(!sess.data.session){location.href='login.html';return}
+    var res=await SB.from('attempts').select('is_correct,answered_at,section,questions(section,topic)').eq('user_id',sess.data.session.user.id).order('answered_at',{ascending:false});
+    if(!res.data||res.data.length===0){
+        document.getElementById('loadEl').innerHTML='<div style="padding:60px 20px;text-align:center;color:rgba(255,255,255,0.3)"><div style="font-size:48px;margin-bottom:16px">📭</div><div style="margin-bottom:20px;font-size:16px">ما حليت أسئلة بعد!</div><a href="select-section.html" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;text-decoration:none;border-radius:99px;padding:12px 28px;font-weight:700">ابدأ التدريب</a></div>';
+        return;
+    }
+    allAttempts=res.data;
+    applyPeriodFilter();
+    document.getElementById('loadEl').style.display='none';
+    document.getElementById('app').style.display='block';
+}
+
+function applyPeriodFilter(){
+    if(activePeriod==='all'){
+        filteredAttempts=allAttempts;
+    } else {
+        var cutoff=new Date();
+        if(activePeriod==='week') cutoff.setDate(cutoff.getDate()-7);
+        else if(activePeriod==='month') cutoff.setMonth(cutoff.getMonth()-1);
+        filteredAttempts=allAttempts.filter(function(a){return a.answered_at && new Date(a.answered_at)>=cutoff});
+    }
+    buildMap();
+    renderAll();
+}
+
+function setPeriod(p){
+    activePeriod=p;
+    document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('on')});
+    document.getElementById('p-'+p).classList.add('on');
+    applyPeriodFilter();
+}
+
+function buildMap(){
+    tmap={};
+    filteredAttempts.forEach(function(a){
+        if(!a.questions)return;
+        var k=(a.questions.section||'x')+'__'+(a.questions.topic||'other');
+        if(!tmap[k])tmap[k]={s:a.questions.section||'x',t:a.questions.topic||'other',n:0,c:0,history:[]};
+        tmap[k].n++;
+        if(a.is_correct)tmap[k].c++;
+        tmap[k].history.push(a.is_correct);
+    });
+}
+
+function renderAll(){
+    renderSummary();
+    renderStrengthMap();
+    renderTopics();
+    renderInsights();
+}
+
+function renderSummary(){
+    var tot=filteredAttempts.length;
+    var cor=filteredAttempts.filter(function(a){return a.is_correct}).length;
+    var pct=tot>0?Math.round(cor/tot*100):0;
+    document.getElementById('tEl').textContent=tot;
+    document.getElementById('cEl').textContent=cor;
+    document.getElementById('wEl').textContent=tot-cor;
+    document.getElementById('pctEl').textContent=pct+'%';
+
+    var color=pct>=70?'#4ade80':pct>=50?'#fbbf24':'#a78bfa';
+    var ring=document.getElementById('ringEl');
+    ring.style.stroke=color;
+    var circumference=314.16;
+    setTimeout(function(){ring.style.strokeDashoffset=circumference-(pct/100)*circumference},100);
+
+    // Level badge
+    if(window.Gamification){
+        var totalXP=Gamification.calculateXP(allAttempts,0);
+        var lvl=Gamification.calculateLevel(totalXP);
+        document.getElementById('lvlEmoji').textContent=lvl.emoji;
+        document.getElementById('lvlName').textContent='المستوى '+lvl.level+' — '+lvl.nameAr;
+        document.getElementById('levelBadge').style.background='rgba(255,255,255,0.06)';
+        document.getElementById('levelBadge').style.border='1px solid '+lvl.color+'40';
+        document.getElementById('lvlName').style.color=lvl.color;
+    }
+
+    // Improvement indicator
+    var box=document.getElementById('improveBox');
+    if(allAttempts.length>=100){
+        var recent50=allAttempts.slice(0,50);
+        var prev50=allAttempts.slice(50,100);
+        var r50c=recent50.filter(function(a){return a.is_correct}).length;
+        var p50c=prev50.filter(function(a){return a.is_correct}).length;
+        var diff=Math.round((r50c-p50c)/50*100);
+        box.classList.remove('hidden');
+        box.style.display='inline-flex';
+        if(diff>0){
+            box.style.background='rgba(74,222,128,0.1)';
+            box.style.border='1px solid rgba(74,222,128,0.2)';
+            document.getElementById('improveIcon').textContent='📈';
+            document.getElementById('improveTxt').innerHTML='نسبتك تحسنت <b style="color:#4ade80">'+diff+'%</b> عن آخر 50 سؤال';
+            document.getElementById('improveTxt').style.color='#86efac';
+        } else if(diff<0){
+            box.style.background='rgba(251,191,36,0.1)';
+            box.style.border='1px solid rgba(251,191,36,0.2)';
+            document.getElementById('improveIcon').textContent='📉';
+            document.getElementById('improveTxt').innerHTML='شد حيلك! نسبتك نزلت <b style="color:#fbbf24">'+Math.abs(diff)+'%</b> — ركّز أكثر';
+            document.getElementById('improveTxt').style.color='#fde68a';
+        } else {
+            box.style.background='rgba(255,255,255,0.06)';
+            box.style.border='1px solid rgba(255,255,255,0.1)';
+            document.getElementById('improveIcon').textContent='➡️';
+            document.getElementById('improveTxt').innerHTML='نسبتك ثابتة — حاول ترفعها!';
+            document.getElementById('improveTxt').style.color='rgba(255,255,255,0.5)';
+        }
+    }
+}
+
+function renderStrengthMap(){
+    var arr=Object.values(tmap).filter(function(x){return x.n>=3});
+    var strong=arr.filter(function(x){return Math.round(x.c/x.n*100)>=60}).sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});
+    var weak=arr.filter(function(x){return Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});
+
+    var sEl=document.getElementById('strengthList');
+    if(strong.length>0){
+        var sh='';
+        strong.slice(0,3).forEach(function(x){
+            var pct=Math.round(x.c/x.n*100);
+            sh+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'
+                +'<span style="font-size:14px">'+(TI[x.t]||'⭐')+'</span>'
+                +'<span style="font-size:12px;font-weight:700;flex:1">'+(TN[x.t]||x.t)+'</span>'
+                +'<span style="font-size:12px;font-weight:800;color:#4ade80">'+pct+'%</span>'
+                +'</div>';
+        });
+        sEl.innerHTML=sh;
+    } else {
+        sEl.innerHTML='<p style="font-size:11px;color:rgba(255,255,255,0.2)">حل أسئلة أكثر!</p>';
+    }
+
+    var wEl=document.getElementById('weaknessList');
+    if(weak.length>0){
+        var wh='';
+        weak.slice(0,3).forEach(function(x){
+            var pct=Math.round(x.c/x.n*100);
+            wh+='<div style="margin-bottom:8px">'
+                +'<div style="display:flex;align-items:center;gap:6px">'
+                +'<span style="font-size:14px">'+(TI[x.t]||'📌')+'</span>'
+                +'<span style="font-size:12px;font-weight:700;flex:1">'+(TN[x.t]||x.t)+'</span>'
+                +'<span style="font-size:12px;font-weight:800;color:#fbbf24">'+pct+'%</span>'
+                +'</div>'
+                +'<p style="font-size:10px;color:rgba(251,191,36,0.6);margin:2px 0 0 20px">شد حيلك! 💪</p>'
+                +'</div>';
+        });
+        wh+='<a href="select-section.html" style="display:block;text-align:center;padding:6px;font-size:11px;font-weight:700;color:#818cf8;border:1px solid rgba(99,102,241,0.2);border-radius:10px;text-decoration:none;margin-top:4px">تدرّب عليها →</a>';
+        wEl.innerHTML=wh;
+    } else {
+        wEl.innerHTML='<p style="font-size:11px;color:rgba(255,255,255,0.2)">ممتاز! لا ضعف واضح</p>';
+    }
+}
+
+function renderTopics(){
+    var el=document.getElementById('topicsEl');
+    el.innerHTML='';
+    var list=Object.values(tmap).filter(function(x){return activeTab==='all'||x.s===activeTab}).sort(function(a,b){return b.n-a.n});
+    if(list.length===0){el.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.3);padding:40px">لا توجد بيانات</div>';return}
+
+    if(activeTab==='all'){
+        var secs=[];
+        list.forEach(function(x){if(secs.indexOf(x.s)<0)secs.push(x.s)});
+        secs.forEach(function(sec){
+            var secTotal=list.filter(function(x){return x.s===sec}).reduce(function(s,x){return s+x.n},0);
+            var h=document.createElement('div');
+            h.style.cssText='font-size:11px;font-weight:700;color:rgba(255,255,255,0.25);padding:10px 4px 4px;letter-spacing:1.5px;display:flex;justify-content:space-between';
+            h.innerHTML='<span>— '+(SN[sec]||sec).toUpperCase()+' —</span><span style="font-weight:400">'+secTotal+' سؤال</span>';
+            el.appendChild(h);
+            list.filter(function(x){return x.s===sec}).forEach(function(x,i){addRow(x,i,el)});
+        });
+    } else {
+        list.forEach(function(x,i){addRow(x,i,el)});
+    }
+}
+
+function addRow(x,i,el){
+    var pct=x.n>0?Math.round(x.c/x.n*100):0;
+    var color,label;
+    if(x.n<3){
+        color='rgba(255,255,255,0.3)';
+        label='جرّب هالموضوع';
+    } else if(pct>=75){
+        color='#4ade80';
+        label='ممتاز ✅';
+    } else if(pct>=50){
+        color='#fbbf24';
+        label='جيد ⚡';
+    } else {
+        color='#fbbf24';
+        label='شد حيلك 💪';
+    }
+
+    // Sparkline: last 10 answers
+    var sparkHTML='';
+    var history=x.history||[];
+    var last10=history.slice(-10);
+    for(var s=0;s<10;s++){
+        if(s<last10.length){
+            sparkHTML+='<span class="spark '+(last10[s]?'spark-g':'spark-r')+'"></span>';
+        } else {
+            sparkHTML+='<span class="spark spark-x"></span>';
+        }
+    }
+
+    var row=document.createElement('div');
+    row.className='t-row';
+    row.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+        +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<div style="width:40px;height:40px;background:rgba(255,255,255,0.06);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px">'+(TI[x.t]||'📌')+'</div>'
+        +'<div>'
+        +'<div style="font-weight:700;font-size:14px">'+(TN[x.t]||x.t)+'</div>'
+        +'<div style="font-size:11px;color:rgba(255,255,255,0.3)">'+x.n+' سؤال · '+(SN[x.s]||x.s)+'</div>'
+        +'</div></div>'
+        +'<div style="text-align:left">'
+        +'<div style="font-size:22px;font-weight:900;color:'+color+';line-height:1.1">'+(x.n<3?'—':pct+'%')+'</div>'
+        +'<div style="font-size:10px;color:'+color+'">'+label+'</div>'
+        +'</div></div>'
+        +'<div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,'+color+'60,'+color+');" data-w="'+pct+'"></div></div>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">'
+        +'<div style="font-size:12px"><span style="color:#4ade8090">✅ '+x.c+'</span> <span style="color:#f8717190;margin-right:8px">❌ '+(x.n-x.c)+'</span></div>'
+        +'<div style="display:flex;align-items:center;gap:2px" title="آخر 10 إجابات">'+sparkHTML+'</div>'
+        +'</div>';
+    el.appendChild(row);
+    setTimeout(function(){var fill=row.querySelector('.bar-fill');if(fill)fill.style.width=fill.getAttribute('data-w')+'%'},80+i*50);
+}
+
+function switchTab(tab){
+    activeTab=tab;
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});
+    document.getElementById('tab-'+tab).classList.add('on');
+    renderTopics();
+}
+
+function renderInsights(){
+    var el=document.getElementById('insightsEl');
+    var tot=filteredAttempts.length;
+    if(tot<5){el.innerHTML='';return}
+    var cor=filteredAttempts.filter(function(a){return a.is_correct}).length;
+    var arr=Object.values(tmap);
+    var weak=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});
+    var untried=arr.filter(function(x){return x.n<3});
+
+    var html='';
+
+    // Weekly plan
+    html+='<div class="glass" style="padding:18px;margin-bottom:12px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="font-size:18px">📅</span><span style="font-size:14px;font-weight:800">خطتك لهالأسبوع</span></div>';
+    if(weak.length>0){
+        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px">• ركّز على <b style="color:#fbbf24">'+(TN[weak[0].t]||weak[0].t)+'</b> — حل 10 أسئلة على الأقل</p>';
+        if(weak.length>1) html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px">• راجع أخطاء <b style="color:#fbbf24">'+(TN[weak[1].t]||weak[1].t)+'</b></p>';
+    } else {
+        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px">• حافظ على مستواك بـ 15 سؤال يومياً</p>';
+    }
+    if(untried.length>0) html+='<p style="font-size:13px;color:rgba(255,255,255,0.6)">• جرّب موضوع <b style="color:#a78bfa">'+(TN[untried[0].t]||untried[0].t)+'</b></p>';
+    else html+='<p style="font-size:13px;color:rgba(255,255,255,0.6)">• راجع أخطاءك قبل كل جلسة جديدة</p>';
+    html+='</div>';
+
+    // Nearest achievement
+    if(window.Gamification){
+        var badgeResult=Gamification.calculateBadges(allAttempts,Gamification.calculateStreak(allAttempts));
+        var locked=Gamification.BADGES.filter(function(b){return !badgeResult.earned.some(function(e){return e.id===b.id})});
+        if(locked.length>0){
+            var next=locked[0];
+            html+='<div class="glass" style="padding:18px;margin-bottom:12px">';
+            html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">🏆</span><span style="font-size:14px;font-weight:800">إنجاز قريب</span></div>';
+            html+='<div style="display:flex;align-items:center;gap:10px">';
+            html+='<span style="font-size:28px">'+next.emoji+'</span>';
+            html+='<div><p style="font-size:13px;font-weight:700">'+next.nameAr+'</p><p style="font-size:11px;color:rgba(255,255,255,0.4)">'+next.descAr+'</p></div>';
+            html+='</div></div>';
+        }
+    }
+
+    // Tip
+    var tips=[
+        'ركّز على فهم الخطأ مو بس حفظ الإجابة — هذا يرفع نسبتك أسرع',
+        'راجع أخطاءك قبل كل جلسة — التكرار يثبت المعلومة',
+        'حل 10 أسئلة يومياً أفضل من 70 سؤال مرة بالأسبوع',
+        'لا تستعجل بالإجابة — اقرأ السؤال مرتين قبل ما تختار',
+        'المواضيع الصعبة تصير سهلة مع التكرار — لا تطنشها'
+    ];
+    html+='<div class="glass" style="padding:18px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">💡</span><span style="font-size:14px;font-weight:800">نصيحة</span></div>';
+    html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">'+tips[Math.floor(Math.random()*tips.length)]+'</p>';
+    html+='</div>';
+
+    el.innerHTML=html;
+}
+
 init();
 </script>
-        <script src="banner.js"></script>
+<script src="banner.js"></script>
 <script src="analytics.js"></script>
-<script src="engagement.js"></script></body>
+<script src="engagement.js"></script>
+</body>
 </html>
