@@ -27,8 +27,9 @@
         @keyframes pulseGlowRed { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 16px rgba(239,68,68,0.4)} }
         .counter-badge { background: rgba(139,92,246,0.12); border: 1.5px solid rgba(139,92,246,0.25); border-radius: 999px; padding: 6px 16px; }
         .question-card { background: rgba(255,255,255,0.97); border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        .option-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 0.875rem; padding: 1rem; cursor: pointer; transition: all 0.2s ease; }
-        .option-card:not([disabled]):hover { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 4px 12px rgba(139,92,246,0.1); transform: translateX(-2px); }
+        .option-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 0.875rem; padding: 1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, opacity 0.15s; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
+        .option-card:not(.answered):hover { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 4px 12px rgba(139,92,246,0.1); transform: translateX(-2px); }
+        .option-card:not(.answered):active { transform: scale(0.97); background: #f5f3ff; }
         .stat-mini { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); }
         .feedback-correct { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border: 2px solid #86efac; }
         .feedback-wrong { background: linear-gradient(135deg,#fef2f2,#fee2e2); border: 2px solid #fca5a5; }
@@ -213,6 +214,41 @@
     // 🔒 تهريب نص بدون أي HTML (للخيارات والإجابات القصيرة)
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+    // 🧹 تنظيف الشرح من بقايا CSS/HTML/metadata (مثل نصوص ChatGPT المنسوخة)
+    function cleanExplanationText(text) {
+        if (!text) return '';
+        text = String(text);
+        // كشف سريع: هل يحتوي على metadata؟ لو لا — لا نعدل شي
+        if (!/(?:data-[\w-]+=|tabindex=|pointer-events|scroll-mt|conversation-turn|data-testid)/i.test(text)) return text;
+        // إزالة HTML attributes: key="value"
+        text = text.replace(/[a-zA-Z][\w-]*="[^"]*"/g, '');
+        // إزالة CSS multi-hyphenated classes: pointer-events-auto, scroll-mt-header
+        text = text.replace(/[a-zA-Z][\w]*(?:-[a-zA-Z][\w]*){1,}/g, '');
+        // إزالة CSS brackets: [calc(...)], [*...], etc.
+        text = text.replace(/\[[^\]]*\]/g, '');
+        // إزالة UUID patterns
+        text = text.replace(/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/gi, '');
+        // إزالة stray code tokens
+        text = text.replace(/\b(?:auto|true|false|user|assistant|request|WEB)\b/g, '');
+        // إزالة رموز برمجية زائدة
+        text = text.replace(/[>*{}\[\]]+/g, ' ');
+        text = text.replace(/":/g, ' ');
+        // تنظيف فراغات
+        text = text.replace(/\s{2,}/g, ' ');
+        return text.trim();
+    }
+
+    // 🔤 تنظيف النص العربي من تكرار الحروف وأخطاء الترميز
+    function normalizeArabicText(text) {
+        if (!text) return '';
+        text = String(text);
+        // إزالة Unicode invisible characters
+        text = text.replace(/[\u200B-\u200F\u202A-\u202E\uFEFF\u00AD]/g, '');
+        // إزالة تكرار حرف عربي 3+ مرات متتالية (ااالم → الم)
+        text = text.replace(/([\u0600-\u06FF])\1{2,}/g, '$1');
+        return text;
+    }
+
     // 🔔 إشعار غير مزعج (بدل alert اللي يوقف الصفحة)
     function showToast(msg, type, duration) {
         type = type || 'info';
@@ -231,7 +267,7 @@
     function buildSmartExplanation(q, isCorrect) {
         var sr=q._serverResult||{};
         var correctAnswer = sr.correct_answer || '';
-        var exp = (sr.explanation || '').trim();
+        var exp = normalizeArabicText(cleanExplanationText((sr.explanation || '').trim()));
         var expImg = (sr.explanation_image || '').trim();
         return '<div class="exp-box">' +
             (exp ? '<div class="exp-label">💡 الشرح</div><div class="exp-text">' + safeSanitize(exp) + '</div>' : '') +
@@ -274,8 +310,8 @@
         try{
             var questions=[];
             if(sel==='mix'){
-                var r1=await sb.from('questions').select(SAFE_COLUMNS).eq('section','quant').limit(50000);
-                var r2=await sb.from('questions').select(SAFE_COLUMNS).eq('section','verbal').limit(50000);
+                var r1=await sb.from('questions').select(SAFE_COLUMNS).eq('section','quant').limit(2000);
+                var r2=await sb.from('questions').select(SAFE_COLUMNS).eq('section','verbal').limit(2000);
                 var qList=shuffleArray(r1.data||[]);
                 var vList=shuffleArray(r2.data||[]);
                 var cnt2=parseInt(localStorage.getItem('khawariz_question_count'))||10;
@@ -288,7 +324,7 @@
                     if(ii<vSlice.length) questions.push(vSlice[ii]);
                 }
             } else {
-                var r=await sb.from('questions').select(SAFE_COLUMNS).eq('section',sel).limit(50000);
+                var r=await sb.from('questions').select(SAFE_COLUMNS).eq('section',sel).limit(2000);
                 if(r.error)throw r.error;
                 questions=r.data||[];
             }
@@ -332,7 +368,7 @@
 
         document.getElementById('loadingState').classList.add('hidden');
         document.getElementById('questionCard').classList.remove('hidden');
-        var cleanText=(q.question_text||'').replace(/\\n/g,' ').replace(/\n/g,' ').trim();
+        var cleanText=normalizeArabicText((q.question_text||'').replace(/\\n/g,' ').replace(/\n/g,' ').trim());
         document.getElementById('questionText').innerHTML=safeSanitize(cleanText);
         document.getElementById('questionNumLabel').textContent='سؤال '+current+' من '+total;
 
@@ -360,10 +396,11 @@
             if(!opt||!opt.trim())return; // تخطى الخيارات الفارغة
             var div=document.createElement('div');
             div.className='option-card animate-option';
+            div.setAttribute('role','button');
             div.style.animationDelay=(i*0.05)+'s';
             div.onclick=function(){selectOption(i);};
             div.innerHTML='<div class="flex items-center gap-3"><span class="min-w-[28px] h-7 rounded-full bg-indigo-50 flex items-center justify-center font-bold text-indigo-600 text-xs">'+(i+1)+'</span><span class="option-text text-gray-700 text-sm leading-relaxed"></span></div>';
-            div.querySelector('.option-text').textContent=opt.trim();
+            div.querySelector('.option-text').textContent=normalizeArabicText(opt.trim());
             container.appendChild(div);
         });
 
@@ -377,9 +414,12 @@
         hasAnswered=true;
         var q=currentQuestions[currentQuestionIndex];
 
-        // تعطيل الخيارات فوراً
-        document.querySelectorAll('.option-card').forEach(function(card){
-            card.onclick=null;card.style.cursor='default';card.style.opacity='0.7';
+        // تعطيل الخيارات فوراً + إظهار حالة التحميل على الخيار المختار
+        var allCards = document.querySelectorAll('.option-card');
+        allCards.forEach(function(card, idx){
+            card.onclick=null;card.style.cursor='default';card.classList.add('answered');
+            if (idx === sel) { card.style.borderColor='#8b5cf6'; card.style.opacity='1'; }
+            else { card.style.opacity='0.5'; }
         });
 
         // ♻️ محاولة الإرسال مع retry تلقائي
@@ -465,6 +505,7 @@
     function _restoreOptions() {
         document.querySelectorAll('.option-card').forEach(function(card, i) {
             card.style.opacity = '1'; card.style.cursor = 'pointer';
+            card.style.borderColor = ''; card.classList.remove('answered');
             card.onclick = function() { selectOption(i); };
         });
     }
@@ -527,10 +568,22 @@
     }
 
     document.addEventListener('DOMContentLoaded',async function(){
-        var ok=await checkAuth();
-        if(!ok)return;
-        var loaded=await loadQuestions();
-        if(loaded)displayQuestion();
+        try {
+            var authTimeout = new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 12000); });
+            var ok = await Promise.race([checkAuth(), authTimeout]);
+            if(!ok) return;
+            var loadTimeout = new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('timeout')); }, 15000); });
+            var loaded = await Promise.race([loadQuestions(), loadTimeout]);
+            if(loaded) displayQuestion();
+        } catch(e) {
+            console.error('Init error:', e);
+            document.getElementById('loadingState').innerHTML =
+                '<div class="text-center"><span class="text-4xl block mb-3">⚠️</span>' +
+                '<p class="text-purple-300/70 text-sm mb-3">تعذر تحميل الأسئلة</p>' +
+                '<button onclick="location.reload()" class="px-5 py-2.5 rounded-xl text-sm font-bold" ' +
+                'style="background:rgba(99,102,241,0.2);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3)">' +
+                'حاول مرة ثانية</button></div>';
+        }
     });
     </script>
         <script src="banner.js"></script>
