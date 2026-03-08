@@ -252,6 +252,12 @@ var demoQuestions = [
 var currentQ = 0, score = 0, answered = false;
 var labels = ['أ','ب','ج','د'];
 
+// 🔊 أصوات الصح والخطأ (نفس practice.html)
+var audioCtx;
+function getAudio(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function createBeep(f,d,v){ try{ var a=getAudio(),o=a.createOscillator(),g=a.createGain(); o.connect(g);g.connect(a.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(v||0.3,a.currentTime);g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+d);o.start(a.currentTime);o.stop(a.currentTime+d);}catch(e){} }
+function playSound(ok){ if(ok){createBeep(800,0.1,0.3);setTimeout(function(){createBeep(1000,0.15,0.3)},100);}else{createBeep(200,0.3,0.3);} }
+
 function startDemo() {
     document.getElementById('introScreen').classList.add('hidden');
     document.getElementById('quizScreen').classList.remove('hidden');
@@ -316,6 +322,7 @@ function selectAnswer(idx) {
     var q = demoQuestions[currentQ];
     var isCorrect = (idx === q.correct);
     if (isCorrect) score++;
+    playSound(isCorrect);
 
     // Highlight buttons
     var btns = document.querySelectorAll('.option-btn');
