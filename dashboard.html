@@ -126,7 +126,7 @@
                 <a href="select-section.html" class="block w-full text-center py-4 rounded-2xl font-black text-lg shadow-lg transition active:scale-[0.97]" style="background:white;color:#6366f1">
                     🚀 ابدأ التدريب
                 </a>
-                <p class="text-center text-white/50 text-xs mt-2">⚡ 10 أسئلة = 5 دقائق فقط</p>
+                <p class="text-center text-white/50 text-xs mt-2" id="heroSubtext">⚡ كل سؤال تحله يقربك لحلمك</p>
             </div>
         </div>
 
@@ -328,11 +328,25 @@
         // ── Load All Data ──
         async function loadDashboard() {
             try {
-                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at,section').eq('user_id', currentUser.id).order('answered_at',{ascending:false}).limit(50000);
+                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at,questions(section)').eq('user_id', currentUser.id).order('answered_at',{ascending:false}).limit(50000);
                 const attempts = allAttempts || [];
                 const total = attempts.length;
                 const correct = attempts.filter(a => a.is_correct).length;
                 const G = window.Gamification;
+
+                // ── Hero subtext (motivational, changes daily) ──
+                var subtexts = [
+                    '⚡ كل سؤال تحله يقربك لحلمك',
+                    '💪 المتفوقون ما وقفوا — وأنت مثلهم',
+                    '🎯 التدريب اليومي سر التميّز',
+                    '🚀 5 دقائق اليوم = فرق كبير بالاختبار',
+                    '🔥 ابدأ وخلّ النتيجة تتكلم عنك',
+                    '💡 كل خطأ تتعلم منه يرفع مستواك',
+                    '🏆 حلمك يستاهل إنك تشتغل عليه اليوم'
+                ];
+                var dayIdx = new Date().getDay();
+                var sub = document.getElementById('heroSubtext');
+                if(sub) sub.textContent = subtexts[dayIdx % subtexts.length];
 
                 // ── Streak ──
                 var streakData = G.calculateStreak(attempts);
@@ -434,8 +448,8 @@
                         chValue = Math.round((todayCorrect / todayAttempts.length) * 100);
                     }
                 }
-                else if(ch.targetKey === 'todayQuant') chValue = todayAttempts.filter(a => a.section === 'quant').length;
-                else if(ch.targetKey === 'todayVerbal') chValue = todayAttempts.filter(a => a.section === 'verbal').length;
+                else if(ch.targetKey === 'todayQuant') chValue = todayAttempts.filter(a => a.questions && a.questions.section === 'quant').length;
+                else if(ch.targetKey === 'todayVerbal') chValue = todayAttempts.filter(a => a.questions && a.questions.section === 'verbal').length;
                 else if(ch.targetKey === 'sessionConsecutive'){
                     var sc = 0, maxSc = 0;
                     todayAttempts.slice().reverse().forEach(function(a){
