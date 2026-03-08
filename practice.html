@@ -48,6 +48,10 @@
         @keyframes correctPop { 0%{transform:scale(1)} 50%{transform:scale(1.015)} 100%{transform:scale(1)} }
         .answer-correct-anim { animation: correctPop 0.35s ease; }
 
+        /* XP floating toast */
+        @keyframes xpFloat { 0%{opacity:1;transform:translateY(0) scale(1)} 60%{opacity:1;transform:translateY(-40px) scale(1.1)} 100%{opacity:0;transform:translateY(-70px) scale(0.9)} }
+        .xp-float { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Cairo',sans-serif; font-size:22px; font-weight:900; color:#4ade80; text-shadow:0 2px 12px rgba(74,222,128,0.5); animation:xpFloat 1.2s ease forwards; z-index:9999; pointer-events:none; }
+
         /* الشرح الذكي */
         .exp-box { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 0.875rem; padding: 14px 16px; margin-top: 12px; max-width: 100%; box-sizing: border-box; overflow: hidden; }
         .exp-label { color: #92400e; font-size: 11px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
@@ -536,10 +540,26 @@
         });
     }
 
+    function showXPFloat(xp){
+        var el=document.createElement('div');
+        el.className='xp-float';
+        el.textContent='+'+xp+' XP';
+        document.body.appendChild(el);
+        setTimeout(function(){el.remove()},1300);
+    }
+
     function showFeedback(isCorrect,q,selectedIndex){
         var card=document.getElementById('feedbackCard');
         var isLast=(currentQuestionIndex+1>=currentQuestions.length);
         var expHTML=buildSmartExplanation(q,isCorrect);
+        // XP float
+        if(window.Gamification){
+            var streakCache=Gamification.getStreakCache();
+            var currentStreak=streakCache?streakCache.current:0;
+            var bonus=Gamification.getStreakBonus(currentStreak);
+            var xp=isCorrect?(10+bonus):3;
+            showXPFloat(xp);
+        }
         card.className='mt-5 p-5 rounded-2xl '+(isCorrect?'feedback-correct':'feedback-wrong');
         card.innerHTML=
             '<div class="flex items-center gap-2 mb-3">'+
