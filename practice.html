@@ -26,7 +26,7 @@
         @keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} 50%{box-shadow:0 0 12px rgba(251,191,36,0.3)} }
         @keyframes pulseGlowRed { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} 50%{box-shadow:0 0 16px rgba(239,68,68,0.4)} }
         .counter-badge { background: rgba(139,92,246,0.12); border: 1.5px solid rgba(139,92,246,0.25); border-radius: 999px; padding: 6px 16px; }
-        .question-card { background: rgba(255,255,255,0.97); border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .question-card { background: rgba(255,255,255,0.97); border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
         .option-card { background: #fff; border: 2px solid #e5e7eb; border-radius: 0.875rem; padding: 1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, opacity 0.15s; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
         .option-card:not(.answered):hover { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 4px 12px rgba(139,92,246,0.1); transform: translateX(-2px); }
         .option-card:not(.answered):active { transform: scale(0.97); background: #f5f3ff; }
@@ -49,9 +49,9 @@
         .answer-correct-anim { animation: correctPop 0.35s ease; }
 
         /* الشرح الذكي */
-        .exp-box { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 0.875rem; padding: 14px 16px; margin-top: 12px; }
+        .exp-box { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 0.875rem; padding: 14px 16px; margin-top: 12px; max-width: 100%; box-sizing: border-box; overflow: hidden; }
         .exp-label { color: #92400e; font-size: 11px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        .exp-text { color: #78350f; font-size: 13px; line-height: 1.7; }
+        .exp-text { color: #78350f; font-size: 13px; line-height: 1.7; overflow-wrap: break-word; word-wrap: break-word; }
         .exp-correct { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; margin-top: 8px; color: #166534; font-size: 12px; font-weight: 700; }
 
         /* 🔔 Toast - إشعارات بدون تعطيل الصفحة */
@@ -183,6 +183,7 @@
     var correctCount=0, wrongCount=0, hasAnswered=false, consecutiveCorrect=0;
     var sessionId=null, timeRemaining=0, timerInterval=null;
     var userSubscription='free', totalAttemptsCount=0;
+    var answeredInSession = {}; // تتبع الأسئلة المجابة في هذه الجلسة لمنع التكرار
     const SECONDS_PER_QUESTION=60, FREE_LIMIT=10;
 
     // 🔒 تنظيف HTML آمن - يسمح بتاقات التنسيق فقط ويمنع XSS
@@ -466,9 +467,20 @@
         if (result.error) {
             if (result.error === 'free_limit_reached') { showPaywall(); return; }
             if (result.error === 'already_answered' || result.error === 'already answered') {
-                hasAnswered = false;
-                if (currentQuestionIndex < currentQuestions.length - 1) { currentQuestionIndex++; displayQuestion(); }
-                else { showResults(); }
+                // ✅ FIX: بدل القفز الصامت — نعرض بطاقة واضحة ونخلي المستخدم يتحكم
+                var feedCard = document.getElementById('feedbackCard');
+                var isLast = (currentQuestionIndex + 1 >= currentQuestions.length);
+                feedCard.className = 'mt-5 p-5 rounded-2xl';
+                feedCard.style.cssText = 'background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #93c5fd;';
+                feedCard.innerHTML =
+                    '<div class="flex items-center gap-2 mb-3">' +
+                    '<span class="text-3xl">ℹ️</span>' +
+                    '<h3 class="text-lg font-bold text-blue-700">تم الإجابة سابقاً</h3></div>' +
+                    '<p class="text-blue-600 text-sm mb-1">هذا السؤال أجبته في جلسة سابقة</p>' +
+                    '<button onclick="nextQuestion()" class="btn-next w-full text-white py-3 rounded-xl font-bold text-sm mt-4">' +
+                    (isLast ? '🏁 عرض النتيجة النهائية' : 'السؤال التالي ←') + '</button>';
+                feedCard.classList.remove('hidden');
+                setTimeout(function() { feedCard.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
                 return;
             }
             // أي خطأ ثاني
@@ -482,6 +494,7 @@
         var isCorrect = result.is_correct;
         var correctIdx = result.correct_index;
         q._serverResult = result;
+        answeredInSession[q.id] = true; // تسجيل الإجابة لمنع التكرار
 
         playSound(isCorrect);
         if (isCorrect) { correctCount++; consecutiveCorrect++; } else { wrongCount++; consecutiveCorrect = 0; }
@@ -524,6 +537,8 @@
             '<button onclick="nextQuestion()" class="btn-next w-full text-white py-3 rounded-xl font-bold text-sm mt-4">'+
             (isLast?'🏁 عرض النتيجة النهائية':'السؤال التالي ←')+'</button>';
         card.classList.remove('hidden');
+        // ✅ سكرول تلقائي للشرح حتى يظهر على الشاشة
+        setTimeout(function() { card.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 100);
     }
 
     function nextQuestion(){
