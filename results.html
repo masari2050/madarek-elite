@@ -91,6 +91,39 @@
                 </div>
             </div>
 
+            <!-- XP Breakdown -->
+            <div id="xpSection" class="mb-4 animate-in delay-4" style="display:none">
+                <div class="rounded-xl p-4 mb-3" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15)">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                        <span style="font-size:14px;font-weight:800;color:#a5b4fc">⚡ نقاط الخبرة</span>
+                        <span id="xpTotal" style="font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;color:#818cf8">+0 XP</span>
+                    </div>
+                    <div id="xpBreakdown" style="font-size:12px;color:rgba(196,181,253,0.5);line-height:1.8"></div>
+                    <!-- Level progress -->
+                    <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span id="lvlEmoji" style="font-size:16px">🌱</span>
+                                <span id="lvlName" style="font-size:12px;font-weight:700">مبتدئ</span>
+                            </div>
+                            <span id="lvlProgress" style="font-size:11px;color:rgba(196,181,253,0.4)">0%</span>
+                        </div>
+                        <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden">
+                            <div id="lvlBar" style="height:100%;border-radius:99px;transition:width 1s ease;width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level Up Celebration -->
+            <div id="levelUpBox" class="mb-4" style="display:none">
+                <div class="rounded-xl p-5 text-center" style="background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(99,102,241,0.15));border:1.5px solid rgba(139,92,246,0.3)">
+                    <div style="font-size:48px;margin-bottom:8px" id="levelUpEmoji">🎉</div>
+                    <p style="font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;color:#c4b5fd;margin-bottom:4px">ترقية! 🎊</p>
+                    <p id="levelUpMsg" style="font-size:14px;color:rgba(196,181,253,0.7)">وصلت مستوى جديد!</p>
+                </div>
+            </div>
+
             <!-- Streak + Badge Status -->
             <div id="gamifSection" class="mb-4 animate-in delay-4" style="display:none">
                 <div id="streakRow" class="rounded-xl p-3 mb-3" style="background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.15)">
@@ -188,6 +221,42 @@
                     var G = window.Gamification;
                     var streakData = G.calculateStreak(r.data);
                     var badgeResult = G.calculateBadges(r.data, streakData);
+
+                    // ── XP Breakdown ──
+                    var xpSec = document.getElementById('xpSection');
+                    if(xpSec){
+                        var sessionXP = G.calculateSessionXP(correct, wrong, streakData.current);
+                        document.getElementById('xpTotal').textContent = '+' + sessionXP.total + ' XP';
+                        var bd = '';
+                        bd += '✅ إجابات صحيحة: +' + sessionXP.correctXP + ' XP\n';
+                        bd += '📝 محاولات: +' + sessionXP.wrongXP + ' XP\n';
+                        if(sessionXP.sessionBonus > 0) bd += '🎯 بونس إكمال الجلسة: +' + sessionXP.sessionBonus + ' XP\n';
+                        if(sessionXP.streakBonus > 0) bd += '🔥 بونس السلسلة (' + sessionXP.streakTier + '): +' + sessionXP.streakBonus + ' XP';
+                        document.getElementById('xpBreakdown').textContent = bd;
+
+                        // Level progress
+                        var totalXP = G.calculateXP(r.data, streakData.current);
+                        var lvl = G.calculateLevel(totalXP);
+                        document.getElementById('lvlEmoji').textContent = lvl.emoji;
+                        document.getElementById('lvlName').textContent = 'المستوى ' + lvl.level + ' — ' + lvl.nameAr;
+                        document.getElementById('lvlName').style.color = lvl.color;
+                        document.getElementById('lvlProgress').textContent = lvl.progress + '%';
+                        document.getElementById('lvlBar').style.width = lvl.progress + '%';
+                        document.getElementById('lvlBar').style.background = lvl.color;
+                        xpSec.style.display = '';
+
+                        // Level up check — compare XP before and after session
+                        var xpBefore = totalXP - sessionXP.total;
+                        var lvlBefore = G.calculateLevel(xpBefore);
+                        if(lvl.level > lvlBefore.level){
+                            var luBox = document.getElementById('levelUpBox');
+                            if(luBox){
+                                document.getElementById('levelUpEmoji').textContent = lvl.emoji;
+                                document.getElementById('levelUpMsg').textContent = 'وصلت المستوى ' + lvl.level + ' — ' + lvl.nameAr + '!';
+                                luBox.style.display = '';
+                            }
+                        }
+                    }
 
                     // عرض الـ Streak
                     var section = document.getElementById('gamifSection');
