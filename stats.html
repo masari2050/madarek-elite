@@ -166,7 +166,7 @@ var allAttempts=[],filteredAttempts=[],tmap={},activeTab='all',activePeriod='all
 async function init(){
     var sess=await SB.auth.getSession();
     if(!sess.data.session){location.href='login.html';return}
-    var res=await SB.from('attempts').select('is_correct,answered_at,section,questions(section,topic)').eq('user_id',sess.data.session.user.id).order('answered_at',{ascending:false});
+    var res=await SB.from('attempts').select('is_correct,answered_at,questions(section,topic)').eq('user_id',sess.data.session.user.id).order('answered_at',{ascending:false});
     if(!res.data||res.data.length===0){
         document.getElementById('loadEl').innerHTML='<div style="padding:60px 20px;text-align:center;color:rgba(255,255,255,0.3)"><div style="font-size:48px;margin-bottom:16px">📭</div><div style="margin-bottom:20px;font-size:16px">ما حليت أسئلة بعد!</div><a href="select-section.html" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;text-decoration:none;border-radius:99px;padding:12px 28px;font-weight:700">ابدأ التدريب</a></div>';
         return;
