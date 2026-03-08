@@ -78,8 +78,173 @@
             descAr: '\u0633\u0644\u0633\u0644\u0629 100 \u064A\u0648\u0645 \u0645\u062A\u0648\u0627\u0635\u0644',
             threshold: 100,
             check: function(data){ return data.streak.longest >= 100; }
+        },
+        // ══ شارات جديدة ══
+        {
+            id: 'first_step',
+            emoji: '👣',
+            nameAr: 'الخطوة الأولى',
+            descAr: 'حل أول 10 أسئلة',
+            threshold: 10,
+            check: function(data){ return data.total >= 10; }
+        },
+        {
+            id: 'perfectionist',
+            emoji: '✨',
+            nameAr: 'بلا أخطاء',
+            descAr: '20 إجابة صحيحة متتالية',
+            threshold: 20,
+            check: function(data){ return data.maxConsecutive >= 20; }
+        },
+        {
+            id: 'allrounder',
+            emoji: '🎪',
+            nameAr: 'شامل',
+            descAr: 'تدرّب في كل الأقسام',
+            threshold: 3,
+            check: function(data){ return data.sectionsAttempted >= 3; }
+        },
+        {
+            id: 'weekly_hero',
+            emoji: '📅',
+            nameAr: 'بطل الأسبوع',
+            descAr: 'حقق الهدف الأسبوعي (50 سؤال)',
+            threshold: 50,
+            check: function(data){ return data.weeklyTotal >= 50; }
+        },
+        {
+            id: 'thousand',
+            emoji: '🏅',
+            nameAr: 'الألف',
+            descAr: 'حل 1000 سؤال',
+            threshold: 1000,
+            check: function(data){ return data.total >= 1000; }
+        },
+        {
+            id: 'improver',
+            emoji: '📈',
+            nameAr: 'المتطور',
+            descAr: 'رفع النسبة 10%+ عن آخر 50 سؤال',
+            threshold: 10,
+            check: function(data){ return data.improvementPercent >= 10; }
         }
     ];
+
+    // ══════════════════════════════════════
+    //  نظام المستويات
+    // ══════════════════════════════════════
+    var LEVELS = [
+        { level: 1, nameAr: 'مبتدئ',  emoji: '🌱', minXP: 0,     maxXP: 500,   color: '#94a3b8' },
+        { level: 2, nameAr: 'متعلم',  emoji: '📘', minXP: 500,   maxXP: 1500,  color: '#60a5fa' },
+        { level: 3, nameAr: 'متدرب',  emoji: '⚡', minXP: 1500,  maxXP: 3500,  color: '#a78bfa' },
+        { level: 4, nameAr: 'متمكن',  emoji: '🔥', minXP: 3500,  maxXP: 7000,  color: '#fb923c' },
+        { level: 5, nameAr: 'متفوق',  emoji: '💎', minXP: 7000,  maxXP: 12000, color: '#2dd4bf' },
+        { level: 6, nameAr: 'خبير',   emoji: '🧠', minXP: 12000, maxXP: 20000, color: '#f472b6' },
+        { level: 7, nameAr: 'أسطورة', emoji: '🏆', minXP: 20000, maxXP: 35000, color: '#fbbf24' },
+        { level: 8, nameAr: 'النخبة', emoji: '👑', minXP: 35000, maxXP: 999999, color: '#e879f9' }
+    ];
+
+    function calculateLevel(totalXP){
+        var lvl = LEVELS[0];
+        for(var i = LEVELS.length - 1; i >= 0; i--){
+            if(totalXP >= LEVELS[i].minXP){
+                lvl = LEVELS[i];
+                break;
+            }
+        }
+        var progress = 0;
+        var xpInLevel = totalXP - lvl.minXP;
+        var xpNeeded = lvl.maxXP - lvl.minXP;
+        if(xpNeeded > 0) progress = Math.min(Math.round((xpInLevel / xpNeeded) * 100), 100);
+        return {
+            level: lvl.level,
+            nameAr: lvl.nameAr,
+            emoji: lvl.emoji,
+            color: lvl.color,
+            minXP: lvl.minXP,
+            maxXP: lvl.maxXP,
+            currentXP: totalXP,
+            xpInLevel: xpInLevel,
+            xpNeeded: xpNeeded,
+            progress: progress,
+            isMax: lvl.level === 8
+        };
+    }
+
+    // ══════════════════════════════════════
+    //  التحديات اليومية
+    // ══════════════════════════════════════
+    var CHALLENGE_TEMPLATES = [
+        { id: 'solve_10',    textAr: 'حل 10 أسئلة اليوم',             targetKey: 'todayTotal',   target: 10,  xp: 50,  emoji: '🎯' },
+        { id: 'solve_20',    textAr: 'حل 20 سؤال اليوم',              targetKey: 'todayTotal',   target: 20,  xp: 80,  emoji: '🚀' },
+        { id: 'accuracy_70', textAr: 'حقق 70% في جلسة اليوم',         targetKey: 'todayAccuracy', target: 70, xp: 60,  emoji: '🎯' },
+        { id: 'accuracy_80', textAr: 'حقق 80% في جلسة اليوم',         targetKey: 'todayAccuracy', target: 80, xp: 100, emoji: '💎' },
+        { id: 'streak_3',    textAr: 'حافظ على سلسلة 3 صحيحة متتالية', targetKey: 'sessionConsecutive', target: 3, xp: 30, emoji: '⚡' },
+        { id: 'streak_5',    textAr: '5 إجابات صحيحة متتالية',         targetKey: 'sessionConsecutive', target: 5, xp: 50, emoji: '🔥' },
+        { id: 'review_5',    textAr: 'راجع 5 أخطاء سابقة',             targetKey: 'reviewedMistakes',  target: 5, xp: 40, emoji: '📖' },
+        { id: 'quant_5',     textAr: 'حل 5 أسئلة كمي',                 targetKey: 'todayQuant',   target: 5,   xp: 40,  emoji: '🔢' },
+        { id: 'verbal_5',    textAr: 'حل 5 أسئلة لفظي',                targetKey: 'todayVerbal',  target: 5,   xp: 40,  emoji: '📝' },
+        { id: 'fast_10',     textAr: 'أجب 10 أسئلة بدون توقف',         targetKey: 'todayTotal',   target: 10,  xp: 60,  emoji: '⏱️' }
+    ];
+
+    var STORAGE_CHALLENGE = 'madarek_daily_challenge';
+
+    function getDailyChallenge(){
+        // تحدي يتغير يومياً (حسب يوم السنة)
+        var today = getTodayRiyadh();
+        var cached = null;
+        try { cached = JSON.parse(localStorage.getItem(STORAGE_CHALLENGE) || '{}'); } catch(e){}
+        if(cached && cached.date === today) return cached;
+
+        // اختيار تحدي عشوائي ثابت لليوم
+        var dayOfYear = Math.floor((new Date(today) - new Date(today.split('-')[0] + '-01-01')) / 86400000);
+        var idx = dayOfYear % CHALLENGE_TEMPLATES.length;
+        var tmpl = CHALLENGE_TEMPLATES[idx];
+
+        var challenge = {
+            date: today,
+            id: tmpl.id,
+            textAr: tmpl.textAr,
+            targetKey: tmpl.targetKey,
+            target: tmpl.target,
+            xp: tmpl.xp,
+            emoji: tmpl.emoji,
+            progress: 0,
+            completed: false
+        };
+        localStorage.setItem(STORAGE_CHALLENGE, JSON.stringify(challenge));
+        return challenge;
+    }
+
+    function updateDailyChallenge(key, value){
+        var ch = getDailyChallenge();
+        if(ch.completed) return ch;
+        if(key === ch.targetKey){
+            ch.progress = Math.min(value, ch.target);
+            if(ch.progress >= ch.target) ch.completed = true;
+            localStorage.setItem(STORAGE_CHALLENGE, JSON.stringify(ch));
+        }
+        return ch;
+    }
+
+    // ══════════════════════════════════════
+    //  مكافآت السلسلة المتدرجة
+    // ══════════════════════════════════════
+    function getStreakBonus(currentStreak){
+        if(currentStreak >= 30) return 15;
+        if(currentStreak >= 14) return 12;
+        if(currentStreak >= 7)  return 8;
+        if(currentStreak >= 3)  return 5;
+        return 0;
+    }
+
+    function getStreakTierAr(currentStreak){
+        if(currentStreak >= 30) return '🔥 مشتعل!';
+        if(currentStreak >= 14) return '💎 ثابت';
+        if(currentStreak >= 7)  return '⚡ متواصل';
+        if(currentStreak >= 3)  return '🌱 بداية قوية';
+        return '';
+    }
 
     // ══════════════════════════════════════
     //  مساعدات التاريخ (بتوقيت الرياض)
@@ -196,12 +361,12 @@
     function calculateXP(attempts, currentStreak){
         var xp = 0;
         if(!attempts) return xp;
-        var streakBonus = (currentStreak >= 3) ? 5 : 0;
+        var bonus = getStreakBonus(currentStreak);
         attempts.forEach(function(a){
             if(a.is_correct){
-                xp += 10 + streakBonus;  // صح = 10 + بونس الاستمرار
+                xp += 10 + bonus;
             } else {
-                xp += 3;  // خطأ = 3 نقاط (مكافأة المحاولة)
+                xp += 3;
             }
         });
         return xp;
@@ -209,15 +374,16 @@
 
     // حساب XP لجلسة واحدة فقط
     function calculateSessionXP(correct, wrong, currentStreak){
-        var streakBonus = (currentStreak >= 3) ? 5 : 0;
-        var correctXP = correct * (10 + streakBonus);
+        var bonus = getStreakBonus(currentStreak);
+        var correctXP = correct * (10 + bonus);
         var wrongXP = wrong * 3;
-        var sessionBonus = (correct + wrong >= 10) ? 20 : 0;  // بونس إكمال الجلسة
+        var sessionBonus = (correct + wrong >= 10) ? 20 : 0;
         return {
             correctXP: correctXP,
             wrongXP: wrongXP,
             sessionBonus: sessionBonus,
-            streakBonus: streakBonus > 0 ? correct * streakBonus : 0,
+            streakBonus: bonus > 0 ? correct * bonus : 0,
+            streakTier: getStreakTierAr(currentStreak),
             total: correctXP + wrongXP + sessionBonus
         };
     }
@@ -255,7 +421,7 @@
     // ══════════════════════════════════════
     //  حساب البادجات
     // ══════════════════════════════════════
-    function calculateBadges(attempts, streakData){
+    function calculateBadges(attempts, streakData, extraData){
         var total = attempts ? attempts.length : 0;
         var correct = 0;
         if(attempts){
@@ -267,13 +433,55 @@
         // أقصى عدد أسئلة في جلسة واحدة
         var maxSession = parseInt(localStorage.getItem('madarek_max_session_questions') || '0', 10);
 
+        // حساب الأقسام المجرّبة
+        var sectionsSet = {};
+        if(attempts){
+            attempts.forEach(function(a){
+                if(a.section) sectionsSet[a.section] = true;
+                else if(a.questions && a.questions.section) sectionsSet[a.questions.section] = true;
+            });
+        }
+
+        // حساب التحسن (آخر 50 مقارنة بالـ 50 قبلها)
+        var improvementPercent = 0;
+        if(attempts && attempts.length >= 100){
+            var sorted = attempts.slice().sort(function(a,b){
+                return new Date(b.answered_at) - new Date(a.answered_at);
+            });
+            var recent50 = sorted.slice(0, 50);
+            var prev50 = sorted.slice(50, 100);
+            var recentCorrect = 0, prevCorrect = 0;
+            recent50.forEach(function(a){ if(a.is_correct) recentCorrect++; });
+            prev50.forEach(function(a){ if(a.is_correct) prevCorrect++; });
+            var recentPct = (recentCorrect / 50) * 100;
+            var prevPct = (prevCorrect / 50) * 100;
+            improvementPercent = Math.round(recentPct - prevPct);
+        }
+
+        // حساب أسئلة الأسبوع
+        var weeklyTotal = 0;
+        if(attempts){
+            var now = new Date();
+            var dayOfWeek = now.getDay();
+            var weekStartDate = new Date(now);
+            weekStartDate.setDate(now.getDate() - dayOfWeek);
+            weekStartDate.setHours(0, 0, 0, 0);
+            attempts.forEach(function(a){
+                if(a.answered_at && new Date(a.answered_at) >= weekStartDate) weeklyTotal++;
+            });
+        }
+
+        var ext = extraData || {};
         var data = {
             total: total,
             correct: correct,
             accuracy: accuracy,
             maxConsecutive: maxConsecutive,
             maxSessionQuestions: maxSession,
-            streak: streakData || {current: 0, longest: 0}
+            streak: streakData || {current: 0, longest: 0},
+            sectionsAttempted: Object.keys(sectionsSet).length,
+            weeklyTotal: ext.weeklyTotal || weeklyTotal,
+            improvementPercent: ext.improvementPercent || improvementPercent
         };
 
         var earned = [];
@@ -474,20 +682,34 @@
     //  تصدير عام
     // ══════════════════════════════════════
     window.Gamification = {
+        // الأساسيات
         calculateStreak: calculateStreak,
         calculateXP: calculateXP,
         calculateSessionXP: calculateSessionXP,
         calculateBadges: calculateBadges,
         calculateMaxConsecutive: calculateMaxConsecutive,
+        // المستويات
+        calculateLevel: calculateLevel,
+        LEVELS: LEVELS,
+        // التحديات اليومية
+        getDailyChallenge: getDailyChallenge,
+        updateDailyChallenge: updateDailyChallenge,
+        // مكافآت السلسلة
+        getStreakBonus: getStreakBonus,
+        getStreakTierAr: getStreakTierAr,
+        // الكاش
         getStreakCache: getStreakCache,
         setStreakCache: setStreakCache,
         getBadgeCache: getBadgeCache,
+        // درع السلسلة
         useStreakFreeze: useStreakFreeze,
         canUseFreeze: canUseFreeze,
+        // العرض
         renderStreakWidget: renderStreakWidget,
         renderBadgeGrid: renderBadgeGrid,
         renderNewBadgeCelebration: renderNewBadgeCelebration,
         renderLeaderboardPreview: renderLeaderboardPreview,
+        // البيانات
         BADGES: BADGES,
         getTodayRiyadh: getTodayRiyadh
     };
