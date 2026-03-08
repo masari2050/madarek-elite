@@ -288,23 +288,53 @@
 
         // 🔥 تسريبات حصرية للمشتركين
         var TASREEBAT_SETS=[
-            {id:'tasreeb-8-mar-2026',name:'تسريبات ٨ مارس',date:'٨ مارس ٢٠٢٦',emoji:'🔥',count:44,desc:'٣٠ لفظي + ١٤ كمي',createdAfter:'2026-03-08T21:36:05',createdBefore:'2026-03-08T21:36:06'}
+            {id:'tasreeb-8-mar-2026',name:'تسريبات ٨ مارس',date:'٨ مارس ٢٠٢٦',emoji:'🔥',count:44,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-08T21:36:05',createdBefore:'2026-03-08T21:36:06'}
         ];
         var userSub='free';
+        var tasreebProgress={};
         async function loadTasreebat(){
+            var userId=null;
             try{
                 var s=await sb.auth.getSession();if(!s.data.session)return;
-                var r=await sb.from('profiles').select('subscription_type').eq('id',s.data.session.user.id).single();
+                userId=s.data.session.user.id;
+                var r=await sb.from('profiles').select('subscription_type').eq('id',userId).single();
                 if(r.data&&r.data.subscription_type)userSub=r.data.subscription_type;
             }catch(e){}
             if(!TASREEBAT_SETS.length)return;
+            // حساب تقدم كل مجموعة تسريبات
+            if(userId && userSub!=='free'){
+                for(var i=0;i<TASREEBAT_SETS.length;i++){
+                    var set=TASREEBAT_SETS[i];
+                    try{
+                        var allQ=await sb.from('questions').select('id').gte('created_at',set.createdAfter).lt('created_at',set.createdBefore);
+                        var allIds=(allQ.data||[]).map(function(q){return q.id;});
+                        if(allIds.length){
+                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',allIds);
+                            var uniqueDone=[...new Set((done.data||[]).map(function(a){return a.question_id;}))];
+                            tasreebProgress[set.id]={total:allIds.length,done:uniqueDone.length,remaining:allIds.length-uniqueDone.length};
+                        }
+                    }catch(e){}
+                }
+            }
             var section=document.getElementById('tasreebatSection'),grid=document.getElementById('tasreebatGrid');
             var isPro=(userSub!=='free');
             grid.innerHTML='';
             TASREEBAT_SETS.forEach(function(set,idx){
                 var card=document.createElement('div');
                 card.className='tasreeb-card'+(isPro?'':' locked');
-                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+'</h4><p class="text-purple-200/50" style="font-size:10px">'+set.count+' سؤال • '+set.desc+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">ابدأ ←</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
+                var prog=tasreebProgress[set.id];
+                var descText=set.desc;
+                var actionText='ابدأ ←';
+                if(isPro && prog && prog.done>0){
+                    if(prog.remaining>0){
+                        descText='باقي '+prog.remaining+' سؤال من '+prog.total+' — أكمل من وين وقفت';
+                        actionText='أكمل ←';
+                    }else{
+                        descText='خلّصت الـ '+prog.total+' كلها ✅ — عيد للمراجعة';
+                        actionText='عيد ←';
+                    }
+                }
+                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+'</h4><p class="text-purple-200/50" style="font-size:10px">'+descText+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
                 card.onclick=isPro?function(){startTasreeb(idx)}:function(){location.href='pricing.html'};
                 grid.appendChild(card);
             });
