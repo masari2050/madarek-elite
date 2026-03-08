@@ -156,8 +156,8 @@
 
                 <!-- الهدف الأسبوعي -->
                 <div class="flex-1 text-center">
-                    <p class="text-purple-300/50 text-xs mb-1">الهدف الأسبوعي</p>
-                    <div class="relative inline-block" style="width:80px;height:80px">
+                    <p class="text-purple-300/50 text-xs mb-1" onclick="changeWeeklyGoal()" style="cursor:pointer">الهدف الأسبوعي ✏️</p>
+                    <div class="relative inline-block" style="width:80px;height:80px" onclick="changeWeeklyGoal()" style="cursor:pointer">
                         <svg viewBox="0 0 80 80" width="80" height="80">
                             <circle cx="40" cy="40" r="34" class="ring-bg" stroke-width="6"/>
                             <circle cx="40" cy="40" r="34" class="ring-fill" stroke-width="6" id="weeklyRing"
@@ -168,26 +168,25 @@
                             <span class="font-black text-lg text-white" id="weeklyPct" style="font-family:'Cairo',sans-serif;line-height:1">0%</span>
                         </div>
                     </div>
-                    <p class="text-purple-300/40 text-xs mt-1"><span id="weeklyCount">0</span> / 50</p>
+                    <p class="text-purple-300/40 text-xs mt-1"><span id="weeklyCount">0</span> / <span id="weeklyGoalNum">50</span></p>
                 </div>
             </div>
 
             <!-- شريط إحصائيات سريع -->
             <div class="flex items-center justify-between mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,0.06)">
-                <div class="flex items-center gap-1">
-                    <span class="text-xs">✅</span>
-                    <span class="font-bold text-sm text-green-400" id="totalCorrect">0</span>
-                    <span class="text-purple-300/30 text-xs">صح</span>
+                <div class="text-center flex-1">
+                    <span class="font-bold text-sm text-green-400 block" id="totalCorrect">0</span>
+                    <span class="text-purple-300/40 text-[10px]">إجابة صحيحة ✅</span>
                 </div>
-                <div class="flex items-center gap-1">
-                    <span class="text-xs">📝</span>
-                    <span class="font-bold text-sm text-white" id="totalQuestions">0</span>
-                    <span class="text-purple-300/30 text-xs">سؤال</span>
+                <div style="width:1px;height:24px;background:rgba(255,255,255,0.08)"></div>
+                <div class="text-center flex-1">
+                    <span class="font-bold text-sm text-white block" id="totalQuestions">0</span>
+                    <span class="text-purple-300/40 text-[10px]">إجمالي الأسئلة 📝</span>
                 </div>
-                <div class="flex items-center gap-1">
-                    <span class="text-xs">📈</span>
-                    <span class="font-bold text-sm text-purple-300" id="recentRate">-</span>
-                    <span class="text-purple-300/30 text-xs">آخر 20</span>
+                <div style="width:1px;height:24px;background:rgba(255,255,255,0.08)"></div>
+                <div class="text-center flex-1">
+                    <span class="font-bold text-sm text-purple-300 block" id="recentRate">-</span>
+                    <span class="text-purple-300/40 text-[10px]">نسبة آخر ٢٠ سؤال 📈</span>
                 </div>
             </div>
         </div>
@@ -390,10 +389,12 @@
                 }
 
                 // ── Weekly goal ──
+                var weeklyGoal = parseInt(localStorage.getItem('madarek_weekly_goal')) || 50;
                 var oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
                 var weekly = attempts.filter(a => a.answered_at && new Date(a.answered_at) > oneWeekAgo).length;
                 document.getElementById('weeklyCount').textContent = weekly;
-                var weeklyPct = Math.min(Math.round((weekly / 50) * 100), 100);
+                document.getElementById('weeklyGoalNum').textContent = weeklyGoal;
+                var weeklyPct = Math.min(Math.round((weekly / weeklyGoal) * 100), 100);
                 document.getElementById('weeklyPct').textContent = weeklyPct + '%';
                 // SVG ring
                 var circumference = 213.6; // 2 * PI * 34
@@ -500,6 +501,39 @@
                 } catch(e){}
 
             } catch(err) { console.error('Dashboard load error:', err); }
+        }
+
+        // ── تغيير الهدف الأسبوعي ──
+        function changeWeeklyGoal(){
+            var options = [20, 30, 50, 70, 100, 150];
+            var current = parseInt(localStorage.getItem('madarek_weekly_goal')) || 50;
+            // بناء modal بسيط
+            var overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+            var box = document.createElement('div');
+            box.style.cssText = 'background:#1e1b4b;border-radius:16px;padding:24px;width:100%;max-width:320px;text-align:center;border:1px solid rgba(255,255,255,0.1)';
+            box.innerHTML = '<p style="color:white;font-weight:700;font-size:16px;margin-bottom:4px;font-family:Cairo,sans-serif">🎯 حدد هدفك الأسبوعي</p>'
+                + '<p style="color:rgba(196,181,253,0.5);font-size:12px;margin-bottom:16px">كم سؤال تبي تحل بالأسبوع؟</p>'
+                + '<div id="goalOptions" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px"></div>'
+                + '<button onclick="this.closest(\'div[style*=fixed]\').remove()" style="color:rgba(196,181,253,0.5);background:none;border:none;font-size:13px;cursor:pointer;font-family:Tajawal,sans-serif">إلغاء</button>';
+            overlay.appendChild(box);
+            overlay.addEventListener('click', function(e){ if(e.target === overlay) overlay.remove(); });
+            document.body.appendChild(overlay);
+            var optEl = box.querySelector('#goalOptions');
+            options.forEach(function(n){
+                var btn = document.createElement('button');
+                btn.textContent = n + ' سؤال';
+                var isActive = n === current;
+                btn.style.cssText = 'padding:10px 8px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;border:2px solid '
+                    + (isActive ? '#7c3aed' : 'rgba(255,255,255,0.1)') + ';background:'
+                    + (isActive ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)') + ';color:' + (isActive ? '#c4b5fd' : 'rgba(255,255,255,0.6)') + ';font-family:Tajawal,sans-serif';
+                btn.onclick = function(){
+                    localStorage.setItem('madarek_weekly_goal', n);
+                    overlay.remove();
+                    loadDashboard();
+                };
+                optEl.appendChild(btn);
+            });
         }
 
         // ── Leaderboard ──
