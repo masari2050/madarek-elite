@@ -158,17 +158,23 @@
                     <div class="flex items-center gap-2"><span class="text-green-400 text-sm">✓</span><span class="text-purple-200/80 text-sm">إحصائيات متقدمة ومراجعة أخطاء</span></div>
                     <div class="flex items-center gap-2"><span class="text-green-400 text-sm">✓</span><span class="text-purple-200/80 text-sm">تحديثات أسبوعية للأسئلة</span></div>
                 </div>
-                <div class="flex items-center justify-center gap-3 mb-5 px-2" style="direction:ltr">
+                <div id="pw-ramadan-badge" class="hidden mb-3">
+                    <span class="inline-block text-xs font-black px-4 py-1.5 rounded-full" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.2));border:1px solid rgba(139,92,246,0.3);color:#c4b5fd">🌙 عرض رمضان</span>
+                </div>
+                <div class="flex items-center justify-center gap-3 mb-2 px-2" style="direction:ltr">
                     <div class="flex-1 text-center p-3 rounded-xl" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3)">
+                        <div class="hidden text-purple-200/40 text-xs mb-0.5" id="pw-monthly-orig" style="text-decoration:line-through;text-decoration-color:#ef4444;text-decoration-thickness:2px"></div>
                         <div class="text-2xl font-black text-indigo-300" id="pw-monthly-price">--</div>
                         <div class="text-purple-200/70 text-xs">ريال/شهر</div>
                     </div>
                     <div class="text-purple-200/50 text-xs">أو</div>
                     <div class="flex-1 text-center p-3 rounded-xl" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3)">
+                        <div class="hidden text-purple-200/40 text-xs mb-0.5" id="pw-yearly-orig" style="text-decoration:line-through;text-decoration-color:#ef4444;text-decoration-thickness:2px"></div>
                         <div class="text-2xl font-black text-emerald-300" id="pw-yearly-price">--</div>
                         <div class="text-purple-200/70 text-xs">ريال/شهر سنوي</div>
                     </div>
                 </div>
+                <p id="pw-burger-line" class="hidden text-purple-200/40 text-[10px] mb-4">بسعر وجبة برقر لمستقبلك الحقيقي 🍔</p>
                 <a href="pricing.html" class="block w-full py-3.5 rounded-xl font-bold text-sm text-white mb-3" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">اشترك الآن وكمّل مشوارك ✨</a>
                 <button onclick="closePaywall()" class="text-purple-200/60 text-xs hover:text-purple-300/50 transition">ارجع للرئيسية</button>
             </div>
@@ -183,7 +189,7 @@
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
     );
 
-    // 💰 جلب الأسعار الحقيقية من site_settings لعرضها في الـ paywall
+    // 💰 جلب الأسعار الحقيقية من site_settings + عرض رمضان
     (async function(){
         try {
             var {data} = await sb.from('site_settings').select('*');
@@ -198,10 +204,23 @@
             var mNow = discPct > 0 && mOrig > 0 ? Math.round(mOrig * (100 - discPct) / 100) : (mCurrent > 0 ? mCurrent : mOrig);
             var yNow = discPct > 0 && yOrig > 0 ? Math.round(yOrig * (100 - discPct) / 100) : (yCurrent > 0 ? yCurrent : yOrig);
             var yPM = yNow > 0 ? Math.round(yNow / 12) : 0;
+            var yOrigPM = yOrig > 0 ? Math.round(yOrig / 12) : 0;
+            // تحديث الأسعار الحالية
             var el1 = document.getElementById('pw-monthly-price');
             var el2 = document.getElementById('pw-yearly-price');
             if (el1 && mNow > 0) el1.textContent = mNow;
             if (el2 && yPM > 0) el2.textContent = yPM;
+            // 🌙 لو في خصم — نعرض بادج رمضان + السعر القديم بشرطة حمرا
+            if (mOrig > 0 && mNow < mOrig) {
+                var badge = document.getElementById('pw-ramadan-badge');
+                var mOrigEl = document.getElementById('pw-monthly-orig');
+                var yOrigEl = document.getElementById('pw-yearly-orig');
+                var burgerLine = document.getElementById('pw-burger-line');
+                if (badge) badge.classList.remove('hidden');
+                if (mOrigEl) { mOrigEl.textContent = mOrig + ' ريال'; mOrigEl.classList.remove('hidden'); }
+                if (yOrigEl && yOrigPM > 0 && yPM < yOrigPM) { yOrigEl.textContent = yOrigPM + ' ريال'; yOrigEl.classList.remove('hidden'); }
+                if (burgerLine) burgerLine.classList.remove('hidden');
+            }
         } catch(e) { console.warn('Could not fetch pricing:', e); }
     })();
 
