@@ -138,13 +138,18 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
     </div>
   </div>
 
-  <!-- ═══ Smart Insights (التقرير الذكي) ═══ -->
+  <!-- ═══ زر التقرير الذكي ═══ -->
   <div class="fu" style="margin-bottom:20px">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <span style="font-size:20px">📊</span>
-      <h2 style="font-size:16px;font-weight:900;font-family:'Cairo',sans-serif;margin:0;color:white">تقريرك الذكي</h2>
-    </div>
-    <div id="insightsEl"></div>
+    <button onclick="openSmartReport()" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.15));border:1px solid rgba(124,58,237,0.3);border-radius:16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s" onmouseover="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.3),rgba(79,70,229,0.25))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.15))'">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:28px">📊</span>
+        <div style="text-align:right">
+          <p style="font-size:15px;font-weight:800;color:white;margin:0;font-family:'Cairo',sans-serif">تقريرك الذكي</p>
+          <p style="font-size:11px;color:rgba(196,181,253,0.6);margin:0">تحليل مفصّل لأدائك + خطة تدريب مخصصة</p>
+        </div>
+      </div>
+      <span style="font-size:20px;color:rgba(196,181,253,0.4)">←</span>
+    </button>
   </div>
 
   <!-- ═══ Tabs ═══ -->
@@ -226,7 +231,6 @@ function renderAll(){
     renderSummary();
     renderStrengthMap();
     renderTopics();
-    try{ renderInsights(); }catch(e){ console.error('Insights error:',e); document.getElementById('insightsEl').innerHTML='<p style="color:rgba(255,255,255,0.3);font-size:12px">تعذر تحميل التقرير</p>'; }
 }
 
 function renderSummary(){
@@ -409,92 +413,185 @@ function switchTab(tab){
     renderTopics();
 }
 
-function renderInsights(){
-    var el=document.getElementById('insightsEl');
-    var tot=filteredAttempts.length;
-    if(tot<5){el.innerHTML='';return}
-    var cor=filteredAttempts.filter(function(a){return a.is_correct}).length;
+function openSmartReport(){
+    var tot=allAttempts.length;
+    if(tot<3){alert('حل 3 أسئلة على الأقل عشان يظهر تقريرك');return}
+
+    // بناء tmap من كل البيانات
+    var rmap={};
+    allAttempts.forEach(function(a){
+        if(!a.questions)return;
+        var k=(a.questions.section||'x')+'__'+(a.questions.topic||'other');
+        if(!rmap[k])rmap[k]={s:a.questions.section||'x',t:a.questions.topic||'other',n:0,c:0};
+        rmap[k].n++;if(a.is_correct)rmap[k].c++;
+    });
+
+    var cor=allAttempts.filter(function(a){return a.is_correct}).length;
     var pct=Math.round(cor/tot*100);
-    var arr=Object.values(tmap);
+    var arr=Object.values(rmap);
     var strong=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)>=60}).sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});
     var weak=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});
     var untried=arr.filter(function(x){return x.n<3});
     var name=studentName||'بطل';
 
-    var html='';
+    // تحديد لون وتصنيف الأداء
+    var grade,gradeColor,gradeBg,gradeEmoji;
+    if(pct>=80){grade='ممتاز';gradeColor='#4ade80';gradeBg='rgba(74,222,128,0.1)';gradeEmoji='🏆'}
+    else if(pct>=65){grade='جيد جداً';gradeColor='#60a5fa';gradeBg='rgba(96,165,250,0.1)';gradeEmoji='⭐'}
+    else if(pct>=50){grade='جيد';gradeColor='#fbbf24';gradeBg='rgba(251,191,36,0.1)';gradeEmoji='💪'}
+    else if(pct>=35){grade='مقبول';gradeColor='#fb923c';gradeBg='rgba(251,146,60,0.1)';gradeEmoji='📈'}
+    else{grade='يحتاج تركيز';gradeColor='#c4b5fd';gradeBg='rgba(196,181,253,0.1)';gradeEmoji='🎯'}
 
-    // ═══ 1. تحفيز شخصي بالاسم ═══
-    html+='<div style="padding:20px;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(79,70,229,0.1));border-radius:16px;border:1px solid rgba(124,58,237,0.2)">';
-    html+='<div style="font-size:20px;margin-bottom:8px">🌟</div>';
-    if(pct>=70){
-        html+='<p style="font-size:15px;font-weight:800;color:#4ade80;margin-bottom:6px">ما شاء الله يا '+name+'! أداء ممتاز</p>';
-        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">نسبتك <b style="color:#4ade80">'+pct+'%</b> — تستاهل كل خير. حليت <b style="color:white">'+tot+'</b> سؤال وأثبتّ إنك مجتهد. كمّل على هالمستوى وأنت في الطريق الصح!</p>';
-    } else if(pct>=50){
-        html+='<p style="font-size:15px;font-weight:800;color:#fbbf24;margin-bottom:6px">أحسنت يا '+name+'! مستواك يتحسن</p>';
-        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">نسبتك <b style="color:#fbbf24">'+pct+'%</b> مع <b style="color:white">'+tot+'</b> سؤال — وكل يوم تتقدم خطوة. شوي جهد إضافي وبتوصل لمستوى ممتاز!</p>';
-    } else if(pct>=30){
-        html+='<p style="font-size:15px;font-weight:800;color:#c4b5fd;margin-bottom:6px">يلا يا '+name+'! كل بداية صعبة</p>';
-        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">حليت <b style="color:white">'+tot+'</b> سؤال وهذي خطوة كبيرة! كل سؤال تغلط فيه هو درس يقربك للنجاح. ركّز على المواضيع اللي تحت وبتشوف الفرق بسرعة.</p>';
-    } else {
-        html+='<p style="font-size:15px;font-weight:800;color:#c4b5fd;margin-bottom:6px">ما يهم يا '+name+'! الأبطال يبدأون من هنا</p>';
-        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">كل سؤال تحله — حتى لو غلط — يقوّي فهمك. راجع أخطاءك وركّز على موضوع واحد بس، وبتلاحظ التحسن بسرعة!</p>';
-    }
-    html+='</div>';
-
-    // ═══ 2. خطة التدريب الأسبوعية ═══
-    html+='<div class="glass" style="padding:18px;margin-bottom:12px">';
-    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="font-size:18px">📋</span><span style="font-size:14px;font-weight:800;color:white">خطة تدريبك</span></div>';
-    var planItems=[];
-    if(weak.length>0){
-        planItems.push({icon:'🎯',text:'ركّز على <b style="color:#fbbf24">'+(TN[weak[0].t]||weak[0].t)+'</b> — حل 10 أسئلة يومياً',sub:'نسبتك فيه '+Math.round(weak[0].c/weak[0].n*100)+'% وتقدر ترفعها'});
-        if(weak.length>1) planItems.push({icon:'📖',text:'راجع أخطاء <b style="color:#fbbf24">'+(TN[weak[1].t]||weak[1].t)+'</b>',sub:'افهم كل خطأ قبل ما تحل أسئلة جديدة'});
-    }
-    if(strong.length>0){
-        planItems.push({icon:'💪',text:'حافظ على قوتك في <b style="color:#4ade80">'+(TN[strong[0].t]||strong[0].t)+'</b>',sub:'نسبتك '+Math.round(strong[0].c/strong[0].n*100)+'% — ممتاز!'});
-    }
-    if(untried.length>0){
-        planItems.push({icon:'🔍',text:'جرّب موضوع <b style="color:#a78bfa">'+(TN[untried[0].t]||untried[0].t)+'</b>',sub:'ما جربته بعد — ممكن يكون نقطة قوة!'});
-    }
-    if(planItems.length===0){
-        planItems.push({icon:'🚀',text:'حافظ على تدريبك اليومي',sub:'15 سؤال يومياً يبقيك في القمة'});
-    }
-    planItems.push({icon:'⏰',text:'خصص <b style="color:white">15-20 دقيقة</b> يومياً للتدريب',sub:'الاستمرار أهم من الكمية'});
-    planItems.forEach(function(item){
-        html+='<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">';
-        html+='<span style="font-size:16px;margin-top:2px">'+item.icon+'</span>';
-        html+='<div><p style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6">'+item.text+'</p>';
-        html+='<p style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px">'+item.sub+'</p></div>';
-        html+='</div>';
-    });
-    html+='</div>';
-
-    // ═══ 3. إنجاز قريب ═══
+    // المستوى
+    var lvlInfo=null;
     if(window.Gamification){
-        var badgeResult=Gamification.calculateBadges(allAttempts,Gamification.calculateStreak(allAttempts));
-        var locked=Gamification.BADGES.filter(function(b){return !badgeResult.earned.some(function(e){return e.id===b.id})});
-        if(locked.length>0){
-            var next=locked[0];
-            html+='<div class="glass" style="padding:18px;margin-bottom:12px">';
-            html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">🏆</span><span style="font-size:14px;font-weight:800">إنجاز قريب</span></div>';
-            html+='<div style="display:flex;align-items:center;gap:10px">';
-            html+='<span style="font-size:28px">'+next.emoji+'</span>';
-            html+='<div><p style="font-size:13px;font-weight:700">'+next.nameAr+'</p><p style="font-size:11px;color:rgba(255,255,255,0.4)">'+next.descAr+'</p></div>';
-            html+='</div></div>';
-        }
+        var xp=Gamification.calculateXP(allAttempts,0);
+        lvlInfo=Gamification.calculateLevel(xp);
     }
 
-    // ═══ 4. نصيحة ذكية (حسب الأداء) ═══
-    var tip='';
-    if(pct<40) tip='ركّز على موضوع واحد بس لمدة أسبوع — التخصص يرفع نسبتك أسرع من التشتت';
-    else if(pct<60) tip='راجع أخطاءك قبل كل جلسة — فهم الغلط نصف الطريق للإجابة الصحيحة';
-    else if(pct<75) tip='جرّب تحل بدون وقت أول، وبعدين حط لنفسك تحدي سرعة — الإتقان قبل السرعة';
-    else tip='مستواك عالي! جرّب المواضيع اللي ما جربتها — التنويع يخليك جاهز لأي سؤال';
-    html+='<div class="glass" style="padding:18px">';
-    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">💡</span><span style="font-size:14px;font-weight:800">نصيحة لك يا '+name+'</span></div>';
-    html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">'+tip+'</p>';
-    html+='</div>';
+    // حساب التحسن
+    var improveTxt='';
+    if(tot>=100){
+        var sorted=allAttempts.slice().sort(function(a,b){return new Date(b.answered_at)-new Date(a.answered_at)});
+        var r50=sorted.slice(0,50).filter(function(a){return a.is_correct}).length;
+        var p50=sorted.slice(50,100).filter(function(a){return a.is_correct}).length;
+        var diff=Math.round((r50-p50)/50*100);
+        if(diff>0) improveTxt='📈 نسبتك تحسنت <b style="color:#4ade80">+'+diff+'%</b> مقارنة بآخر 100 سؤال';
+        else if(diff<0) improveTxt='📉 نسبتك تراجعت <b style="color:#fb923c">'+diff+'%</b> — شد حيلك!';
+        else improveTxt='➡️ نسبتك ثابتة — جرّب تنوّع المواضيع';
+    }
 
-    el.innerHTML=html;
+    // بناء الـ modal
+    var overlay=document.createElement('div');
+    overlay.id='reportOverlay';
+    overlay.style.cssText='position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 60%,#0d0825 100%);overflow-y:auto;-webkit-overflow-scrolling:touch';
+
+    var h='';
+
+    // ── الهيدر ──
+    h+='<div style="position:sticky;top:0;z-index:10;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,10,46,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06)">';
+    h+='<button onclick="document.getElementById(\'reportOverlay\').remove()" style="background:rgba(255,255,255,0.08);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>';
+    h+='<span style="font-size:15px;font-weight:800;font-family:Cairo,sans-serif">📊 تقريرك الذكي</span>';
+    h+='<div style="width:36px"></div>';
+    h+='</div>';
+
+    h+='<div style="max-width:500px;margin:0 auto;padding:20px 16px 60px">';
+
+    // ═══ 1. بطاقة الترحيب ═══
+    h+='<div style="text-align:center;padding:28px 20px;margin-bottom:20px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.15));border-radius:20px;border:1px solid rgba(124,58,237,0.25)">';
+    if(lvlInfo) h+='<div style="font-size:36px;margin-bottom:4px">'+lvlInfo.emoji+'</div>';
+    h+='<p style="font-size:20px;font-weight:900;font-family:Cairo,sans-serif;margin-bottom:4px">أهلاً '+name+'!</p>';
+    if(lvlInfo) h+='<p style="font-size:12px;color:'+lvlInfo.color+';font-weight:700;margin-bottom:12px">المستوى '+lvlInfo.level+' — '+lvlInfo.nameAr+'</p>';
+
+    // رسالة تحفيزية حسب الأداء
+    if(pct>=70) h+='<p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.8">ما شاء الله عليك! أداؤك ممتاز وتستاهل كل خير. حليت <b style="color:white">'+tot+'</b> سؤال بنسبة <b style="color:'+gradeColor+'">'+pct+'%</b> — كمّل وأنت في القمة!</p>';
+    else if(pct>=50) h+='<p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.8">أحسنت! مستواك يتطور مع كل جلسة. <b style="color:white">'+tot+'</b> سؤال بنسبة <b style="color:'+gradeColor+'">'+pct+'%</b> — شوي تركيز زيادة وبتوصل لأعلى!</p>';
+    else if(pct>=30) h+='<p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.8">يلا يا بطل! حليت <b style="color:white">'+tot+'</b> سؤال وكل خطأ يعلّمك شي جديد. ركّز على المواضيع الضعيفة وبتشوف الفرق!</p>';
+    else h+='<p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.8">كل رحلة نجاح تبدأ من أول خطوة — وأنت بدأت! كل سؤال يقرّبك لهدفك. ركّز وراجع أخطاءك وبتتحسن بسرعة!</p>';
+    h+='</div>';
+
+    // ═══ 2. ملخص الأداء ═══
+    h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:16px">';
+    h+='<p style="font-size:14px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span>📋</span> ملخص أدائك</p>';
+
+    // التصنيف
+    h+='<div style="text-align:center;padding:16px;background:'+gradeBg+';border-radius:14px;margin-bottom:16px;border:1px solid '+gradeColor+'30">';
+    h+='<span style="font-size:32px">'+gradeEmoji+'</span>';
+    h+='<p style="font-size:22px;font-weight:900;color:'+gradeColor+';font-family:Cairo,sans-serif;margin:4px 0">'+grade+'</p>';
+    h+='<p style="font-size:12px;color:rgba(255,255,255,0.4)">تصنيف أدائك العام</p>';
+    h+='</div>';
+
+    // الأرقام
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center">';
+    h+='<div style="padding:14px 8px;background:rgba(74,222,128,0.08);border-radius:12px"><p style="font-size:22px;font-weight:900;color:#4ade80">'+cor+'</p><p style="font-size:10px;color:rgba(255,255,255,0.4)">إجابة صحيحة</p></div>';
+    h+='<div style="padding:14px 8px;background:rgba(255,255,255,0.04);border-radius:12px"><p style="font-size:22px;font-weight:900;color:white">'+tot+'</p><p style="font-size:10px;color:rgba(255,255,255,0.4)">إجمالي الأسئلة</p></div>';
+    h+='<div style="padding:14px 8px;background:rgba(124,58,237,0.1);border-radius:12px"><p style="font-size:22px;font-weight:900;color:'+gradeColor+'">'+pct+'%</p><p style="font-size:10px;color:rgba(255,255,255,0.4)">نسبة النجاح</p></div>';
+    h+='</div>';
+
+    if(improveTxt) h+='<p style="text-align:center;font-size:12px;margin-top:12px;color:rgba(255,255,255,0.5)">'+improveTxt+'</p>';
+    h+='</div>';
+
+    // ═══ 3. نقاط القوة ═══
+    if(strong.length>0){
+        h+='<div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
+        h+='<p style="font-size:14px;font-weight:800;margin-bottom:12px;color:#4ade80;display:flex;align-items:center;gap:8px"><span>💪</span> نقاط قوتك</p>';
+        strong.slice(0,3).forEach(function(s){
+            var sp=Math.round(s.c/s.n*100);
+            h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(74,222,128,0.08);border-radius:10px;margin-bottom:8px">';
+            h+='<div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px">✅</span><span style="font-size:13px;font-weight:700">'+(TN[s.t]||s.t)+'</span></div>';
+            h+='<div style="text-align:left"><span style="font-size:14px;font-weight:900;color:#4ade80">'+sp+'%</span><span style="font-size:10px;color:rgba(255,255,255,0.3);margin-right:4px"> ('+s.n+' سؤال)</span></div>';
+            h+='</div>';
+        });
+        h+='<p style="font-size:11px;color:rgba(74,222,128,0.5);margin-top:4px">كمّل على هالمستوى — أنت متميّز في هالمواضيع!</p>';
+        h+='</div>';
+    }
+
+    // ═══ 4. مواضيع تحتاج تركيز ═══
+    if(weak.length>0){
+        h+='<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
+        h+='<p style="font-size:14px;font-weight:800;margin-bottom:12px;color:#fbbf24;display:flex;align-items:center;gap:8px"><span>🎯</span> شد حيلك هنا</p>';
+        weak.slice(0,3).forEach(function(w){
+            var wp=Math.round(w.c/w.n*100);
+            h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(251,191,36,0.08);border-radius:10px;margin-bottom:8px">';
+            h+='<div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px">⚡</span><span style="font-size:13px;font-weight:700">'+(TN[w.t]||w.t)+'</span></div>';
+            h+='<div style="text-align:left"><span style="font-size:14px;font-weight:900;color:#fbbf24">'+wp+'%</span><span style="font-size:10px;color:rgba(255,255,255,0.3);margin-right:4px"> ('+w.n+' سؤال)</span></div>';
+            h+='</div>';
+        });
+        h+='<p style="font-size:11px;color:rgba(251,191,36,0.5);margin-top:4px">ركّز على هالمواضيع وراجع أخطاءك فيها — بتتحسن بسرعة!</p>';
+        h+='</div>';
+    }
+
+    // ═══ 5. مواضيع ما جربتها ═══
+    if(untried.length>0){
+        h+='<div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
+        h+='<p style="font-size:14px;font-weight:800;margin-bottom:12px;color:#a78bfa;display:flex;align-items:center;gap:8px"><span>🔍</span> جرّب هالمواضيع</p>';
+        untried.slice(0,3).forEach(function(u){
+            h+='<div style="padding:10px 12px;background:rgba(167,139,250,0.08);border-radius:10px;margin-bottom:8px;display:flex;align-items:center;gap:8px">';
+            h+='<span style="font-size:14px">📌</span><span style="font-size:13px;font-weight:700">'+(TN[u.t]||u.t)+'</span>';
+            h+='<span style="font-size:10px;color:rgba(255,255,255,0.3);margin-right:auto">('+u.n+' سؤال بس)</span>';
+            h+='</div>';
+        });
+        h+='<p style="font-size:11px;color:rgba(167,139,250,0.5);margin-top:4px">ممكن تكون نقطة قوة ما اكتشفتها بعد!</p>';
+        h+='</div>';
+    }
+
+    // ═══ 6. خطة التدريب ═══
+    h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:16px">';
+    h+='<p style="font-size:14px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px"><span>📅</span> خطة تدريبك لهالأسبوع</p>';
+    var plans=[];
+    if(weak.length>0) plans.push({icon:'🎯',text:'حل <b style="color:white">10 أسئلة يومياً</b> في <b style="color:#fbbf24">'+(TN[weak[0].t]||weak[0].t)+'</b>',sub:'نسبتك '+Math.round(weak[0].c/weak[0].n*100)+'% — بالتركيز بترتفع'});
+    if(weak.length>1) plans.push({icon:'📖',text:'راجع أخطاءك في <b style="color:#fbbf24">'+(TN[weak[1].t]||weak[1].t)+'</b>',sub:'افهم سبب كل غلطة — هذا يثبت المعلومة'});
+    if(strong.length>0) plans.push({icon:'💪',text:'حافظ على <b style="color:#4ade80">'+(TN[strong[0].t]||strong[0].t)+'</b> بـ 5 أسئلة يومياً',sub:'نسبتك '+Math.round(strong[0].c/strong[0].n*100)+'% — لا تخليها تنزل'});
+    if(untried.length>0) plans.push({icon:'🔍',text:'جرّب <b style="color:#a78bfa">'+(TN[untried[0].t]||untried[0].t)+'</b> — حل 5 أسئلة',sub:'اكتشف نقاط قوة جديدة'});
+    plans.push({icon:'⏰',text:'خصص <b style="color:white">15-20 دقيقة يومياً</b>',sub:'الاستمرار اليومي أهم من الكمية'});
+    plans.push({icon:'🔄',text:'ابدأ كل جلسة بمراجعة <b style="color:white">5 أخطاء</b> سابقة',sub:'التكرار هو سر التثبيت'});
+    plans.forEach(function(p){
+        h+='<div style="display:flex;gap:12px;margin-bottom:14px;align-items:flex-start">';
+        h+='<span style="font-size:18px;margin-top:1px">'+p.icon+'</span>';
+        h+='<div><p style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6">'+p.text+'</p>';
+        h+='<p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">'+p.sub+'</p></div>';
+        h+='</div>';
+    });
+    h+='</div>';
+
+    // ═══ 7. نصيحة ذكية ═══
+    var tip,tipTitle;
+    if(pct<35){tipTitle='🧠 نصيحة ذهبية';tip='لا تحاول تحل كل شي مرة — اختار موضوع واحد بس وركّز عليه أسبوع كامل. لمّا تتقنه انتقل للثاني. التخصص أسرع طريق للتحسن.';}
+    else if(pct<50){tipTitle='💡 نصيحة لك';tip='كل خطأ تسوّيه هو فرصة تعلّم. قبل ما تبدأ جلسة جديدة، راجع آخر 5 أخطاء وافهم ليش غلطت. هالعادة لحالها بترفع نسبتك 15% على الأقل.';}
+    else if(pct<70){tipTitle='⭐ نصيحة للتميّز';tip='مستواك جيد وقريب من الممتاز! السر الآن هو التنويع — جرّب أسئلة من كل الأقسام عشان ما يجيك سؤال جديد بالاختبار. الشمولية تفرق.';}
+    else{tipTitle='👑 نصيحة البطل';tip='مستواك عالي ما شاء الله! الآن ركّز على السرعة — حط لنفسك وقت محدد لكل سؤال. بالاختبار الحقيقي، الوقت هو التحدي الأكبر.';}
+    h+='<div style="background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(79,70,229,0.08));border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:20px;margin-bottom:20px">';
+    h+='<p style="font-size:14px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px">'+tipTitle+'</p>';
+    h+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:2">'+tip+'</p>';
+    h+='</div>';
+
+    // ═══ زر إغلاق ═══
+    h+='<button onclick="document.getElementById(\'reportOverlay\').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:Tajawal,sans-serif">فهمت — يلا نتدرب! 🚀</button>';
+
+    h+='</div>'; // end container
+    overlay.innerHTML=h;
+    document.body.appendChild(overlay);
+    overlay.scrollTop=0;
 }
 
 init();
