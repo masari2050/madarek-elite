@@ -42,6 +42,10 @@
         @keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
         .animate-in{animation:fadeUp .5s ease forwards}
         .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}.delay-4{animation-delay:.4s;opacity:0}
+        .tasreeb-card{background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(245,158,11,0.03));border:1px solid rgba(251,191,36,0.15);border-radius:1rem;padding:14px 18px;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:space-between}
+        .tasreeb-card:hover{background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.06));border-color:rgba(251,191,36,0.35);transform:translateY(-3px);box-shadow:0 10px 35px rgba(251,191,36,0.12)}
+        .tasreeb-card.locked{opacity:0.55;cursor:pointer}
+        .tasreeb-card.locked:hover{transform:none;box-shadow:none}
         .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
         .modal-card{width:100%;max-width:440px;background:linear-gradient(135deg,#1a1145,#1e1550,#0f0a2e);border:1px solid rgba(139,92,246,0.25);border-radius:1.5rem;padding:28px;position:relative;overflow:hidden}
         .count-option{padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;transition:all .2s ease;text-align:center;flex:1}
@@ -98,6 +102,18 @@
                 </span>
                 <p class="text-green-400/80 text-xs font-medium">نضيف أسئلة جديدة كل أسبوع</p>
             </div>
+        </div>
+
+        <!-- 🔥 تسريبات حصرية -->
+        <div id="tasreebatSection" class="hidden animate-in delay-1 mb-8">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-lg">🔥</span>
+                <h3 class="font-black">تسريبات حصرية</h3>
+                <span class="text-[10px] px-2.5 py-1 rounded-full font-bold" style="background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.15));border:1px solid rgba(251,191,36,0.3);color:#fbbf24">PRO</span>
+            </div>
+            <p class="text-purple-200/50 text-xs mb-3">جرّب حظك بأقرب تسريبات — أسئلة حقيقية من اختبارات سابقة 🎯</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="tasreebatGrid"></div>
+            <p id="tasreebLockMsg" class="hidden text-center text-amber-400/60 text-xs mt-3 cursor-pointer hover:text-amber-300 transition" onclick="location.href='pricing.html'">🔒 اشترك عشان تفتح التسريبات</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
@@ -269,7 +285,42 @@
         function checkAvailableCount(){var avail=selectedSection==='mix'?(questionCounts.quant+questionCounts.verbal):questionCounts[selectedSection]||0;var warn=document.getElementById('countWarning');if(selectedCount>avail&&avail>0){document.getElementById('availableNum').textContent=avail;warn.classList.remove('hidden')}else warn.classList.add('hidden')}
         function startFromModal(){var avail=selectedSection==='mix'?(questionCounts.quant+questionCounts.verbal):questionCounts[selectedSection]||0;var actual=Math.min(selectedCount,avail);if(actual===0){alert('ما فيه أسئلة متاحة لهذا القسم');return}localStorage.setItem('khawariz_selected_section',selectedSection);localStorage.setItem('khawariz_question_count',actual);localStorage.setItem('khawariz_time_seconds',actual*60);window.location.href='practice.html'}
         document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
-        window.addEventListener('DOMContentLoaded',loadQuestionCounts);
+
+        // 🔥 تسريبات حصرية للمشتركين
+        var TASREEBAT_SETS=[
+            {id:'tasreeb-8-mar-2026',name:'تسريبات ٨ مارس',date:'٨ مارس ٢٠٢٦',emoji:'🔥',count:44,desc:'٣٠ لفظي + ١٤ كمي',createdAfter:'2026-03-08T21:36:05',createdBefore:'2026-03-08T21:36:06'}
+        ];
+        var userSub='free';
+        async function loadTasreebat(){
+            try{
+                var s=await sb.auth.getSession();if(!s.data.session)return;
+                var r=await sb.from('profiles').select('subscription_type').eq('id',s.data.session.user.id).single();
+                if(r.data&&r.data.subscription_type)userSub=r.data.subscription_type;
+            }catch(e){}
+            if(!TASREEBAT_SETS.length)return;
+            var section=document.getElementById('tasreebatSection'),grid=document.getElementById('tasreebatGrid');
+            var isPro=(userSub!=='free');
+            grid.innerHTML='';
+            TASREEBAT_SETS.forEach(function(set,idx){
+                var card=document.createElement('div');
+                card.className='tasreeb-card'+(isPro?'':' locked');
+                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+'</h4><p class="text-purple-200/50" style="font-size:10px">'+set.count+' سؤال • '+set.desc+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">ابدأ ←</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
+                card.onclick=isPro?function(){startTasreeb(idx)}:function(){location.href='pricing.html'};
+                grid.appendChild(card);
+            });
+            if(!isPro)document.getElementById('tasreebLockMsg').classList.remove('hidden');
+            section.classList.remove('hidden');
+        }
+        function startTasreeb(idx){
+            var set=TASREEBAT_SETS[idx];
+            localStorage.setItem('khawariz_selected_section','tasreeb');
+            localStorage.setItem('khawariz_tasreeb_set',JSON.stringify(set));
+            localStorage.setItem('khawariz_question_count',set.count);
+            localStorage.setItem('khawariz_time_seconds',set.count*60);
+            window.location.href='practice.html';
+        }
+
+        window.addEventListener('DOMContentLoaded',function(){loadQuestionCounts();loadTasreebat()});
     </script>
     <script src="banner.js"></script>
     <script src="whatsapp-widget.js"></script>
