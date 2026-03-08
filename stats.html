@@ -161,11 +161,18 @@ var SB=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','
 var TN={algebra:'جبر',arithmetic:'حساب',geometry:'هندسة',statistics:'إحصاء',probability:'احتمالات',patterns:'أنماط',analogy:'تناظر لفظي',comprehension:'استيعاب مقروء',sentence_completion:'إكمال جمل',error_detection:'اكتشاف الخطأ',biology:'أحياء',chemistry:'كيمياء',physics:'فيزياء',math:'رياضيات',other:'أخرى'};
 var TI={algebra:'🔢',arithmetic:'➕',geometry:'📐',statistics:'📊',probability:'🎲',patterns:'🔄',analogy:'🔗',comprehension:'📚',sentence_completion:'✍️',error_detection:'🔍',biology:'🧬',chemistry:'⚗️',physics:'⚡',math:'📏',other:'📌'};
 var SN={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
-var allAttempts=[],filteredAttempts=[],tmap={},activeTab='all',activePeriod='all';
+var allAttempts=[],filteredAttempts=[],tmap={},activeTab='all',activePeriod='all',studentName='';
 
 async function init(){
     var sess=await SB.auth.getSession();
     if(!sess.data.session){location.href='login.html';return}
+    // جلب اسم الطالب
+    try{
+        var prof=await SB.from('profiles').select('full_name').eq('id',sess.data.session.user.id).single();
+        if(prof.data&&prof.data.full_name) studentName=prof.data.full_name.split(' ')[0];
+    }catch(e){}
+    if(!studentName&&sess.data.session.user.user_metadata&&sess.data.session.user.user_metadata.name) studentName=sess.data.session.user.user_metadata.name.split(' ')[0];
+    if(!studentName) studentName=sess.data.session.user.email?sess.data.session.user.email.split('@')[0]:'';
     var res=await SB.from('attempts').select('is_correct,answered_at,questions(section,topic)').eq('user_id',sess.data.session.user.id).order('answered_at',{ascending:false});
     if(!res.data||res.data.length===0){
         document.getElementById('loadEl').innerHTML='<div style="padding:60px 20px;text-align:center;color:rgba(255,255,255,0.3)"><div style="font-size:48px;margin-bottom:16px">📭</div><div style="margin-bottom:20px;font-size:16px">ما حليت أسئلة بعد!</div><a href="select-section.html" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;text-decoration:none;border-radius:99px;padding:12px 28px;font-weight:700">ابدأ التدريب</a></div>';
@@ -401,26 +408,61 @@ function renderInsights(){
     var tot=filteredAttempts.length;
     if(tot<5){el.innerHTML='';return}
     var cor=filteredAttempts.filter(function(a){return a.is_correct}).length;
+    var pct=Math.round(cor/tot*100);
     var arr=Object.values(tmap);
+    var strong=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)>=60}).sort(function(a,b){return(b.c/b.n)-(a.c/a.n)});
     var weak=arr.filter(function(x){return x.n>=3&&Math.round(x.c/x.n*100)<50}).sort(function(a,b){return(a.c/a.n)-(b.c/b.n)});
     var untried=arr.filter(function(x){return x.n<3});
+    var name=studentName||'بطل';
 
     var html='';
 
-    // Weekly plan
-    html+='<div class="glass" style="padding:18px;margin-bottom:12px">';
-    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="font-size:18px">📅</span><span style="font-size:14px;font-weight:800">خطتك لهالأسبوع</span></div>';
-    if(weak.length>0){
-        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px">• ركّز على <b style="color:#fbbf24">'+(TN[weak[0].t]||weak[0].t)+'</b> — حل 10 أسئلة على الأقل</p>';
-        if(weak.length>1) html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px">• راجع أخطاء <b style="color:#fbbf24">'+(TN[weak[1].t]||weak[1].t)+'</b></p>';
+    // ═══ 1. تحفيز شخصي بالاسم ═══
+    html+='<div style="padding:20px;margin-bottom:12px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(79,70,229,0.1));border-radius:16px;border:1px solid rgba(124,58,237,0.2)">';
+    html+='<div style="font-size:20px;margin-bottom:8px">🌟</div>';
+    if(pct>=70){
+        html+='<p style="font-size:15px;font-weight:800;color:#4ade80;margin-bottom:6px">ما شاء الله يا '+name+'! أداء ممتاز</p>';
+        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">نسبتك <b style="color:#4ade80">'+pct+'%</b> — تستاهل كل خير. حليت <b style="color:white">'+tot+'</b> سؤال وأثبتّ إنك مجتهد. كمّل على هالمستوى وأنت في الطريق الصح!</p>';
+    } else if(pct>=50){
+        html+='<p style="font-size:15px;font-weight:800;color:#fbbf24;margin-bottom:6px">أحسنت يا '+name+'! مستواك يتحسن</p>';
+        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">نسبتك <b style="color:#fbbf24">'+pct+'%</b> مع <b style="color:white">'+tot+'</b> سؤال — وكل يوم تتقدم خطوة. شوي جهد إضافي وبتوصل لمستوى ممتاز!</p>';
+    } else if(pct>=30){
+        html+='<p style="font-size:15px;font-weight:800;color:#c4b5fd;margin-bottom:6px">يلا يا '+name+'! كل بداية صعبة</p>';
+        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">حليت <b style="color:white">'+tot+'</b> سؤال وهذي خطوة كبيرة! كل سؤال تغلط فيه هو درس يقربك للنجاح. ركّز على المواضيع اللي تحت وبتشوف الفرق بسرعة.</p>';
     } else {
-        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:4px">• حافظ على مستواك بـ 15 سؤال يومياً</p>';
+        html+='<p style="font-size:15px;font-weight:800;color:#c4b5fd;margin-bottom:6px">ما يهم يا '+name+'! الأبطال يبدأون من هنا</p>';
+        html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">كل سؤال تحله — حتى لو غلط — يقوّي فهمك. راجع أخطاءك وركّز على موضوع واحد بس، وبتلاحظ التحسن بسرعة!</p>';
     }
-    if(untried.length>0) html+='<p style="font-size:13px;color:rgba(255,255,255,0.6)">• جرّب موضوع <b style="color:#a78bfa">'+(TN[untried[0].t]||untried[0].t)+'</b></p>';
-    else html+='<p style="font-size:13px;color:rgba(255,255,255,0.6)">• راجع أخطاءك قبل كل جلسة جديدة</p>';
     html+='</div>';
 
-    // Nearest achievement
+    // ═══ 2. خطة التدريب الأسبوعية ═══
+    html+='<div class="glass" style="padding:18px;margin-bottom:12px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="font-size:18px">📋</span><span style="font-size:14px;font-weight:800;color:white">خطة تدريبك</span></div>';
+    var planItems=[];
+    if(weak.length>0){
+        planItems.push({icon:'🎯',text:'ركّز على <b style="color:#fbbf24">'+(TN[weak[0].t]||weak[0].t)+'</b> — حل 10 أسئلة يومياً',sub:'نسبتك فيه '+Math.round(weak[0].c/weak[0].n*100)+'% وتقدر ترفعها'});
+        if(weak.length>1) planItems.push({icon:'📖',text:'راجع أخطاء <b style="color:#fbbf24">'+(TN[weak[1].t]||weak[1].t)+'</b>',sub:'افهم كل خطأ قبل ما تحل أسئلة جديدة'});
+    }
+    if(strong.length>0){
+        planItems.push({icon:'💪',text:'حافظ على قوتك في <b style="color:#4ade80">'+(TN[strong[0].t]||strong[0].t)+'</b>',sub:'نسبتك '+Math.round(strong[0].c/strong[0].n*100)+'% — ممتاز!'});
+    }
+    if(untried.length>0){
+        planItems.push({icon:'🔍',text:'جرّب موضوع <b style="color:#a78bfa">'+(TN[untried[0].t]||untried[0].t)+'</b>',sub:'ما جربته بعد — ممكن يكون نقطة قوة!'});
+    }
+    if(planItems.length===0){
+        planItems.push({icon:'🚀',text:'حافظ على تدريبك اليومي',sub:'15 سؤال يومياً يبقيك في القمة'});
+    }
+    planItems.push({icon:'⏰',text:'خصص <b style="color:white">15-20 دقيقة</b> يومياً للتدريب',sub:'الاستمرار أهم من الكمية'});
+    planItems.forEach(function(item){
+        html+='<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">';
+        html+='<span style="font-size:16px;margin-top:2px">'+item.icon+'</span>';
+        html+='<div><p style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6">'+item.text+'</p>';
+        html+='<p style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px">'+item.sub+'</p></div>';
+        html+='</div>';
+    });
+    html+='</div>';
+
+    // ═══ 3. إنجاز قريب ═══
     if(window.Gamification){
         var badgeResult=Gamification.calculateBadges(allAttempts,Gamification.calculateStreak(allAttempts));
         var locked=Gamification.BADGES.filter(function(b){return !badgeResult.earned.some(function(e){return e.id===b.id})});
@@ -435,17 +477,15 @@ function renderInsights(){
         }
     }
 
-    // Tip
-    var tips=[
-        'ركّز على فهم الخطأ مو بس حفظ الإجابة — هذا يرفع نسبتك أسرع',
-        'راجع أخطاءك قبل كل جلسة — التكرار يثبت المعلومة',
-        'حل 10 أسئلة يومياً أفضل من 70 سؤال مرة بالأسبوع',
-        'لا تستعجل بالإجابة — اقرأ السؤال مرتين قبل ما تختار',
-        'المواضيع الصعبة تصير سهلة مع التكرار — لا تطنشها'
-    ];
+    // ═══ 4. نصيحة ذكية (حسب الأداء) ═══
+    var tip='';
+    if(pct<40) tip='ركّز على موضوع واحد بس لمدة أسبوع — التخصص يرفع نسبتك أسرع من التشتت';
+    else if(pct<60) tip='راجع أخطاءك قبل كل جلسة — فهم الغلط نصف الطريق للإجابة الصحيحة';
+    else if(pct<75) tip='جرّب تحل بدون وقت أول، وبعدين حط لنفسك تحدي سرعة — الإتقان قبل السرعة';
+    else tip='مستواك عالي! جرّب المواضيع اللي ما جربتها — التنويع يخليك جاهز لأي سؤال';
     html+='<div class="glass" style="padding:18px">';
-    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">💡</span><span style="font-size:14px;font-weight:800">نصيحة</span></div>';
-    html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">'+tips[Math.floor(Math.random()*tips.length)]+'</p>';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">💡</span><span style="font-size:14px;font-weight:800">نصيحة لك يا '+name+'</span></div>';
+    html+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8">'+tip+'</p>';
     html+='</div>';
 
     el.innerHTML=html;
