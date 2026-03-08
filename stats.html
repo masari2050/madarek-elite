@@ -169,7 +169,7 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
 <script src="gamification.js"></script>
 <script>
 var SB=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
-var TN={algebra:'جبر',arithmetic:'حساب',geometry:'هندسة',statistics:'إحصاء',probability:'احتمالات',patterns:'أنماط',analogy:'تناظر لفظي',comprehension:'استيعاب مقروء',sentence_completion:'إكمال جمل',error_detection:'اكتشاف الخطأ',biology:'أحياء',chemistry:'كيمياء',physics:'فيزياء',math:'رياضيات',other:'أخرى'};
+var TN={algebra:'جبر',arithmetic:'حساب',geometry:'هندسة',statistics:'إحصاء',probability:'إحصاء واحتمال',patterns:'أنماط',analogy:'تناظر لفظي',comprehension:'استيعاب مقروء',sentence_completion:'إكمال جمل',error_detection:'خطأ سياقي',biology:'أحياء',chemistry:'كيمياء',physics:'فيزياء',math:'رياضيات',other:'أخرى'};
 var TI={algebra:'🔢',arithmetic:'➕',geometry:'📐',statistics:'📊',probability:'🎲',patterns:'🔄',analogy:'🔗',comprehension:'📚',sentence_completion:'✍️',error_detection:'🔍',biology:'🧬',chemistry:'⚗️',physics:'⚡',math:'📏',other:'📌'};
 var SN={quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
 var allAttempts=[],filteredAttempts=[],tmap={},activeTab='all',activePeriod='all',studentName='';
@@ -461,10 +461,12 @@ function openSmartReport(){
         else improveTxt='➡️ نسبتك ثابتة — جرّب تنوّع المواضيع';
     }
 
-    // بناء الـ modal
+    // بناء الـ modal مع أنيميشن فخم
     var overlay=document.createElement('div');
     overlay.id='reportOverlay';
-    overlay.style.cssText='position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 60%,#0d0825 100%);overflow-y:auto;-webkit-overflow-scrolling:touch';
+    overlay.style.cssText='position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 60%,#0d0825 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(-30px);transition:opacity 0.4s ease,transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+    // تفعيل الأنيميشن بعد الإضافة
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.style.opacity='1'; overlay.style.transform='translateY(0)'; }); });
 
     var h='';
 
@@ -475,10 +477,11 @@ function openSmartReport(){
     h+='<div style="width:36px"></div>';
     h+='</div>';
 
+    h+='<style>.rpt-sec{opacity:0;transform:translateY(20px);animation:rptFadeIn .5s ease forwards}.rpt-sec:nth-child(1){animation-delay:.1s}.rpt-sec:nth-child(2){animation-delay:.2s}.rpt-sec:nth-child(3){animation-delay:.3s}.rpt-sec:nth-child(4){animation-delay:.4s}.rpt-sec:nth-child(5){animation-delay:.5s}.rpt-sec:nth-child(6){animation-delay:.6s}.rpt-sec:nth-child(7){animation-delay:.7s}.rpt-sec:nth-child(8){animation-delay:.8s}@keyframes rptFadeIn{to{opacity:1;transform:translateY(0)}}</style>';
     h+='<div style="max-width:500px;margin:0 auto;padding:20px 16px 60px">';
 
     // ═══ 1. بطاقة الترحيب ═══
-    h+='<div style="text-align:center;padding:28px 20px;margin-bottom:20px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.15));border-radius:20px;border:1px solid rgba(124,58,237,0.25)">';
+    h+='<div class="rpt-sec" style="text-align:center;padding:28px 20px;margin-bottom:20px;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(79,70,229,0.15));border-radius:20px;border:1px solid rgba(124,58,237,0.25)">';
     if(lvlInfo) h+='<div style="font-size:36px;margin-bottom:4px">'+lvlInfo.emoji+'</div>';
     h+='<p style="font-size:20px;font-weight:900;font-family:Cairo,sans-serif;margin-bottom:4px">أهلاً '+name+'!</p>';
     if(lvlInfo) h+='<p style="font-size:12px;color:'+lvlInfo.color+';font-weight:700;margin-bottom:12px">المستوى '+lvlInfo.level+' — '+lvlInfo.nameAr+'</p>';
@@ -491,7 +494,7 @@ function openSmartReport(){
     h+='</div>';
 
     // ═══ 2. ملخص الأداء ═══
-    h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:16px">';
+    h+='<div class="rpt-sec" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:16px">';
     h+='<p style="font-size:14px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span>📋</span> ملخص أدائك</p>';
 
     // التصنيف
@@ -513,7 +516,7 @@ function openSmartReport(){
 
     // ═══ 3. نقاط القوة ═══
     if(strong.length>0){
-        h+='<div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
+        h+='<div class="rpt-sec" style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
         h+='<p style="font-size:14px;font-weight:800;margin-bottom:12px;color:#4ade80;display:flex;align-items:center;gap:8px"><span>💪</span> نقاط قوتك</p>';
         strong.slice(0,3).forEach(function(s){
             var sp=Math.round(s.c/s.n*100);
@@ -528,7 +531,7 @@ function openSmartReport(){
 
     // ═══ 4. مواضيع تحتاج تركيز ═══
     if(weak.length>0){
-        h+='<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
+        h+='<div class="rpt-sec" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
         h+='<p style="font-size:14px;font-weight:800;margin-bottom:12px;color:#fbbf24;display:flex;align-items:center;gap:8px"><span>🎯</span> شد حيلك هنا</p>';
         weak.slice(0,3).forEach(function(w){
             var wp=Math.round(w.c/w.n*100);
@@ -543,7 +546,7 @@ function openSmartReport(){
 
     // ═══ 5. مواضيع ما جربتها ═══
     if(untried.length>0){
-        h+='<div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
+        h+='<div class="rpt-sec" style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:20px;padding:20px;margin-bottom:16px">';
         h+='<p style="font-size:14px;font-weight:800;margin-bottom:12px;color:#a78bfa;display:flex;align-items:center;gap:8px"><span>🔍</span> جرّب هالمواضيع</p>';
         untried.slice(0,3).forEach(function(u){
             h+='<div style="padding:10px 12px;background:rgba(167,139,250,0.08);border-radius:10px;margin-bottom:8px;display:flex;align-items:center;gap:8px">';
@@ -556,7 +559,7 @@ function openSmartReport(){
     }
 
     // ═══ 6. خطة التدريب ═══
-    h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:16px">';
+    h+='<div class="rpt-sec" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin-bottom:16px">';
     h+='<p style="font-size:14px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px"><span>📅</span> خطة تدريبك لهالأسبوع</p>';
     var plans=[];
     if(weak.length>0) plans.push({icon:'🎯',text:'حل <b style="color:white">10 أسئلة يومياً</b> في <b style="color:#fbbf24">'+(TN[weak[0].t]||weak[0].t)+'</b>',sub:'نسبتك '+Math.round(weak[0].c/weak[0].n*100)+'% — بالتركيز بترتفع'});
@@ -580,13 +583,13 @@ function openSmartReport(){
     else if(pct<50){tipTitle='💡 نصيحة لك';tip='كل خطأ تسوّيه هو فرصة تعلّم. قبل ما تبدأ جلسة جديدة، راجع آخر 5 أخطاء وافهم ليش غلطت. هالعادة لحالها بترفع نسبتك 15% على الأقل.';}
     else if(pct<70){tipTitle='⭐ نصيحة للتميّز';tip='مستواك جيد وقريب من الممتاز! السر الآن هو التنويع — جرّب أسئلة من كل الأقسام عشان ما يجيك سؤال جديد بالاختبار. الشمولية تفرق.';}
     else{tipTitle='👑 نصيحة البطل';tip='مستواك عالي ما شاء الله! الآن ركّز على السرعة — حط لنفسك وقت محدد لكل سؤال. بالاختبار الحقيقي، الوقت هو التحدي الأكبر.';}
-    h+='<div style="background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(79,70,229,0.08));border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:20px;margin-bottom:20px">';
+    h+='<div class="rpt-sec" style="background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(79,70,229,0.08));border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:20px;margin-bottom:20px">';
     h+='<p style="font-size:14px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px">'+tipTitle+'</p>';
     h+='<p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:2">'+tip+'</p>';
     h+='</div>';
 
     // ═══ زر إغلاق ═══
-    h+='<button onclick="document.getElementById(\'reportOverlay\').remove()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:Tajawal,sans-serif">فهمت — يلا نتدرب! 🚀</button>';
+    h+='<button onclick="window.location.href=\'select-section.html\'" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:Tajawal,sans-serif">فهمت — يلا نتدرب! 🚀</button>';
 
     h+='</div>'; // end container
     overlay.innerHTML=h;
