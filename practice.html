@@ -355,7 +355,17 @@
                 if (ra.data) ra.data.forEach(function(a) { recentIds[a.question_id] = true; });
             } catch(e) { console.warn('Could not fetch recent attempts:', e); }
 
-            if(sel==='mix'){
+            if(sel==='tasreeb'){
+                // 🔥 وضع التسريبات — حصري للمشتركين
+                if(userSubscription==='free'){showPaywall();return false;}
+                var tasreebSet=JSON.parse(localStorage.getItem('khawariz_tasreeb_set')||'null');
+                if(!tasreebSet){location.href='select-section.html';return false;}
+                var r=await sb.from('questions').select(SAFE_COLUMNS).gte('created_at',tasreebSet.createdAfter).lt('created_at',tasreebSet.createdBefore);
+                if(r.error)throw r.error;
+                var allQ=r.data||[];
+                var freshQ=allQ.filter(function(q){return !recentIds[q.id];});
+                questions=freshQ.length>=5?freshQ:allQ;
+            } else if(sel==='mix'){
                 var r1=await sb.from('questions').select(SAFE_COLUMNS).eq('section','quant').limit(2000);
                 var r2=await sb.from('questions').select(SAFE_COLUMNS).eq('section','verbal').limit(2000);
                 var half=Math.ceil(cnt/2);
@@ -381,14 +391,23 @@
             }
             if(!questions.length){location.href='select-section.html';return false;}
 
-            currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
+            if(sel==='tasreeb'){
+                currentQuestions=shuffleArray(questions);
+            }else{
+                currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
+            }
             timeRemaining=parseInt(localStorage.getItem('khawariz_time_seconds'))||(currentQuestions.length*SECONDS_PER_QUESTION);
 
             startTimer();
             await createSession(sel);
 
-            var names={'quant':'قدرات كمي','verbal':'قدرات لفظي','tahsili':'التحصيلي','mix':'كمي + لفظي 🔀'};
-            document.getElementById('sectionTitle').textContent=names[sel]||sel;
+            if(sel==='tasreeb'){
+                var ts=JSON.parse(localStorage.getItem('khawariz_tasreeb_set')||'{}');
+                document.getElementById('sectionTitle').textContent='🔥 '+(ts.name||'تسريبات');
+            }else{
+                var names={'quant':'قدرات كمي','verbal':'قدرات لفظي','tahsili':'التحصيلي','mix':'كمي + لفظي 🔀'};
+                document.getElementById('sectionTitle').textContent=names[sel]||sel;
+            }
             return true;
         }catch(err){console.error(err);return false;}
     }
