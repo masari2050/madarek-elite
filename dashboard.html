@@ -15,24 +15,45 @@
         * { font-family: 'Tajawal', sans-serif; }
         body { background: linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%); min-height: 100vh; }
         .card-glass { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px); }
-        .welcome-banner { background: linear-gradient(135deg,#6366f1 0%,#8b5cf6 30%,#a855f7 60%,#c084fc 100%); position: relative; overflow: hidden; }
-        .welcome-banner::before { content:''; position:absolute; top:-50%; right:-20%; width:300px; height:300px; background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 70%); border-radius:50%; }
-        .welcome-banner::after { content:''; position:absolute; bottom:-30%; left:-10%; width:200px; height:200px; background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%); border-radius:50%; }
-        .stat-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); backdrop-filter:blur(10px); transition:all .3s ease; }
-        .stat-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.12); transform:translateY(-2px); }
-        .action-card { transition:all .3s ease; position:relative; overflow:hidden; }
-        .action-card:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
-        .action-card::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 50%); pointer-events:none; }
-        .progress-track { background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; }
-        .progress-fill { background:linear-gradient(90deg,#8b5cf6,#6366f1,#4f46e5); border-radius:999px; transition:width 1s ease; position:relative; }
-        .progress-fill::after { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:shimmer-bar 2s infinite; }
-        @keyframes shimmer-bar { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        .animate-in { animation:fadeUp .5s ease forwards; }
-        .delay-1{animation-delay:.05s;opacity:0}.delay-2{animation-delay:.1s;opacity:0}.delay-3{animation-delay:.15s;opacity:0}.delay-4{animation-delay:.2s;opacity:0}.delay-5{animation-delay:.25s;opacity:0}.delay-6{animation-delay:.3s;opacity:0}
-        .avatar-ring{background:linear-gradient(135deg,#8b5cf6,#6366f1);padding:2px;border-radius:50%}
 
-        /* مدارك النخبة Logo */
+        /* Hero Card */
+        .hero-card {
+            background: linear-gradient(135deg,#6366f1 0%,#8b5cf6 30%,#a855f7 60%,#c084fc 100%);
+            position: relative; overflow: hidden;
+        }
+        .hero-card::before { content:''; position:absolute; top:-60%; right:-25%; width:320px; height:320px; background:radial-gradient(circle,rgba(255,255,255,0.12) 0%,transparent 70%); border-radius:50%; }
+        .hero-card::after { content:''; position:absolute; bottom:-40%; left:-15%; width:240px; height:240px; background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%); border-radius:50%; }
+
+        /* Progress Ring SVG */
+        .ring-bg { fill:none; stroke:rgba(255,255,255,0.1); }
+        .ring-fill { fill:none; stroke-linecap:round; transition:stroke-dashoffset 1.2s ease; }
+
+        /* XP Bar */
+        .xp-track { background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; height:10px; }
+        .xp-fill { border-radius:999px; transition:width 1s ease; height:100%; position:relative; }
+        .xp-fill::after { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:shimmer-bar 2s infinite; }
+
+        /* Quick Action */
+        .quick-btn { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); transition:all .2s ease; }
+        .quick-btn:active { transform:scale(0.96); background:rgba(255,255,255,0.08); }
+
+        /* Challenge Card */
+        .challenge-track { background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; height:8px; }
+        .challenge-fill { border-radius:999px; height:100%; transition:width .8s ease; background:linear-gradient(90deg,#fbbf24,#f59e0b); }
+
+        /* Badges scroll */
+        .badges-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; -ms-overflow-style:none; }
+        .badges-scroll::-webkit-scrollbar { display:none; }
+
+        /* Animations */
+        @keyframes shimmer-bar { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        .anim { animation:fadeUp .4s ease forwards; }
+        .d1{animation-delay:.03s;opacity:0}.d2{animation-delay:.06s;opacity:0}.d3{animation-delay:.09s;opacity:0}
+        .d4{animation-delay:.12s;opacity:0}.d5{animation-delay:.15s;opacity:0}.d6{animation-delay:.18s;opacity:0}
+        .d7{animation-delay:.21s;opacity:0}.d8{animation-delay:.24s;opacity:0}
+
+        /* Logo */
         @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
         @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
@@ -41,15 +62,18 @@
         .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
         .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
         .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:8.5px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;display:block}
+        .avatar-ring{background:linear-gradient(135deg,#8b5cf6,#6366f1);padding:2px;border-radius:50%}
+
+        /* Activity dots */
+        .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+        .dot-active{background:#818cf8}
+        .dot-inactive{background:rgba(255,255,255,0.1)}
     </style>
 </head>
 <body class="font-tajawal text-white" data-page="dashboard">
 
-    <!-- Top Banner -->
-    
-
     <!-- Header -->
-    <header class="animate-in delay-1">
+    <header class="anim d1">
         <div class="max-w-4xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <a href="index.html" class="madarek-logo">
@@ -83,118 +107,179 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 pb-12">
 
-        <!-- Welcome Card -->
-        <div class="animate-in delay-2 welcome-banner rounded-3xl p-6 mb-5 shadow-2xl relative z-10">
-            <h2 class="text-2xl sm:text-3xl font-black text-white mb-1 relative z-10">
-                أهلاً <span id="displayName">...</span>
-            </h2>
-            <p class="text-white/80 text-sm sm:text-base font-medium relative z-10" id="motivationalQuote">ثق بنفسك، أنت أقوى مما تتخيل</p>
-        </div>
+        <!-- ═══ 1. Hero Action Card ═══ -->
+        <div class="anim d2 hero-card rounded-3xl p-6 mb-4 shadow-2xl">
+            <div class="relative z-10">
+                <!-- Streak badge -->
+                <div id="heroStreak" class="inline-flex items-center gap-1 px-3 py-1 rounded-full mb-3" style="background:rgba(0,0,0,0.15)">
+                    <span class="text-lg">🔥</span>
+                    <span class="font-black text-white text-sm" id="heroStreakNum">0</span>
+                </div>
 
-        <!-- Streak Widget -->
-        <div id="streakWidget" class="animate-in delay-2 mb-4">
-            <div class="card-glass rounded-2xl p-5" style="background:linear-gradient(135deg,rgba(251,146,60,0.06),rgba(239,68,68,0.04));border-color:rgba(251,146,60,0.12)">
-                <div id="streakContent"></div>
-            </div>
-        </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mb-1">
+                    👋 أهلاً <span id="displayName">...</span>
+                </h2>
+                <p class="text-white/80 text-sm font-medium mb-5" id="heroMessage">يلا نبدأ سلسلتك اليوم!</p>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-            <div class="animate-in delay-3 stat-card rounded-2xl p-4 text-center">
-                <span class="text-2xl mb-2 block">📝</span>
-                <p class="text-purple-300/50 text-xs mb-1">إجمالي الأسئلة</p>
-                <p class="text-2xl sm:text-3xl font-black text-white" id="totalQuestions">0</p>
-            </div>
-            <div class="animate-in delay-3 stat-card rounded-2xl p-4 text-center">
-                <span class="text-2xl mb-2 block">✅</span>
-                <p class="text-purple-300/50 text-xs mb-1">الإجابات الصحيحة</p>
-                <p class="text-2xl sm:text-3xl font-black text-green-400" id="correctAnswers">0</p>
-            </div>
-            <div class="animate-in delay-4 stat-card rounded-2xl p-4 text-center">
-                <span class="text-2xl mb-2 block">❌</span>
-                <p class="text-purple-300/50 text-xs mb-1">الإجابات الخاطئة</p>
-                <p class="text-2xl sm:text-3xl font-black text-red-400" id="wrongAnswers">0</p>
-            </div>
-            <div class="animate-in delay-4 stat-card rounded-2xl p-4 text-center">
-                <span class="text-2xl mb-2 block">🎯</span>
-                <p class="text-purple-300/50 text-xs mb-1">نسبة النجاح</p>
-                <p class="text-2xl sm:text-3xl font-black text-purple-300" id="successRate">0%</p>
+                <a href="select-section.html" class="block w-full text-center py-4 rounded-2xl font-black text-lg shadow-lg transition active:scale-[0.97]" style="background:white;color:#6366f1">
+                    🚀 ابدأ التدريب
+                </a>
+                <p class="text-center text-white/50 text-xs mt-2">⚡ 10 أسئلة = 5 دقائق فقط</p>
             </div>
         </div>
 
-        <!-- الهدف الأسبوعي -->
-        <div class="animate-in delay-5 card-glass rounded-2xl p-5 mb-5">
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-base font-bold flex items-center gap-2"><span>🎯</span> الهدف الأسبوعي</h3>
-                <span style="font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;color:#818cf8"><span id="weeklyCount">0</span> / 50</span>
-            </div>
-            <div class="progress-track h-3 mb-2">
-                <div id="progressBar" class="progress-fill h-3" style="width:0%"></div>
-            </div>
-            <p id="weeklyMsg" class="text-xs" style="color:rgba(196,181,253,0.4)">حل 50 سؤال هالأسبوع عشان تتقدم!</p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <a href="select-section.html" class="animate-in delay-5 action-card block bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-5 rounded-2xl shadow-lg">
-                <div class="flex items-center gap-3 relative z-10">
-                    <div class="bg-white/15 p-3 rounded-xl flex-shrink-0">
-                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+        <!-- ═══ 2. Progress Dashboard ═══ -->
+        <div class="anim d3 card-glass rounded-2xl p-5 mb-4">
+            <div class="flex gap-4">
+                <!-- اليوم -->
+                <div class="flex-1 text-center">
+                    <p class="text-purple-300/50 text-xs mb-1">اليوم</p>
+                    <p class="font-black text-3xl text-white" id="todayCount" style="font-family:'Cairo',sans-serif">0</p>
+                    <p class="text-purple-300/40 text-xs">سؤال</p>
+                    <!-- آخر 7 أيام -->
+                    <div class="flex items-center justify-center gap-1 mt-2" id="weekDots">
+                        <div class="dot dot-inactive"></div>
+                        <div class="dot dot-inactive"></div>
+                        <div class="dot dot-inactive"></div>
+                        <div class="dot dot-inactive"></div>
+                        <div class="dot dot-inactive"></div>
+                        <div class="dot dot-inactive"></div>
+                        <div class="dot dot-inactive"></div>
                     </div>
-                    <div class="text-right flex-1">
-                        <h3 class="text-lg font-bold">ابدأ التدريب</h3>
-                        <p class="text-sm text-white/60">حل أسئلة جديدة</p>
+                    <p class="text-purple-300/30 text-[9px] mt-1">آخر 7 أيام</p>
+                </div>
+
+                <!-- فاصل -->
+                <div style="width:1px;background:rgba(255,255,255,0.08);align-self:stretch"></div>
+
+                <!-- الهدف الأسبوعي -->
+                <div class="flex-1 text-center">
+                    <p class="text-purple-300/50 text-xs mb-1">الهدف الأسبوعي</p>
+                    <div class="relative inline-block" style="width:80px;height:80px">
+                        <svg viewBox="0 0 80 80" width="80" height="80">
+                            <circle cx="40" cy="40" r="34" class="ring-bg" stroke-width="6"/>
+                            <circle cx="40" cy="40" r="34" class="ring-fill" stroke-width="6" id="weeklyRing"
+                                stroke="#818cf8" stroke-dasharray="213.6" stroke-dashoffset="213.6"
+                                transform="rotate(-90 40 40)"/>
+                        </svg>
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column">
+                            <span class="font-black text-lg text-white" id="weeklyPct" style="font-family:'Cairo',sans-serif;line-height:1">0%</span>
+                        </div>
+                    </div>
+                    <p class="text-purple-300/40 text-xs mt-1"><span id="weeklyCount">0</span> / 50</p>
+                </div>
+            </div>
+
+            <!-- شريط إحصائيات سريع -->
+            <div class="flex items-center justify-between mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,0.06)">
+                <div class="flex items-center gap-1">
+                    <span class="text-xs">✅</span>
+                    <span class="font-bold text-sm text-green-400" id="totalCorrect">0</span>
+                    <span class="text-purple-300/30 text-xs">صح</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-xs">📝</span>
+                    <span class="font-bold text-sm text-white" id="totalQuestions">0</span>
+                    <span class="text-purple-300/30 text-xs">سؤال</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-xs">📈</span>
+                    <span class="font-bold text-sm text-purple-300" id="recentRate">-</span>
+                    <span class="text-purple-300/30 text-xs">آخر 20</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ 3. XP & Level Bar ═══ -->
+        <div class="anim d4 card-glass rounded-2xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl" id="levelEmoji">🌱</span>
+                    <div>
+                        <span class="font-bold text-sm text-white">المستوى <span id="levelNum">1</span></span>
+                        <span class="text-purple-300/50 text-xs mr-1">—</span>
+                        <span class="text-sm font-bold" id="levelName" style="color:#94a3b8">مبتدئ</span>
                     </div>
                 </div>
+                <span class="text-xs font-bold text-green-400" id="xpToday"></span>
+            </div>
+            <div class="xp-track">
+                <div class="xp-fill" id="xpBar" style="width:0%;background:linear-gradient(90deg,#94a3b8,#94a3b8)"></div>
+            </div>
+            <div class="flex justify-between mt-1">
+                <span class="text-[10px] text-purple-300/30" id="xpCurrent">0 XP</span>
+                <span class="text-[10px] text-purple-300/30" id="xpNeeded">500 XP</span>
+            </div>
+        </div>
+
+        <!-- ═══ 4. Quick Actions ═══ -->
+        <div class="anim d5 grid grid-cols-3 gap-3 mb-4">
+            <a href="stats.html" class="quick-btn rounded-2xl p-4 text-center block">
+                <span class="text-2xl block mb-1">📊</span>
+                <span class="text-xs font-bold text-purple-200/70">إحصائياتي</span>
             </a>
-            <a href="stats.html" class="animate-in delay-6 action-card block bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-5 rounded-2xl shadow-lg">
-                <div class="flex items-center gap-3 relative z-10">
-                    <div class="bg-white/15 p-3 rounded-xl flex-shrink-0">
-                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
-                    </div>
-                    <div class="text-right flex-1">
-                        <h3 class="text-lg font-bold">إحصائياتي</h3>
-                        <p class="text-sm text-white/60">تحليل تفصيلي لأدائك</p>
-                    </div>
-                </div>
+            <a href="mistakes.html" class="quick-btn rounded-2xl p-4 text-center block relative">
+                <span class="text-2xl block mb-1">📖</span>
+                <span class="text-xs font-bold text-purple-200/70">أخطائي</span>
+                <span id="mistakesBadge" class="hidden absolute top-2 left-2 w-5 h-5 bg-red-500 rounded-full text-[10px] font-black flex items-center justify-center">0</span>
             </a>
-            <a href="mistakes.html" class="animate-in delay-6 action-card block bg-gradient-to-br from-rose-600 to-pink-700 text-white p-5 rounded-2xl shadow-lg">
-                <div class="flex items-center gap-3 relative z-10">
-                    <div class="bg-white/15 p-3 rounded-xl flex-shrink-0">
-                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                    </div>
-                    <div class="text-right flex-1">
-                        <h3 class="text-lg font-bold">راجع أخطائك</h3>
-                        <p class="text-sm text-white/60">تعلم من الأخطاء السابقة</p>
-                    </div>
-                </div>
+            <a href="leaderboard.html" class="quick-btn rounded-2xl p-4 text-center block">
+                <span class="text-2xl block mb-1">🏆</span>
+                <span class="text-xs font-bold text-purple-200/70">المتصدرون</span>
             </a>
         </div>
 
-        <!-- Leaderboard Preview -->
-        <div id="leaderboardPreview" class="animate-in delay-6 mt-5">
-            <div class="card-glass rounded-2xl p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-base font-bold flex items-center gap-2"><span>🏆</span> <span>المتصدرون هذا الأسبوع</span></h3>
-                    <a href="leaderboard.html" class="text-xs text-indigo-400 hover:text-indigo-300 transition">عرض الكل ←</a>
+        <!-- ═══ 5. Daily Challenge ═══ -->
+        <div class="anim d5 card-glass rounded-2xl p-5 mb-4" id="challengeCard">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl" id="challengeEmoji">⚡</span>
+                    <h3 class="font-bold text-sm">تحدي اليوم</h3>
                 </div>
-                <div id="topThreeList" class="space-y-2">
-                    <p style="text-align:center;color:rgba(196,181,253,0.3);font-size:12px">جاري التحميل...</p>
-                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-full" style="background:rgba(251,191,36,0.15);color:#fbbf24" id="challengeXP">🎁 +50 XP</span>
+            </div>
+            <p class="text-sm text-purple-200/70 mb-3" id="challengeText">حل 10 أسئلة اليوم</p>
+            <div class="challenge-track mb-2">
+                <div class="challenge-fill" id="challengeBar" style="width:0%"></div>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-xs text-purple-300/40" id="challengeProgress">0 / 10</span>
+                <span class="text-xs font-bold text-green-400 hidden" id="challengeDone">✅ تم!</span>
             </div>
         </div>
 
-        <!-- Upgrade Banner -->
-        <div id="upgradeBanner" class="hidden animate-in delay-6 mt-5 rounded-2xl p-5 text-center relative overflow-hidden" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(168,85,247,0.15));border:1px solid rgba(139,92,246,0.2)">
-            <h3 class="text-base font-bold mb-1">🚀 طوّر تجربتك</h3>
-            <p class="text-purple-300/50 text-xs mb-3">اشترك الآن واحصل على أسئلة غير محدودة وإحصائيات متقدمة</p>
-            <a href="pricing.html" class="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-purple-500/25 transition">شوف الباقات ✨</a>
+        <!-- ═══ 6. Achievements ═══ -->
+        <div class="anim d6 card-glass rounded-2xl p-5 mb-4">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold text-sm flex items-center gap-2"><span>🏅</span> إنجازاتي</h3>
+                <span class="text-xs text-purple-300/40" id="badgeCount">0 / 14</span>
+            </div>
+            <div class="badges-scroll" id="badgesStrip">
+                <!-- يتم تعبئته بـ JS -->
+            </div>
         </div>
 
-        <!-- Footer Links -->
+        <!-- ═══ 7. Leaderboard Preview ═══ -->
+        <div class="anim d7 card-glass rounded-2xl p-5 mb-4" id="leaderboardPreview">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-sm flex items-center gap-2"><span>🏆</span> المتصدرون هذا الأسبوع</h3>
+                <a href="leaderboard.html" class="text-xs text-indigo-400 hover:text-indigo-300 transition">عرض الكل ←</a>
+            </div>
+            <div id="topThreeList" class="space-y-2">
+                <p style="text-align:center;color:rgba(196,181,253,0.3);font-size:12px">جاري التحميل...</p>
+            </div>
+        </div>
+
+        <!-- ═══ 8. Upgrade Banner ═══ -->
+        <div id="upgradeBanner" class="hidden anim d8 rounded-2xl p-5 text-center relative overflow-hidden" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(168,85,247,0.15));border:1px solid rgba(139,92,246,0.2)">
+            <h3 class="font-bold text-sm mb-1">🚀 طوّر تجربتك</h3>
+            <p class="text-purple-300/50 text-xs mb-3">اشترك واحصل على أسئلة غير محدودة وإحصائيات متقدمة</p>
+            <a href="pricing.html" class="inline-block px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-bold hover:shadow-lg transition">شوف الباقات ✨</a>
+        </div>
+
+        <!-- Footer -->
         <div class="mt-8 flex items-center justify-center gap-4 text-xs">
             <a href="pricing.html" class="text-purple-200/60 hover:text-purple-300/60 transition">الباقات</a>
             <span class="text-purple-300/10">|</span>
@@ -202,17 +287,20 @@
             <span class="text-purple-300/10">|</span>
             <a href="terms.html" class="text-purple-200/60 hover:text-purple-300/60 transition">الشروط</a>
         </div>
-        <p class="text-center text-purple-200/50 text-xs mt-4">مدارك النخبة v1.0</p>
+        <p class="text-center text-purple-200/50 text-xs mt-4">مدارك النخبة v2.0</p>
     </main>
 
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="gamification.js"></script>
     <script>
         const sb = window.supabase.createClient(
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
         let currentUser = null;
+
+        // ── Auth ──
         async function checkAuth() {
             try {
                 const { data: { session }, error } = await sb.auth.getSession();
@@ -236,40 +324,171 @@
                 return true;
             } catch(err) { window.location.href = 'login.html'; return false; }
         }
-        async function loadStats() {
-            const quotes = ['كل سؤال تحله خطوة أقرب لحلمك','النجاح يحتاج للجهد والإصرار','أنت قادر على تحقيق أهدافك','ثق بنفسك، أنت أقوى مما تتخيل','كل يوم تدريب، كل يوم تطور','حلمك قريب، استمر واجتهد'];
-            document.getElementById('motivationalQuote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+        // ── Load All Data ──
+        async function loadDashboard() {
             try {
-                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at').eq('user_id', currentUser.id).limit(50000);
-                const total = allAttempts?.length || 0;
-                const correct = allAttempts?.filter(a => a.is_correct).length || 0;
-                const wrong = total - correct;
-                const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
-                document.getElementById('totalQuestions').textContent = total;
-                document.getElementById('correctAnswers').textContent = correct;
-                document.getElementById('wrongAnswers').textContent = wrong;
-                document.getElementById('successRate').textContent = rate + '%';
-                const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                const weekly = allAttempts?.filter(a => new Date(a.answered_at) > oneWeekAgo).length || 0;
-                document.getElementById('weeklyCount').textContent = weekly;
-                document.getElementById('progressBar').style.width = Math.min((weekly / 50) * 100, 100) + '%';
-                var wMsg = document.getElementById('weeklyMsg');
-                if(wMsg){
-                    if(weekly >= 50) wMsg.innerHTML = '<span style="color:#4ade80;font-weight:700">🏆 أحسنت! حققت الهدف الأسبوعي — استمر!</span>';
-                    else if(weekly >= 30) wMsg.innerHTML = '<span style="color:#fbbf24;font-weight:700">💪 قربت! باقي ' + (50 - weekly) + ' سؤال بس</span>';
-                    else if(weekly >= 10) wMsg.textContent = '📈 بداية حلوة! كمّل واوصل لـ 50 هالأسبوع';
-                    else if(weekly > 0) wMsg.textContent = '🚀 حلو إنك بدأت! حاول توصل 50 سؤال';
-                    else wMsg.textContent = '🎯 حل 50 سؤال هالأسبوع عشان تتقدم!';
-                }
+                const { data: allAttempts } = await sb.from('attempts').select('is_correct,answered_at,section').eq('user_id', currentUser.id).order('answered_at',{ascending:false}).limit(50000);
+                const attempts = allAttempts || [];
+                const total = attempts.length;
+                const correct = attempts.filter(a => a.is_correct).length;
+                const G = window.Gamification;
 
                 // ── Streak ──
-                if(window.Gamification){
-                    var streakData = Gamification.calculateStreak(allAttempts || []);
-                    var sw = document.getElementById('streakContent');
-                    if(sw) sw.innerHTML = Gamification.renderStreakWidget(streakData);
+                var streakData = G.calculateStreak(attempts);
+                document.getElementById('heroStreakNum').textContent = streakData.current;
+
+                // Hero message logic
+                var heroMsg = document.getElementById('heroMessage');
+                if(streakData.current === 0 && !streakData.practicedToday){
+                    heroMsg.textContent = 'يلا نبدأ سلسلتك اليوم!';
+                } else if(streakData.practicedToday){
+                    heroMsg.textContent = 'أحسنت! تدربت اليوم — كمّل وارفع مستواك 💪';
+                } else if(streakData.current > 0){
+                    heroMsg.textContent = 'لا تكسر سلسلة ' + streakData.current + ' يوم! 🔥';
                 }
-            } catch(err) {}
+
+                // ── Today count ──
+                var todayStr = G.getTodayRiyadh();
+                var todayAttempts = attempts.filter(function(a){
+                    if(!a.answered_at) return false;
+                    var d = new Date(a.answered_at);
+                    var ds = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh'}).format(d);
+                    return ds === todayStr;
+                });
+                document.getElementById('todayCount').textContent = todayAttempts.length;
+
+                // ── Last 7 days dots ──
+                var dotsEl = document.getElementById('weekDots');
+                if(dotsEl){
+                    var dotsHTML = '';
+                    for(var di = 6; di >= 0; di--){
+                        var checkD = new Date();
+                        checkD.setDate(checkD.getDate() - di);
+                        var checkStr = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh'}).format(checkD);
+                        var hadActivity = attempts.some(function(a){
+                            if(!a.answered_at) return false;
+                            return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh'}).format(new Date(a.answered_at)) === checkStr;
+                        });
+                        dotsHTML += '<div class="dot ' + (hadActivity ? 'dot-active' : 'dot-inactive') + '"></div>';
+                    }
+                    dotsEl.innerHTML = dotsHTML;
+                }
+
+                // ── Weekly goal ──
+                var oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                var weekly = attempts.filter(a => a.answered_at && new Date(a.answered_at) > oneWeekAgo).length;
+                document.getElementById('weeklyCount').textContent = weekly;
+                var weeklyPct = Math.min(Math.round((weekly / 50) * 100), 100);
+                document.getElementById('weeklyPct').textContent = weeklyPct + '%';
+                // SVG ring
+                var circumference = 213.6; // 2 * PI * 34
+                var offset = circumference - (weeklyPct / 100) * circumference;
+                document.getElementById('weeklyRing').style.strokeDashoffset = offset;
+                if(weeklyPct >= 100) document.getElementById('weeklyRing').style.stroke = '#4ade80';
+
+                // ── Quick stats bar ──
+                document.getElementById('totalCorrect').textContent = correct;
+                document.getElementById('totalQuestions').textContent = total;
+
+                // Recent 20 accuracy
+                if(total >= 20){
+                    var recent20 = attempts.slice(0, 20);
+                    var r20c = recent20.filter(a => a.is_correct).length;
+                    document.getElementById('recentRate').textContent = Math.round((r20c / 20) * 100) + '%';
+                } else if(total > 0){
+                    document.getElementById('recentRate').textContent = Math.round((correct / total) * 100) + '%';
+                }
+
+                // ── XP & Level ──
+                var totalXP = G.calculateXP(attempts, streakData.current);
+                var levelInfo = G.calculateLevel(totalXP);
+                document.getElementById('levelEmoji').textContent = levelInfo.emoji;
+                document.getElementById('levelNum').textContent = levelInfo.level;
+                document.getElementById('levelName').textContent = levelInfo.nameAr;
+                document.getElementById('levelName').style.color = levelInfo.color;
+                document.getElementById('xpBar').style.width = levelInfo.progress + '%';
+                document.getElementById('xpBar').style.background = 'linear-gradient(90deg,' + levelInfo.color + ',' + levelInfo.color + ')';
+                document.getElementById('xpCurrent').textContent = totalXP.toLocaleString('ar-SA') + ' XP';
+                document.getElementById('xpNeeded').textContent = (levelInfo.isMax ? '∞' : levelInfo.maxXP.toLocaleString('ar-SA')) + ' XP';
+
+                // XP earned today
+                var todayXP = 0;
+                todayAttempts.forEach(function(a){
+                    todayXP += a.is_correct ? (10 + G.getStreakBonus(streakData.current)) : 3;
+                });
+                if(todayXP > 0) document.getElementById('xpToday').textContent = '+' + todayXP + ' اليوم';
+
+                // ── Daily Challenge ──
+                var ch = G.getDailyChallenge();
+                document.getElementById('challengeEmoji').textContent = ch.emoji;
+                document.getElementById('challengeText').textContent = ch.textAr;
+                document.getElementById('challengeXP').textContent = '🎁 +' + ch.xp + ' XP';
+
+                // Calculate progress for current challenge
+                var chValue = 0;
+                if(ch.targetKey === 'todayTotal') chValue = todayAttempts.length;
+                else if(ch.targetKey === 'todayAccuracy'){
+                    if(todayAttempts.length > 0){
+                        var todayCorrect = todayAttempts.filter(a => a.is_correct).length;
+                        chValue = Math.round((todayCorrect / todayAttempts.length) * 100);
+                    }
+                }
+                else if(ch.targetKey === 'todayQuant') chValue = todayAttempts.filter(a => a.section === 'quant').length;
+                else if(ch.targetKey === 'todayVerbal') chValue = todayAttempts.filter(a => a.section === 'verbal').length;
+                else if(ch.targetKey === 'sessionConsecutive'){
+                    var sc = 0, maxSc = 0;
+                    todayAttempts.slice().reverse().forEach(function(a){
+                        if(a.is_correct){ sc++; if(sc > maxSc) maxSc = sc; } else sc = 0;
+                    });
+                    chValue = maxSc;
+                }
+
+                ch = G.updateDailyChallenge(ch.targetKey, chValue);
+                var chPct = Math.min(Math.round((ch.progress / ch.target) * 100), 100);
+                document.getElementById('challengeBar').style.width = chPct + '%';
+                document.getElementById('challengeProgress').textContent = ch.progress + ' / ' + ch.target;
+                if(ch.completed){
+                    document.getElementById('challengeDone').classList.remove('hidden');
+                    document.getElementById('challengeBar').style.background = 'linear-gradient(90deg,#4ade80,#22c55e)';
+                }
+
+                // ── Badges ──
+                var badgeResult = G.calculateBadges(attempts, streakData);
+                document.getElementById('badgeCount').textContent = badgeResult.earned.length + ' / ' + G.BADGES.length;
+                var stripEl = document.getElementById('badgesStrip');
+                if(stripEl){
+                    var bhtml = '';
+                    G.BADGES.forEach(function(badge){
+                        var isEarned = badgeResult.earned.some(function(b){ return b.id === badge.id; });
+                        if(isEarned){
+                            bhtml += '<div style="text-align:center;min-width:60px;flex-shrink:0">'
+                                + '<div style="font-size:28px;margin-bottom:2px">' + badge.emoji + '</div>'
+                                + '<p style="font-size:9px;font-weight:700;color:#e2e8f0;white-space:nowrap">' + badge.nameAr + '</p></div>';
+                        } else {
+                            bhtml += '<div style="text-align:center;min-width:60px;flex-shrink:0;opacity:0.25;filter:grayscale(1)">'
+                                + '<div style="font-size:28px;margin-bottom:2px;position:relative">' + badge.emoji
+                                + '<span style="position:absolute;bottom:-4px;right:calc(50% - 6px);font-size:10px">🔒</span></div>'
+                                + '<p style="font-size:9px;font-weight:700;color:#e2e8f0;white-space:nowrap">' + badge.nameAr + '</p></div>';
+                        }
+                    });
+                    stripEl.innerHTML = bhtml;
+                }
+
+                // ── Mistakes badge ──
+                try {
+                    var { count } = await sb.from('attempts').select('*', {count:'exact', head:true}).eq('user_id', currentUser.id).eq('is_correct', false);
+                    if(count && count > 0){
+                        var mb = document.getElementById('mistakesBadge');
+                        mb.textContent = count > 99 ? '99+' : count;
+                        mb.classList.remove('hidden');
+                    }
+                } catch(e){}
+
+            } catch(err) { console.error('Dashboard load error:', err); }
         }
+
+        // ── Leaderboard ──
         async function loadLeaderboard(){
             try{
                 var{data}=await sb.rpc('get_leaderboard',{period:'week'});
@@ -279,21 +498,23 @@
                 }
             }catch(e){
                 var el=document.getElementById('topThreeList');
-                if(el) el.innerHTML='<p style="text-align:center;color:rgba(196,181,253,0.3);font-size:12px">\u062A\u062D\u062F\u064A\u062B \u0642\u0631\u064A\u0628\u0627\u064B</p>';
+                if(el) el.innerHTML='<p style="text-align:center;color:rgba(196,181,253,0.3);font-size:12px">تحديث قريباً</p>';
             }
         }
+
+        // ── Init ──
         document.addEventListener('DOMContentLoaded', async function() {
             const ok = await checkAuth();
             if (!ok) return;
-            await loadStats();
+            await loadDashboard();
             loadLeaderboard();
             const subLabel = document.getElementById('subscriptionLabel').textContent;
             if (subLabel.includes('مجانية') || subLabel.includes('اشترك')) document.getElementById('upgradeBanner').classList.remove('hidden');
         });
     </script>
-        <script src="gamification.js"></script>
-        <script src="banner.js"></script>
+    <script src="banner.js"></script>
     <script src="whatsapp-widget.js"></script>
-<script src="analytics.js"></script>
-<script src="engagement.js"></script></body>
+    <script src="analytics.js"></script>
+    <script src="engagement.js"></script>
+</body>
 </html>
