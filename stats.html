@@ -139,7 +139,13 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
   </div>
 
   <!-- ═══ Smart Insights (التقرير الذكي) ═══ -->
-  <div id="insightsEl" class="fu" style="margin-bottom:20px"></div>
+  <div class="fu" style="margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="font-size:20px">📊</span>
+      <h2 style="font-size:16px;font-weight:900;font-family:'Cairo',sans-serif;margin:0;color:white">تقريرك الذكي</h2>
+    </div>
+    <div id="insightsEl"></div>
+  </div>
 
   <!-- ═══ Tabs ═══ -->
   <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" class="fu">
@@ -220,7 +226,7 @@ function renderAll(){
     renderSummary();
     renderStrengthMap();
     renderTopics();
-    renderInsights();
+    try{ renderInsights(); }catch(e){ console.error('Insights error:',e); document.getElementById('insightsEl').innerHTML='<p style="color:rgba(255,255,255,0.3);font-size:12px">تعذر تحميل التقرير</p>'; }
 }
 
 function renderSummary(){
