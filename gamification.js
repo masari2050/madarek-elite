@@ -177,14 +177,14 @@
     var CHALLENGE_TEMPLATES = [
         { id: 'solve_10',    textAr: 'حل 10 أسئلة اليوم',             targetKey: 'todayTotal',   target: 10,  xp: 50,  emoji: '🎯' },
         { id: 'solve_20',    textAr: 'حل 20 سؤال اليوم',              targetKey: 'todayTotal',   target: 20,  xp: 80,  emoji: '🚀' },
-        { id: 'accuracy_70', textAr: 'حقق 70% في جلسة اليوم',         targetKey: 'todayAccuracy', target: 70, xp: 60,  emoji: '🎯' },
-        { id: 'accuracy_80', textAr: 'حقق 80% في جلسة اليوم',         targetKey: 'todayAccuracy', target: 80, xp: 100, emoji: '💎' },
-        { id: 'streak_3',    textAr: 'حافظ على سلسلة 3 صحيحة متتالية', targetKey: 'sessionConsecutive', target: 3, xp: 30, emoji: '⚡' },
+        { id: 'solve_30',    textAr: 'حل 30 سؤال اليوم',              targetKey: 'todayTotal',   target: 30,  xp: 120, emoji: '💪' },
+        { id: 'accuracy_60', textAr: 'حقق 60% في أسئلة اليوم',        targetKey: 'todayAccuracy', target: 60, xp: 50,  emoji: '🎯' },
+        { id: 'accuracy_70', textAr: 'حقق 70% في أسئلة اليوم',        targetKey: 'todayAccuracy', target: 70, xp: 70,  emoji: '⭐' },
+        { id: 'accuracy_80', textAr: 'حقق 80% في أسئلة اليوم',        targetKey: 'todayAccuracy', target: 80, xp: 100, emoji: '💎' },
+        { id: 'streak_3',    textAr: '3 إجابات صحيحة متتالية',         targetKey: 'sessionConsecutive', target: 3, xp: 30, emoji: '⚡' },
         { id: 'streak_5',    textAr: '5 إجابات صحيحة متتالية',         targetKey: 'sessionConsecutive', target: 5, xp: 50, emoji: '🔥' },
-        { id: 'review_5',    textAr: 'راجع 5 أخطاء سابقة',             targetKey: 'reviewedMistakes',  target: 5, xp: 40, emoji: '📖' },
         { id: 'quant_5',     textAr: 'حل 5 أسئلة كمي',                 targetKey: 'todayQuant',   target: 5,   xp: 40,  emoji: '🔢' },
-        { id: 'verbal_5',    textAr: 'حل 5 أسئلة لفظي',                targetKey: 'todayVerbal',  target: 5,   xp: 40,  emoji: '📝' },
-        { id: 'fast_10',     textAr: 'أجب 10 أسئلة بدون توقف',         targetKey: 'todayTotal',   target: 10,  xp: 60,  emoji: '⏱️' }
+        { id: 'verbal_5',    textAr: 'حل 5 أسئلة لفظي',                targetKey: 'todayVerbal',  target: 5,   xp: 40,  emoji: '📝' }
     ];
 
     var STORAGE_CHALLENGE = 'madarek_daily_challenge';
