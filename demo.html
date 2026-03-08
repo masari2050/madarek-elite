@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f0a2e">
+    <title>جرّب مدارك النخبة — 5 أسئلة مجانية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .option-btn{display:block;width:100%;text-align:right;padding:14px 18px;border-radius:14px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .25s ease;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.85);position:relative}
+        .option-btn:hover:not(.disabled){background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.4);transform:translateY(-2px)}
+        .option-btn.correct{background:rgba(16,185,129,0.15)!important;border-color:#10b981!important;color:#6ee7b7!important}
+        .option-btn.wrong{background:rgba(239,68,68,0.12)!important;border-color:#ef4444!important;color:#fca5a5!important}
+        .option-btn.disabled{cursor:default;opacity:.7}
+        .option-btn .badge{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.8rem;font-weight:800}
+        .progress-dot{width:10px;height:10px;border-radius:50%;transition:all .3s}
+        .exp-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:16px;margin-top:12px;text-align:right}
+        .exp-label{color:#6ee7b7;font-weight:800;font-size:.8rem;margin-bottom:6px}
+        .exp-text{color:rgba(255,255,255,0.8);font-size:.85rem;line-height:1.7}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+        @keyframes confetti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(-60px) rotate(360deg)}}
+        .fade-up{animation:fadeUp .4s ease forwards}
+        .scale-in{animation:scaleIn .5s ease forwards}
+
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 30px rgba(99,102,241,0.3);transition:all .3s;cursor:pointer;color:#fff;text-decoration:none}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
+        .btn-fire{background:linear-gradient(135deg,#f97316,#ef4444);box-shadow:0 8px 30px rgba(249,115,22,0.3);transition:all .3s;cursor:pointer;color:#fff;text-decoration:none}
+        .btn-fire:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(249,115,22,0.5)}
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+
+        .result-ring{width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto}
+    </style>
+</head>
+<body class="font-tajawal text-white">
+
+    <!-- Header -->
+    <div class="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="text-purple-300/50 hover:text-white transition text-sm flex items-center gap-1">
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            الرئيسية
+        </a>
+        <a href="index.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="17" height="17" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <span class="name">مدارك النخبة</span>
+        </a>
+        <span class="text-purple-200/40 text-xs">تجربة مجانية</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-lg mx-auto px-4 pb-16">
+
+        <!-- Intro Screen -->
+        <div id="introScreen" class="text-center py-8 fade-up">
+            <span class="text-6xl block mb-4">🎯</span>
+            <h1 class="text-3xl font-black mb-3">جرّب بنفسك!</h1>
+            <p class="text-purple-200/70 text-sm mb-2">٥ أسئلة سريعة — كمي ولفظي</p>
+            <p class="text-purple-200/50 text-xs mb-8">شوف مستواك وكيف المنصة تشرح لك كل سؤال</p>
+            <button onclick="startDemo()" class="btn-fire px-10 py-4 rounded-xl font-bold text-base">🔥 يلا نبدأ!</button>
+            <p class="text-purple-200/30 text-[10px] mt-4">بدون تسجيل — مباشرة</p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <!-- Progress -->
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <div id="dot0" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot1" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot2" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot3" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot4" class="progress-dot bg-purple-500/30"></div>
+            </div>
+
+            <!-- Question Counter -->
+            <div class="text-center mb-5">
+                <span class="text-purple-200/40 text-xs">السؤال</span>
+                <span class="text-white font-black text-lg mx-1" id="qNum">1</span>
+                <span class="text-purple-200/40 text-xs">من 5</span>
+            </div>
+
+            <!-- Section Badge -->
+            <div class="text-center mb-4">
+                <span id="qBadge" class="inline-block text-xs font-bold px-3 py-1 rounded-full"></span>
+            </div>
+
+            <!-- Question Text -->
+            <div class="rounded-2xl p-5 mb-5" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+                <p id="qText" class="text-base font-bold leading-relaxed text-white/90"></p>
+            </div>
+
+            <!-- Options -->
+            <div id="optionsContainer" class="space-y-3 mb-4"></div>
+
+            <!-- Explanation (hidden initially) -->
+            <div id="expContainer" class="hidden"></div>
+
+            <!-- Next Button -->
+            <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full py-3.5 rounded-xl font-bold text-sm text-white mt-5 btn-primary">
+                السؤال التالي ←
+            </button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultScreen" class="hidden text-center py-6 scale-in">
+            <!-- Score Ring -->
+            <div class="mb-6">
+                <div id="scoreRing" class="result-ring mx-auto mb-4">
+                    <div class="text-center">
+                        <span id="scoreNum" class="text-5xl font-black block"></span>
+                        <span class="text-purple-200/60 text-sm">من 5</span>
+                    </div>
+                </div>
+                <h2 id="scoreMsg" class="text-2xl font-black mb-2"></h2>
+                <p id="scoreDesc" class="text-purple-200/60 text-sm"></p>
+            </div>
+
+            <!-- Value Props -->
+            <div class="rounded-2xl p-5 mb-6 text-right" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+                <p class="text-sm font-bold text-white/90 mb-4 text-center">المنصة الكاملة تعطيك:</p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">📝</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">بنك أسئلة شامل ومتجدد</p>
+                            <p class="text-purple-200/50 text-[10px]">كمي + لفظي + تحصيلي</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">💡</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">شرح مفصّل لكل سؤال</p>
+                            <p class="text-purple-200/50 text-[10px]">تفهم ليش الإجابة صح — مو بس تحفظ</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">📊</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">إحصائيات ذكية</p>
+                            <p class="text-purple-200/50 text-[10px]">تعرف نقاط قوتك وضعفك بالضبط</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">🔥</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">تسريبات مع شرح</p>
+                            <p class="text-purple-200/50 text-[10px]">أسئلة من أحدث الاختبارات</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Line -->
+            <p class="text-purple-200/40 text-xs mb-5">🇸🇦 فريق سعودي يفهمك ويفهم اختباراتك</p>
+
+            <!-- CTAs -->
+            <a href="register.html" class="btn-primary block w-full py-4 rounded-xl font-bold text-base mb-3">
+                سجّل مجاناً وابدأ رحلتك 🚀
+            </a>
+            <a href="index.html" class="block text-purple-200/40 text-xs hover:text-purple-300 transition">← ارجع للرئيسية</a>
+        </div>
+    </div>
+
+<script>
+var demoQuestions = [
+    {
+        section: 'كمي',
+        color: '#3b82f6',
+        text: 'إذا كان عُمر أحمد ضعف عُمر محمد، ومجموع عمريهما 36 سنة، فكم عُمر محمد؟',
+        choices: ['10 سنوات', '12 سنة', '18 سنة', '24 سنة'],
+        correct: 1,
+        explanation: 'نفرض عمر محمد = س، وعمر أحمد = 2س\nالمجموع: س + 2س = 36\n3س = 36\nس = 12 سنة ✅\nوعمر أحمد = 24 سنة'
+    },
+    {
+        section: 'لفظي — تناظر',
+        color: '#10b981',
+        text: 'كتاب : مكتبة',
+        choices: ['سيارة : مرآب', 'قلم : ورقة', 'طالب : مدرسة', 'ماء : كوب'],
+        correct: 0,
+        explanation: 'العلاقة: الأول يُحفظ في الثاني (مكان التخزين)\n\nالكتاب يُحفظ في المكتبة ← السيارة تُحفظ في المرآب ✅\n\nباقي الخيارات:\n• قلم وورقة = علاقة استخدام مو تخزين\n• طالب ومدرسة = علاقة انتماء\n• ماء وكوب = الماء يوضع في الكوب مؤقتاً مو يُحفظ'
+    },
+    {
+        section: 'لفظي — خطأ سياقي',
+        color: '#a855f7',
+        text: 'حدد الكلمة الخاطئة سياقياً:\n\n"استطاع الطالب أن يحقق الجهل في دراسته بفضل اجتهاده المتواصل"',
+        choices: ['استطاع', 'يحقق', 'الجهل', 'اجتهاده'],
+        correct: 2,
+        explanation: 'كلمة "الجهل" لا تناسب السياق — الجملة تتكلم عن نتيجة إيجابية بسبب اجتهاد\n\nالصحيح: "التفوق" أو "النجاح" ✅\n\nالطريقة: اقرأ الجملة كاملة وشوف أي كلمة تناقض المعنى العام'
+    },
+    {
+        section: 'كمي — نسبة',
+        color: '#3b82f6',
+        text: 'إذا كان سعر منتج 200 ريال وحصل عليه خصم 15%، فكم يدفع؟',
+        choices: ['170 ريال', '175 ريال', '180 ريال', '185 ريال'],
+        correct: 0,
+        explanation: 'قيمة الخصم = 200 × 15% = 200 × 0.15 = 30 ريال\n\nالسعر بعد الخصم = 200 - 30 = 170 ريال ✅\n\nطريقة أسرع: 200 × 0.85 = 170 ريال'
+    },
+    {
+        section: 'لفظي — إكمال الجمل',
+        color: '#10b981',
+        text: 'النجاح يحتاج إلى ... مستمر وعزيمة لا تلين',
+        choices: ['تعب', 'عمل', 'جهد', 'وقت'],
+        correct: 2,
+        explanation: 'كلمة "جهد" هي الأنسب لأنها:\n\n• تتوافق مع "مستمر" — نقول "جهد مستمر" ✅\n• تتناسب مع "عزيمة" في المعنى (كلاهما يدل على بذل الطاقة)\n\n"عمل مستمر" ممكنة لغوياً لكن "جهد" أدق في سياق النجاح والعزيمة'
+    }
+];
+
+var currentQ = 0, score = 0, answered = false;
+var labels = ['أ','ب','ج','د'];
+
+function startDemo() {
+    document.getElementById('introScreen').classList.add('hidden');
+    document.getElementById('quizScreen').classList.remove('hidden');
+    document.getElementById('quizScreen').classList.add('fade-up');
+    showQuestion();
+}
+
+function showQuestion() {
+    var q = demoQuestions[currentQ];
+    answered = false;
+
+    // Update progress dots
+    for (var i = 0; i < 5; i++) {
+        var dot = document.getElementById('dot' + i);
+        if (i < currentQ) {
+            dot.style.background = '#8b5cf6';
+            dot.style.width = '10px'; dot.style.height = '10px';
+        } else if (i === currentQ) {
+            dot.style.background = '#8b5cf6';
+            dot.style.width = '14px'; dot.style.height = '14px';
+            dot.style.boxShadow = '0 0 12px rgba(139,92,246,0.5)';
+        } else {
+            dot.style.background = 'rgba(139,92,246,0.3)';
+            dot.style.width = '10px'; dot.style.height = '10px';
+            dot.style.boxShadow = 'none';
+        }
+    }
+
+    document.getElementById('qNum').textContent = currentQ + 1;
+    document.getElementById('qBadge').textContent = q.section;
+    document.getElementById('qBadge').style.background = q.color + '20';
+    document.getElementById('qBadge').style.color = q.color;
+    document.getElementById('qBadge').style.border = '1px solid ' + q.color + '40';
+
+    // Handle multiline text
+    document.getElementById('qText').innerHTML = q.text.replace(/\n/g, '<br>');
+
+    // Build options
+    var container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    q.choices.forEach(function(choice, idx) {
+        var btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = '<span>' + labels[idx] + ') ' + choice + '</span>';
+        btn.onclick = function() { selectAnswer(idx); };
+        container.appendChild(btn);
+    });
+
+    document.getElementById('expContainer').classList.add('hidden');
+    document.getElementById('expContainer').innerHTML = '';
+    document.getElementById('nextBtn').classList.add('hidden');
+
+    // Update button text for last question
+    if (currentQ === 4) {
+        document.getElementById('nextBtn').textContent = 'شوف النتيجة 🎯';
+    }
+}
+
+function selectAnswer(idx) {
+    if (answered) return;
+    answered = true;
+    var q = demoQuestions[currentQ];
+    var isCorrect = (idx === q.correct);
+    if (isCorrect) score++;
+
+    // Highlight buttons
+    var btns = document.querySelectorAll('.option-btn');
+    btns.forEach(function(btn, i) {
+        btn.classList.add('disabled');
+        if (i === q.correct) {
+            btn.classList.add('correct');
+            btn.innerHTML += '<span class="badge">✅</span>';
+        } else if (i === idx && !isCorrect) {
+            btn.classList.add('wrong');
+            btn.innerHTML += '<span class="badge">❌</span>';
+        }
+    });
+
+    // Show explanation
+    var expDiv = document.getElementById('expContainer');
+    expDiv.innerHTML = '<div class="exp-box fade-up"><div class="exp-label">' +
+        (isCorrect ? '✅ أحسنت!' : '💡 الشرح') +
+        '</div><div class="exp-text">' + q.explanation.replace(/\n/g, '<br>') + '</div></div>';
+    expDiv.classList.remove('hidden');
+
+    // Show next button
+    document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion() {
+    currentQ++;
+    if (currentQ >= 5) {
+        showResults();
+    } else {
+        document.getElementById('quizScreen').classList.remove('fade-up');
+        void document.getElementById('quizScreen').offsetWidth;
+        document.getElementById('quizScreen').classList.add('fade-up');
+        showQuestion();
+    }
+}
+
+function showResults() {
+    document.getElementById('quizScreen').classList.add('hidden');
+    var screen = document.getElementById('resultScreen');
+    screen.classList.remove('hidden');
+
+    document.getElementById('scoreNum').textContent = score;
+
+    // Ring color based on score (out of 5)
+    var ring = document.getElementById('scoreRing');
+    if (score >= 4) {
+        ring.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))';
+        ring.style.border = '3px solid rgba(16,185,129,0.5)';
+        document.getElementById('scoreMsg').textContent = 'ما شاء الله عليك! 🔥';
+        document.getElementById('scoreDesc').textContent = 'مستواك ممتاز — خلك على هالمستوى مع تدريب مستمر';
+    } else if (score === 3) {
+        ring.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05))';
+        ring.style.border = '3px solid rgba(251,191,36,0.5)';
+        document.getElementById('scoreMsg').textContent = 'أداء جيد! 💪';
+        document.getElementById('scoreDesc').textContent = 'قريب من الكمال — شوي تدريب وتوصل';
+    } else if (score === 2) {
+        ring.style.background = 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))';
+        ring.style.border = '3px solid rgba(139,92,246,0.5)';
+        document.getElementById('scoreMsg').textContent = 'بداية حلوة! ⚡';
+        document.getElementById('scoreDesc').textContent = 'كل خبير بدأ من هنا — المهم تبدأ وتستمر';
+    } else {
+        ring.style.background = 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))';
+        ring.style.border = '3px solid rgba(139,92,246,0.5)';
+        document.getElementById('scoreMsg').textContent = 'يلا نبدأ المشوار! 🚀';
+        document.getElementById('scoreDesc').textContent = 'الحين عرفت وين تحتاج تركّز — هذا أول خطوة';
+    }
+}
+</script>
+<script src="analytics.js"></script>
+</body>
+</html>
