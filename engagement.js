@@ -27,8 +27,8 @@
   localStorage.setItem(VISIT_KEY, visits);
   var currentPage = location.pathname.replace(/\.html$/,'').replace(/^\//,'') || 'index';
 
-  // لا تعرض في صفحات الأدمن أو الكولباك
-  if(currentPage.indexOf('admin') !== -1 || currentPage.indexOf('callback') !== -1) return;
+  // لا تعرض في صفحات الأدمن أو الاختبار أو الكولباك
+  if(currentPage === 'practice' || currentPage === 'results' || currentPage.indexOf('admin') !== -1 || currentPage.indexOf('callback') !== -1) return;
 
   // 🔒 تنظيف XSS
   function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
