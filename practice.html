@@ -151,8 +151,8 @@
             <div class="relative z-10">
                 <span class="text-5xl block mb-3">🚀</span>
                 <h2 class="text-2xl font-black mb-2">ما شاء الله عليك!</h2>
-                <p class="text-purple-200/70 text-sm mb-1">حليت الأسئلة المجانية كلها</p>
-                <p class="text-purple-300/50 text-xs mb-6">عشان تكمل رحلتك وتوصل لحلمك، اشترك وانطلق</p>
+                <p class="text-purple-200/70 text-sm mb-1">خلصت أسئلة التجربة لهالأسبوع (٥ أسئلة)</p>
+                <p class="text-purple-300/50 text-xs mb-6">تتجدد الأسبوع الجاي — أو اشترك وحل بلا حدود 🚀</p>
                 <div class="space-y-3 text-right mb-6 px-2">
                     <div class="flex items-center gap-2"><span class="text-green-400 text-sm">✓</span><span class="text-purple-200/80 text-sm">أسئلة غير محدودة لكل الأقسام</span></div>
                     <div class="flex items-center gap-2"><span class="text-green-400 text-sm">✓</span><span class="text-purple-200/80 text-sm">إحصائيات متقدمة ومراجعة أخطاء</span></div>
@@ -188,7 +188,28 @@
     var sessionId=null, timeRemaining=0, timerInterval=null;
     var userSubscription='free', totalAttemptsCount=0;
     var answeredInSession = {}; // تتبع الأسئلة المجابة في هذه الجلسة لمنع التكرار
-    const SECONDS_PER_QUESTION=60, FREE_LIMIT=10;
+    const SECONDS_PER_QUESTION=60, FREE_LIMIT=5;
+
+    // 📅 حساب رقم الأسبوع الحالي (يتغير كل يوم أحد)
+    function getWeekNumber() {
+        var now = new Date();
+        var start = new Date(now.getFullYear(), 0, 1);
+        var diff = now - start;
+        var oneWeek = 604800000; // 7 أيام بالمللي ثانية
+        return Math.floor(diff / oneWeek);
+    }
+
+    // 🎲 اختيار عشوائي ثابت حسب الأسبوع (seed-based)
+    function seededShuffle(arr, seed) {
+        var shuffled = arr.slice();
+        var m = shuffled.length, t, i;
+        while (m) {
+            seed = (seed * 9301 + 49297) % 233280;
+            i = Math.floor((seed / 233280) * m--);
+            t = shuffled[m]; shuffled[m] = shuffled[i]; shuffled[i] = t;
+        }
+        return shuffled;
+    }
 
     // 🔒 تنظيف HTML آمن - يسمح بتاقات التنسيق فقط ويمنع XSS
     function safeSanitize(html) {
@@ -297,7 +318,11 @@
         currentUser=session.user;
         try{ var r=await sb.from('profiles').select('subscription_type').eq('id',currentUser.id).single(); if(r.data&&r.data.subscription_type)userSubscription=r.data.subscription_type; }catch(e){}
         if(userSubscription==='free'){
-            try{ var a=await sb.from('attempts').select('id').eq('user_id',currentUser.id); totalAttemptsCount=a.data?a.data.length:0; }catch(e){}
+            // 📅 حساب بداية الأسبوع (يوم الأحد) — التجربة تتجدد أسبوعياً
+            var weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            weekStart.setHours(0,0,0,0);
+            try{ var a=await sb.from('attempts').select('id').eq('user_id',currentUser.id).gte('created_at', weekStart.toISOString()); totalAttemptsCount=a.data?a.data.length:0; }catch(e){}
             if(totalAttemptsCount>=FREE_LIMIT){showPaywall();return false;}
         }
         return true;
@@ -315,6 +340,13 @@
         try{
             var questions=[];
             var cnt=parseInt(localStorage.getItem('khawariz_question_count'))||10;
+
+            // 📅 المستخدم المجاني: تحديد عدد الأسئلة المتبقية من حصة الأسبوع (5 أسئلة)
+            if(userSubscription==='free'){
+                var remaining = FREE_LIMIT - totalAttemptsCount;
+                if(remaining <= 0){showPaywall();return false;}
+                cnt = Math.min(cnt, remaining);
+            }
 
             // 🔒 منع تكرار الأسئلة — جلب آخر 1500 إجابة لاستبعاد الأسئلة المجابة مؤخراً
             var recentIds = {};
