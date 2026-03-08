@@ -80,9 +80,9 @@
 
         <!-- Tabs -->
         <div class="flex justify-center gap-2 mb-6 animate-in delay-2">
-            <button class="tab-btn active" data-period="week" onclick="switchTab('week',this)">هذا الأسبوع</button>
+            <button class="tab-btn" data-period="week" onclick="switchTab('week',this)">هذا الأسبوع</button>
             <button class="tab-btn" data-period="month" onclick="switchTab('month',this)">هذا الشهر</button>
-            <button class="tab-btn" data-period="all" onclick="switchTab('all',this)">الكل</button>
+            <button class="tab-btn active" data-period="all" onclick="switchTab('all',this)">الكل</button>
         </div>
 
         <!-- Loading -->
@@ -133,7 +133,7 @@
     <script>
         var sb = window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
         var currentUserId = null;
-        var currentPeriod = 'week';
+        var currentPeriod = 'all';
         var leaderboardCache = {};
 
         var medals = ['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49'];
@@ -151,7 +151,7 @@
                 var session = res.data && res.data.session;
                 if(!session){ window.location.href = 'login.html'; return; }
                 currentUserId = session.user.id;
-                await loadLeaderboard('week');
+                await loadLeaderboard('all');
             }catch(e){
                 window.location.href = 'login.html';
             }
