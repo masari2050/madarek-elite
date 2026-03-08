@@ -175,6 +175,25 @@
                 </div>
             </div>
 
+            <!-- عرض رمضان — يظهر تلقائي لو في خصم بـ site_settings -->
+            <div id="ramadanOffer" class="hidden rounded-2xl p-5 mb-6 text-center relative overflow-hidden" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(99,102,241,0.08));border:1.5px solid rgba(139,92,246,0.3)">
+                <div class="absolute top-0 right-0 w-24 h-24 rounded-full" style="background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);transform:translate(30%,-30%)"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                        <span class="text-lg">🌙</span>
+                        <span class="text-sm font-black text-white">عرض رمضان</span>
+                        <span class="text-lg">🌙</span>
+                    </div>
+                    <div class="flex items-center justify-center gap-3 mb-2">
+                        <span class="text-purple-200/50 text-base" style="text-decoration:line-through;text-decoration-color:#ef4444;text-decoration-thickness:2.5px" id="demo-orig-price"></span>
+                        <span class="text-3xl font-black text-white" id="demo-new-price"></span>
+                        <span class="text-purple-200/60 text-sm">ريال/شهر</span>
+                    </div>
+                    <p class="text-purple-200/50 text-[11px] mb-3">بسعر وجبة برقر لمستقبلك الحقيقي 🍔</p>
+                    <a href="pricing.html" class="inline-block text-xs font-bold px-5 py-2 rounded-lg text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">شوف الباقات ←</a>
+                </div>
+            </div>
+
             <!-- Team Line -->
             <p class="text-purple-200/40 text-xs mb-5">🇸🇦 فريق سعودي يفهمك ويفهم اختباراتك</p>
 
@@ -368,6 +387,33 @@ function showResults() {
         document.getElementById('scoreDesc').textContent = 'الحين عرفت وين تحتاج تركّز — هذا أول خطوة';
     }
 }
+
+// 🌙 جلب عرض رمضان من site_settings (بدون مكتبة Supabase — fetch خفيف)
+(function(){
+    var AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+    fetch('https://czzcmbxejxbotjemyuqf.supabase.co/rest/v1/site_settings?select=key,value',{
+        headers:{'apikey':AK,'Authorization':'Bearer '+AK}
+    }).then(function(r){return r.json()}).then(function(data){
+        var s={};data.forEach(function(r){s[r.key]=r.value});
+        var mOrig=parseInt(s.price_monthly_original)||0;
+        var mCurrent=parseInt(s.price_monthly_current)||0;
+        var discPct=parseInt(s.discount_percent)||0;
+        // حساب السعر النهائي
+        var mNow;
+        if(discPct>0&&mOrig>0) mNow=Math.round(mOrig*(100-discPct)/100);
+        else if(mCurrent>0) mNow=mCurrent;
+        else mNow=mOrig;
+        // نعرض العرض فقط لو في خصم فعلي (السعر الأصلي أكبر من الحالي)
+        if(mOrig>0&&mNow<mOrig){
+            var el1=document.getElementById('demo-orig-price');
+            var el2=document.getElementById('demo-new-price');
+            var offer=document.getElementById('ramadanOffer');
+            if(el1) el1.textContent=mOrig+' ريال';
+            if(el2) el2.textContent=mNow;
+            if(offer) offer.classList.remove('hidden');
+        }
+    }).catch(function(){});
+})();
 
 // تتبع: لو الزائر رجع بعد ما جرب — نعرض له رسالة مختلفة
 window.addEventListener('DOMContentLoaded', function() {
