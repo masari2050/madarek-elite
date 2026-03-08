@@ -174,58 +174,73 @@
     // ══════════════════════════════════════
     //  التحديات اليومية
     // ══════════════════════════════════════
-    var CHALLENGE_TEMPLATES = [
-        { id: 'solve_10',    textAr: 'حل 10 أسئلة اليوم',             targetKey: 'todayTotal',   target: 10,  xp: 50,  emoji: '🎯' },
-        { id: 'solve_20',    textAr: 'حل 20 سؤال اليوم',              targetKey: 'todayTotal',   target: 20,  xp: 80,  emoji: '🚀' },
-        { id: 'solve_30',    textAr: 'حل 30 سؤال اليوم',              targetKey: 'todayTotal',   target: 30,  xp: 120, emoji: '💪' },
-        { id: 'accuracy_60', textAr: 'حقق 60% في أسئلة اليوم',        targetKey: 'todayAccuracy', target: 60, xp: 50,  emoji: '🎯' },
-        { id: 'accuracy_70', textAr: 'حقق 70% في أسئلة اليوم',        targetKey: 'todayAccuracy', target: 70, xp: 70,  emoji: '⭐' },
-        { id: 'accuracy_80', textAr: 'حقق 80% في أسئلة اليوم',        targetKey: 'todayAccuracy', target: 80, xp: 100, emoji: '💎' },
-        { id: 'streak_3',    textAr: '3 إجابات صحيحة متتالية',         targetKey: 'sessionConsecutive', target: 3, xp: 30, emoji: '⚡' },
-        { id: 'streak_5',    textAr: '5 إجابات صحيحة متتالية',         targetKey: 'sessionConsecutive', target: 5, xp: 50, emoji: '🔥' },
-        { id: 'quant_5',     textAr: 'حل 5 أسئلة كمي',                 targetKey: 'todayQuant',   target: 5,   xp: 40,  emoji: '🔢' },
-        { id: 'verbal_5',    textAr: 'حل 5 أسئلة لفظي',                targetKey: 'todayVerbal',  target: 5,   xp: 40,  emoji: '📝' }
-    ];
+    // ══════════════════════════════════════
+    //  هدف اليوم — بسيط وواضح
+    //  دايماً = حل أسئلة. العدد يزيد مع الالتزام.
+    // ══════════════════════════════════════
+    var STORAGE_DAILY_GOAL = 'madarek_daily_goal';
+    var STORAGE_GOAL_STREAK = 'madarek_goal_streak';
 
-    var STORAGE_CHALLENGE = 'madarek_daily_challenge';
-
-    function getDailyChallenge(){
-        // تحدي يتغير يومياً (حسب يوم السنة)
+    function getDailyGoal(){
         var today = getTodayRiyadh();
         var cached = null;
-        try { cached = JSON.parse(localStorage.getItem(STORAGE_CHALLENGE) || '{}'); } catch(e){}
-        if(cached && cached.date === today) return cached;
+        try { cached = JSON.parse(localStorage.getItem(STORAGE_DAILY_GOAL) || '{}'); } catch(e){}
+        // لو نفس اليوم وإصدار v2 → رجّع الكاش
+        if(cached && cached.date === today && cached.v === 2) return cached;
 
-        // اختيار تحدي عشوائي ثابت لليوم
-        var dayOfYear = Math.floor((new Date(today) - new Date(today.split('-')[0] + '-01-01')) / 86400000);
-        var idx = dayOfYear % CHALLENGE_TEMPLATES.length;
-        var tmpl = CHALLENGE_TEMPLATES[idx];
+        // حساب سلسلة تحقيق الهدف
+        var goalStreak = 0;
+        try { goalStreak = parseInt(localStorage.getItem(STORAGE_GOAL_STREAK)) || 0; } catch(e){}
 
-        var challenge = {
-            date: today,
-            id: tmpl.id,
-            textAr: tmpl.textAr,
-            targetKey: tmpl.targetKey,
-            target: tmpl.target,
-            xp: tmpl.xp,
-            emoji: tmpl.emoji,
-            progress: 0,
-            completed: false
-        };
-        localStorage.setItem(STORAGE_CHALLENGE, JSON.stringify(challenge));
-        return challenge;
-    }
-
-    function updateDailyChallenge(key, value){
-        var ch = getDailyChallenge();
-        if(ch.completed) return ch;
-        if(key === ch.targetKey){
-            ch.progress = Math.min(value, ch.target);
-            if(ch.progress >= ch.target) ch.completed = true;
-            localStorage.setItem(STORAGE_CHALLENGE, JSON.stringify(ch));
+        // لو أمس ما حقق الهدف → صفّر السلسلة
+        if(cached && cached.date && cached.v === 2){
+            var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+            var yesterdayStr = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh'}).format(yesterday);
+            if(cached.date === yesterdayStr && !cached.completed){
+                goalStreak = 0;
+                localStorage.setItem(STORAGE_GOAL_STREAK, '0');
+            }
         }
-        return ch;
+
+        // العدد يزيد مع سلسلة الالتزام
+        var target, xp, emoji, msg;
+        if(goalStreak >= 14){ target = 25; xp = 100; emoji = '👑'; msg = 'أنت وحش! حل 25 سؤال اليوم'; }
+        else if(goalStreak >= 7){ target = 20; xp = 80; emoji = '🔥'; msg = 'سلسلتك قوية! حل 20 سؤال'; }
+        else if(goalStreak >= 3){ target = 15; xp = 60; emoji = '⚡'; msg = 'كمّل المشوار! حل 15 سؤال'; }
+        else { target = 10; xp = 40; emoji = '🎯'; msg = 'حل 10 أسئلة اليوم'; }
+
+        var goal = {
+            v: 2,
+            date: today,
+            target: target,
+            xp: xp,
+            emoji: emoji,
+            textAr: msg,
+            progress: 0,
+            completed: false,
+            goalStreak: goalStreak
+        };
+        localStorage.setItem(STORAGE_DAILY_GOAL, JSON.stringify(goal));
+        return goal;
     }
+
+    function updateDailyGoal(todayCount){
+        var goal = getDailyGoal();
+        goal.progress = todayCount;
+        if(!goal.completed && todayCount >= goal.target){
+            goal.completed = true;
+            // زيادة سلسلة الأهداف
+            var newStreak = (goal.goalStreak || 0) + 1;
+            goal.goalStreak = newStreak;
+            localStorage.setItem(STORAGE_GOAL_STREAK, String(newStreak));
+        }
+        localStorage.setItem(STORAGE_DAILY_GOAL, JSON.stringify(goal));
+        return goal;
+    }
+
+    // للتوافقية مع الكود القديم
+    function getDailyChallenge(){ return getDailyGoal(); }
+    function updateDailyChallenge(key, value){ return updateDailyGoal(value); }
 
     // ══════════════════════════════════════
     //  مكافآت السلسلة المتدرجة
@@ -691,7 +706,9 @@
         // المستويات
         calculateLevel: calculateLevel,
         LEVELS: LEVELS,
-        // التحديات اليومية
+        // هدف اليوم
+        getDailyGoal: getDailyGoal,
+        updateDailyGoal: updateDailyGoal,
         getDailyChallenge: getDailyChallenge,
         updateDailyChallenge: updateDailyChallenge,
         // مكافآت السلسلة
