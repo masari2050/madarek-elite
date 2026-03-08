@@ -231,22 +231,23 @@
             </a>
         </div>
 
-        <!-- ═══ 5. Daily Challenge ═══ -->
+        <!-- ═══ 5. هدف اليوم ═══ -->
         <div class="anim d5 card-glass rounded-2xl p-5 mb-4" id="challengeCard">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
-                    <span class="text-xl" id="challengeEmoji">⚡</span>
-                    <h3 class="font-bold text-sm">تحدي اليوم</h3>
+                    <span class="text-xl" id="challengeEmoji">🎯</span>
+                    <h3 class="font-bold text-sm">هدف اليوم</h3>
                 </div>
-                <span class="text-xs font-bold px-2 py-1 rounded-full" style="background:rgba(251,191,36,0.15);color:#fbbf24" id="challengeXP">🎁 +50 XP</span>
+                <span class="text-xs font-bold px-2 py-1 rounded-full" style="background:rgba(251,191,36,0.15);color:#fbbf24" id="challengeXP">🎁 +40 XP</span>
             </div>
-            <p class="text-sm text-purple-200/70 mb-3" id="challengeText">حل 10 أسئلة اليوم</p>
+            <p class="text-sm text-purple-200/70 mb-2" id="challengeText">حل 10 أسئلة اليوم</p>
+            <p class="text-[10px] text-purple-300/30 mb-3" id="goalStreakLabel"></p>
             <div class="challenge-track mb-2">
                 <div class="challenge-fill" id="challengeBar" style="width:0%"></div>
             </div>
             <div class="flex justify-between items-center">
                 <span class="text-xs text-purple-300/40" id="challengeProgress">0 / 10</span>
-                <span class="text-xs font-bold text-green-400 hidden" id="challengeDone">✅ تم!</span>
+                <span class="text-xs font-bold text-green-400 hidden" id="challengeDone">🎉 أحسنت! حققت هدفك</span>
             </div>
         </div>
 
@@ -448,38 +449,30 @@
                 });
                 if(todayXP > 0) document.getElementById('xpToday').textContent = '+' + todayXP + ' اليوم';
 
-                // ── Daily Challenge ──
-                var ch = G.getDailyChallenge();
-                document.getElementById('challengeEmoji').textContent = ch.emoji;
-                document.getElementById('challengeText').textContent = ch.textAr;
-                document.getElementById('challengeXP').textContent = '🎁 +' + ch.xp + ' XP';
+                // ── هدف اليوم (بسيط = عدد الأسئلة) ──
+                var goal = G.getDailyGoal ? G.getDailyGoal() : G.getDailyChallenge();
+                document.getElementById('challengeEmoji').textContent = goal.emoji;
+                document.getElementById('challengeText').textContent = goal.textAr;
+                document.getElementById('challengeXP').textContent = '🎁 +' + goal.xp + ' XP';
 
-                // Calculate progress for current challenge
-                var chValue = 0;
-                if(ch.targetKey === 'todayTotal') chValue = todayAttempts.length;
-                else if(ch.targetKey === 'todayAccuracy'){
-                    if(todayAttempts.length > 0){
-                        var todayCorrect = todayAttempts.filter(a => a.is_correct).length;
-                        chValue = Math.round((todayCorrect / todayAttempts.length) * 100);
-                    }
-                }
-                else if(ch.targetKey === 'todayQuant') chValue = todayAttempts.filter(a => a.questions && a.questions.section === 'quant').length;
-                else if(ch.targetKey === 'todayVerbal') chValue = todayAttempts.filter(a => a.questions && a.questions.section === 'verbal').length;
-                else if(ch.targetKey === 'sessionConsecutive'){
-                    var sc = 0, maxSc = 0;
-                    todayAttempts.slice().reverse().forEach(function(a){
-                        if(a.is_correct){ sc++; if(sc > maxSc) maxSc = sc; } else sc = 0;
-                    });
-                    chValue = maxSc;
+                // سلسلة تحقيق الأهداف
+                var gsLabel = document.getElementById('goalStreakLabel');
+                if(goal.goalStreak > 0){
+                    gsLabel.textContent = '🔥 حققت هدفك ' + goal.goalStreak + ' يوم متتالي — استمر!';
+                    gsLabel.style.color = 'rgba(251,191,36,0.6)';
                 }
 
-                ch = G.updateDailyChallenge(ch.targetKey, chValue);
-                var chPct = Math.min(Math.round((ch.progress / ch.target) * 100), 100);
+                // التقدم = عدد أسئلة اليوم
+                goal = G.updateDailyGoal ? G.updateDailyGoal(todayAttempts.length) : G.updateDailyChallenge('todayTotal', todayAttempts.length);
+                var chPct = Math.min(Math.round((goal.progress / goal.target) * 100), 100);
                 document.getElementById('challengeBar').style.width = chPct + '%';
-                document.getElementById('challengeProgress').textContent = ch.progress + ' / ' + ch.target;
-                if(ch.completed){
+                document.getElementById('challengeProgress').textContent = goal.progress + ' / ' + goal.target;
+                if(goal.completed){
                     document.getElementById('challengeDone').classList.remove('hidden');
                     document.getElementById('challengeBar').style.background = 'linear-gradient(90deg,#4ade80,#22c55e)';
+                    if(goal.progress > goal.target){
+                        document.getElementById('challengeProgress').innerHTML = '<span style="color:#4ade80;font-weight:700">+' + (goal.progress - goal.target) + ' فوق الهدف!</span>';
+                    }
                 }
 
                 // ── Badges ──
