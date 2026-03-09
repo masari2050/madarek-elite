@@ -2,6 +2,31 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <script>
+    /* App detection: hide pricing inside Capacitor WebView only */
+    (function(){
+        var ua = navigator.userAgent;
+        var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1);
+        if(isApp){
+            document.documentElement.classList.add('in-app');
+            document.addEventListener('DOMContentLoaded', function(){
+                /* Change "جرّب 5 أسئلة مجاناً" to "🎯 اكتشف مستواك" in app */
+                document.querySelectorAll('a[href*="demo"]').forEach(function(el){
+                    if(el.textContent.indexOf('مجان') > -1) el.innerHTML = '🎯 اكتشف مستواك';
+                });
+            });
+        }
+    })();
+    </script>
+    <style>
+    /* ONLY inside the app — browser visitors see NOTHING different */
+    .in-app [href*="pricing"],
+    .in-app [href*="register"].btn-primary,
+    .in-app [href*="subscription-policy"],
+    .in-app #badge-free-trial,
+    .in-app #stat-free-price,
+    .in-app #pricing-section { display: none !important; }
+    </style>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="manifest" href="manifest.json">
@@ -136,7 +161,7 @@
                         <span>🤖</span>
                         مدعومة بتقنيات الذكاء الاصطناعي
                     </div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5 mr-2" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:#4ade80">
+                    <div id="badge-free-trial" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5 mr-2" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:#4ade80">
                         <span class="w-1.5 h-1.5 bg-green-400 rounded-full pulse-soft"></span>
                         جرّب قبل ما تشترك — مجاناً
                     </div>
@@ -172,7 +197,7 @@
                             <p class="text-purple-200/70 text-xs">أقسام رئيسية</p>
                         </div>
                         <div class="w-px bg-purple-500/20"></div>
-                        <div>
+                        <div id="stat-free-price">
                             <p class="text-2xl sm:text-3xl font-black text-white">0 ريال</p>
                             <p class="text-purple-200/70 text-xs">للتجربة الأولى</p>
                         </div>
@@ -400,7 +425,7 @@
     <!-- ══════════════════════════════════════ -->
     <!-- الباقات — مع عرض رمضان                 -->
     <!-- ══════════════════════════════════════ -->
-    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
+    <section id="pricing-section" class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
         <div class="max-w-5xl mx-auto px-4">
             <div class="text-center mb-4 reveal">
                 <h2 class="text-3xl sm:text-4xl font-black mb-3">خطط بسيطة وواضحة</h2>
@@ -623,6 +648,11 @@
     <script src="banner.js"></script>
     <script src="whatsapp-widget.js"></script>
     <script src="analytics.js"></script>
-    <script src="engagement.js"></script>
+    <script>
+    /* Load coupon popup only in browser — not in app */
+    if(!document.documentElement.classList.contains('in-app')){
+        var s=document.createElement('script');s.src='engagement.js';document.body.appendChild(s);
+    }
+    </script>
 </body>
 </html>
