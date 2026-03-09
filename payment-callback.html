@@ -6,8 +6,6 @@
     <!-- Google Ads Tag -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17989685111"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','AW-17989685111');</script>
-    <!-- Google Ads Purchase Conversion -->
-    <script>gtag('event','conversion',{'send_to':'AW-17989685111/E8P5CL_4_YEcEPeek4JD','value':1.0,'currency':'SAR','transaction_id':''});</script>
     <title>نتيجة الدفع - مدارك النخبة</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -109,6 +107,8 @@
 
             if(data.status === 'paid'){
                 show('state-success');
+                // Google Ads Purchase Conversion
+                gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':parseFloat(data.amount)||1.0,'currency':'SAR','transaction_id':paymentId||''});
                 var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';
                 document.getElementById('success-plan').textContent = 'تم تفعيل اشتراكك ال' + planName + ' بنجاح!';
                 document.getElementById('success-detail').textContent = 'المبلغ: ' + data.amount + ' ريال — ينتهي: ' + (data.expires || '');
