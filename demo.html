@@ -52,6 +52,25 @@
 
         .result-ring{width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto}
     </style>
+    <!-- App detection: hide pricing inside Capacitor WebView -->
+    <script>
+    (function(){
+        var ua = navigator.userAgent;
+        var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1);
+        if(isApp){
+            document.documentElement.classList.add('in-app');
+            document.addEventListener('DOMContentLoaded', function(){
+                var cta = document.getElementById('demo-main-cta');
+                if(cta) cta.textContent = 'سجّل معنا';
+            });
+        }
+    })();
+    </script>
+    <style>
+    .in-app #ramadanOffer,
+    .in-app #demo-free-label,
+    .in-app .demo-pricing-link { display: none !important; }
+    </style>
 </head>
 <body class="font-tajawal text-white">
 
@@ -74,7 +93,7 @@
             </div>
             <span class="name">مدارك النخبة</span>
         </a>
-        <span class="text-purple-200/40 text-xs">تجربة مجانية</span>
+        <span id="demo-free-label" class="text-purple-200/40 text-xs">تجربة مجانية</span>
     </div>
 
     <!-- Main Content -->
@@ -198,7 +217,7 @@
                         <span class="text-purple-200/60 text-sm">ريال/شهر</span>
                     </div>
                     <p class="text-purple-200/50 text-[11px] mb-3">بسعر وجبة برقر لمستقبلك الحقيقي 🍔</p>
-                    <a href="pricing.html" class="inline-block text-xs font-bold px-5 py-2 rounded-lg text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">شوف الباقات ←</a>
+                    <a href="pricing.html" class="demo-pricing-link inline-block text-xs font-bold px-5 py-2 rounded-lg text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">شوف الباقات ←</a>
                 </div>
             </div>
 
@@ -206,7 +225,7 @@
             <p class="text-purple-200/40 text-xs mb-5">🇸🇦 فريق سعودي يفهمك ويفهم اختباراتك</p>
 
             <!-- CTAs -->
-            <a href="register.html" class="btn-primary block w-full py-4 rounded-xl font-bold text-base mb-3">
+            <a href="register.html" id="demo-main-cta" class="btn-primary block w-full py-4 rounded-xl font-bold text-base mb-3">
                 سجّل مجاناً وابدأ رحلتك 🚀
             </a>
             <a href="index.html" class="block text-purple-200/40 text-xs hover:text-purple-300 transition">← ارجع للرئيسية</a>
@@ -441,7 +460,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 '<h1 class="text-3xl font-black mb-3">أهلاً مرة ثانية!</h1>' +
                 '<p class="text-purple-200/70 text-sm mb-2">سبق وجربت المنصة — نتيجتك كانت <span class="text-white font-bold">' + d.score + '/5</span></p>' +
                 '<p class="text-purple-200/50 text-xs mb-8">جاهز تبدأ رحلتك الحقيقية؟</p>' +
-                '<a href="register.html" class="btn-primary inline-block px-10 py-4 rounded-xl font-bold text-base mb-4">سجّل وابدأ رحلتك 🚀</a>' +
+                '<a href="register.html" class="btn-primary inline-block px-10 py-4 rounded-xl font-bold text-base mb-4">' + (document.documentElement.classList.contains('in-app') ? 'سجّل معنا' : 'سجّل وابدأ رحلتك 🚀') + '</a>' +
                 '<br><button onclick="resetDemo()" class="text-purple-200/40 text-xs hover:text-purple-300 transition mt-3">أو جرّب مرة ثانية ↻</button>';
         } catch(e) {}
     }
