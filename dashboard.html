@@ -35,7 +35,13 @@
 
         /* Quick Action */
         .quick-btn { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); transition:all .2s ease; }
-        .quick-btn:active { transform:scale(0.96); background:rgba(255,255,255,0.08); }
+        .quick-btn:active { transform:scale(0.96); }
+        .qb-stats { background:rgba(99,102,241,0.12); border-color:rgba(99,102,241,0.3); }
+        .qb-stats:active { background:rgba(99,102,241,0.2); }
+        .qb-mistakes { background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.3); }
+        .qb-mistakes:active { background:rgba(245,158,11,0.2); }
+        .qb-leaders { background:rgba(234,179,8,0.12); border-color:rgba(234,179,8,0.3); }
+        .qb-leaders:active { background:rgba(234,179,8,0.2); }
 
         /* Challenge Card */
         .challenge-track { background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; height:8px; }
@@ -216,18 +222,18 @@
 
         <!-- ═══ 4. Quick Actions ═══ -->
         <div class="anim d5 grid grid-cols-3 gap-3 mb-4">
-            <a href="stats.html" class="quick-btn rounded-2xl p-4 text-center block">
+            <a href="stats.html" class="quick-btn qb-stats rounded-2xl p-4 text-center block">
                 <span class="text-2xl block mb-1">📊</span>
-                <span class="text-xs font-bold text-purple-200/70">إحصائياتي</span>
+                <span class="text-xs font-bold text-indigo-300">إحصائياتي</span>
             </a>
-            <a href="mistakes.html" class="quick-btn rounded-2xl p-4 text-center block relative">
+            <a href="mistakes.html" class="quick-btn qb-mistakes rounded-2xl p-4 text-center block relative">
                 <span class="text-2xl block mb-1">📖</span>
-                <span class="text-xs font-bold text-purple-200/70">أخطائي</span>
+                <span class="text-xs font-bold text-amber-300">أخطائي</span>
                 <span id="mistakesBadge" class="hidden absolute top-2 left-2 w-5 h-5 bg-red-500 rounded-full text-[10px] font-black flex items-center justify-center">0</span>
             </a>
-            <a href="leaderboard.html" class="quick-btn rounded-2xl p-4 text-center block">
+            <a href="leaderboard.html" class="quick-btn qb-leaders rounded-2xl p-4 text-center block">
                 <span class="text-2xl block mb-1">🏆</span>
-                <span class="text-xs font-bold text-purple-200/70">المتصدرون</span>
+                <span class="text-xs font-bold text-yellow-300">المتصدرون</span>
             </a>
         </div>
 
