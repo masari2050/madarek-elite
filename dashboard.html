@@ -34,14 +34,13 @@
         .xp-fill::after { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:shimmer-bar 2s infinite; }
 
         /* Quick Action */
-        .quick-btn { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); transition:all .2s ease; }
+        .quick-btn { border:1px solid transparent; transition:all .2s ease; }
         .quick-btn:active { transform:scale(0.96); }
-        .qb-stats { background:rgba(99,102,241,0.12); border-color:rgba(99,102,241,0.3); }
-        .qb-stats:active { background:rgba(99,102,241,0.2); }
-        .qb-mistakes { background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.3); }
-        .qb-mistakes:active { background:rgba(245,158,11,0.2); }
-        .qb-leaders { background:rgba(234,179,8,0.12); border-color:rgba(234,179,8,0.3); }
-        .qb-leaders:active { background:rgba(234,179,8,0.2); }
+        .qb-stats { background:linear-gradient(135deg,rgba(56,189,248,0.18),rgba(99,102,241,0.22)); border-color:rgba(56,189,248,0.4); box-shadow:0 0 12px rgba(56,189,248,0.15); }
+        .qb-stats:active { background:linear-gradient(135deg,rgba(56,189,248,0.28),rgba(99,102,241,0.32)); }
+        .qb-mistakes { background:linear-gradient(135deg,rgba(251,146,60,0.18),rgba(239,68,68,0.18)); border-color:rgba(251,146,60,0.4); box-shadow:0 0 12px rgba(251,146,60,0.15); }
+        .qb-mistakes:active { background:linear-gradient(135deg,rgba(251,146,60,0.28),rgba(239,68,68,0.28)); }
+        .qb-leaders { background:linear-gradient(135deg,rgba(250,204,21,0.18),rgba(245,158,11,0.22)); border-color:rgba(250,204,21,0.4); box-shadow:0 0 12px rgba(250,204,21,0.15); }
 
         /* Challenge Card */
         .challenge-track { background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; height:8px; }
@@ -224,11 +223,11 @@
         <div class="anim d5 grid grid-cols-3 gap-3 mb-4">
             <a href="stats.html" class="quick-btn qb-stats rounded-2xl p-4 text-center block">
                 <span class="text-2xl block mb-1">📊</span>
-                <span class="text-xs font-bold text-indigo-300">إحصائياتي</span>
+                <span class="text-xs font-bold text-sky-300">إحصائياتي</span>
             </a>
             <a href="mistakes.html" class="quick-btn qb-mistakes rounded-2xl p-4 text-center block relative">
                 <span class="text-2xl block mb-1">📖</span>
-                <span class="text-xs font-bold text-amber-300">أخطائي</span>
+                <span class="text-xs font-bold text-orange-300">أخطائي</span>
                 <span id="mistakesBadge" class="hidden absolute top-2 left-2 w-5 h-5 bg-red-500 rounded-full text-[10px] font-black flex items-center justify-center">0</span>
             </a>
             <a href="leaderboard.html" class="quick-btn qb-leaders rounded-2xl p-4 text-center block">
