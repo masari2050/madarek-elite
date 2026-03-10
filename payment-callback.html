@@ -85,13 +85,8 @@
             return;
         }
 
-        // Check user session
-        var{data:{session}} = await sb.auth.getSession();
-        if(!session){
-            show('state-error');
-            document.getElementById('error-msg').textContent = 'سجّل دخول أولاً عشان نتحقق من الدفع';
-            return;
-        }
+        // محاولة جلب الجلسة (اختياري — الدفع يشتغل حتى بدون جلسة)
+        try { await sb.auth.getSession(); } catch(_){}
 
         try{
             // Call Edge Function to verify payment
