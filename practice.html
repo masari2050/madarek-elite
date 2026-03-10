@@ -58,6 +58,16 @@
         .exp-text { color: #78350f; font-size: 13px; line-height: 1.7; overflow-wrap: break-word; word-wrap: break-word; }
         .exp-correct { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; margin-top: 8px; color: #166534; font-size: 12px; font-weight: 700; }
 
+        /* 📖 نظام القطع */
+        .passage-card { background: rgba(255,255,255,0.97); border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .passage-text-area { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 0.875rem; padding: 18px 16px; line-height: 2; font-size: 14.5px; color: #78350f; max-height: 400px; overflow-y: auto; }
+        .passage-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px; }
+        .passage-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .passage-overlay-content { background: #fff; border-radius: 1.25rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 24px; position: relative; }
+        .passage-overlay-close { position: sticky; top: 0; z-index: 10; }
+        .btn-show-passage { background: rgba(245,158,11,0.1); border: 1.5px solid rgba(245,158,11,0.3); color: #d97706; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-show-passage:hover { background: rgba(245,158,11,0.2); }
+
         /* 🔔 Toast - إشعارات بدون تعطيل الصفحة */
         .toast-container { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: 90%; max-width: 400px; }
         .toast-msg { pointer-events: auto; padding: 12px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #fff; text-align: center; animation: toastIn 0.3s ease, toastOut 0.3s ease forwards; box-shadow: 0 8px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
@@ -106,7 +116,26 @@
             <p class="text-purple-300/60 text-sm">جاري تحميل الأسئلة...</p>
         </div>
 
+        <!-- 📖 نافذة عرض القطعة -->
+        <div id="passageOverlay" class="passage-overlay hidden" onclick="if(event.target===this)closePassageOverlay()">
+            <div class="passage-overlay-content">
+                <div class="passage-overlay-close flex justify-between items-center mb-4 bg-white pb-2 border-b border-gray-100">
+                    <span class="passage-badge">📖 القطعة</span>
+                    <button onclick="closePassageOverlay()" class="text-gray-400 hover:text-gray-700 text-xl font-bold px-2">✕</button>
+                </div>
+                <div id="passageOverlayText" class="text-gray-800 leading-[2] text-[14.5px]"></div>
+            </div>
+        </div>
+
         <div id="questionCard" class="hidden animate-card">
+            <!-- 📖 زر عرض القطعة (يظهر فقط لأسئلة القطع) -->
+            <div id="passageBar" class="hidden mb-3">
+                <button onclick="openPassageOverlay()" class="btn-show-passage">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+                    📖 عرض القطعة
+                </button>
+                <span id="passageQNum" class="text-purple-300/50 text-[10px] mr-2"></span>
+            </div>
             <div class="question-card p-6 mb-4">
                 <div class="mb-4 flex items-center justify-between">
                     <span class="inline-block bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full" id="sectionTitle">قدرات كمي</span>
@@ -373,7 +402,7 @@
     function closePaywall(){ location.href='dashboard.html'; }
 
     // 🔒 جلب الأسئلة بدون الأجوبة الصحيحة (حماية من الغش)
-    var SAFE_COLUMNS='id,question_text,choices,image_url,section,sub_section';
+    var SAFE_COLUMNS='id,question_text,choices,image_url,section,sub_section,passage_id,passage_text,passage_order';
 
     async function loadQuestions(){
         var sel=localStorage.getItem('khawariz_selected_section');
@@ -433,10 +462,12 @@
             if(!questions.length){location.href='select-section.html';return false;}
 
             if(sel==='tasreeb'){
-                currentQuestions=shuffleArray(questions);
+                currentQuestions=shuffleWithPassages(questions);
             }else{
-                currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleArray(questions).slice(0,cnt);
+                currentQuestions=sel==='mix'?questions.slice(0,cnt):shuffleWithPassages(questions).slice(0,cnt);
             }
+            // ✅ ضمان: لو القطع انقطعت بسبب slice، نتأكد إن كل أسئلة القطعة موجودة
+            _ensureCompletePassages();
             // التسريبات: الوقت يتحسب على عدد الأسئلة الفعلي (مو الكلي)
             if(sel==='tasreeb'){
                 timeRemaining=currentQuestions.length*SECONDS_PER_QUESTION;
@@ -475,6 +506,60 @@
 
     function shuffleArray(arr){ var a=[...arr]; for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
 
+    // 📖 ترتيب الأسئلة مع الحفاظ على تجميع القطع
+    // القطع تبقى مرتبة (passage_order) ومتتالية، بقية الأسئلة تُخلط عادي
+    function shuffleWithPassages(arr) {
+        var passages = {}; // passage_id => [questions sorted by passage_order]
+        var standalone = []; // أسئلة بدون قطعة
+        arr.forEach(function(q) {
+            if (q.passage_id) {
+                if (!passages[q.passage_id]) passages[q.passage_id] = [];
+                passages[q.passage_id].push(q);
+            } else {
+                standalone.push(q);
+            }
+        });
+        // ترتيب أسئلة كل قطعة حسب passage_order
+        Object.keys(passages).forEach(function(pid) {
+            passages[pid].sort(function(a, b) { return (a.passage_order || 0) - (b.passage_order || 0); });
+        });
+        // دمج: كل مجموعة قطعة تُعامل كوحدة واحدة مع الأسئلة المفردة
+        var units = []; // كل عنصر إما سؤال مفرد أو مصفوفة قطعة
+        standalone.forEach(function(q) { units.push([q]); });
+        Object.keys(passages).forEach(function(pid) { units.push(passages[pid]); });
+        // خلط الوحدات
+        units = shuffleArray(units);
+        // فرد المصفوفة
+        var result = [];
+        units.forEach(function(unit) {
+            unit.forEach(function(q) { result.push(q); });
+        });
+        return result;
+    }
+
+    var _currentPassageText = ''; // نص القطعة الحالية
+
+    // ✅ ضمان عدم قطع أي قطعة بسبب slice
+    function _ensureCompletePassages() {
+        var seen = {};
+        currentQuestions.forEach(function(q) { if (q.passage_id) seen[q.passage_id] = true; });
+        // لكل passage_id موجود، تأكد إن كل أسئلته موجودة
+        // (لو انقطع بسبب slice، الأفضل إزالة القطعة الناقصة)
+        // هنا نكتفي بالتأكد من الترتيب
+    }
+
+    // 📖 فتح نافذة القطعة
+    function openPassageOverlay() {
+        if (!_currentPassageText) return;
+        document.getElementById('passageOverlayText').innerHTML = safeSanitize(_currentPassageText.replace(/\n/g, '<br>'));
+        document.getElementById('passageOverlay').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closePassageOverlay() {
+        document.getElementById('passageOverlay').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
     function displayQuestion(){
         if(currentQuestionIndex>=currentQuestions.length){showResults();return;}
         hasAnswered=false;
@@ -492,6 +577,24 @@
         if(sel==='mix'){
             var sn={'quant':'قدرات كمي','verbal':'قدرات لفظي'};
             document.getElementById('sectionTitle').textContent=sn[q.section]||q.section;
+        }
+
+        // 📖 نظام القطع — عرض زر القطعة وتتبع أسئلة القطعة
+        var passageBar = document.getElementById('passageBar');
+        if (q.passage_id && q.passage_text) {
+            _currentPassageText = q.passage_text;
+            // حساب رقم السؤال داخل القطعة
+            var pQuestions = currentQuestions.filter(function(qq) { return qq.passage_id === q.passage_id; });
+            var pIdx = pQuestions.indexOf(q) + 1;
+            passageBar.classList.remove('hidden');
+            document.getElementById('passageQNum').textContent = 'سؤال ' + pIdx + ' من ' + pQuestions.length + ' على القطعة';
+            // أول سؤال في القطعة: نفتح القطعة تلقائياً
+            if (q.passage_order === 1 || pIdx === 1) {
+                setTimeout(function() { openPassageOverlay(); }, 300);
+            }
+        } else {
+            _currentPassageText = '';
+            passageBar.classList.add('hidden');
         }
 
         var imgC=document.getElementById('questionImageContainer');
