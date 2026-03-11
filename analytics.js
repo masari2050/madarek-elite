@@ -13,8 +13,10 @@
         localStorage.setItem('madarek_anon_id', anonId);
     }
 
-    // نوع الجهاز
-    var device = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+    // نوع الجهاز (تطبيق / متصفح جوال / كمبيوتر)
+    var ua = navigator.userAgent;
+    var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1 && ua.indexOf('Chrome') === -1);
+    var device = isApp ? 'app' : /Mobi|Android|iPhone|iPad/i.test(ua) ? 'mobile' : 'desktop';
 
     // ─── إرسال الحدث لـ Supabase ───
     function trackEvent(eventType, metadata){
