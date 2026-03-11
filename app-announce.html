@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080">
+    <title>مدارك النخبة — إعلان التطبيق</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            width: 1080px;
+            height: 1920px;
+            overflow: hidden;
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(170deg, #0f0a2e 0%, #1a1145 20%, #1e1550 40%, #191050 60%, #0f0a2e 80%, #0a0620 100%);
+            color: #fff;
+            position: relative;
+        }
+
+        /* ── خلفية مزخرفة ── */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -200px; right: -150px;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 65%);
+            border-radius: 50%;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -100px; left: -200px;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%);
+            border-radius: 50%;
+        }
+
+        .container {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── القدرات والتحصيلي (أعلى الصفحة) ── */
+        .exam-type {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        .exam-badge {
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 18px 36px;
+            font-size: 28px;
+            font-weight: 800;
+            color: rgba(196,181,253,0.9);
+            letter-spacing: 0.5px;
+        }
+        .exam-badge span {
+            font-size: 32px;
+            margin-left: 8px;
+        }
+
+        /* ── الشعار ── */
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+        .logo-icon {
+            width: 120px; height: 120px;
+            border-radius: 32px;
+            background: linear-gradient(135deg, #1e1b4b, #2d2564);
+            border: 2px solid rgba(99,102,241,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 60px rgba(99,102,241,0.2);
+        }
+        .logo-name {
+            font-family: 'Cairo', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            background: linear-gradient(110deg, #c7d2fe, #e0e7ff, #818cf8, #c4b5fd, #c7d2fe);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        .logo-tag {
+            font-size: 26px;
+            font-weight: 500;
+            color: rgba(196,181,253,0.45);
+            margin-top: 4px;
+        }
+
+        /* ── العبارة الرئيسية ── */
+        .main-text {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .main-text h1 {
+            font-family: 'Cairo', sans-serif;
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+        .main-text h1 .highlight {
+            background: linear-gradient(135deg, #6366f1, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .main-text p {
+            font-size: 30px;
+            color: rgba(196,181,253,0.55);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ── المميزات ── */
+        .features {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        .feature-pill {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px 28px;
+            font-size: 22px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.7);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-pill span {
+            font-size: 26px;
+        }
+
+        /* ── أزرار التحميل ── */
+        .download-buttons {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        .dl-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1.5px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
+            padding: 24px 40px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        .dl-btn:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(99,102,241,0.2);
+        }
+        .dl-btn svg { flex-shrink: 0; }
+        .dl-btn .label {
+            text-align: right;
+        }
+        .dl-btn .label small {
+            display: block;
+            font-size: 16px;
+            color: rgba(196,181,253,0.5);
+            font-weight: 500;
+        }
+        .dl-btn .label strong {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        /* ── فريق سعودي ── */
+        .saudi-tag {
+            font-size: 24px;
+            color: rgba(196,181,253,0.4);
+            font-weight: 500;
+        }
+
+        /* ── خط فاصل مزخرف ── */
+        .divider {
+            width: 80px;
+            height: 4px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            margin: 0 auto 40px;
+        }
+
+        /* ── نقاط مزخرفة في الخلفية ── */
+        .dot {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.08;
+        }
+        .dot-1 { width: 300px; height: 300px; top: 150px; left: 60px; background: #6366f1; }
+        .dot-2 { width: 200px; height: 200px; bottom: 300px; right: 80px; background: #8b5cf6; }
+        .dot-3 { width: 150px; height: 150px; top: 600px; right: 200px; background: #a78bfa; }
+    </style>
+</head>
+<body>
+    <div class="dot dot-1"></div>
+    <div class="dot dot-2"></div>
+    <div class="dot dot-3"></div>
+
+    <div class="container">
+        <!-- القدرات والتحصيلي -->
+        <div class="exam-type">
+            <div class="exam-badge"><span>📐</span> القدرات</div>
+            <div class="exam-badge"><span>🎓</span> التحصيلي</div>
+        </div>
+
+        <!-- الشعار -->
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg viewBox="0 0 36 36" width="60" height="60" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <div class="logo-name">مدارك النخبة</div>
+            <div class="logo-tag">حيث يُصنع التميّز</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- العبارة الرئيسية -->
+        <div class="main-text">
+            <h1>تدرّب <span class="highlight">وين ما كنت</span></h1>
+            <p>آلاف الأسئلة المتجددة مع شروحات تفصيلية وتحليل دقيق لأدائك</p>
+        </div>
+
+        <!-- المميزات -->
+        <div class="features">
+            <div class="feature-pill"><span>📝</span> شروحات تفصيلية</div>
+            <div class="feature-pill"><span>🔥</span> تسريبات متجددة</div>
+            <div class="feature-pill"><span>📊</span> تحليل ذكي</div>
+        </div>
+
+        <!-- أزرار التحميل -->
+        <div class="download-buttons">
+            <a href="#" class="dl-btn">
+                <svg width="40" height="40" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                <div class="label">
+                    <small>حمّل من</small>
+                    <strong>App Store</strong>
+                </div>
+            </a>
+            <a href="#" class="dl-btn">
+                <svg width="40" height="40" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+                <div class="label">
+                    <small>حمّل من</small>
+                    <strong>Google Play</strong>
+                </div>
+            </a>
+        </div>
+
+        <!-- فريق سعودي -->
+        <p class="saudi-tag">🇸🇦 فريق سعودي يفهمك</p>
+    </div>
+</body>
+</html>
