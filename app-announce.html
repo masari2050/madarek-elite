@@ -454,12 +454,36 @@
         x.fillText('🇸🇦 فريق سعودي يفهمك', cx, Y);
 
         /* ═══ تحميل الصورة ═══ */
-        var link = document.createElement('a');
-        link.download = 'madarek-elite-snap.png';
-        link.href = c.toDataURL('image/png');
-        link.click();
+        var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
 
-        btn.textContent = '✅ تم الحفظ';
+        if(isMobile){
+            // على الجوال: نعرض الصورة — اضغط مطوّل واحفظ
+            var overlay = document.createElement('div');
+            overlay.id = 'img-overlay';
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+            var hint = document.createElement('p');
+            hint.textContent = '👆 اضغط مطوّل على الصورة واختر "حفظ الصورة"';
+            hint.style.cssText = 'color:#a5b4fc;font-family:Tajawal;font-size:18px;font-weight:700;margin-bottom:16px;text-align:center;';
+            var img = document.createElement('img');
+            img.src = c.toDataURL('image/png');
+            img.style.cssText = 'max-width:90%;max-height:75vh;border-radius:12px;border:2px solid rgba(99,102,241,0.3);';
+            var closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕ إغلاق';
+            closeBtn.style.cssText = 'margin-top:16px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:12px 32px;border-radius:12px;font-family:Tajawal;font-size:16px;font-weight:700;cursor:pointer;';
+            closeBtn.onclick = function(){ overlay.remove(); };
+            overlay.appendChild(hint);
+            overlay.appendChild(img);
+            overlay.appendChild(closeBtn);
+            document.body.appendChild(overlay);
+        } else {
+            // على الكمبيوتر: تحميل مباشر
+            var link = document.createElement('a');
+            link.download = 'madarek-elite-snap.png';
+            link.href = c.toDataURL('image/png');
+            link.click();
+        }
+
+        btn.textContent = '✅ تم';
         btn.disabled = false;
         setTimeout(function(){ btn.textContent='💾 حفظ كصورة'; }, 2000);
     }
