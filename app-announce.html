@@ -288,5 +288,34 @@
         <!-- فريق سعودي -->
         <p class="saudi-tag">🇸🇦 فريق سعودي يفهمك</p>
     </div>
+
+    <!-- زر الحفظ (يختفي من الصورة) -->
+    <button id="saveBtn" onclick="saveImage()" style="position:fixed;bottom:30px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:18px 48px;border-radius:16px;font-family:'Tajawal',sans-serif;font-size:22px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(99,102,241,0.4)">
+        💾 حفظ كصورة
+    </button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+    function saveImage(){
+        var btn = document.getElementById('saveBtn');
+        btn.style.display = 'none';
+        html2canvas(document.body, {
+            width: 1080,
+            height: 1920,
+            scale: 1,
+            useCORS: true,
+            backgroundColor: null
+        }).then(function(canvas){
+            var link = document.createElement('a');
+            link.download = 'madarek-elite-snap.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            btn.style.display = '';
+        }).catch(function(){
+            btn.style.display = '';
+            alert('حدث خطأ — جرّب مرة ثانية');
+        });
+    }
+    </script>
 </body>
 </html>
