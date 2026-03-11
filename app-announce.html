@@ -302,16 +302,22 @@
         html2canvas(document.body, {
             width: 1080,
             height: 1920,
+            windowWidth: 1080,
+            windowHeight: 1920,
+            x: 0,
+            y: 0,
             scale: 1,
             useCORS: true,
-            backgroundColor: null
+            backgroundColor: '#0f0a2e',
+            scrollX: 0,
+            scrollY: 0
         }).then(function(canvas){
             var link = document.createElement('a');
             link.download = 'madarek-elite-snap.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
             btn.style.display = '';
-        }).catch(function(){
+        }).catch(function(e){
             btn.style.display = '';
             alert('حدث خطأ — جرّب مرة ثانية');
         });
