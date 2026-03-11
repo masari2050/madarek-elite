@@ -46,6 +46,11 @@
         .tasreeb-card:hover{background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.06));border-color:rgba(251,191,36,0.35);transform:translateY(-3px);box-shadow:0 10px 35px rgba(251,191,36,0.12)}
         .tasreeb-card.locked{opacity:0.55;cursor:pointer}
         .tasreeb-card.locked:hover{transform:none;box-shadow:none}
+        .tasreeb-card.tasreeb-new{border-color:rgba(245,158,11,0.4);box-shadow:0 0 20px rgba(245,158,11,0.1)}
+        .tasreeb-hidden{display:none !important}
+        .tasreeb-toggle-btn{text-align:center;margin-top:10px;padding:10px 20px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:rgba(251,191,36,0.7);background:rgba(251,191,36,0.05);border:1px dashed rgba(251,191,36,0.2);transition:all .3s ease}
+        .tasreeb-toggle-btn:hover{background:rgba(251,191,36,0.1);color:#fbbf24;border-color:rgba(251,191,36,0.4)}
+        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
         .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
         .modal-card{width:100%;max-width:440px;background:linear-gradient(135deg,#1a1145,#1e1550,#0f0a2e);border:1px solid rgba(139,92,246,0.25);border-radius:1.5rem;padding:28px;position:relative;overflow:hidden}
         .count-option{padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;transition:all .2s ease;text-align:center;flex:1}
@@ -289,11 +294,13 @@
 
         // 🔥 تسريبات حصرية للمشتركين
         var TASREEBAT_SETS=[
-            {id:'tasreeb-7-mar-2026',name:'تسريبات ٧ مارس',date:'٧ مارس ٢٠٢٦',emoji:'📋',count:28,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-07T21:36:04',createdBefore:'2026-03-07T21:36:06'},
-            {id:'tasreeb-8-mar-hema',name:'تسريبات ٨ مارس (١)',date:'٨ مارس ٢٠٢٦',emoji:'🔥',count:44,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-08T21:36:05',createdBefore:'2026-03-08T21:36:06'},
+            {id:'tasreeb-10-mar-2026',name:'تسريبات ١٠ مارس',date:'١٠ مارس ٢٠٢٦',emoji:'🚀',count:66,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-10T21:36:04',createdBefore:'2026-03-10T21:36:06'},
+            {id:'tasreeb-9-mar-2026',name:'تسريبات ٩ مارس',date:'٩ مارس ٢٠٢٦',emoji:'🌟',count:84,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-09T21:36:04',createdBefore:'2026-03-09T21:36:06'},
             {id:'tasreeb-8-mar-yelo',name:'تسريبات ٨ مارس (٢)',date:'٨ مارس ٢٠٢٦',emoji:'⚡',count:58,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-08T21:59:59',createdBefore:'2026-03-08T22:00:01'},
-            {id:'tasreeb-9-mar-2026',name:'تسريبات ٩ مارس',date:'٩ مارس ٢٠٢٦',emoji:'🌟',count:84,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-09T21:36:04',createdBefore:'2026-03-09T21:36:06'}
+            {id:'tasreeb-8-mar-hema',name:'تسريبات ٨ مارس (١)',date:'٨ مارس ٢٠٢٦',emoji:'🔥',count:44,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-08T21:36:05',createdBefore:'2026-03-08T21:36:06'},
+            {id:'tasreeb-7-mar-2026',name:'تسريبات ٧ مارس',date:'٧ مارس ٢٠٢٦',emoji:'📋',count:28,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-07T21:36:04',createdBefore:'2026-03-07T21:36:06'}
         ];
+        var TASREEB_SHOW_INITIAL=3; // عدد التسريبات المعروضة مبدئياً
         var userSub='free';
         var tasreebProgress={};
         async function loadTasreebat(){
@@ -323,9 +330,11 @@
             var section=document.getElementById('tasreebatSection'),grid=document.getElementById('tasreebatGrid');
             var isPro=(userSub!=='free');
             grid.innerHTML='';
+            var showCount=TASREEB_SHOW_INITIAL||3;
             TASREEBAT_SETS.forEach(function(set,idx){
                 var card=document.createElement('div');
                 card.className='tasreeb-card'+(isPro?'':' locked');
+                if(idx>=showCount)card.classList.add('tasreeb-hidden');
                 var prog=tasreebProgress[set.id];
                 var descText=set.desc;
                 var actionText='ابدأ ←';
@@ -338,10 +347,31 @@
                         actionText='عيد ←';
                     }
                 }
-                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+'</h4><p class="text-purple-200/50" style="font-size:10px">'+descText+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
+                if(idx===0)card.classList.add('tasreeb-new');
+                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+(idx===0?' <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px">جديد</span>':'')+'</h4><p class="text-purple-200/50" style="font-size:10px">'+descText+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
                 card.onclick=isPro?function(){startTasreeb(idx)}:function(){location.href='pricing.html'};
                 grid.appendChild(card);
             });
+            // زر عرض التسريبات الأقدم
+            if(TASREEBAT_SETS.length>showCount){
+                var toggleBtn=document.createElement('div');
+                toggleBtn.id='tasreebToggleBtn';
+                toggleBtn.className='tasreeb-toggle-btn';
+                var hiddenCount=TASREEBAT_SETS.length-showCount;
+                toggleBtn.innerHTML='<span>📂 عرض '+hiddenCount+' تسريبات أقدم</span>';
+                toggleBtn.onclick=function(){
+                    var hidden=grid.querySelectorAll('.tasreeb-hidden');
+                    if(hidden.length>0){
+                        hidden.forEach(function(c){c.classList.remove('tasreeb-hidden');c.style.animation='fadeSlideIn 0.3s ease forwards'});
+                        toggleBtn.innerHTML='<span>📁 إخفاء التسريبات الأقدم</span>';
+                    }else{
+                        var cards=grid.querySelectorAll('.tasreeb-card');
+                        cards.forEach(function(c,i){if(i>=showCount)c.classList.add('tasreeb-hidden')});
+                        toggleBtn.innerHTML='<span>📂 عرض '+hiddenCount+' تسريبات أقدم</span>';
+                    }
+                };
+                grid.parentNode.insertBefore(toggleBtn,grid.nextSibling);
+            }
             if(!isPro)document.getElementById('tasreebLockMsg').classList.remove('hidden');
             section.classList.remove('hidden');
         }
