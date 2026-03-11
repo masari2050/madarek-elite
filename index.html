@@ -227,28 +227,30 @@
     <!-- ══════════════════════════════════════ -->
     <!-- 📱 بانر تحميل التطبيق               -->
     <!-- ══════════════════════════════════════ -->
-    <div id="app-download-banner" class="py-4" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.08))">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-right">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">📱</span>
-                    <div>
-                        <p class="font-bold text-sm text-white">تدرّب وين ما كنت — حمّل التطبيق الحين</p>
-                        <p class="text-purple-200/50 text-xs">متوفر على iOS و Android</p>
-                    </div>
-                </div>
-                <div class="app-store-badges flex items-center gap-2">
-                    <a href="https://apps.apple.com/sa/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition hover:scale-105" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
-                        <svg width="18" height="18" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-                        App Store
-                    </a>
-                    <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition hover:scale-105" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)">
-                        <svg width="18" height="18" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
-                        Google Play
-                    </a>
-                </div>
+    <div id="app-download-banner" style="position:relative;overflow:hidden;padding:28px 16px;background:linear-gradient(135deg,#1a103d 0%,#1e1250 40%,#2a1560 60%,#1a103d 100%)">
+        <!-- Decorative glow -->
+        <div style="position:absolute;top:-40px;right:10%;width:200px;height:200px;background:radial-gradient(circle,rgba(99,102,241,0.25),transparent 70%);pointer-events:none"></div>
+        <div style="position:absolute;bottom:-40px;left:10%;width:180px;height:180px;background:radial-gradient(circle,rgba(168,85,247,0.2),transparent 70%);pointer-events:none"></div>
+        <div class="max-w-lg mx-auto text-center" style="position:relative;z-index:2">
+            <!-- Download icon with glow -->
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,0.4);margin-bottom:14px">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13m0 0l-4-4m4 4l4-4"/><rect x="4" y="17" width="16" height="4" rx="1" fill="rgba(255,255,255,0.15)" stroke="#fff"/></svg>
+            </div>
+            <h3 class="font-black text-white" style="font-size:18px;margin-bottom:6px;font-family:'Cairo',sans-serif">تدرّب وين ما كنت — حمّل التطبيق الحين</h3>
+            <p style="color:rgba(196,181,253,0.6);font-size:12px;margin-bottom:18px">متوفر على iOS و Android</p>
+            <div class="app-store-badges" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+                <a href="https://apps.apple.com/sa/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:14px;font-size:14px;font-weight:800;color:#fff;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.25);transition:all .3s ease;text-decoration:none;box-shadow:0 0 0 1px rgba(99,102,241,0.2),0 4px 16px rgba(0,0,0,0.2)" onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 0 1px rgba(99,102,241,0.4),0 8px 28px rgba(99,102,241,0.3)';this.style.borderColor='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)';this.style.boxShadow='0 0 0 1px rgba(99,102,241,0.2),0 4px 16px rgba(0,0,0,0.2)';this.style.borderColor='rgba(255,255,255,0.25)'">
+                    <svg width="22" height="22" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                    App Store
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:14px;font-size:14px;font-weight:800;color:#fff;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.25);transition:all .3s ease;text-decoration:none;box-shadow:0 0 0 1px rgba(139,92,246,0.2),0 4px 16px rgba(0,0,0,0.2)" onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 0 1px rgba(139,92,246,0.4),0 8px 28px rgba(139,92,246,0.3)';this.style.borderColor='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)';this.style.boxShadow='0 0 0 1px rgba(139,92,246,0.2),0 4px 16px rgba(0,0,0,0.2)';this.style.borderColor='rgba(255,255,255,0.25)'">
+                    <svg width="22" height="22" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+                    Google Play
+                </a>
             </div>
         </div>
+        <!-- Border glow line -->
+        <div style="position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.4),rgba(99,102,241,0.4),transparent)"></div>
     </div>
 
     <!-- ══════════════════════════════════════ -->
