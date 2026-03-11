@@ -641,6 +641,11 @@ function log(msg, cls) {
     el.scrollTop = el.scrollHeight;
 }
 
+// 🚀 رفع تلقائي عند فتح الصفحة
+window.addEventListener('DOMContentLoaded', function(){
+    setTimeout(startUpload, 500);
+});
+
 async function startUpload() {
     var btn = document.getElementById('uploadBtn');
     btn.disabled = true;
@@ -649,7 +654,8 @@ async function startUpload() {
     // تسجيل الدخول كأدمن
     var session = await sb.auth.getSession();
     if (!session.data.session) {
-        log('❌ يجب تسجيل الدخول أولاً كأدمن', 'err');
+        log('❌ ما أنت مسجل دخول — روح سجل دخول بالأدمن وبعدها ارجع هنا', 'err');
+        log('💡 افتح admin-login.html وسجل دخول أول', 'info');
         btn.disabled = false;
         btn.textContent = '🚀 ابدأ الرفع';
         return;
