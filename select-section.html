@@ -306,8 +306,8 @@
         async function loadTasreebat(){
             var userId=null;
             try{
-                var s=await sb.auth.getSession();if(!s.data.session)return;
-                userId=s.data.session.user.id;
+                var session=await window._madarekRestoreSession(sb);if(!session)return;
+                userId=session.user.id;
                 var r=await sb.from('profiles').select('subscription_type').eq('id',userId).single();
                 if(r.data&&r.data.subscription_type)userSub=r.data.subscription_type;
             }catch(e){}
