@@ -109,15 +109,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="session-keeper.js"></script>
     <script>
-        // ── الخطوة الأولى: اقرأ التوكنات من الهاش قبل createClient (Supabase يمسحها عنده) ──
+        // ── الخطوة الأولى: اقرأ التوكنات قبل createClient ──
         var _rawAt = null, _rawRt = null, _isRecoveryUrl = false;
         (function() {
             try {
+                // Implicit flow: tokens in hash
                 var h = new URLSearchParams(window.location.hash.substring(1));
                 if (h.get('type') === 'recovery') {
                     _isRecoveryUrl = true;
                     _rawAt = h.get('access_token');
                     _rawRt = h.get('refresh_token');
+                    return;
+                }
+                // PKCE flow: code in query string
+                var q = new URLSearchParams(window.location.search);
+                if (q.get('type') === 'recovery' || q.has('code')) {
+                    _isRecoveryUrl = true;
                 }
             } catch(e) {}
         })();
@@ -211,43 +218,46 @@
             if (!p1 || p1.length < 6) { res.textContent = 'كلمة السر لازم تكون 6 أحرف على الأقل'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             if (p1 !== p2) { res.textContent = 'كلمة السر ما تطابقت'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             try {
-                // أولاً: تحقق من الجلسة الحالية (يكون شغالة بعد PASSWORD_RECOVERY)
-                var { data: { session } } = await sb.auth.getSession();
-
-                // لو ما في جلسة، جرّب تفعيلها من _recoverySession (فقط لو getSession فشل)
-                if (!session && _recoverySession && _recoverySession.access_token && _recoverySession.refresh_token) {
-                    var setRes = await sb.auth.setSession({
-                        access_token: _recoverySession.access_token,
-                        refresh_token: _recoverySession.refresh_token
-                    }).catch(function(){ return {}; });
-                    if (setRes.data && setRes.data.session) session = setRes.data.session;
-                }
-
-                if (!session) {
-                    throw new Error('انتهت صلاحية الرابط — اطلب رابط جديد');
-                }
-
+                // جرّب مباشرة — الجلسة شغالة تلقائياً بعد PASSWORD_RECOVERY
                 var { error } = await sb.auth.updateUser({ password: p1 });
-                if (error) throw error;
+
+                // لو فشل بسبب جلسة — جرّب تفعيلها يدوياً
+                if (error && (error.message.includes('Auth') || error.message.includes('JWT') || error.message.includes('session') || error.status === 401)) {
+                    var session = null;
+                    // محاولة 1: _recoverySession من onAuthStateChange
+                    if (_recoverySession && _recoverySession.access_token) {
+                        var sr = await sb.auth.setSession({ access_token: _recoverySession.access_token, refresh_token: _recoverySession.refresh_token }).catch(function(){ return {}; });
+                        if (sr.data && sr.data.session) session = sr.data.session;
+                    }
+                    // محاولة 2: raw tokens من الهاش
+                    if (!session && _rawAt && _rawRt) {
+                        var sr2 = await sb.auth.setSession({ access_token: _rawAt, refresh_token: _rawRt }).catch(function(){ return {}; });
+                        if (sr2.data && sr2.data.session) session = sr2.data.session;
+                    }
+                    if (!session) throw new Error('انتهت صلاحية الرابط');
+                    var { error: error2 } = await sb.auth.updateUser({ password: p1 });
+                    if (error2) throw error2;
+                } else if (error) {
+                    throw error;
+                }
+
                 res.textContent = 'تم تغيير كلمة السر بنجاح! جاري تحويلك...';
                 res.classList.remove('hidden');
                 res.style.color = '#4ade80';
                 setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
             } catch(e) {
                 var msg = e.message || '';
-                if (msg.includes('JWT') || msg.includes('invalid') || msg.includes('expired') || msg.includes('session') || msg.includes('انتهت')) {
-                    res.textContent = 'انتهت صلاحية الرابط — اضغط "نسيت كلمة السر" مرة ثانية';
-                } else {
-                    res.textContent = 'ما قدرنا نغير — ' + msg;
-                }
+                res.textContent = (msg.includes('انتهت') || msg.includes('JWT') || msg.includes('session') || msg.includes('expired'))
+                    ? 'انتهت صلاحية الرابط — اضغط "نسيت كلمة السر" مرة ثانية'
+                    : 'ما قدرنا نغير — ' + msg;
                 res.classList.remove('hidden');
                 res.style.color = '#f87171';
             }
         }
 
         (async function() {
-            // لو فيه hash في الرابط (رابط recovery) لا تحول للداشبورد
-            if (window.location.hash && window.location.hash.includes('type=recovery')) return;
+            // لو كان رابط recovery (hash أو PKCE) لا تحول للداشبورد
+            if (_isRecoveryUrl) return;
             var session = await window._madarekRestoreSession(sb);
             if (session) {
                 localStorage.setItem('khawariz_user', JSON.stringify({ id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || '' }));
