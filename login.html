@@ -156,44 +156,41 @@
             t.className = 'toast toast-error';
             setTimeout(function() { t.classList.add('hidden'); }, 3500);
         }
-        // استقبال رابط إعادة تعيين الباسورد
+        // ── استقبال رابط إعادة تعيين الباسورد ──
         var _recoverySession = null;
-        var hashParams = new URLSearchParams(window.location.hash.substring(1));
-        if (hashParams.get('type') === 'recovery') {
-            var accessToken = hashParams.get('access_token');
-            var refreshToken = hashParams.get('refresh_token');
-            if (accessToken && refreshToken) {
-                sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
-                    .then(function(res) {
-                        if (res.data && res.data.session) {
-                            _recoverySession = res.data.session;
-                        }
-                        document.getElementById('resetModal').classList.remove('hidden');
-                    })
-                    .catch(function() {
-                        document.getElementById('resetModal').classList.remove('hidden');
-                    });
-            } else if (accessToken) {
-                // fallback: لو ما في refresh_token في الرابط
-                sb.auth.setSession({ access_token: accessToken, refresh_token: accessToken })
-                    .then(function(res) {
-                        if (res.data && res.data.session) _recoverySession = res.data.session;
-                        document.getElementById('resetModal').classList.remove('hidden');
-                    })
-                    .catch(function() {
-                        document.getElementById('resetModal').classList.remove('hidden');
-                    });
-            } else {
-                document.getElementById('resetModal').classList.remove('hidden');
-            }
-        }
 
-        sb.auth.onAuthStateChange(async function(event, session) {
+        // سجّل المستمع أولاً قبل أي شيء آخر
+        sb.auth.onAuthStateChange(function(event, session) {
             if (event === 'PASSWORD_RECOVERY') {
                 _recoverySession = session;
                 document.getElementById('resetModal').classList.remove('hidden');
             }
         });
+
+        // فحص الهاش — Supabase v2 ممكن يكون عالجه قبل ما يشتغل المستمع
+        (async function() {
+            var hashParams = new URLSearchParams(window.location.hash.substring(1));
+            if (hashParams.get('type') !== 'recovery') return;
+
+            // أولاً: شوف لو Supabase حدّث الجلسة تلقائياً
+            var res = await sb.auth.getSession();
+            if (res.data && res.data.session) {
+                _recoverySession = res.data.session;
+                document.getElementById('resetModal').classList.remove('hidden');
+                return;
+            }
+
+            // ثانياً: حاول يدوياً باستخدام التوكنات من الهاش
+            var accessToken = hashParams.get('access_token');
+            var refreshToken = hashParams.get('refresh_token');
+            if (accessToken && refreshToken) {
+                var setRes = await sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(function(){ return {}; });
+                if (setRes.data && setRes.data.session) {
+                    _recoverySession = setRes.data.session;
+                }
+            }
+            document.getElementById('resetModal').classList.remove('hidden');
+        })();
 
         async function saveNewPass() {
             var p1 = document.getElementById('newPass').value;
