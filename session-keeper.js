@@ -1,18 +1,17 @@
 // ══════════════════════════════════════════════════════════
 //  session-keeper.js — مدارك النخبة
 //  يحافظ على جلسة المستخدم نشطة ويجدّد التوكن تلقائياً
+//  + نسخة احتياطية للجلسة (يحل مشكلة التطبيق)
 // ══════════════════════════════════════════════════════════
 (function(){
     var _sk_client = null;
+    var BACKUP_KEY = 'madarek_session_backup';
 
-    // إنشاء/جلب Supabase client للتجديد
     function getSB(){
         if(_sk_client) return _sk_client;
-        // جرّب الـ client الموجود أولاً
         if(window.sb) return window.sb;
         if(window.SB) return window.SB;
         if(window._sbClient) return window._sbClient;
-        // أنشئ client جديد (يشارك نفس التوكن في localStorage)
         if(window.supabase && window.supabase.createClient){
             _sk_client = window.supabase.createClient(
                 'https://czzcmbxejxbotjemyuqf.supabase.co',
@@ -23,6 +22,51 @@
         return null;
     }
 
+    // ── حفظ نسخة احتياطية من الجلسة ──
+    function backupSession(session){
+        if(!session) return;
+        try {
+            localStorage.setItem(BACKUP_KEY, JSON.stringify({
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+                ts: Date.now()
+            }));
+        } catch(e){}
+    }
+
+    // ── استرجاع الجلسة من النسخة الاحتياطية ──
+    window._madarekRestoreSession = async function(client){
+        if(!client || !client.auth) return null;
+        try {
+            // أولاً جرّب getSession العادي
+            var res = await client.auth.getSession();
+            if(res.data && res.data.session){
+                backupSession(res.data.session);
+                return res.data.session;
+            }
+            // لو ما لقى — جرّب النسخة الاحتياطية
+            var raw = localStorage.getItem(BACKUP_KEY);
+            if(!raw) return null;
+            var backup = JSON.parse(raw);
+            // تأكد إن النسخة ما مرّ عليها أكثر من 7 أيام
+            if(Date.now() - backup.ts > 7 * 24 * 60 * 60 * 1000){
+                localStorage.removeItem(BACKUP_KEY);
+                return null;
+            }
+            if(backup.refresh_token){
+                var refreshRes = await client.auth.setSession({
+                    access_token: backup.access_token,
+                    refresh_token: backup.refresh_token
+                });
+                if(refreshRes.data && refreshRes.data.session){
+                    backupSession(refreshRes.data.session);
+                    return refreshRes.data.session;
+                }
+            }
+            return null;
+        } catch(e){ return null; }
+    };
+
     // تجديد الجلسة
     async function refreshSession(){
         var client = getSB();
@@ -31,22 +75,39 @@
             var res = await client.auth.getSession();
             if(res.data && res.data.session){
                 await client.auth.refreshSession();
+                // حدّث النسخة الاحتياطية
+                var newRes = await client.auth.getSession();
+                if(newRes.data && newRes.data.session){
+                    backupSession(newRes.data.session);
+                }
             }
         } catch(e){}
     }
 
-    // ── 1. تجديد لما المستخدم يرجع للتبويب/التطبيق ──
+    // ── تجديد لما المستخدم يرجع للتبويب/التطبيق ──
     document.addEventListener('visibilitychange', function(){
         if(document.visibilityState === 'visible'){
             refreshSession();
         }
     });
 
-    // ── 2. تجديد لما التطبيق يرجع من الخلفية (Capacitor) ──
+    // ── تجديد لما التطبيق يرجع من الخلفية (Capacitor) ──
     document.addEventListener('resume', function(){
         refreshSession();
     });
 
-    // ── 3. تجديد دوري كل 10 دقائق ──
+    // ── تجديد دوري كل 10 دقائق ──
     setInterval(refreshSession, 10 * 60 * 1000);
+
+    // ── عند تحميل الصفحة — احفظ نسخة لو فيه جلسة ──
+    setTimeout(function(){
+        var client = getSB();
+        if(client && client.auth){
+            client.auth.getSession().then(function(res){
+                if(res.data && res.data.session){
+                    backupSession(res.data.session);
+                }
+            }).catch(function(){});
+        }
+    }, 1000);
 })();
