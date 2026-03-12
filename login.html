@@ -178,36 +178,61 @@
         }
         // ── استقبال رابط إعادة تعيين الباسورد ──
         var _recoverySession = null;
+        var _recoveryTimeout = null;
+
+        function _onRecoveryReady(session) {
+            clearTimeout(_recoveryTimeout);
+            _recoverySession = session;
+            var btn = document.getElementById('resetSaveBtn');
+            var res = document.getElementById('resetResult');
+            if (btn) btn.disabled = false;
+            res.classList.add('hidden');
+            document.getElementById('resetModal').classList.remove('hidden');
+        }
 
         // سجّل المستمع — يستقبل PASSWORD_RECOVERY أو SIGNED_IN (بعض الإصدارات تفعله)
         sb.auth.onAuthStateChange(function(event, session) {
             if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && _isRecoveryUrl)) {
-                _recoverySession = session;
-                document.getElementById('resetModal').classList.remove('hidden');
+                _onRecoveryReady(session);
             }
         });
 
         // لو كانت recovery URL — تأكد من الجلسة بطرق متعددة
         if (_isRecoveryUrl) {
             (async function() {
-                // 1. لو Supabase عالج الهاش تلقائياً — يكون getSession شاغل
+                // 1. لو Supabase عالج الهاش تلقائياً (implicit flow)
                 var res = await sb.auth.getSession();
                 if (res.data && res.data.session) {
-                    _recoverySession = res.data.session;
-                    document.getElementById('resetModal').classList.remove('hidden');
+                    _onRecoveryReady(res.data.session);
                     return;
                 }
-                // 2. استخدم الـ raw tokens المحفوظة قبل createClient
+                // 2. استخدم الـ raw tokens المحفوظة قبل createClient (implicit flow)
                 if (_rawAt && _rawRt) {
                     var setRes = await sb.auth.setSession({ access_token: _rawAt, refresh_token: _rawRt }).catch(function(){ return {}; });
                     if (setRes.data && setRes.data.session) {
-                        _recoverySession = setRes.data.session;
-                        document.getElementById('resetModal').classList.remove('hidden');
+                        _onRecoveryReady(setRes.data.session);
                         return;
                     }
                 }
-                // 3. عرض المودال على أي حال (مع رسالة خطأ مناسبة لو ما تم التفعيل)
+                // 3. PKCE flow — اعرض المودال لكن وقّف زر الحفظ حتى تجي الجلسة من onAuthStateChange
                 document.getElementById('resetModal').classList.remove('hidden');
+                var saveBtn = document.getElementById('resetSaveBtn');
+                var resEl = document.getElementById('resetResult');
+                if (saveBtn) saveBtn.disabled = true;
+                resEl.textContent = 'جاري التحقق من الرابط...';
+                resEl.style.color = '#a78bfa';
+                resEl.style.background = 'rgba(167,139,250,0.1)';
+                resEl.classList.remove('hidden');
+                // Timeout — لو الجلسة ما جات خلال 8 ثواني = الرابط منتهي
+                _recoveryTimeout = setTimeout(function() {
+                    if (!_recoverySession) {
+                        resEl.textContent = 'انتهت صلاحية الرابط — اضغط "نسيت كلمة السر" مرة ثانية';
+                        resEl.style.color = '#f87171';
+                        resEl.style.background = 'rgba(248,113,113,0.1)';
+                        resEl.classList.remove('hidden');
+                        if (saveBtn) saveBtn.disabled = true;
+                    }
+                }, 8000);
             })();
         }
 
@@ -321,7 +346,7 @@
             <p class="text-purple-200/60 text-xs text-center mb-6">اكتب كلمة السر الجديدة</p>
             <input id="newPass" type="password" placeholder="كلمة السر الجديدة" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-sm mb-3 outline-none focus:border-indigo-400" style="direction:rtl">
             <input id="confirmPass" type="password" placeholder="تأكيد كلمة السر" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-sm mb-5 outline-none focus:border-indigo-400" style="direction:rtl">
-            <button onclick="saveNewPass()" class="w-full py-3 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">حفظ كلمة السر الجديدة</button>
+            <button id="resetSaveBtn" onclick="saveNewPass()" class="w-full py-3 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">حفظ كلمة السر الجديدة</button>
             <div id="resetResult" class="hidden text-center mt-3 text-xs text-green-400"></div>
         </div>
     </div>
