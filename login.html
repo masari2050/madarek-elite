@@ -202,19 +202,17 @@
             if (!p1 || p1.length < 6) { res.textContent = 'كلمة السر لازم تكون 6 أحرف على الأقل'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             if (p1 !== p2) { res.textContent = 'كلمة السر ما تطابقت'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             try {
-                // تأكد إن الجلسة موجودة
+                // أعد تفعيل جلسة الاسترداد إن كانت محفوظة
+                if (_recoverySession && _recoverySession.access_token && _recoverySession.refresh_token) {
+                    await sb.auth.setSession({
+                        access_token: _recoverySession.access_token,
+                        refresh_token: _recoverySession.refresh_token
+                    }).catch(function(){});
+                }
+                // تحقق من الجلسة
                 var { data: { session } } = await sb.auth.getSession();
                 if (!session) {
-                    // جرّب من الهاش مرة ثانية
-                    var hp = new URLSearchParams(window.location.hash.substring(1));
-                    var at = hp.get('access_token');
-                    var rt = hp.get('refresh_token') || at;
-                    if (at) {
-                        var setRes = await sb.auth.setSession({ access_token: at, refresh_token: rt });
-                        if (setRes.error) throw setRes.error;
-                    } else {
-                        throw new Error('Auth session missing — جرّب اضغط على الرابط من الإيميل مرة ثانية');
-                    }
+                    throw new Error('انتهت صلاحية الرابط — اطلب رابط جديد من "نسيت كلمة السر"');
                 }
                 var { error } = await sb.auth.updateUser({ password: p1 });
                 if (error) throw error;
@@ -223,7 +221,12 @@
                 res.style.color = '#4ade80';
                 setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
             } catch(e) {
-                res.textContent = 'ما قدرنا نغير — ' + e.message;
+                var msg = e.message || '';
+                if (msg.includes('JWT') || msg.includes('invalid') || msg.includes('expired') || msg.includes('session')) {
+                    res.textContent = 'انتهت صلاحية الرابط — اضغط "نسيت كلمة السر" مرة ثانية';
+                } else {
+                    res.textContent = 'ما قدرنا نغير — ' + msg;
+                }
                 res.classList.remove('hidden');
                 res.style.color = '#f87171';
             }
