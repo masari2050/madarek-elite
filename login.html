@@ -109,11 +109,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="session-keeper.js"></script>
     <script>
-        // ── الخطوة الأولى: اقرأ التوكنات قبل createClient ──
-        var _rawAt = null, _rawRt = null, _isRecoveryUrl = false;
+        // ── الخطوة الأولى: اقرأ التوكنات/المعرّفات قبل createClient ──
+        var _rawAt = null, _rawRt = null, _isRecoveryUrl = false, _tokenHash = null;
         (function() {
             try {
-                // Implicit flow: tokens in hash
+                var q = new URLSearchParams(window.location.search);
+                // Method 1: token_hash مباشرة (قالب إيميل مخصص — الأقوى)
+                if (q.get('token_hash') && q.get('type') === 'recovery') {
+                    _isRecoveryUrl = true;
+                    _tokenHash = q.get('token_hash');
+                    return;
+                }
+                // Method 2: Implicit flow — tokens in hash
                 var h = new URLSearchParams(window.location.hash.substring(1));
                 if (h.get('type') === 'recovery') {
                     _isRecoveryUrl = true;
@@ -121,8 +128,7 @@
                     _rawRt = h.get('refresh_token');
                     return;
                 }
-                // PKCE flow: code in query string
-                var q = new URLSearchParams(window.location.search);
+                // Method 3: PKCE flow — code in query string
                 if (q.get('type') === 'recovery' || q.has('code')) {
                     _isRecoveryUrl = true;
                 }
@@ -202,13 +208,23 @@
         // لو كانت recovery URL — تأكد من الجلسة بطرق متعددة
         if (_isRecoveryUrl) {
             (async function() {
-                // 1. لو Supabase عالج الهاش تلقائياً (implicit flow)
+                // 1. token_hash — verifyOtp مباشرة (الأقوى — ما يحتاج localStorage)
+                if (_tokenHash) {
+                    try {
+                        var vRes = await sb.auth.verifyOtp({ token_hash: _tokenHash, type: 'recovery' });
+                        if (!vRes.error && vRes.data && vRes.data.session) {
+                            _onRecoveryReady(vRes.data.session);
+                            return;
+                        }
+                    } catch(e) {}
+                }
+                // 2. لو Supabase عالج الهاش تلقائياً (implicit flow)
                 var res = await sb.auth.getSession();
                 if (res.data && res.data.session) {
                     _onRecoveryReady(res.data.session);
                     return;
                 }
-                // 2. استخدم الـ raw tokens المحفوظة قبل createClient (implicit flow)
+                // 3. استخدم الـ raw tokens المحفوظة قبل createClient (implicit flow)
                 if (_rawAt && _rawRt) {
                     var setRes = await sb.auth.setSession({ access_token: _rawAt, refresh_token: _rawRt }).catch(function(){ return {}; });
                     if (setRes.data && setRes.data.session) {
@@ -216,7 +232,7 @@
                         return;
                     }
                 }
-                // 3. PKCE flow — اعرض المودال لكن وقّف زر الحفظ حتى تجي الجلسة
+                // 4. Fallback — اعرض المودال لكن وقّف زر الحفظ حتى تجي الجلسة
                 document.getElementById('resetModal').classList.remove('hidden');
                 var saveBtn = document.getElementById('resetSaveBtn');
                 var resEl = document.getElementById('resetResult');
@@ -225,7 +241,7 @@
                 resEl.style.color = '#a78bfa';
                 resEl.style.background = 'rgba(167,139,250,0.1)';
                 resEl.classList.remove('hidden');
-                // Polling — تحقق من الجلسة كل ثانية (أقوى من الاعتماد على onAuthStateChange فقط)
+                // Polling
                 var _pollInterval = setInterval(async function() {
                     if (_recoverySession) { clearInterval(_pollInterval); return; }
                     try {
@@ -237,7 +253,7 @@
                         }
                     } catch(e) {}
                 }, 1000);
-                // Timeout — لو الجلسة ما جات خلال 90 ثانية = الرابط منتهي
+                // Timeout — 90 ثانية
                 _recoveryTimeout = setTimeout(function() {
                     clearInterval(_pollInterval);
                     if (!_recoverySession) {
