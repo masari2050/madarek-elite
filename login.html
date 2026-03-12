@@ -109,6 +109,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="session-keeper.js"></script>
     <script>
+        // ── الخطوة الأولى: اقرأ التوكنات من الهاش قبل createClient (Supabase يمسحها عنده) ──
+        var _rawAt = null, _rawRt = null, _isRecoveryUrl = false;
+        (function() {
+            try {
+                var h = new URLSearchParams(window.location.hash.substring(1));
+                if (h.get('type') === 'recovery') {
+                    _isRecoveryUrl = true;
+                    _rawAt = h.get('access_token');
+                    _rawRt = h.get('refresh_token');
+                }
+            } catch(e) {}
+        })();
+
         const sb = window.supabase.createClient(
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
@@ -159,38 +172,37 @@
         // ── استقبال رابط إعادة تعيين الباسورد ──
         var _recoverySession = null;
 
-        // سجّل المستمع أولاً قبل أي شيء آخر
+        // سجّل المستمع — يستقبل PASSWORD_RECOVERY أو SIGNED_IN (بعض الإصدارات تفعله)
         sb.auth.onAuthStateChange(function(event, session) {
-            if (event === 'PASSWORD_RECOVERY') {
+            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && _isRecoveryUrl)) {
                 _recoverySession = session;
                 document.getElementById('resetModal').classList.remove('hidden');
             }
         });
 
-        // فحص الهاش — Supabase v2 ممكن يكون عالجه قبل ما يشتغل المستمع
-        (async function() {
-            var hashParams = new URLSearchParams(window.location.hash.substring(1));
-            if (hashParams.get('type') !== 'recovery') return;
-
-            // أولاً: شوف لو Supabase حدّث الجلسة تلقائياً
-            var res = await sb.auth.getSession();
-            if (res.data && res.data.session) {
-                _recoverySession = res.data.session;
-                document.getElementById('resetModal').classList.remove('hidden');
-                return;
-            }
-
-            // ثانياً: حاول يدوياً باستخدام التوكنات من الهاش
-            var accessToken = hashParams.get('access_token');
-            var refreshToken = hashParams.get('refresh_token');
-            if (accessToken && refreshToken) {
-                var setRes = await sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(function(){ return {}; });
-                if (setRes.data && setRes.data.session) {
-                    _recoverySession = setRes.data.session;
+        // لو كانت recovery URL — تأكد من الجلسة بطرق متعددة
+        if (_isRecoveryUrl) {
+            (async function() {
+                // 1. لو Supabase عالج الهاش تلقائياً — يكون getSession شاغل
+                var res = await sb.auth.getSession();
+                if (res.data && res.data.session) {
+                    _recoverySession = res.data.session;
+                    document.getElementById('resetModal').classList.remove('hidden');
+                    return;
                 }
-            }
-            document.getElementById('resetModal').classList.remove('hidden');
-        })();
+                // 2. استخدم الـ raw tokens المحفوظة قبل createClient
+                if (_rawAt && _rawRt) {
+                    var setRes = await sb.auth.setSession({ access_token: _rawAt, refresh_token: _rawRt }).catch(function(){ return {}; });
+                    if (setRes.data && setRes.data.session) {
+                        _recoverySession = setRes.data.session;
+                        document.getElementById('resetModal').classList.remove('hidden');
+                        return;
+                    }
+                }
+                // 3. عرض المودال على أي حال (مع رسالة خطأ مناسبة لو ما تم التفعيل)
+                document.getElementById('resetModal').classList.remove('hidden');
+            })();
+        }
 
         async function saveNewPass() {
             var p1 = document.getElementById('newPass').value;
