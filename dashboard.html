@@ -310,8 +310,8 @@
         // ── Auth ──
         async function checkAuth() {
             try {
-                const { data: { session }, error } = await sb.auth.getSession();
-                if (error || !session) { window.location.href = 'login.html'; return false; }
+                var session = await window._madarekRestoreSession(sb);
+                if (!session) { window.location.href = 'login.html'; return false; }
                 currentUser = session.user;
                 let displayName = '', subType = 'free';
                 try {
