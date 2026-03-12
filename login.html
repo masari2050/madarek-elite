@@ -113,19 +113,36 @@
             'https://czzcmbxejxbotjemyuqf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
         );
-        async function forgotPassword() {
-            var email = document.getElementById('email').value.trim();
-            if (!email) { alert('اكتب إيميلك أول في حقل البريد الإلكتروني'); return; }
+        function forgotPassword() {
+            // لو الإيميل مكتوب بالفورم — نعبيه تلقائي
+            var loginEmail = document.getElementById('email').value.trim();
+            var forgotInput = document.getElementById('forgotEmail');
+            if (loginEmail) forgotInput.value = loginEmail;
+            document.getElementById('forgotResult').classList.add('hidden');
+            document.getElementById('forgotModal').classList.remove('hidden');
+            setTimeout(function(){ forgotInput.focus(); }, 200);
+        }
+        async function sendResetLink() {
+            var email = document.getElementById('forgotEmail').value.trim();
+            var result = document.getElementById('forgotResult');
+            var btn = document.getElementById('forgotSendBtn');
+            if (!email) { result.textContent = 'اكتب إيميلك أول'; result.style.color = '#f87171'; result.style.background = 'rgba(248,113,113,0.1)'; result.classList.remove('hidden'); return; }
+            btn.disabled = true; btn.textContent = 'جاري الإرسال...';
             try {
                 var { error } = await sb.auth.resetPasswordForEmail(email, {
                     redirectTo: 'https://madarekelite.com/login.html'
                 });
                 if (error) throw error;
-                var msg = document.getElementById('resetMsg');
-                msg.textContent = 'تم إرسال رابط تغيير كلمة السر على ' + email;
-                msg.classList.remove('hidden');
+                result.textContent = 'تم إرسال رابط التغيير على ' + email + ' ✅';
+                result.style.color = '#4ade80'; result.style.background = 'rgba(74,222,128,0.1)';
+                result.classList.remove('hidden');
+                btn.textContent = 'تم الإرسال ✅';
+                setTimeout(function(){ document.getElementById('forgotModal').classList.add('hidden'); btn.disabled = false; btn.textContent = 'أرسل رابط التغيير'; }, 3000);
             } catch(e) {
-                alert('ما قدرنا نرسل — تأكد من الإيميل وحاول مرة ثانية');
+                result.textContent = 'ما قدرنا نرسل — تأكد من الإيميل وحاول مرة ثانية';
+                result.style.color = '#f87171'; result.style.background = 'rgba(248,113,113,0.1)';
+                result.classList.remove('hidden');
+                btn.disabled = false; btn.textContent = 'أرسل رابط التغيير';
             }
         }
 
@@ -140,12 +157,30 @@
             setTimeout(function() { t.classList.add('hidden'); }, 3500);
         }
         // استقبال رابط إعادة تعيين الباسورد
+        var _recoverySession = null;
         var hashParams = new URLSearchParams(window.location.hash.substring(1));
         if (hashParams.get('type') === 'recovery') {
             var accessToken = hashParams.get('access_token');
-            if (accessToken) {
+            var refreshToken = hashParams.get('refresh_token');
+            if (accessToken && refreshToken) {
+                sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+                    .then(function(res) {
+                        if (res.data && res.data.session) {
+                            _recoverySession = res.data.session;
+                        }
+                        document.getElementById('resetModal').classList.remove('hidden');
+                    })
+                    .catch(function() {
+                        document.getElementById('resetModal').classList.remove('hidden');
+                    });
+            } else if (accessToken) {
+                // fallback: لو ما في refresh_token في الرابط
                 sb.auth.setSession({ access_token: accessToken, refresh_token: accessToken })
-                    .then(function() {
+                    .then(function(res) {
+                        if (res.data && res.data.session) _recoverySession = res.data.session;
+                        document.getElementById('resetModal').classList.remove('hidden');
+                    })
+                    .catch(function() {
                         document.getElementById('resetModal').classList.remove('hidden');
                     });
             } else {
@@ -155,6 +190,7 @@
 
         sb.auth.onAuthStateChange(async function(event, session) {
             if (event === 'PASSWORD_RECOVERY') {
+                _recoverySession = session;
                 document.getElementById('resetModal').classList.remove('hidden');
             }
         });
@@ -162,30 +198,41 @@
         async function saveNewPass() {
             var p1 = document.getElementById('newPass').value;
             var p2 = document.getElementById('confirmPass').value;
-            if (!p1 || p1.length < 6) { alert('كلمة السر لازم تكون 6 أحرف على الأقل'); return; }
-            if (p1 !== p2) { alert('كلمة السر ما تطابقت'); return; }
+            var res = document.getElementById('resetResult');
+            if (!p1 || p1.length < 6) { res.textContent = 'كلمة السر لازم تكون 6 أحرف على الأقل'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
+            if (p1 !== p2) { res.textContent = 'كلمة السر ما تطابقت'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             try {
-                // تأكد إن الـ session موجودة من الـ token
-                var hashParams = new URLSearchParams(window.location.hash.substring(1));
-                var token = hashParams.get('access_token');
-                if (token) {
-                    await sb.auth.setSession({ access_token: token, refresh_token: token });
+                // تأكد إن الجلسة موجودة
+                var { data: { session } } = await sb.auth.getSession();
+                if (!session) {
+                    // جرّب من الهاش مرة ثانية
+                    var hp = new URLSearchParams(window.location.hash.substring(1));
+                    var at = hp.get('access_token');
+                    var rt = hp.get('refresh_token') || at;
+                    if (at) {
+                        var setRes = await sb.auth.setSession({ access_token: at, refresh_token: rt });
+                        if (setRes.error) throw setRes.error;
+                    } else {
+                        throw new Error('Auth session missing — جرّب اضغط على الرابط من الإيميل مرة ثانية');
+                    }
                 }
                 var { error } = await sb.auth.updateUser({ password: p1 });
                 if (error) throw error;
-                var res = document.getElementById('resetResult');
-                res.textContent = 'تم تغيير كلمة السر، جاري تحويلك...';
+                res.textContent = 'تم تغيير كلمة السر بنجاح! جاري تحويلك...';
                 res.classList.remove('hidden');
+                res.style.color = '#4ade80';
                 setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
             } catch(e) {
-                alert('ما قدرنا نغير — ' + e.message);
+                res.textContent = 'ما قدرنا نغير — ' + e.message;
+                res.classList.remove('hidden');
+                res.style.color = '#f87171';
             }
         }
 
         (async function() {
             // لو فيه hash في الرابط (رابط recovery) لا تحول للداشبورد
             if (window.location.hash && window.location.hash.includes('type=recovery')) return;
-            var { data: { session } } = await sb.auth.getSession();
+            var session = await window._madarekRestoreSession(sb);
             if (session) {
                 localStorage.setItem('khawariz_user', JSON.stringify({ id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || '' }));
                 window.location.href = 'dashboard.html';
@@ -229,7 +276,19 @@
         });
     </script>
 
-    <!-- مودال تغيير الباسورد -->
+    <!-- مودال نسيت كلمة السر (إدخال الإيميل) -->
+    <div id="forgotModal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
+        <div class="w-full max-w-sm rounded-3xl p-7" style="background:linear-gradient(135deg,#1a1145,#1e1550);border:1px solid rgba(139,92,246,0.3)">
+            <h2 class="text-xl font-black text-white text-center mb-2">نسيت كلمة السر؟</h2>
+            <p class="text-purple-200/60 text-xs text-center mb-6">اكتب إيميلك وبنرسل لك رابط تغيير كلمة السر</p>
+            <input id="forgotEmail" type="email" placeholder="بريدك الإلكتروني" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-sm mb-4 outline-none focus:border-indigo-400" style="direction:ltr;text-align:left" autocomplete="email">
+            <button id="forgotSendBtn" onclick="sendResetLink()" class="w-full py-3 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">أرسل رابط التغيير</button>
+            <div id="forgotResult" class="hidden text-center mt-3 text-xs rounded-xl py-2 px-3"></div>
+            <button onclick="document.getElementById('forgotModal').classList.add('hidden')" class="w-full mt-3 py-2 text-purple-300/50 text-xs hover:text-purple-300/80 transition">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- مودال تغيير الباسورد (بعد الضغط على الرابط من الإيميل) -->
     <div id="resetModal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
         <div class="w-full max-w-sm rounded-3xl p-7" style="background:linear-gradient(135deg,#1a1145,#1e1550);border:1px solid rgba(139,92,246,0.3)">
             <h2 class="text-xl font-black text-white text-center mb-2">تغيير كلمة السر</h2>
