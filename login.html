@@ -214,7 +214,7 @@
                         return;
                     }
                 }
-                // 3. PKCE flow — اعرض المودال لكن وقّف زر الحفظ حتى تجي الجلسة من onAuthStateChange
+                // 3. PKCE flow — اعرض المودال لكن وقّف زر الحفظ حتى تجي الجلسة
                 document.getElementById('resetModal').classList.remove('hidden');
                 var saveBtn = document.getElementById('resetSaveBtn');
                 var resEl = document.getElementById('resetResult');
@@ -223,8 +223,21 @@
                 resEl.style.color = '#a78bfa';
                 resEl.style.background = 'rgba(167,139,250,0.1)';
                 resEl.classList.remove('hidden');
-                // Timeout — لو الجلسة ما جات خلال 8 ثواني = الرابط منتهي
+                // Polling — تحقق من الجلسة كل ثانية (أقوى من الاعتماد على onAuthStateChange فقط)
+                var _pollInterval = setInterval(async function() {
+                    if (_recoverySession) { clearInterval(_pollInterval); return; }
+                    try {
+                        var pr = await sb.auth.getSession();
+                        if (pr.data && pr.data.session) {
+                            clearInterval(_pollInterval);
+                            clearTimeout(_recoveryTimeout);
+                            _onRecoveryReady(pr.data.session);
+                        }
+                    } catch(e) {}
+                }, 1000);
+                // Timeout — لو الجلسة ما جات خلال 90 ثانية = الرابط منتهي
                 _recoveryTimeout = setTimeout(function() {
+                    clearInterval(_pollInterval);
                     if (!_recoverySession) {
                         resEl.textContent = 'انتهت صلاحية الرابط — اضغط "نسيت كلمة السر" مرة ثانية';
                         resEl.style.color = '#f87171';
@@ -232,7 +245,7 @@
                         resEl.classList.remove('hidden');
                         if (saveBtn) saveBtn.disabled = true;
                     }
-                }, 8000);
+                }, 90000);
             })();
         }
 
