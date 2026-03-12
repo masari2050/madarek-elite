@@ -147,8 +147,7 @@
 
         async function init(){
             try{
-                var res = await sb.auth.getSession();
-                var session = res.data && res.data.session;
+                var session = await window._madarekRestoreSession(sb);
                 if(!session){ window.location.href = 'login.html'; return; }
                 currentUserId = session.user.id;
                 await loadLeaderboard('all');
