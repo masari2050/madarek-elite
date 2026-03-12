@@ -380,11 +380,7 @@
     function playSound(ok){ if(localStorage.getItem('soundEnabled')==='false')return; if(ok){createBeep(800,0.1,0.3);setTimeout(function(){createBeep(1000,0.15,0.3)},100);}else{createBeep(200,0.3,0.3);} }
 
     async function checkAuth(){
-        var s=await sb.auth.getSession(); var session=s.data.session;
-        // لو ما في session، جرب تجدده أول
-        if(!session){
-            try{ var r=await sb.auth.refreshSession(); session=r.data.session; }catch(e){}
-        }
+        var session=await window._madarekRestoreSession(sb);
         if(!session){location.href='login.html';return false;}
         currentUser=session.user;
         try{ var r=await sb.from('profiles').select('subscription_type').eq('id',currentUser.id).single(); if(r.data&&r.data.subscription_type)userSubscription=r.data.subscription_type; }catch(e){}
