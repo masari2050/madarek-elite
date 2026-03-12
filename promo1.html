@@ -56,8 +56,11 @@ display:flex; align-items:center; justify-content:center; flex-shrink:0;
 .sc-n{position:absolute;top:24px;left:20px;font-size:11px;color:rgba(255,255,255,.18);font-weight:700;z-index:10;}
 /* ══ CONTENT ══ */
 .content{position:relative;z-index:2;width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;}
-.tag{font-size:16px;font-weight:900;color:#fbbf24;letter-spacing:4px;text-align:center;margin-bottom:22px;background:rgba(251,191,36,.1);border:1.5px solid rgba(251,191,36,.3);display:inline-block;padding:8px 22px;border-radius:100px;width:auto;margin-left:auto;margin-right:auto;}
-.h1{font-size:clamp(34px,9vw,54px);font-weight:900;line-height:1.25;text-align:center;}
+.tag{font-size:clamp(38px,10vw,58px);font-weight:900;text-align:center;margin-bottom:16px;letter-spacing:2px;line-height:1.2;}
+.tag .t-gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;filter:drop-shadow(0 0 25px rgba(251,191,36,.4));}
+.tag .t-purple{background:linear-gradient(135deg,#a5b4fc,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 25px rgba(139,92,246,.4));}
+.tag .t-dot{color:rgba(255,255,255,.25);font-size:clamp(24px,6vw,36px);margin:0 4px;}
+.h1{font-size:clamp(26px,7vw,40px);font-weight:900;line-height:1.3;text-align:center;}
 .h1 .g{color:var(--gold);} .h1 .p{color:var(--lp);}
 .sub{font-size:clamp(17px,4.5vw,22px);color:rgba(196,181,253,.75);text-align:center;line-height:1.8;margin-top:18px;}
 .sub strong{color:#fff;font-size:clamp(19px,5vw,24px);}
@@ -156,7 +159,7 @@ transition:all .35s cubic-bezier(.34,1.56,.64,1);
   <div class="brand"><div class="b-ico"><svg viewBox="0 0 36 36" width="20" height="20" fill="none"><path d="M5 26L5 14L11.5 20L18 7L24.5 20L31 14L31 26Z" stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="b-name">مدارك النخبة</span></div>
   <div class="sc-n">1 / 6</div>
   <div class="content">
-    <div class="tag rv d1">قدرات · تحصيلي</div>
+    <div class="tag rv d1"><span class="t-gold">قدرات</span><span class="t-dot">·</span><span class="t-purple">تحصيلي</span></div>
     <h1 class="h1">
       <span class="rv d2" style="display:block;">باقي على اختبارك</span>
       <span class="rv d3 g" style="display:block;">أيام معدودة</span>
