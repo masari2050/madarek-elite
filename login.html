@@ -211,18 +211,22 @@
             if (!p1 || p1.length < 6) { res.textContent = 'كلمة السر لازم تكون 6 أحرف على الأقل'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             if (p1 !== p2) { res.textContent = 'كلمة السر ما تطابقت'; res.style.color = '#f87171'; res.classList.remove('hidden'); return; }
             try {
-                // أعد تفعيل جلسة الاسترداد إن كانت محفوظة
-                if (_recoverySession && _recoverySession.access_token && _recoverySession.refresh_token) {
-                    await sb.auth.setSession({
+                // أولاً: تحقق من الجلسة الحالية (يكون شغالة بعد PASSWORD_RECOVERY)
+                var { data: { session } } = await sb.auth.getSession();
+
+                // لو ما في جلسة، جرّب تفعيلها من _recoverySession (فقط لو getSession فشل)
+                if (!session && _recoverySession && _recoverySession.access_token && _recoverySession.refresh_token) {
+                    var setRes = await sb.auth.setSession({
                         access_token: _recoverySession.access_token,
                         refresh_token: _recoverySession.refresh_token
-                    }).catch(function(){});
+                    }).catch(function(){ return {}; });
+                    if (setRes.data && setRes.data.session) session = setRes.data.session;
                 }
-                // تحقق من الجلسة
-                var { data: { session } } = await sb.auth.getSession();
+
                 if (!session) {
-                    throw new Error('انتهت صلاحية الرابط — اطلب رابط جديد من "نسيت كلمة السر"');
+                    throw new Error('انتهت صلاحية الرابط — اطلب رابط جديد');
                 }
+
                 var { error } = await sb.auth.updateUser({ password: p1 });
                 if (error) throw error;
                 res.textContent = 'تم تغيير كلمة السر بنجاح! جاري تحويلك...';
@@ -231,7 +235,7 @@
                 setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
             } catch(e) {
                 var msg = e.message || '';
-                if (msg.includes('JWT') || msg.includes('invalid') || msg.includes('expired') || msg.includes('session')) {
+                if (msg.includes('JWT') || msg.includes('invalid') || msg.includes('expired') || msg.includes('session') || msg.includes('انتهت')) {
                     res.textContent = 'انتهت صلاحية الرابط — اضغط "نسيت كلمة السر" مرة ثانية';
                 } else {
                     res.textContent = 'ما قدرنا نغير — ' + msg;
