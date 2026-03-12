@@ -58,10 +58,19 @@
         .exp-text { color: #78350f; font-size: 13px; line-height: 1.7; overflow-wrap: break-word; word-wrap: break-word; }
         .exp-correct { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 12px; margin-top: 8px; color: #166534; font-size: 12px; font-weight: 700; }
 
-        /* 📖 نظام القطع */
+        /* 📖 نظام القطع — inline above question */
         .passage-card { background: rgba(255,255,255,0.97); border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
-        .passage-text-area { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 0.875rem; padding: 18px 16px; line-height: 2; font-size: 14.5px; color: #78350f; max-height: 400px; overflow-y: auto; }
+        .passage-inline { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1.5px solid #fde68a; border-radius: 1rem; margin-bottom: 12px; overflow: hidden; transition: all 0.3s ease; }
+        .passage-inline-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; user-select: none; }
+        .passage-inline-header:hover { background: rgba(245,158,11,0.08); }
+        .passage-inline-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; padding: 0 14px; }
+        .passage-inline-body.open { max-height: 500px; overflow-y: auto; padding: 0 14px 14px; }
+        .passage-inline-text { line-height: 2; font-size: 14px; color: #78350f; }
         .passage-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px; }
+        .passage-toggle-icon { transition: transform 0.3s ease; color: #d97706; font-size: 18px; font-weight: 900; }
+        .passage-toggle-icon.open { transform: rotate(180deg); }
+        .passage-qnum { color: #92400e; font-size: 10px; font-weight: 600; opacity: 0.7; }
+        /* Keep overlay CSS for backwards compat */
         .passage-overlay { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px; }
         .passage-overlay-content { background: #fff; border-radius: 1.25rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 24px; position: relative; }
         .passage-overlay-close { position: sticky; top: 0; z-index: 10; }
@@ -128,13 +137,18 @@
         </div>
 
         <div id="questionCard" class="hidden animate-card">
-            <!-- 📖 زر عرض القطعة (يظهر فقط لأسئلة القطع) -->
-            <div id="passageBar" class="hidden mb-3">
-                <button onclick="openPassageOverlay()" class="btn-show-passage">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
-                    📖 عرض القطعة
-                </button>
-                <span id="passageQNum" class="text-purple-300/50 text-[10px] mr-2"></span>
+            <!-- 📖 القطعة inline فوق السؤال -->
+            <div id="passageInline" class="passage-inline hidden">
+                <div class="passage-inline-header" onclick="togglePassageInline()">
+                    <div class="flex items-center gap-2">
+                        <span class="passage-badge">📖 القطعة</span>
+                        <span id="passageQNum" class="passage-qnum"></span>
+                    </div>
+                    <span id="passageToggleIcon" class="passage-toggle-icon">▼</span>
+                </div>
+                <div id="passageInlineBody" class="passage-inline-body">
+                    <div id="passageInlineText" class="passage-inline-text"></div>
+                </div>
             </div>
             <div class="question-card p-6 mb-4">
                 <div class="mb-4 flex items-center justify-between">
@@ -545,7 +559,14 @@
         // هنا نكتفي بالتأكد من الترتيب
     }
 
-    // 📖 فتح نافذة القطعة
+    // 📖 فتح/قفل القطعة inline
+    function togglePassageInline() {
+        var body = document.getElementById('passageInlineBody');
+        var icon = document.getElementById('passageToggleIcon');
+        body.classList.toggle('open');
+        icon.classList.toggle('open');
+    }
+    // 📖 overlay — backward compat
     function openPassageOverlay() {
         if (!_currentPassageText) return;
         document.getElementById('passageOverlayText').innerHTML = safeSanitize(_currentPassageText.replace(/\n/g, '<br>'));
@@ -576,22 +597,28 @@
             document.getElementById('sectionTitle').textContent=sn[q.section]||q.section;
         }
 
-        // 📖 نظام القطع — عرض زر القطعة وتتبع أسئلة القطعة
-        var passageBar = document.getElementById('passageBar');
+        // 📖 نظام القطع — القطعة inline فوق السؤال
+        var passageInline = document.getElementById('passageInline');
         if (q.passage_id && q.passage_text) {
             _currentPassageText = q.passage_text;
-            // حساب رقم السؤال داخل القطعة
             var pQuestions = currentQuestions.filter(function(qq) { return qq.passage_id === q.passage_id; });
             var pIdx = pQuestions.indexOf(q) + 1;
-            passageBar.classList.remove('hidden');
-            document.getElementById('passageQNum').textContent = 'سؤال ' + pIdx + ' من ' + pQuestions.length + ' على القطعة';
-            // أول سؤال في القطعة: نفتح القطعة تلقائياً
+            passageInline.classList.remove('hidden');
+            document.getElementById('passageQNum').textContent = 'سؤال ' + pIdx + ' من ' + pQuestions.length;
+            document.getElementById('passageInlineText').innerHTML = safeSanitize(_currentPassageText.replace(/\n/g, '<br>'));
+            // أول سؤال في القطعة: القطعة مفتوحة تلقائياً — باقي الأسئلة مطوية
+            var body = document.getElementById('passageInlineBody');
+            var icon = document.getElementById('passageToggleIcon');
             if (q.passage_order === 1 || pIdx === 1) {
-                setTimeout(function() { openPassageOverlay(); }, 300);
+                body.classList.add('open');
+                icon.classList.add('open');
+            } else {
+                body.classList.remove('open');
+                icon.classList.remove('open');
             }
         } else {
             _currentPassageText = '';
-            passageBar.classList.add('hidden');
+            passageInline.classList.add('hidden');
         }
 
         var imgC=document.getElementById('questionImageContainer');
