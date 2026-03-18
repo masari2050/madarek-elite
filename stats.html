@@ -8,12 +8,15 @@
 <meta name="theme-color" content="#0f0a2e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مدارك النخبة | إحصائياتي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="session-keeper.js"></script>
 <style>
 *{font-family:'Tajawal',sans-serif;box-sizing:border-box}
+html{overflow-y:scroll}
 body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh;color:white}
 .glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:20px}
 .bar-track{height:8px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden}
@@ -67,12 +70,12 @@ body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#15104
   </div>
 </div>
 
-<div id="loadEl" style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.3)">
+<div id="loadEl" style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.3);min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.2s ease">
   <div style="font-size:36px;margin-bottom:12px">⏳</div>
   <div class="pulse">جاري تحميل إحصائياتك...</div>
 </div>
 
-<div id="app" style="display:none;max-width:800px;margin:0 auto;padding:20px 16px 60px">
+<div id="app" style="display:none;max-width:800px;margin:0 auto;padding:20px 16px 60px;opacity:0;transition:opacity 0.3s ease">
 
   <!-- Title + Period Filter -->
   <div class="fu" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
@@ -192,8 +195,13 @@ async function init(){
     }
     allAttempts=res.data;
     applyPeriodFilter();
-    document.getElementById('loadEl').style.display='none';
-    document.getElementById('app').style.display='block';
+    document.getElementById('loadEl').style.opacity='0';
+    setTimeout(function(){
+        document.getElementById('loadEl').style.display='none';
+        var appEl=document.getElementById('app');
+        appEl.style.display='block';
+        requestAnimationFrame(function(){ appEl.style.opacity='1'; });
+    }, 200);
 }
 
 function applyPeriodFilter(){
@@ -601,6 +609,7 @@ function openSmartReport(){
 init();
 </script>
 <script src="banner.js"></script>
+<script src="app-install-bar.js"></script>
 <script src="analytics.js"></script>
 <script src="engagement.js"></script>
 </body>
