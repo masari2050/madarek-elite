@@ -1,7 +1,7 @@
 /**
  * banner.js — مدارك النخبة — البنر الذكي
  * يعمل تلقائياً على كل الصفحات
- * يحذف البنرات القديمة ويستبدلها بالجديدة من Supabase
+ * v2 — بدون اهتزاز: يحجز المساحة قبل ما يعرض المحتوى
  */
 (function(){
   'use strict';
@@ -11,7 +11,6 @@
 
   // ═══ 1. حذف البنرات القديمة ═══
   function removeOldBanners(){
-    // الأنماط القديمة
     var selectors = [
       '.marquee-container',
       '#top-announcement-bar',
@@ -23,7 +22,6 @@
         document.querySelectorAll(sel).forEach(function(el){ el.remove(); });
       } catch(e){}
     });
-    // بنرات بالـ gradient القديم
     document.querySelectorAll('div').forEach(function(el){
       var bg = el.style.background || '';
       var cls = el.className || '';
@@ -36,13 +34,11 @@
     });
   }
 
-  // ═══ 2. اسم الصفحة الحالية ═══
   function getPageName(){
     var path = location.pathname.split('/').pop().replace('.html','').replace('.htm','');
     return path || 'index';
   }
 
-  // ═══ 3. هل المستخدم مسجّل دخول؟ ═══
   function isLoggedIn(){
     try {
       var tk = localStorage.getItem('sb-czzcmbxejxbotjemyuqf-auth-token');
@@ -52,7 +48,6 @@
     } catch(e){ return false; }
   }
 
-  // ═══ 4. جلب إعدادات البنر من Supabase ═══
   async function fetchSettings(){
     try {
       var resp = await fetch(SB_URL + '/rest/v1/site_settings?select=key,value', {
@@ -69,7 +64,6 @@
     } catch(e){ console.error('Banner: fetch error', e); return {}; }
   }
 
-  // ═══ 5. فحص التاريخ والوضع ═══
   function shouldShow(mode, from, to){
     if(mode === 'off') return false;
     if(mode === 'always') return true;
@@ -79,11 +73,9 @@
       if(to   && new Date(to)   < now) return false;
       return true;
     }
-    // أي قيمة ثانية = دائم
     return true;
   }
 
-  // ═══ 6. فحص الصفحة ═══
   function isPageAllowed(pages, pageName){
     if(!pages || pages === 'all') return true;
     var allowed = pages.split(',').map(function(p){ return p.trim().toLowerCase(); });
@@ -94,21 +86,18 @@
   function buildBanner(id, text, emoji, bg, color, size, bold, italic, style, closable, link, linkText, speed){
     if(!text) return null;
 
-    // هل المستخدم أغلقه سابقاً؟
     var closeKey = 'madarek_banner_closed_' + id + '_' + text.substring(0,20).replace(/\s/g,'');
     if(closable === 'true' && localStorage.getItem(closeKey)) return null;
 
-    var fullText = text; // emoji is now typed directly in the text field
+    var fullText = text;
 
     var bar = document.createElement('div');
     bar.id = 'madarek-' + id;
     bar.style.cssText = 'width:100%;background:' + (bg||'#6366f1') + ';color:' + (color||'#fff') + ';font-size:' + (size||13) + 'px;font-weight:' + (bold==='true'?'900':'500') + ';font-style:' + (italic==='true'?'italic':'normal') + ';font-family:Tajawal,sans-serif;position:relative;z-index:9998;overflow:hidden;min-height:36px;display:flex;align-items:center;padding:6px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.15);';
 
     if(style === 'marquee'){
-      // ═══ Marquee متحرك ═══
       var track = document.createElement('div');
       track.style.cssText = 'display:flex;width:max-content;animation:madarek-marquee-rtl ' + (speed ? parseInt(speed) : Math.max(30, text.length * 0.7)) + 's linear infinite;';
-      // نكرر النص 8 مرات لضمان عدم وجود فراغ
       var repeated = '';
       for(var i=0; i<8; i++){
         repeated += '<span style="padding:0 60px;white-space:nowrap;display:inline-block">';
@@ -122,7 +111,6 @@
       track.innerHTML = repeated;
       bar.appendChild(track);
 
-      // إضافة keyframes إذا ما كانت موجودة
       if(!document.getElementById('madarek-marquee-css')){
         var css = document.createElement('style');
         css.id = 'madarek-marquee-css';
@@ -130,7 +118,6 @@
         document.head.appendChild(css);
       }
     } else {
-      // ═══ ثابت ═══
       bar.style.justifyContent = 'center';
       bar.style.textAlign = 'center';
       bar.style.padding = '8px 16px';
@@ -147,18 +134,9 @@
       closeBtn.innerHTML = '✕';
       closeBtn.style.cssText = 'position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:' + (color||'#fff') + ';font-size:16px;cursor:pointer;opacity:0.6;padding:4px 8px;z-index:2;';
       closeBtn.onclick = function(){
-        bar.remove();
+        bar.style.display = 'none';
         localStorage.setItem(closeKey, '1');
-        var w = document.getElementById('madarek-banner-wrapper');
-        if(w) {
-          var newH = w.offsetHeight;
-          if(w.style.position === 'fixed'){
-            document.body.style.paddingTop = newH + 'px';
-            var n = document.getElementById('mainNav');
-            if(n) n.style.top = newH + 'px';
-          }
-          if(newH === 0) { w.remove(); document.body.style.paddingTop = '0'; var n2 = document.getElementById('mainNav'); if(n2) n2.style.top = '0'; }
-        }
+        recalcBannerHeight();
       };
       bar.appendChild(closeBtn);
       bar.style.paddingLeft = '40px';
@@ -167,7 +145,29 @@
     return bar;
   }
 
-  // ═══ 8. التشغيل الرئيسي ═══
+  // ═══ إعادة حساب ارتفاع البنر بدون اهتزاز ═══
+  function recalcBannerHeight(){
+    var wrapper = document.getElementById('madarek-banner-wrapper');
+    if(!wrapper) return;
+    var nav = document.getElementById('mainNav');
+    // نحسب ارتفاع البنرات المرئية فقط
+    var visibleH = 0;
+    var children = wrapper.children;
+    for(var i = 0; i < children.length; i++){
+      if(children[i].style.display !== 'none') visibleH += children[i].offsetHeight;
+    }
+    if(wrapper.style.position === 'fixed'){
+      document.body.style.paddingTop = visibleH + 'px';
+      if(nav) nav.style.top = visibleH + 'px';
+    }
+    if(visibleH === 0){
+      wrapper.remove();
+      document.body.style.paddingTop = '';
+      if(nav) nav.style.top = '';
+    }
+  }
+
+  // ═══ 8. التشغيل الرئيسي — بدون اهتزاز ═══
   async function initBanners(){
     removeOldBanners();
 
@@ -175,12 +175,11 @@
     if(!Object.keys(settings).length) return;
 
     var pageName = getPageName();
-    // لا نعرض البنر أثناء الاختبار أو النتائج — يشتت الطالب
     if(pageName === 'practice' || pageName === 'results') return;
     var logged = isLoggedIn();
-    var totalHeight = 0;
+    var banners = [];
 
-    // ─── البنر العام (الزوار + الكل) ───
+    // ─── البنر العام ───
     var pubMode  = settings['banner_mode'] || settings['banner2_mode'] ? settings['banner_mode'] : 'off';
     var pubText  = settings['banner_text'] || '';
     if(pubText && shouldShow(pubMode, settings['banner_from'], settings['banner_to'])){
@@ -195,13 +194,7 @@
           settings['banner_link']||'', settings['banner_link_text']||'',
           settings['banner_speed']||''
         );
-        if(pubBar){
-          document.body.insertBefore(pubBar, document.body.firstChild);
-          // Adjust login-wrapper height if present
-          var lw = document.querySelector('.login-wrapper');
-          if(lw) lw.style.minHeight = 'calc(100vh - ' + pubBar.offsetHeight + 'px)';
-          totalHeight += pubBar.offsetHeight;
-        }
+        if(pubBar) banners.push(pubBar);
       }
     }
 
@@ -210,20 +203,17 @@
       var intMode = settings['banner2_mode'] || 'off';
       var intText = settings['banner2_text'] || settings['internal_banner_text'] || '';
       var intModeAlt = settings['internal_banner_mode'] || intMode;
-      
-      // ندعم كلا النظامين (banner2_ و internal_banner_)
       var finalMode = intMode !== 'off' ? intMode : intModeAlt;
       var finalText = intText || settings['internal_banner_text'] || '';
-      
-      if(finalText && shouldShow(finalMode, 
-          settings['banner2_from']||settings['internal_banner_from']||'', 
+
+      if(finalText && shouldShow(finalMode,
+          settings['banner2_from']||settings['internal_banner_from']||'',
           settings['banner2_to']||settings['internal_banner_to']||'')){
-        
         var intPages = settings['banner2_pages'] || settings['internal_banner_pages'] || 'all';
         if(isPageAllowed(intPages, pageName)){
           var intBar = buildBanner(
             'internal-banner', finalText,
-            settings['banner2_emoji']||'', 
+            settings['banner2_emoji']||'',
             settings['banner2_bg']||settings['internal_banner_bg']||'#10b981',
             settings['banner2_color']||settings['internal_banner_color']||'#fff',
             settings['banner2_size']||settings['internal_banner_size']||'13',
@@ -233,47 +223,43 @@
             settings['banner2_link']||'', settings['banner2_link_text']||'',
             settings['banner2_speed']||''
           );
-          if(intBar){
-            // نضيفه بعد البنر العام
-            var pubEl = document.getElementById('madarek-public-banner');
-            if(pubEl && pubEl.nextSibling){
-              document.body.insertBefore(intBar, pubEl.nextSibling);
-            } else if(pubEl){
-              pubEl.parentNode.insertBefore(intBar, pubEl.nextSibling);
-            } else {
-              document.body.insertBefore(intBar, document.body.firstChild);
-            }
-            totalHeight += intBar.offsetHeight;
-          }
+          if(intBar) banners.push(intBar);
         }
       }
     }
 
-    // ─── ترتيب البنر مع الهيدر ───
-    if(totalHeight > 0) {
-      var wrapper = document.createElement('div');
-      wrapper.id = 'madarek-banner-wrapper';
+    if(banners.length === 0) return;
 
-      var isMobile = window.innerWidth < 768;
-      var nav = document.getElementById('mainNav');
-      var hasFixedNav = nav && getComputedStyle(nav).position === 'fixed';
+    // ─── بناء الـ wrapper مرة وحدة + حجز المساحة بدون اهتزاز ───
+    var wrapper = document.createElement('div');
+    wrapper.id = 'madarek-banner-wrapper';
 
-      var bannerEls = document.querySelectorAll('body > [id^="madarek-"]');
-      for(var b = 0; b < bannerEls.length; b++) wrapper.appendChild(bannerEls[b]);
+    // نخفي الـ wrapper أولاً عشان نحسب ارتفاعه بدون ما يسبب reflow مرئي
+    wrapper.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;visibility:hidden;';
+    for(var b = 0; b < banners.length; b++) wrapper.appendChild(banners[b]);
+    document.body.insertBefore(wrapper, document.body.firstChild);
 
-      if(hasFixedNav){
-        // ── صفحة فيها ناف ثابت: البنر يكون fixed فوق الناف ──
-        wrapper.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;';
-        document.body.insertBefore(wrapper, document.body.firstChild);
-        var wH = wrapper.offsetHeight;
-        document.body.style.paddingTop = (parseFloat(getComputedStyle(document.body).paddingTop)||0) + wH + 'px';
-        nav.style.top = wH + 'px';
-      } else {
-        // ── بدون ناف ثابت: البنر عادي في أعلى الصفحة يمشي مع السكرول ──
-        wrapper.style.cssText = 'position:relative;z-index:50;';
-        document.body.insertBefore(wrapper, document.body.firstChild);
-      }
+    // نحسب الارتفاع وهو مخفي
+    var wH = wrapper.offsetHeight;
+
+    var nav = document.getElementById('mainNav');
+    var hasFixedNav = nav && getComputedStyle(nav).position === 'fixed';
+
+    if(hasFixedNav){
+      // نحجز المساحة أولاً ثم نظهر البنر
+      document.body.style.paddingTop = (parseFloat(getComputedStyle(document.body).paddingTop)||0) + wH + 'px';
+      nav.style.top = wH + 'px';
+      // الآن نظهر — المساحة محجوزة فما يصير اهتزاز
+      wrapper.style.visibility = 'visible';
+    } else {
+      // بدون ناف ثابت: البنر عادي يمشي مع السكرول
+      wrapper.style.cssText = 'position:relative;z-index:50;';
+      // نضيفه مرئي — لكن لأنه relative فهو يزيح المحتوى بسلاسة
     }
+
+    // ─── ضبط login-wrapper إن وجد ───
+    var lw = document.querySelector('.login-wrapper');
+    if(lw) lw.style.minHeight = 'calc(100vh - ' + wH + 'px)';
   }
 
   // ═══ التشغيل ═══

@@ -31,6 +31,12 @@
         .bg-f{background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2)}
         .bg-m{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
         .bg-y{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+        .an-sort-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(196,181,253,0.5);padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;font-family:Tajawal,sans-serif}
+        .an-sort-btn:hover{background:rgba(255,255,255,0.08);color:#c4b5fd}
+        .an-sort-active{background:rgba(99,102,241,0.2)!important;border-color:rgba(99,102,241,0.4)!important;color:#818cf8!important}
+        .peak-bar{flex:1;min-width:0;border-radius:2px 2px 0 0;transition:height .5s ease;cursor:pointer;position:relative}
+        .peak-bar:hover{opacity:0.8}
+        .peak-bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;white-space:nowrap;z-index:10}
         .bg-a{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
         .tab{display:none}.tab.on{display:block}
         .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:12px;font-size:.95rem;font-weight:700;z-index:999;animation:sd .4s ease}
@@ -392,43 +398,97 @@
         <button class="bp" onclick="loadAnalytics()">🔄 تحديث</button>
     </div>
 
-    <!-- ─── شريط الإحصائيات المدمج ─── -->
-    <div class="glass p-4 mb-4">
-        <div class="grid grid-cols-4 lg:grid-cols-7 gap-3">
-            <div class="text-center">
-                <p class="text-emerald-400/50 text-[10px] mb-0.5">🟢 متصل</p>
-                <p class="text-2xl font-black text-emerald-400" id="an-online">-</p>
-            </div>
-            <div class="text-center">
-                <p class="text-indigo-400/50 text-[10px] mb-0.5">👁️ زوار اليوم</p>
-                <p class="text-2xl font-black text-indigo-400" id="an-visitors">-</p>
-            </div>
-            <div class="text-center">
-                <p class="text-purple-400/50 text-[10px] mb-0.5">📄 مشاهدات</p>
-                <p class="text-2xl font-black text-purple-400" id="an-pageviews">-</p>
-            </div>
-            <div class="text-center">
-                <p class="text-yellow-400/50 text-[10px] mb-0.5">💪 تدربوا</p>
-                <p class="text-2xl font-black text-yellow-400" id="an-practiced">-</p>
-            </div>
-            <div class="text-center hidden lg:block" style="border-right:1px solid rgba(255,255,255,0.05);padding-right:12px">
-                <p class="text-purple-200/30 text-[10px] mb-0.5">جدد اليوم</p>
-                <p class="text-xl font-black text-indigo-400" id="an-new-today">-</p>
-            </div>
-            <div class="text-center hidden lg:block">
-                <p class="text-purple-200/30 text-[10px] mb-0.5">جدد الأسبوع</p>
-                <p class="text-xl font-black text-purple-400" id="an-new-week">-</p>
-            </div>
-            <div class="text-center hidden lg:block">
-                <p class="text-purple-200/30 text-[10px] mb-0.5">جدد الشهر</p>
-                <p class="text-xl font-black text-emerald-400" id="an-new-month">-</p>
+    <!-- ─── شريط الإحصائيات ─── -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-4">
+        <div class="glass p-3 text-center" style="border:1px solid rgba(16,185,129,0.2);background:rgba(16,185,129,0.06)">
+            <p class="text-emerald-400/70 text-xs font-bold mb-1">🟢 متصل الآن</p>
+            <p class="text-3xl font-black text-emerald-400" id="an-online" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+        <div class="glass p-3 text-center" style="border:1px solid rgba(99,102,241,0.2);background:rgba(99,102,241,0.06)">
+            <p class="text-indigo-400/70 text-xs font-bold mb-1">👁️ زوار اليوم</p>
+            <p class="text-3xl font-black text-indigo-400" id="an-visitors" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+        <div class="glass p-3 text-center" style="border:1px solid rgba(139,92,246,0.2);background:rgba(139,92,246,0.06)">
+            <p class="text-purple-400/70 text-xs font-bold mb-1">📄 مشاهدات</p>
+            <p class="text-3xl font-black text-purple-400" id="an-pageviews" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+        <div class="glass p-3 text-center" style="border:1px solid rgba(251,191,36,0.2);background:rgba(251,191,36,0.06)">
+            <p class="text-yellow-400/70 text-xs font-bold mb-1">💪 تدرّبوا اليوم</p>
+            <p class="text-3xl font-black text-yellow-400" id="an-practiced" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+        <div class="glass p-3 text-center hidden lg:block" style="border:1px solid rgba(99,102,241,0.15)">
+            <p class="text-indigo-400/60 text-xs font-bold mb-1">🆕 جدد اليوم</p>
+            <p class="text-2xl font-black text-indigo-400" id="an-new-today" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+        <div class="glass p-3 text-center hidden lg:block" style="border:1px solid rgba(139,92,246,0.15)">
+            <p class="text-purple-400/60 text-xs font-bold mb-1">📅 جدد الأسبوع</p>
+            <p class="text-2xl font-black text-purple-400" id="an-new-week" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+        <div class="glass p-3 text-center hidden lg:block" style="border:1px solid rgba(16,185,129,0.15)">
+            <p class="text-emerald-400/60 text-xs font-bold mb-1">📆 جدد الشهر</p>
+            <p class="text-2xl font-black text-emerald-400" id="an-new-month" style="font-family:'Cairo',sans-serif">-</p>
+        </div>
+    </div>
+    <!-- موبايل: أعضاء جدد -->
+    <div class="grid grid-cols-3 gap-3 mb-4 lg:hidden">
+        <div class="glass p-2.5 text-center" style="border:1px solid rgba(99,102,241,0.15)"><p class="text-indigo-400/60 text-[10px] font-bold">جدد اليوم</p><p class="text-xl font-black text-indigo-400" id="an-new-today-m" style="font-family:'Cairo',sans-serif">-</p></div>
+        <div class="glass p-2.5 text-center" style="border:1px solid rgba(139,92,246,0.15)"><p class="text-purple-400/60 text-[10px] font-bold">جدد الأسبوع</p><p class="text-xl font-black text-purple-400" id="an-new-week-m" style="font-family:'Cairo',sans-serif">-</p></div>
+        <div class="glass p-2.5 text-center" style="border:1px solid rgba(16,185,129,0.15)"><p class="text-emerald-400/60 text-[10px] font-bold">جدد الشهر</p><p class="text-xl font-black text-emerald-400" id="an-new-month-m" style="font-family:'Cairo',sans-serif">-</p></div>
+    </div>
+
+    <!-- ─── المتصدرين + معدل التحويل ─── -->
+    <div class="grid lg:grid-cols-2 gap-4 mb-4">
+        <!-- 🏆 المتصدرين -->
+        <div class="glass p-4">
+            <h3 class="font-bold text-sm mb-3">🏆 المتصدرين</h3>
+            <div id="an-leaderboard" class="space-y-2">
+                <p class="text-purple-200/30 text-center py-4 text-xs">جاري التحميل...</p>
             </div>
         </div>
-        <!-- موبايل: أعضاء جدد -->
-        <div class="grid grid-cols-3 gap-3 mt-3 lg:hidden" style="border-top:1px solid rgba(255,255,255,0.05);padding-top:10px">
-            <div class="text-center"><p class="text-purple-200/30 text-[10px]">جدد اليوم</p><p class="text-lg font-black text-indigo-400" id="an-new-today-m">-</p></div>
-            <div class="text-center"><p class="text-purple-200/30 text-[10px]">جدد الأسبوع</p><p class="text-lg font-black text-purple-400" id="an-new-week-m">-</p></div>
-            <div class="text-center"><p class="text-purple-200/30 text-[10px]">جدد الشهر</p><p class="text-lg font-black text-emerald-400" id="an-new-month-m">-</p></div>
+        <!-- 📊 معدل التحويل -->
+        <div class="glass p-4">
+            <h3 class="font-bold text-sm mb-3">📊 معدل التحويل</h3>
+            <div id="an-funnel" class="space-y-3">
+                <p class="text-purple-200/30 text-center py-4 text-xs">جاري التحميل...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── نشاط الأسبوع (يومي) ─── -->
+    <div class="glass p-4 mb-4">
+        <h3 class="font-bold text-sm mb-3">📅 نشاط الأسبوع <span class="text-purple-200/25 text-[10px]">(أسئلة محلولة يومياً)</span></h3>
+        <div id="an-weekly-activity" style="display:flex;align-items:flex-end;gap:6px;height:80px;direction:ltr">
+            <p class="text-purple-200/30 text-center py-4 text-xs w-full" style="align-self:center">جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- ─── أوقات الذروة + التطبيق vs المتصفح ─── -->
+    <div class="grid lg:grid-cols-2 gap-4 mb-4">
+        <!-- ⏰ أوقات الذروة -->
+        <div class="glass p-4">
+            <h3 class="font-bold text-sm mb-2">⏰ أوقات الذروة <span class="text-purple-200/25 text-[10px]">(آخر 7 أيام — توقيت الرياض)</span></h3>
+            <div id="an-peak-hours" style="display:flex;align-items:flex-end;gap:2px;height:120px;direction:ltr;padding:0 2px">
+                <p class="text-purple-200/30 text-center py-4 text-xs w-full" style="align-self:center">جاري التحميل...</p>
+            </div>
+            <!-- ساعات واضحة -->
+            <div id="an-peak-labels" style="display:flex;justify-content:space-between;margin-top:6px;direction:ltr;padding:0 2px">
+                <span class="text-purple-200/30 text-[9px]">12am</span>
+                <span class="text-purple-200/30 text-[9px]">3am</span>
+                <span class="text-purple-200/30 text-[9px]">6am</span>
+                <span class="text-purple-200/30 text-[9px]">9am</span>
+                <span class="text-purple-200/30 text-[9px]">12pm</span>
+                <span class="text-purple-200/30 text-[9px]">3pm</span>
+                <span class="text-purple-200/30 text-[9px]">6pm</span>
+                <span class="text-purple-200/30 text-[9px]">9pm</span>
+            </div>
+            <div id="an-peak-summary" class="text-center mt-3" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:8px"></div>
+        </div>
+        <!-- 📱 مصادر الزيارات -->
+        <div class="glass p-4">
+            <h3 class="font-bold text-sm mb-3">📱 مصادر الزيارات</h3>
+            <div id="an-app-vs-web" class="space-y-3">
+                <p class="text-purple-200/30 text-center py-4 text-xs">جاري التحميل...</p>
+            </div>
         </div>
     </div>
 
@@ -448,9 +508,32 @@
 
         <!-- تفاصيل المستخدمين -->
         <div class="lg:col-span-3 glass p-4">
-            <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center justify-between mb-2">
                 <h3 class="font-bold text-sm">👥 المستخدمين</h3>
-                <input type="text" class="inp" id="an-search-user" placeholder="🔍 بحث..." style="max-width:160px;font-size:11px;padding:5px 10px" oninput="filterUserDetails()">
+                <div class="flex items-center gap-2">
+                    <button class="bs text-[10px]" id="an-export-csv" onclick="exportUsersCSV()" title="تصدير CSV">📥 تصدير</button>
+                    <input type="text" class="inp" id="an-search-user" placeholder="🔍 بحث كل الأعضاء..." style="max-width:160px;font-size:11px;padding:5px 10px" oninput="debouncedSearch()">
+                </div>
+            </div>
+            <!-- ─── أزرار الترتيب والفلترة ─── -->
+            <div class="flex flex-wrap gap-1.5 mb-3">
+                <span class="text-purple-200/30 text-[10px] self-center ml-1">ترتيب:</span>
+                <button class="an-sort-btn an-sort-active" data-sort="most" onclick="sortUsers('most',this)">الأكثر تدريباً</button>
+                <button class="an-sort-btn" data-sort="least" onclick="sortUsers('least',this)">الأقل</button>
+                <button class="an-sort-btn" data-sort="recent" onclick="sortUsers('recent',this)">آخر نشاط</button>
+                <button class="an-sort-btn" data-sort="newest" onclick="sortUsers('newest',this)">أحدث تسجيل</button>
+                <span style="width:1px;height:16px;background:rgba(255,255,255,0.08);align-self:center;margin:0 4px"></span>
+                <select class="inp" id="an-filter-sub" onchange="filterUserDetails()" style="font-size:10px;padding:3px 8px;min-width:auto">
+                    <option value="all">كل الاشتراكات</option>
+                    <option value="monthly">شهري</option>
+                    <option value="yearly">سنوي</option>
+                    <option value="free">مجاني</option>
+                </select>
+                <select class="inp" id="an-filter-activity" onchange="filterUserDetails()" style="font-size:10px;padding:3px 8px;min-width:auto">
+                    <option value="all">الكل</option>
+                    <option value="active">نشط (7 أيام)</option>
+                    <option value="idle">خامل</option>
+                </select>
             </div>
             <div style="overflow-x:auto">
                 <table class="w-full text-sm" id="an-users-table">
@@ -477,12 +560,8 @@
         </div>
     </div>
 
-    <!-- ─── الأجهزة + الصفحات + الإشعارات ─── -->
-    <div class="grid lg:grid-cols-3 gap-4">
-        <div class="glass p-4">
-            <h3 class="font-bold text-sm mb-2">📱 الأجهزة</h3>
-            <div id="an-devices" class="space-y-2"></div>
-        </div>
+    <!-- ─── الصفحات + الإشعارات ─── -->
+    <div class="grid lg:grid-cols-2 gap-4">
         <div class="glass p-4">
             <h3 class="font-bold text-sm mb-2">🔥 أكثر الصفحات</h3>
             <div id="an-pages" class="space-y-1"></div>
@@ -3164,24 +3243,6 @@ async function loadAnalytics(){
     var nwm=$('an-new-week-m');if(nwm)nwm.textContent=stats.new_users_week||0;
     var nmm=$('an-new-month-m');if(nmm)nmm.textContent=stats.new_users_month||0;
 
-    // الأجهزة — مدمج
-    var devH = '';
-    var totalDev = 0;
-    (stats.device_breakdown||[]).forEach(function(d){totalDev+=d.count});
-    (stats.device_breakdown||[]).forEach(function(d){
-        var pct = totalDev > 0 ? Math.round(d.count/totalDev*100) : 0;
-        var icon = d.device === 'mobile' ? '📱' : '💻';
-        var name = d.device === 'mobile' ? 'جوال' : 'كمبيوتر';
-        var color = d.device === 'mobile' ? '#6366f1' : '#10b981';
-        devH += '<div class="flex items-center gap-2 py-1.5"><span class="text-sm">'+icon+'</span>'
-            + '<span class="text-white text-xs font-bold flex-1">'+name+'</span>'
-            + '<span class="text-xs font-bold" style="color:'+color+'">'+pct+'%</span>'
-            + '<span class="text-purple-200/25 text-[10px]">('+d.count+')</span>'
-            + '<div class="flex-1" style="max-width:80px;height:4px;background:rgba(255,255,255,0.05);border-radius:2px"><div style="width:'+pct+'%;height:100%;background:'+color+';border-radius:2px"></div></div>'
-            + '</div>';
-    });
-    $('an-devices').innerHTML = devH || '<p class="text-purple-200/30 text-center py-3 text-xs">لا توجد بيانات</p>';
-
     // أكثر الصفحات — أول 6 فقط
     var pageNames = {'/':'الرئيسية','/index':'الرئيسية','/dashboard':'لوحة التحكم','/practice':'التدريب','/select-section':'اختيار القسم','/pricing':'الأسعار','/stats':'الإحصائيات','/profile':'الملف الشخصي','/login':'تسجيل الدخول','/register':'التسجيل','/leaderboard':'المتصدرون','/mistakes':'مراجعة الأخطاء','/contact':'تواصل معنا'};
     var pagesH = '';
@@ -3204,6 +3265,12 @@ async function loadAnalytics(){
 
     // تفاصيل المستخدمين
     loadUserDetails(0);
+
+    // التحليلات المتقدمة
+    loadPeakHours();
+    loadAppVsWeb();
+    loadConversionFunnel();
+    loadWeeklyActivity();
 }
 
 var _actPageNames = {'/':'الرئيسية','/index':'الرئيسية','/dashboard':'لوحة الطالب','/practice':'التدريب','/select-section':'اختيار القسم','/pricing':'الأسعار','/stats':'الإحصائيات','/profile':'الملف الشخصي','/login':'تسجيل الدخول','/register':'التسجيل','/leaderboard':'المتصدرون','/mistakes':'مراجعة الأخطاء','/contact':'تواصل معنا','/share-result':'مشاركة النتيجة','/results':'النتائج','/admin':'لوحة التحكم','/admin-login':'دخول الإدارة'};
@@ -3330,7 +3397,11 @@ async function loadUserDetails(page){
     });
     anUsersData = users;
 
-    renderUserDetails(users);
+    // ترتيب افتراضي: الأكثر تدريباً
+    sortUsers(anCurrentSort||'most', document.querySelector('.an-sort-btn[data-sort="'+(anCurrentSort||'most')+'"]'));
+
+    // المتصدرين
+    renderLeaderboard();
 
     $('an-page-num').textContent = 'صفحة ' + (page+1);
     $('an-prev-btn').disabled = page === 0;
@@ -3387,15 +3458,6 @@ function renderUserDetails(users){
     $('an-users-body').innerHTML = h || '<tr><td colspan="8" class="text-center text-purple-200/50 py-6">لا يوجد أعضاء</td></tr>';
 }
 
-function filterUserDetails(){
-    var q = ($('an-search-user').value||'').toLowerCase().trim();
-    if(!q){renderUserDetails(anUsersData);return}
-    var filtered = anUsersData.filter(function(u){
-        return (u.full_name||'').toLowerCase().indexOf(q)!==-1 || (u.email||'').toLowerCase().indexOf(q)!==-1;
-    });
-    renderUserDetails(filtered);
-}
-
 function timeAgo(dateStr){
     var diff = Date.now() - new Date(dateStr).getTime();
     var mins = Math.floor(diff/60000);
@@ -3425,6 +3487,341 @@ setInterval(function(){
         loadActivityFeed().catch(function(){});
     }
 }, 30000);
+
+/* ═══════════════════════════════════════
+   📊 التحليلات المتقدمة
+═══════════════════════════════════════ */
+
+// ─── ترتيب المستخدمين ───
+var anCurrentSort = 'most';
+var _searchTimer = null;
+var _allUsersCache = null; // كاش كل المستخدمين للبحث الشامل
+
+function sortUsers(type, btnEl){
+    anCurrentSort = type;
+    document.querySelectorAll('.an-sort-btn').forEach(function(b){b.classList.remove('an-sort-active')});
+    if(btnEl) btnEl.classList.add('an-sort-active');
+    filterUserDetails();
+}
+
+function debouncedSearch(){
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(function(){
+        var q = ($('an-search-user').value||'').trim();
+        if(q.length >= 2){
+            searchAllUsers(q);
+        } else {
+            // لو فاضي أو حرف واحد — نعرض الصفحة الحالية
+            filterUserDetails();
+        }
+    }, 400);
+}
+
+async function searchAllUsers(query){
+    try{
+        // بحث من الـ DB مباشرة — كل المستخدمين
+        var q = query.toLowerCase();
+        if(!_allUsersCache){
+            // جلب كل المستخدمين مرة وحدة وكاشها
+            var{data:all}=await sb.rpc('get_users_details',{page_num:0,page_size:500});
+            _allUsersCache = all || [];
+        }
+        var results = _allUsersCache.filter(function(u){
+            return (u.full_name||'').toLowerCase().indexOf(q)!==-1 || (u.email||'').toLowerCase().indexOf(q)!==-1;
+        });
+        // ترتيب حسب الفلتر النشط
+        results.sort(function(a,b){
+            if(anCurrentSort === 'most') return (b.total_attempts||0) - (a.total_attempts||0);
+            if(anCurrentSort === 'least') return (a.total_attempts||0) - (b.total_attempts||0);
+            if(anCurrentSort === 'recent') return new Date(b.last_practice||0) - new Date(a.last_practice||0);
+            if(anCurrentSort === 'newest') return new Date(b.created_at||0) - new Date(a.created_at||0);
+            return 0;
+        });
+        renderUserDetails(results);
+        $('an-page-num').textContent = 'نتائج البحث: ' + results.length;
+        $('an-prev-btn').disabled = true;
+        $('an-next-btn').disabled = true;
+    }catch(e){console.log('search error',e)}
+}
+
+async function filterUserDetails(){
+    var q = ($('an-search-user').value||'').toLowerCase().trim();
+    var subFilter = $('an-filter-sub') ? $('an-filter-sub').value : 'all';
+    var actFilter = $('an-filter-activity') ? $('an-filter-activity').value : 'all';
+    var sevenDaysAgo = Date.now() - 7*24*60*60*1000;
+
+    // لو فيه فلتر نشط (مو "all" في كلهم) — نجلب كل المستخدمين
+    var needsFullData = (subFilter !== 'all' || actFilter !== 'all' || q.length >= 2);
+    var sourceData = anUsersData;
+
+    if(needsFullData){
+        if(!_allUsersCache){
+            $('an-users-body').innerHTML='<tr><td colspan="8" class="text-center text-purple-200/50 py-6 text-xs">جاري البحث في كل الأعضاء...</td></tr>';
+            var{data:all}=await sb.rpc('get_users_details',{page_num:0,page_size:500});
+            _allUsersCache = all || [];
+        }
+        sourceData = _allUsersCache;
+    }
+
+    var filtered = sourceData.filter(function(u){
+        // بحث نصي
+        if(q && (u.full_name||'').toLowerCase().indexOf(q)===-1 && (u.email||'').toLowerCase().indexOf(q)===-1) return false;
+        // فلتر الاشتراك
+        if(subFilter !== 'all' && u.subscription_type !== subFilter) return false;
+        // فلتر النشاط
+        if(actFilter === 'active' && (!u.last_practice || new Date(u.last_practice).getTime() < sevenDaysAgo)) return false;
+        if(actFilter === 'idle' && u.last_practice && new Date(u.last_practice).getTime() >= sevenDaysAgo) return false;
+        return true;
+    });
+
+    // ترتيب
+    filtered.sort(function(a,b){
+        if(anCurrentSort === 'most') return (b.total_attempts||0) - (a.total_attempts||0);
+        if(anCurrentSort === 'least') return (a.total_attempts||0) - (b.total_attempts||0);
+        if(anCurrentSort === 'recent') return new Date(b.last_practice||0) - new Date(a.last_practice||0);
+        if(anCurrentSort === 'newest') return new Date(b.created_at||0) - new Date(a.created_at||0);
+        return 0;
+    });
+
+    renderUserDetails(filtered);
+
+    // عرض عدد النتائج لو فيه فلتر
+    if(needsFullData){
+        $('an-page-num').textContent = 'نتائج: ' + filtered.length + ' من ' + sourceData.length;
+        $('an-prev-btn').disabled = true;
+        $('an-next-btn').disabled = true;
+    }
+}
+
+// ─── 🏆 المتصدرين ───
+function renderLeaderboard(){
+    var sorted = anUsersData.slice().filter(function(u){return u.total_attempts > 0}).sort(function(a,b){return (b.total_attempts||0)-(a.total_attempts||0)});
+    var top5 = sorted.slice(0,5);
+    if(top5.length === 0){
+        $('an-leaderboard').innerHTML='<p class="text-purple-200/30 text-center py-4 text-xs">لا توجد بيانات بعد</p>';
+        return;
+    }
+    var medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+    var h = '';
+    top5.forEach(function(u,i){
+        var accColor = u.accuracy >= 70 ? '#34d399' : u.accuracy >= 40 ? '#fbbf24' : '#f87171';
+        h += '<div class="flex items-center gap-3 py-2" style="'+(i<3?'background:rgba(255,255,255,0.03);border-radius:10px;padding:8px 10px':'')+'"><span class="text-xl min-w-[28px] text-center">'+medals[i]+'</span>'
+            + '<span class="text-lg">'+(u.avatar_emoji||'👤')+'</span>'
+            + '<div class="flex-1 min-w-0"><p class="text-white text-sm font-bold truncate">'+escHtml(u.full_name||'بدون اسم')+'</p>'
+            + '<p class="text-purple-200/40 text-[10px]">'+u.total_attempts+' سؤال — <span style="color:'+accColor+'">'+u.accuracy+'%</span> صح</p></div>'
+            + '<span class="text-purple-200/30 text-[10px]">'+(u.last_practice?timeAgo(u.last_practice):'—')+'</span></div>';
+    });
+    $('an-leaderboard').innerHTML = h;
+}
+
+// ─── ⏰ أوقات الذروة ───
+async function loadPeakHours(){
+    try{
+        var weekAgo = new Date(Date.now()-7*24*60*60*1000).toISOString();
+        var{data:events}=await sb.from('analytics_events').select('created_at,user_id').gte('created_at',weekAgo).limit(5000);
+        if(!events||events.length===0){$('an-peak-hours').innerHTML='<p class="text-purple-200/30 text-center py-4 text-xs w-full" style="align-self:center">لا توجد بيانات</p>';return}
+
+        // استثناء الأدمن
+        var adminProfiles = [];
+        try{
+            var{data:ap}=await sb.from('profiles').select('id').in('role',['admin']);
+            if(ap) adminProfiles = ap.map(function(p){return p.id});
+        }catch(e){}
+        var filtered = events.filter(function(e){return !adminProfiles.includes(e.user_id)});
+
+        // تجميع حسب الساعة (توقيت الرياض)
+        var hours = new Array(24).fill(0);
+        filtered.forEach(function(e){
+            var h = parseInt(new Intl.DateTimeFormat('en',{hour:'numeric',hour12:false,timeZone:'Asia/Riyadh'}).format(new Date(e.created_at)));
+            hours[h]++;
+        });
+
+        var maxH = Math.max.apply(null,hours)||1;
+        var totalEvents = filtered.length;
+        var barsH = '';
+        var peakHour = 0, peakVal = 0;
+        for(var i=0;i<24;i++){
+            if(hours[i]>peakVal){peakVal=hours[i];peakHour=i}
+            var pct = Math.round(hours[i]/maxH*100);
+            var color = pct > 70 ? '#10b981' : pct > 40 ? '#8b5cf6' : pct > 15 ? 'rgba(99,102,241,0.4)' : 'rgba(99,102,241,0.15)';
+            var ampm = i===0?'12am':i<12?(i+'am'):i===12?'12pm':((i-12)+'pm');
+            barsH += '<div class="peak-bar" data-tip="'+ampm+' — '+hours[i]+' حدث" style="height:'+Math.max(pct,4)+'%;background:'+color+'"></div>';
+        }
+        $('an-peak-hours').innerHTML = barsH;
+
+        // ملخص الذروة
+        var peakAmPm = peakHour===0?'12am':peakHour<12?(peakHour+'am'):peakHour===12?'12pm':((peakHour-12)+'pm');
+        var summaryEl = $('an-peak-summary');
+        if(summaryEl){
+            summaryEl.innerHTML = '<span class="text-purple-200/40 text-[10px]">أعلى ذروة: </span><span class="text-white font-bold text-xs">'+peakAmPm+'</span><span class="text-purple-200/30 text-[10px]"> ('+peakVal+' حدث)</span>'
+                + '<span class="text-purple-200/20 text-[10px] mx-2">|</span>'
+                + '<span class="text-purple-200/40 text-[10px]">إجمالي: </span><span class="text-indigo-400 font-bold text-xs">'+totalEvents+'</span><span class="text-purple-200/30 text-[10px]"> حدث</span>';
+        }
+    }catch(e){console.log('peak hours error',e)}
+}
+
+// ─── 📱 مصادر الزيارات (تطبيق / جوال متصفح / كمبيوتر) ───
+async function loadAppVsWeb(){
+    try{
+        var weekAgo = new Date(Date.now()-7*24*60*60*1000).toISOString();
+        var{data:events}=await sb.from('analytics_events').select('metadata,device').gte('created_at',weekAgo).eq('event_type','page_view').limit(5000);
+        if(!events||events.length===0){$('an-app-vs-web').innerHTML='<p class="text-purple-200/30 text-center py-4 text-xs">لا توجد بيانات</p>';return}
+
+        var appCount=0, mobileBrowserCount=0, desktopCount=0;
+        events.forEach(function(e){
+            var meta = e.metadata;
+            if(typeof meta === 'string') try{meta=JSON.parse(meta)}catch(x){meta={}}
+            // كشف التطبيق
+            if(meta && (meta.source === 'app' || meta.is_app === true)){
+                appCount++;
+            } else if(e.device === 'mobile'){
+                mobileBrowserCount++;
+            } else {
+                desktopCount++;
+            }
+        });
+        var total = appCount + mobileBrowserCount + desktopCount;
+
+        var sources = [
+            {icon:'📲', name:'التطبيق', count:appCount, color:'#10b981'},
+            {icon:'📱', name:'جوال (متصفح)', count:mobileBrowserCount, color:'#6366f1'},
+            {icon:'💻', name:'كمبيوتر', count:desktopCount, color:'#f59e0b'}
+        ];
+
+        var h = '';
+        sources.forEach(function(s){
+            var pct = total > 0 ? Math.round(s.count/total*100) : 0;
+            h += '<div class="flex items-center gap-3 py-2">'
+                + '<span class="text-xl min-w-[24px] text-center">'+s.icon+'</span>'
+                + '<div class="flex-1"><div class="flex justify-between mb-1">'
+                + '<span class="text-white text-xs font-bold">'+s.name+'</span>'
+                + '<span class="font-bold text-xs" style="color:'+s.color+'">'+pct+'% <span class="text-purple-200/25 text-[10px] font-normal">('+s.count+')</span></span></div>'
+                + '<div style="height:5px;background:rgba(255,255,255,0.05);border-radius:3px"><div style="width:'+pct+'%;height:100%;background:'+s.color+';border-radius:3px;transition:width .5s"></div></div>'
+                + '</div></div>';
+        });
+
+        // ملخص
+        h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px;text-align:center">'
+            + '<span class="text-purple-200/40 text-[10px]">إجمالي المشاهدات: </span><span class="text-white font-bold text-xs">'+total+'</span></div>';
+
+        $('an-app-vs-web').innerHTML = h;
+    }catch(e){console.log('app vs web error',e)}
+}
+
+// ─── 📊 معدل التحويل ───
+async function loadConversionFunnel(){
+    try{
+        // جلب الأعداد من profiles
+        var{count:totalUsers}=await sb.from('profiles').select('id',{count:'exact',head:true});
+        var{count:subscribers}=await sb.from('profiles').select('id',{count:'exact',head:true}).neq('subscription_type','free');
+        var{count:monthlyCount}=await sb.from('profiles').select('id',{count:'exact',head:true}).eq('subscription_type','monthly');
+        var{count:yearlyCount}=await sb.from('profiles').select('id',{count:'exact',head:true}).eq('subscription_type','yearly');
+
+        // نمو الأسبوع
+        var weekAgo = new Date(Date.now()-7*24*60*60*1000).toISOString();
+        var twoWeeksAgo = new Date(Date.now()-14*24*60*60*1000).toISOString();
+        var{count:newThisWeek}=await sb.from('profiles').select('id',{count:'exact',head:true}).gte('created_at',weekAgo);
+        var{count:newLastWeek}=await sb.from('profiles').select('id',{count:'exact',head:true}).gte('created_at',twoWeeksAgo).lt('created_at',weekAgo);
+
+        var growthPct = newLastWeek > 0 ? Math.round((newThisWeek - newLastWeek)/newLastWeek * 100) : (newThisWeek > 0 ? 100 : 0);
+        var growthColor = growthPct >= 0 ? '#10b981' : '#f87171';
+        var growthIcon = growthPct >= 0 ? '📈' : '📉';
+        var subRate = totalUsers > 0 ? Math.round(subscribers/totalUsers*100) : 0;
+
+        var funnelSteps = [
+            {label:'إجمالي المسجّلين', value:totalUsers||0, color:'#6366f1', icon:'👥'},
+            {label:'مشتركين (مدفوع)', value:subscribers||0, color:'#10b981', icon:'💎'},
+            {label:'شهري', value:monthlyCount||0, color:'#818cf8', icon:'📅'},
+            {label:'سنوي', value:yearlyCount||0, color:'#fbbf24', icon:'🏆'}
+        ];
+
+        var h = '';
+        var maxVal = Math.max(totalUsers||1, 1);
+        funnelSteps.forEach(function(s){
+            var pct = Math.round(s.value/maxVal*100);
+            h += '<div class="flex items-center gap-2"><span class="text-sm min-w-[20px]">'+s.icon+'</span>'
+                + '<div class="flex-1"><div class="flex justify-between mb-1"><span class="text-white text-xs font-bold">'+s.label+'</span><span class="font-bold text-xs" style="color:'+s.color+'">'+s.value+'</span></div>'
+                + '<div style="height:5px;background:rgba(255,255,255,0.05);border-radius:3px"><div style="width:'+pct+'%;height:100%;background:'+s.color+';border-radius:3px"></div></div>'
+                + '</div></div>';
+        });
+
+        // معدل التحويل + النمو
+        h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:12px;padding-top:10px" class="flex justify-between">'
+            + '<div class="text-center"><p class="text-purple-200/40 text-[10px]">معدل التحويل</p><p class="text-lg font-black text-indigo-400">'+subRate+'%</p></div>'
+            + '<div class="text-center"><p class="text-purple-200/40 text-[10px]">نمو الأسبوع '+growthIcon+'</p><p class="text-lg font-black" style="color:'+growthColor+'">'+(growthPct>=0?'+':'')+growthPct+'%</p>'
+            + '<p class="text-purple-200/25 text-[9px]">'+newThisWeek+' جديد vs '+newLastWeek+' الأسبوع الماضي</p></div></div>';
+
+        $('an-funnel').innerHTML = h;
+    }catch(e){console.log('funnel error',e)}
+}
+
+// ─── 📅 نشاط الأسبوع (أسئلة يومية) ───
+async function loadWeeklyActivity(){
+    try{
+        var weekAgo = new Date(Date.now()-7*24*60*60*1000).toISOString();
+        var{data:attempts}=await sb.from('attempts').select('answered_at').gte('answered_at',weekAgo);
+        if(!attempts||attempts.length===0){$('an-weekly-activity').innerHTML='<p class="text-purple-200/30 text-center py-4 text-xs w-full" style="align-self:center">لا توجد بيانات</p>';return}
+
+        var days = {};
+        var dayNames = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+        for(var d=6;d>=0;d--){
+            var dt = new Date(Date.now()-d*24*60*60*1000);
+            var key = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh'}).format(dt);
+            days[key] = {count:0, name:dayNames[dt.getDay()], isToday:d===0};
+        }
+        attempts.forEach(function(a){
+            if(!a.answered_at) return;
+            var key = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh'}).format(new Date(a.answered_at));
+            if(days[key]) days[key].count++;
+        });
+
+        var maxCount = 1;
+        Object.keys(days).forEach(function(k){if(days[k].count>maxCount)maxCount=days[k].count});
+
+        var h = '';
+        Object.keys(days).forEach(function(k){
+            var day = days[k];
+            var pct = Math.round(day.count/maxCount*100);
+            var color = day.isToday ? '#10b981' : '#6366f1';
+            var border = day.isToday ? 'border:2px solid #10b981;' : '';
+            h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'
+                + '<span class="text-white font-bold text-[11px]">'+day.count+'</span>'
+                + '<div style="width:100%;height:'+Math.max(pct,5)+'%;background:'+color+';border-radius:4px;min-height:4px;'+border+'transition:height .5s"></div>'
+                + '<span class="text-purple-200/40 text-[9px]">'+(day.isToday?'<span class="text-emerald-400 font-bold">اليوم</span>':day.name)+'</span>'
+                + '</div>';
+        });
+        $('an-weekly-activity').innerHTML = h;
+    }catch(e){console.log('weekly activity error',e)}
+}
+
+// ─── 📥 تصدير CSV ───
+function exportUsersCSV(){
+    if(!anUsersData||anUsersData.length===0){toast('لا توجد بيانات للتصدير');return}
+    var headers = ['الاسم','الإيميل','الاشتراك','الكوبون','أسئلة حلها','نسبة الصح','آخر تدريب','تاريخ التسجيل'];
+    var rows = [headers.join(',')];
+    anUsersData.forEach(function(u){
+        rows.push([
+            '"'+(u.full_name||'بدون اسم').replace(/"/g,'""')+'"',
+            u.email||'',
+            u.subscription_type||'free',
+            u.used_coupon||'',
+            u.total_attempts||0,
+            (u.accuracy||0)+'%',
+            u.last_practice ? new Date(u.last_practice).toLocaleDateString('ar-SA') : '',
+            u.created_at ? new Date(u.created_at).toLocaleDateString('ar-SA') : ''
+        ].join(','));
+    });
+    var bom = '\uFEFF';
+    var blob = new Blob([bom+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'madarek-users-'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('تم تصدير '+anUsersData.length+' مستخدم',true);
+}
+
 </script>
 </body>
 </html>
