@@ -491,7 +491,8 @@
                     updatePricesWithCoupon(discType, discVal, planType);
                     // لو الخصم 100% أو مجاني — نفعّل عبر Edge Function (create-payment) مو من الكلاينت
                     if(discType === 'free' || (discType === 'percentage' && discVal >= 100)){
-                        var subType = planType === 'yearly' ? 'yearly' : 'monthly';
+                        var durMonths = data.duration_months || 1;
+                        var subType = (planType === 'yearly' || durMonths >= 12) ? 'yearly' : 'monthly';
                         var subLabel = subType === 'yearly' ? 'السنوي' : 'الشهري';
                         var {data:authData} = await sb.auth.getSession();
                         if(authData && authData.session){
@@ -509,7 +510,8 @@
                             } else if(payRes && payRes.free){
                                 console.log('[Coupon] ✅ تم تفعيل الاشتراك المجاني بنجاح');
                                 localStorage.removeItem('khawariz_coupon');
-                                document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + subLabel + ' مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
+                                var actualPlan = (payRes.plan === 'yearly') ? 'السنوي' : 'الشهري';
+                                document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + actualPlan + ' مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
                             } else {
                                 console.error('[Coupon] استجابة غير متوقعة:', payRes);
                                 document.getElementById('couponErrMsg').textContent = 'خطأ غير متوقع — حاول مرة ثانية';
