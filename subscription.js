@@ -74,8 +74,26 @@ async function getSubscriptionStatus() {
         return { plan: 'free', status: 'active', isFree: true, isPaid: false };
     }
 
-    const plan = profile.subscription_type || 'free';
-    const isFree = (plan === 'free' || !plan);
+    let plan = profile.subscription_type || 'free';
+    let isFree = (plan === 'free' || !plan);
+
+    // ✅ Failsafe: لو المستخدم "free" لكن عنده دفع ناجح — نصلحه تلقائياً
+    if (isFree) {
+        const fixed = await _checkAndFixStuckSubscription(profile.id);
+        if (fixed) {
+            const sb = _getSB();
+            if (sb) {
+                const { data: fp } = await sb.from('profiles')
+                    .select('subscription_type, subscription_end')
+                    .eq('id', profile.id).single();
+                if (fp) {
+                    plan = fp.subscription_type || 'free';
+                    isFree = (plan === 'free' || !plan);
+                    profile.subscription_end = fp.subscription_end;
+                }
+            }
+        }
+    }
 
     // التحقق من تاريخ انتهاء الاشتراك
     let isExpired = false;
@@ -108,6 +126,34 @@ async function _expireSubscription(userId) {
     await sb.from('profiles')
         .update({ subscription_type: 'free', subscription_end: null })
         .eq('id', userId);
+}
+
+// Failsafe — إصلاح الاشتراك المعلق (دفع ناجح لكن مو مفعّل)
+async function _checkAndFixStuckSubscription(userId) {
+    const sb = _getSB();
+    if (!sb) return false;
+    try {
+        const { data: payment } = await sb.from('payments')
+            .select('plan_type, paid_at, coupon_code')
+            .eq('user_id', userId).eq('status', 'paid')
+            .order('paid_at', { ascending: false }).limit(1).maybeSingle();
+        if (!payment || !payment.paid_at) return false;
+        const daysSincePaid = (Date.now() - new Date(payment.paid_at).getTime()) / 86400000;
+        if (daysSincePaid > 30) return false;
+        const durMonths = payment.plan_type === 'yearly' ? 12 : 1;
+        const endDate = new Date();
+        endDate.setMonth(endDate.getMonth() + durMonths);
+        const { error } = await sb.from('profiles').update({
+            subscription_type: payment.plan_type,
+            subscription_end: endDate.toISOString()
+        }).eq('id', userId);
+        if (!error) {
+            console.log('[Subscription] ✅ Failsafe: تم إصلاح اشتراك معلق');
+            _clearCache();
+            return true;
+        }
+    } catch (e) { console.error('[Subscription] خطأ في فحص الاشتراك المعلق:', e); }
+    return false;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -277,7 +323,7 @@ async function activateSubscription(plan, durationMonths, couponCode) {
                 .eq('code', couponCode.toUpperCase());
 
             // زيادة العداد بشكل صحيح
-            await sb.rpc('increment_coupon_usage', { coupon_code: couponCode.toUpperCase() })
+            await sb.rpc('increment_coupon_usage', { p_code: couponCode.toUpperCase() })
                 .catch(async () => {
                     // fallback لو مافيه RPC function
                     const { data: c } = await sb.from('coupons')

@@ -70,55 +70,67 @@
 
     function show(id){ document.querySelectorAll('[id^="state-"]').forEach(function(el){el.classList.add('hidden')}); document.getElementById(id).classList.remove('hidden'); }
 
+    var MAX_RETRIES = 3;
+    var RETRY_DELAY = 3000;
+
+    async function verifyWithRetry(paymentId, attempt) {
+        attempt = attempt || 1;
+        console.log('[payment-callback] محاولة التحقق #' + attempt + ' — paymentId: ' + paymentId);
+        try {
+            var {data, error} = await sb.functions.invoke('verify-payment', {
+                body: { paymentId: paymentId }
+            });
+            if ((error || !data || data.status === 'unpaid') && attempt < MAX_RETRIES) {
+                await new Promise(function(r){ setTimeout(r, RETRY_DELAY) });
+                return verifyWithRetry(paymentId, attempt + 1);
+            }
+            return { data: data, error: error };
+        } catch(e) {
+            if (attempt < MAX_RETRIES) {
+                await new Promise(function(r){ setTimeout(r, RETRY_DELAY) });
+                return verifyWithRetry(paymentId, attempt + 1);
+            }
+            return { data: null, error: e };
+        }
+    }
+
     (async function(){
-        // Get paymentId from URL
         var params = new URLSearchParams(window.location.search);
         var paymentId = params.get('paymentId') || params.get('Id');
         var errorParam = params.get('error');
 
-        // If error from MyFatoorah
-        if(errorParam){
-            show('state-error');
-            return;
-        }
-
+        if(errorParam){ show('state-error'); return; }
         if(!paymentId){
             show('state-error');
             document.getElementById('error-msg').textContent = 'رابط غير صحيح — ما لقينا بيانات الدفع';
             return;
         }
 
-        // محاولة جلب الجلسة (اختياري — الدفع يشتغل حتى بدون جلسة)
         try { await sb.auth.getSession(); } catch(_){}
 
-        try{
-            // Call Edge Function to verify payment
-            var{data, error} = await sb.functions.invoke('verify-payment', {
-                body: { paymentId: paymentId }
-            });
+        var result = await verifyWithRetry(paymentId);
+        var data = result.data;
+        var error = result.error;
 
-            if(error || !data || data.error){
-                show('state-error');
-                document.getElementById('error-msg').textContent = (data && data.error) || 'فشل التحقق من الدفع. تواصل معنا لو الخصم طُلع من حسابك.';
-                return;
-            }
-
-            if(data.status === 'paid'){
-                show('state-success');
-                // Google Ads Purchase Conversion
-                gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':parseFloat(data.amount)||1.0,'currency':'SAR','transaction_id':paymentId||''});
-                // TikTok Purchase Conversion
-                ttq.track('CompletePayment',{value:parseFloat(data.amount)||1.0,currency:'SAR',content_name:data.plan==='yearly'?'Yearly Plan':'Monthly Plan'});
-                var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';
-                document.getElementById('success-plan').textContent = 'تم تفعيل اشتراكك ال' + planName + ' بنجاح!';
-                document.getElementById('success-detail').textContent = 'المبلغ: ' + data.amount + ' ريال — ينتهي: ' + (data.expires || '');
-            } else {
-                show('state-error');
-                document.getElementById('error-msg').textContent = 'الدفع لم يكتمل. حالة الدفع: ' + (data.status || 'غير معروف');
-            }
-        }catch(e){
+        if(error || !data || data.error){
             show('state-error');
-            document.getElementById('error-msg').textContent = 'حدث خطأ — حاول مرة ثانية أو تواصل معنا';
+            document.getElementById('error-msg').textContent = (data && data.error) || 'فشل التحقق من الدفع. تواصل معنا لو الخصم طُلع من حسابك.';
+            return;
+        }
+
+        if(data.status === 'paid'){
+            show('state-success');
+            gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':parseFloat(data.amount)||1.0,'currency':'SAR','transaction_id':paymentId||''});
+            ttq.track('CompletePayment',{value:parseFloat(data.amount)||1.0,currency:'SAR',content_name:data.plan==='yearly'?'Yearly Plan':'Monthly Plan'});
+            var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';
+            document.getElementById('success-plan').textContent = 'تم تفعيل اشتراكك ال' + planName + ' بنجاح!';
+            var detail = data.amount > 0
+                ? 'المبلغ: ' + data.amount + ' ريال — ينتهي: ' + (data.expires || '')
+                : 'اشتراك مجاني بكوبون — ينتهي: ' + (data.expires || '');
+            document.getElementById('success-detail').textContent = detail;
+        } else {
+            show('state-error');
+            document.getElementById('error-msg').textContent = 'الدفع لم يكتمل. حالة الدفع: ' + (data.status || 'غير معروف');
         }
     })();
     </script>

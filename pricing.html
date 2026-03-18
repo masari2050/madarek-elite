@@ -489,42 +489,32 @@
                     }));
                     // ✨ تحديث الأسعار بصرياً على البطاقات
                     updatePricesWithCoupon(discType, discVal, planType);
-                    // لو الخصم 100% أو مجاني — نفعّل الاشتراك مباشرة
+                    // لو الخصم 100% أو مجاني — نفعّل عبر Edge Function (create-payment) مو من الكلاينت
                     if(discType === 'free' || (discType === 'percentage' && discVal >= 100)){
                         var subType = planType === 'yearly' ? 'yearly' : 'monthly';
                         var subLabel = subType === 'yearly' ? 'السنوي' : 'الشهري';
-                        var {data:{session}} = await sb.auth.getSession();
-                        if(session){
-                            // ✅ تفعيل الاشتراك عبر RPC (يتجاوز trigger الحماية)
-                            var durMonths = data.duration_months || (subType === 'yearly' ? 12 : 1);
-                            var rpcRes = await sb.rpc('activate_subscription_by_coupon', {
-                                p_subscription_type: subType,
-                                p_duration_months: durMonths
+                        var {data:authData} = await sb.auth.getSession();
+                        if(authData && authData.session){
+                            console.log('[Coupon] كوبون مجاني — تفعيل عبر create-payment Edge Function');
+                            var freshToken = authData.session.access_token;
+                            var {data:payRes, error:payErr} = await sb.functions.invoke('create-payment', {
+                                body: { plan: subType, coupon: data.code },
+                                headers: { 'Authorization': 'Bearer ' + freshToken }
                             });
-                            if(rpcRes.error) console.error('activate_subscription_by_coupon error:', rpcRes.error);
-                            // ✅ تسجيل عملية الدفع (كوبون مجاني)
-                            await sb.from('payments').insert({
-                                user_id: session.user.id,
-                                plan_type: subType,
-                                amount: 0,
-                                currency: 'SAR',
-                                provider: 'coupon',
-                                status: 'paid',
-                                coupon_code: data.code,
-                                coupon_discount: discVal,
-                                paid_at: new Date().toISOString()
-                            });
-                            // ✅ تسجيل حدث استخدام الكوبون
-                            await sb.from('coupon_events').insert({
-                                coupon_code: data.code,
-                                event_type: 'applied',
-                                source: 'pricing',
-                                user_id: session.user.id,
-                                page: 'pricing.html'
-                            });
-                            // ✅ زيادة عداد الاستخدام عبر RPC آمن
-                            await sb.rpc('increment_coupon_usage', { p_code: data.code });
-                            document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + subLabel + ' مجاناً لمدة ' + durMonths + ' شهر! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
+                            if(payErr || (payRes && payRes.error)){
+                                console.error('[Coupon] خطأ في تفعيل الكوبون المجاني:', payErr || payRes.error);
+                                document.getElementById('couponErrMsg').textContent = (payRes && payRes.error) || 'خطأ في التفعيل — حاول مرة ثانية';
+                                document.getElementById('couponError').classList.remove('hidden');
+                                document.getElementById('couponSuccess').classList.add('hidden');
+                            } else if(payRes && payRes.free){
+                                console.log('[Coupon] ✅ تم تفعيل الاشتراك المجاني بنجاح');
+                                localStorage.removeItem('khawariz_coupon');
+                                document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + subLabel + ' مجاناً! 🎉<br><a href="select-section.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ ابدأ التدريب الآن</a>';
+                            } else {
+                                console.error('[Coupon] استجابة غير متوقعة:', payRes);
+                                document.getElementById('couponErrMsg').textContent = 'خطأ غير متوقع — حاول مرة ثانية';
+                                document.getElementById('couponError').classList.remove('hidden');
+                            }
                         } else {
                             document.getElementById('couponMsg').innerHTML = '✓ ' + dt + '<br><a href="login.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">سجّل دخول عشان يتفعّل الكوبون</a>';
                         }
