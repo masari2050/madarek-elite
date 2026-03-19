@@ -156,7 +156,8 @@ serve(async (req) => {
 
       console.log(`[apply-coupon] ✅ FREE activation done. Verify: type=${verify?.subscription_type}, end=${verify?.subscription_end}`)
 
-      if (verify?.subscription_type === 'free' || !verify?.subscription_type || verify?.subscription_type !== subType) {
+      // Check that subscription is NOT free (it could be monthly or yearly - both are valid)
+      if (!verify || verify.subscription_type === 'free' || !verify.subscription_type) {
         console.error('[apply-coupon] ❌ PROFILE UPDATE FAILED SILENTLY!')
         return jsonRes({ error: 'فشل تفعيل الاشتراك — تواصل مع الدعم عبر الواتساب' }, 500)
       }
