@@ -130,11 +130,20 @@ serve(async (req) => {
         paid_at: new Date().toISOString(),
       })
 
-      // Activate subscription directly (Trigger will also fire as backup)
-      await supabaseAdmin.from('profiles').update({
-        subscription_type: subType,
-        subscription_end: endDate.toISOString(),
-      }).eq('id', user.id)
+      // Activate subscription via SECURITY DEFINER RPC (bypasses RLS)
+      const { error: rpcErr } = await supabaseAdmin.rpc('activate_subscription_by_coupon', {
+        p_user_id: user.id,
+        p_subscription_type: subType,
+        p_duration_months: durMonths
+      })
+      if (rpcErr) {
+        console.error('[create-payment] RPC error:', rpcErr.message)
+        // Fallback: direct update
+        await supabaseAdmin.from('profiles').update({
+          subscription_type: subType,
+          subscription_end: endDate.toISOString(),
+        }).eq('id', user.id)
+      }
 
       // Increment coupon usage
       if (couponData) {
