@@ -489,33 +489,49 @@
                     }));
                     // ✨ تحديث الأسعار بصرياً على البطاقات
                     updatePricesWithCoupon(discType, discVal, planType);
-                    // لو الخصم 100% أو مجاني — نفعّل عبر apply-coupon Edge Function
+                    // لو الخصم 100% أو مجاني — نفعّل عبر create-payment (نفس مسار الاشتراك)
                     if(discType === 'free' || (discType === 'percentage' && discVal >= 100)){
-                        var {data:authData, error:refreshErr} = await sb.auth.refreshSession();
-                        if(!refreshErr && authData && authData.session){
-                            console.log('[Coupon] كوبون مجاني — تفعيل عبر apply-coupon Edge Function');
-                            var {data:payRes, error:payErr} = await sb.functions.invoke('apply-coupon', {
-                                body: { code: data.code, plan: planType !== 'all' ? planType : null }
-                            });
-                            if(payErr || (payRes && payRes.error)){
-                                console.error('[Coupon] خطأ:', payErr || payRes.error);
-                                document.getElementById('couponErrMsg').textContent = (payRes && payRes.error) || 'خطأ في التفعيل — حاول مرة ثانية';
-                                document.getElementById('couponError').classList.remove('hidden');
-                                document.getElementById('couponSuccess').classList.add('hidden');
-                            } else if(payRes && payRes.success && payRes.free){
-                                console.log('[Coupon] ✅ تم التفعيل:', payRes);
-                                localStorage.removeItem('khawariz_coupon');
-                                // ✅ مسح كاش الاشتراك عشان الداشبورد يقرأ البيانات الجديدة
-                                if(typeof _clearCache === 'function') _clearCache();
-                                // مسح أي كاش محلي للـ profile
-                                try { window._profileCache = null; window._profileCacheTime = 0; } catch(e){}
-                                var actualPlan = (payRes.plan === 'yearly') ? 'السنوي' : 'الشهري';
-                                document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + actualPlan + ' مجاناً! 🎉<br><small style="color:rgba(255,255,255,0.7)">جاري التحويل للوحة التحكم...</small>';
-                                // ✅ توجيه تلقائي للداشبورد بعد 2 ثانية
-                                setTimeout(function(){ window.location.href = 'dashboard.html?activated=1'; }, 2000);
-                            } else {
-                                console.error('[Coupon] استجابة غير متوقعة:', payRes);
-                                document.getElementById('couponErrMsg').textContent = 'خطأ غير متوقع — حاول مرة ثانية';
+                        var {data:refreshData2, error:refreshErr2} = await sb.auth.refreshSession();
+                        if(!refreshErr2 && refreshData2 && refreshData2.session){
+                            console.log('[Coupon] كوبون مجاني — تفعيل عبر create-payment');
+                            var durMonths = data.duration_months || 1;
+                            var freePlan = (durMonths >= 12) ? 'yearly' : 'monthly';
+                            try {
+                                var freshToken2 = refreshData2.session.access_token;
+                                var {data:payRes, error:payErr} = await sb.functions.invoke('create-payment', {
+                                    body: { plan: freePlan, coupon: data.code },
+                                    headers: { 'Authorization': 'Bearer ' + freshToken2 }
+                                });
+                                if(payErr){
+                                    var errMsg2 = 'خطأ في التفعيل — حاول مرة ثانية';
+                                    try{
+                                        if(payErr.context && typeof payErr.context.json==='function'){var eb=await payErr.context.json();errMsg2=eb.error||errMsg2}
+                                        else if(payErr.message) errMsg2=payErr.message;
+                                    }catch(e3){}
+                                    console.error('[Coupon] خطأ create-payment:', payErr);
+                                    document.getElementById('couponErrMsg').textContent = errMsg2;
+                                    document.getElementById('couponError').classList.remove('hidden');
+                                    document.getElementById('couponSuccess').classList.add('hidden');
+                                } else if(payRes && payRes.free){
+                                    console.log('[Coupon] ✅ تم التفعيل:', payRes);
+                                    localStorage.removeItem('khawariz_coupon');
+                                    if(typeof _clearCache === 'function') _clearCache();
+                                    try { window._profileCache = null; window._profileCacheTime = 0; } catch(e){}
+                                    var actualPlan = (payRes.plan === 'yearly') ? 'السنوي' : 'الشهري';
+                                    document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + actualPlan + ' مجاناً! 🎉<br><small style="color:rgba(255,255,255,0.7)">جاري التحويل للوحة التحكم...</small>';
+                                    setTimeout(function(){ window.location.href = 'dashboard.html?activated=1'; }, 2000);
+                                } else if(payRes && payRes.error){
+                                    document.getElementById('couponErrMsg').textContent = payRes.error;
+                                    document.getElementById('couponError').classList.remove('hidden');
+                                    document.getElementById('couponSuccess').classList.add('hidden');
+                                } else {
+                                    console.error('[Coupon] استجابة غير متوقعة:', payRes);
+                                    document.getElementById('couponErrMsg').textContent = 'خطأ غير متوقع — حاول مرة ثانية';
+                                    document.getElementById('couponError').classList.remove('hidden');
+                                }
+                            } catch(e4){
+                                console.error('[Coupon] catch:', e4);
+                                document.getElementById('couponErrMsg').textContent = 'خطأ: ' + e4.message;
                                 document.getElementById('couponError').classList.remove('hidden');
                             }
                         } else {
