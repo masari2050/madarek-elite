@@ -48,18 +48,18 @@ serve(async (req) => {
 
     console.log(`[create-payment] user=${user.id}, plan=${plan}, coupon=${coupon || 'none'}`)
 
-    // ── Fetch prices ──
+    // ── Fetch prices (current = ما يظهر في الموقع) ──
     const { data: settings } = await supabaseAdmin.from('site_settings')
       .select('key, value')
-      .in('key', ['price_monthly_original', 'price_yearly_original', 'discount_percent'])
+      .in('key', ['price_monthly_current', 'price_yearly_current', 'price_monthly_original', 'price_yearly_original'])
 
     const settingsMap: Record<string, number> = {}
-    settings?.forEach((s: any) => settingsMap[s.key] = parseFloat(s.value))
+    settings?.forEach((s: any) => { const v = parseFloat(s.value); if (!isNaN(v)) settingsMap[s.key] = v })
 
-    const disc = settingsMap['discount_percent'] || 0
+    // استخدم السعر الحالي (current) اللي يشوفه المستخدم، مع fallback للأصلي
     let basePrice = plan === 'yearly'
-      ? Math.round((settingsMap['price_yearly_original'] || 468) * (100 - disc) / 100)
-      : Math.round((settingsMap['price_monthly_original'] || 60) * (100 - disc) / 100)
+      ? (settingsMap['price_yearly_current'] || settingsMap['price_yearly_original'] || 468)
+      : (settingsMap['price_monthly_current'] || settingsMap['price_monthly_original'] || 60)
 
     let finalAmount = basePrice
     let couponData: any = null
