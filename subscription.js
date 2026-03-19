@@ -62,6 +62,17 @@ async function _getProfile() {
 function _clearCache() {
     _profileCache = null;
     _profileCacheTime = 0;
+    // مسح أي متغيرات عالمية ممكن تكون مكاشة
+    try {
+        if (window._profileCache !== undefined) window._profileCache = null;
+        if (window._profileCacheTime !== undefined) window._profileCacheTime = 0;
+    } catch(e) {}
+}
+
+// ✅ Single Source of Truth — كل الصفحات تستخدم هالدالة لمعرفة حالة الاشتراك
+async function getUserSubscriptionStatus() {
+    _clearCache(); // دايم نجيب بيانات fresh
+    return await getSubscriptionStatus();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -587,6 +598,7 @@ function canAccessFeature(feature) {
 // ══════════════════════════════════════════════════════════
 if (typeof window !== 'undefined') {
     window.getSubscriptionStatus    = getSubscriptionStatus;
+    window.getUserSubscriptionStatus = getUserSubscriptionStatus; // ✅ single source of truth
     window.getRemainingFreeAttempts = getRemainingFreeAttempts;
     window.canAccessFeature         = canAccessFeature;
     window.checkPracticeAccess      = checkPracticeAccess;
@@ -599,4 +611,5 @@ if (typeof window !== 'undefined') {
     window.showFreeLimitWarning     = showFreeLimitWarning;
     window.initPricingPage          = initPricingPage;
     window.handleCouponInput        = handleCouponInput;
+    window._clearCache              = _clearCache; // ✅ مكشوفة للصفحات الأخرى
 }

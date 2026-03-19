@@ -313,23 +313,57 @@
                 var session = await window._madarekRestoreSession(sb);
                 if (!session) { window.location.href = 'login.html'; return false; }
                 currentUser = session.user;
+
+                // ✅ لو جاي من تفعيل كوبون — امسح أي كاش قديم
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('activated') === '1') {
+                    if (typeof _clearCache === 'function') _clearCache();
+                    try { window._profileCache = null; window._profileCacheTime = 0; } catch(e){}
+                    // مسح الباراميتر من URL بدون ريفرش
+                    window.history.replaceState({}, '', window.location.pathname);
+                }
+
                 let displayName = '', subType = 'free';
                 try {
-                    const { data: profile } = await sb.from('profiles').select('full_name,avatar_emoji,subscription_type').eq('id', currentUser.id).single();
+                    // ✅ جلب البيانات fresh من Supabase (بدون كاش)
+                    const { data: profile } = await sb.from('profiles').select('full_name,avatar_emoji,subscription_type,subscription_end').eq('id', currentUser.id).single();
                     if (profile?.full_name) displayName = profile.full_name;
                     if (profile?.avatar_emoji) document.getElementById('userAvatar').textContent = profile.avatar_emoji;
                     if (profile?.subscription_type) subType = profile.subscription_type;
+
+                    // ✅ التحقق من انتهاء الاشتراك
+                    if (subType !== 'free' && profile?.subscription_end) {
+                        if (new Date(profile.subscription_end) < new Date()) {
+                            subType = 'free'; // انتهى الاشتراك
+                        }
+                    }
                 } catch(e) {}
                 const subEl = document.getElementById('subscriptionLabel');
                 if (subType === 'monthly') subEl.innerHTML = '<span class="text-indigo-300">مشترك شهري 🔥</span>';
                 else if (subType === 'yearly') subEl.innerHTML = '<span class="text-emerald-300">مشترك سنوي 💎</span>';
                 else subEl.innerHTML = '<a href="pricing.html" class="text-yellow-300/80 hover:text-yellow-200 transition">تجربة مجانية — <span class="underline">اشترك</span> ✨</a>';
+
+                // ✅ لو جاي من تفعيل كوبون ناجح — أظهر toast تهنئة
+                if (urlParams.get('activated') === '1' && subType !== 'free') {
+                    _showActivationToast(subType);
+                }
+
                 if (!displayName && currentUser.user_metadata?.name) displayName = currentUser.user_metadata.name;
                 if (!displayName) displayName = currentUser.email ? currentUser.email.split('@')[0] : '';
                 document.getElementById('userName').textContent = displayName;
                 document.getElementById('displayName').textContent = displayName.split(' ')[0];
                 return true;
             } catch(err) { window.location.href = 'login.html'; return false; }
+        }
+
+        // ✅ Toast تهنئة بعد تفعيل الكوبون
+        function _showActivationToast(plan) {
+            var planLabel = plan === 'yearly' ? 'السنوي 💎' : 'الشهري 🔥';
+            var toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;background:linear-gradient(135deg,#10b981,#059669);padding:16px 28px;border-radius:16px;font-size:15px;font-weight:700;color:#fff;box-shadow:0 8px 30px rgba(16,185,129,0.4);direction:rtl;font-family:Tajawal,sans-serif;text-align:center;max-width:90vw';
+            toast.innerHTML = '🎉 مبروك! تم تفعيل اشتراكك ' + planLabel + ' بنجاح';
+            document.body.appendChild(toast);
+            setTimeout(function(){ toast.style.transition='opacity .5s'; toast.style.opacity='0'; setTimeout(function(){toast.remove()},500); }, 5000);
         }
 
         // ── Load All Data ──

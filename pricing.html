@@ -507,8 +507,14 @@
                             } else if(payRes && payRes.success && payRes.free){
                                 console.log('[Coupon] ✅ تم التفعيل:', payRes);
                                 localStorage.removeItem('khawariz_coupon');
+                                // ✅ مسح كاش الاشتراك عشان الداشبورد يقرأ البيانات الجديدة
+                                if(typeof _clearCache === 'function') _clearCache();
+                                // مسح أي كاش محلي للـ profile
+                                try { window._profileCache = null; window._profileCacheTime = 0; } catch(e){}
                                 var actualPlan = (payRes.plan === 'yearly') ? 'السنوي' : 'الشهري';
-                                document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + actualPlan + ' مجاناً! 🎉<br><a href="dashboard.html" style="color:#fff;text-decoration:underline;font-size:13px;margin-top:4px;display:inline-block">→ اذهب للوحة التحكم</a>';
+                                document.getElementById('couponMsg').innerHTML = '✓ تم تفعيل اشتراكك ' + actualPlan + ' مجاناً! 🎉<br><small style="color:rgba(255,255,255,0.7)">جاري التحويل للوحة التحكم...</small>';
+                                // ✅ توجيه تلقائي للداشبورد بعد 2 ثانية
+                                setTimeout(function(){ window.location.href = 'dashboard.html?activated=1'; }, 2000);
                             } else {
                                 console.error('[Coupon] استجابة غير متوقعة:', payRes);
                                 document.getElementById('couponErrMsg').textContent = 'خطأ غير متوقع — حاول مرة ثانية';
