@@ -181,6 +181,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        NotificationOption: 'LNK',
         InvoiceValue: finalAmount,
         CustomerName: user.email?.split('@')[0] || 'مشترك',
         CustomerEmail: user.email,
