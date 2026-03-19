@@ -138,7 +138,7 @@ serve(async (req) => {
 
       // Increment coupon usage
       if (couponData) {
-        await supabaseAdmin.rpc('increment_coupon_usage', { p_code: coupon.toUpperCase() }).catch(() => {})
+        try { await supabaseAdmin.rpc('increment_coupon_usage', { p_code: coupon.toUpperCase() }) } catch(_) {}
       }
 
       console.log(`[create-payment] ✅ FREE activation: user=${user.id}, plan=${subType}, expires=${endDate.toISOString()}`)
