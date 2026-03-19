@@ -491,13 +491,11 @@
                     updatePricesWithCoupon(discType, discVal, planType);
                     // لو الخصم 100% أو مجاني — نفعّل عبر apply-coupon Edge Function
                     if(discType === 'free' || (discType === 'percentage' && discVal >= 100)){
-                        var {data:authData} = await sb.auth.getSession();
-                        if(authData && authData.session){
+                        var {data:authData, error:refreshErr} = await sb.auth.refreshSession();
+                        if(!refreshErr && authData && authData.session){
                             console.log('[Coupon] كوبون مجاني — تفعيل عبر apply-coupon Edge Function');
-                            var freshToken = authData.session.access_token;
                             var {data:payRes, error:payErr} = await sb.functions.invoke('apply-coupon', {
-                                body: { code: data.code, plan: planType !== 'all' ? planType : null },
-                                headers: { 'Authorization': 'Bearer ' + freshToken }
+                                body: { code: data.code, plan: planType !== 'all' ? planType : null }
                             });
                             if(payErr || (payRes && payRes.error)){
                                 console.error('[Coupon] خطأ:', payErr || payRes.error);
