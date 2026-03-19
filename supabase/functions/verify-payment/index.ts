@@ -124,11 +124,20 @@ serve(async (req) => {
     const endDate = new Date()
     endDate.setMonth(endDate.getMonth() + durMonths)
 
-    // تحديث ملف المستخدم
-    await supabaseAdmin.from('profiles').update({
-      subscription_type: plan,
-      subscription_end: endDate.toISOString()
-    }).eq('id', targetUserId)
+    // تحديث ملف المستخدم عبر SECURITY DEFINER RPC (يتجاوز RLS)
+    const { error: rpcErr } = await supabaseAdmin.rpc('activate_subscription_by_coupon', {
+      p_user_id: targetUserId,
+      p_subscription_type: plan,
+      p_duration_months: durMonths
+    })
+    if (rpcErr) {
+      console.error('[verify-payment] RPC error:', rpcErr.message)
+      // Fallback: direct update
+      await supabaseAdmin.from('profiles').update({
+        subscription_type: plan,
+        subscription_end: endDate.toISOString()
+      }).eq('id', targetUserId)
+    }
 
     // تحديث سجل الدفع
     await supabaseAdmin.from('payments').update({
