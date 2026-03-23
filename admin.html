@@ -353,9 +353,45 @@
 
 <!-- ═══ الأعضاء ═══ -->
 <div id="t-users" class="tab">
-    <h2 class="text-2xl font-black mb-5">👥 إدارة الأعضاء</h2>
-    <input type="text" id="us" class="inp mb-4" placeholder="بحث بالاسم أو الإيميل..." oninput="loadU()">
-    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50 text-sm">العضو</th><th class="text-right p-3 text-purple-300/50 text-sm">الإيميل</th><th class="text-center p-3 text-purple-300/50 text-sm">المصدر</th><th class="text-center p-3 text-purple-300/50 text-sm">الاشتراك</th><th class="text-center p-3 text-purple-300/50 text-sm">الكوبون</th><th class="text-center p-3 text-purple-300/50 text-sm">ينتهي</th><th class="text-center p-3 text-purple-300/50 text-sm">التسجيل</th><th class="text-center p-3 text-purple-300/50 text-sm">إجراء</th></tr></thead><tbody id="u-list"></tbody></table></div>
+    <h2 class="text-2xl font-black mb-4">👥 إدارة الأعضاء <span id="u-count" style="font-size:.8rem;color:rgba(196,181,253,0.4);font-weight:400"></span></h2>
+    <!-- بحث -->
+    <input type="text" id="us" class="inp mb-3" placeholder="بحث بالاسم، الإيميل، أو الجوال..." oninput="loadU()">
+    <!-- فلاتر متقدمة -->
+    <div class="glass p-3 mb-4" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <select class="inp" id="uf-sort" onchange="loadU()" style="width:auto;font-size:.8rem;padding:6px 10px">
+            <option value="newest">الأحدث</option>
+            <option value="oldest">الأقدم</option>
+            <option value="last_seen">آخر زيارة</option>
+            <option value="name_az">الاسم أ→ي</option>
+        </select>
+        <select class="inp" id="uf-sub" onchange="loadU()" style="width:auto;font-size:.8rem;padding:6px 10px">
+            <option value="">كل الاشتراكات</option>
+            <option value="yearly">سنوي</option>
+            <option value="monthly">شهري</option>
+            <option value="free">مجاني</option>
+        </select>
+        <select class="inp" id="uf-gender" onchange="loadU()" style="width:auto;font-size:.8rem;padding:6px 10px">
+            <option value="">كل الجنسين</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+        </select>
+        <select class="inp" id="uf-source" onchange="loadU()" style="width:auto;font-size:.8rem;padding:6px 10px">
+            <option value="">كل المصادر</option>
+            <option value="coupon">كوبون</option>
+            <option value="paid">مدفوع</option>
+            <option value="no_coupon">بدون كوبون</option>
+        </select>
+        <select class="inp" id="uf-status" onchange="loadU()" style="width:auto;font-size:.8rem;padding:6px 10px">
+            <option value="">كل الحالات</option>
+            <option value="online">متصل الآن</option>
+            <option value="active7">نشط (7 أيام)</option>
+            <option value="inactive30">غير نشط (30+ يوم)</option>
+            <option value="expired">اشتراك منتهي</option>
+        </select>
+        <button class="bs" onclick="resetUFilters()" style="font-size:.8rem;padding:6px 12px">مسح الفلاتر</button>
+        <button class="bs" onclick="exportUsersCSV()" style="font-size:.8rem;padding:6px 12px;margin-right:auto">📥 تصدير CSV</button>
+    </div>
+    <div class="glass overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-purple-500/10"><th class="text-right p-3 text-purple-300/50 text-sm">العضو</th><th class="text-right p-3 text-purple-300/50 text-sm">الجوال</th><th class="text-right p-3 text-purple-300/50 text-sm">الإيميل</th><th class="text-center p-3 text-purple-300/50 text-sm">المصدر</th><th class="text-center p-3 text-purple-300/50 text-sm">الاشتراك</th><th class="text-center p-3 text-purple-300/50 text-sm">الكوبون</th><th class="text-center p-3 text-purple-300/50 text-sm">ينتهي</th><th class="text-center p-3 text-purple-300/50 text-sm">آخر زيارة</th><th class="text-center p-3 text-purple-300/50 text-sm">التسجيل</th><th class="text-center p-3 text-purple-300/50 text-sm">إجراء</th></tr></thead><tbody id="u-list"></tbody></table></div>
 </div>
 
 <!-- ═══ الكوبونات ═══ -->
@@ -2206,15 +2242,33 @@ async function loadU(){
     if(aEvents){aEvents.forEach(function(ev){
         if(ev.user_id && !devMap[ev.user_id]) devMap[ev.user_id]={device:ev.device,last:ev.created_at};
     })}
-    if(s)data=data.filter(function(u){return(u.full_name||'').toLowerCase().includes(s)||(u.email||'').toLowerCase().includes(s)});
-    // ✅ ترتيب: المتصلين أولاً ثم بتاريخ التسجيل
+    if(s)data=data.filter(function(u){return(u.full_name||'').toLowerCase().includes(s)||(u.email||'').toLowerCase().includes(s)||(u.phone||'').includes(s)});
+    // ✅ فلاتر متقدمة
+    var fSub=$('uf-sub').value,fGender=$('uf-gender').value,fSource=$('uf-source').value,fStatus=$('uf-status').value,fSort=$('uf-sort').value;
     var now=Date.now();
-    data.sort(function(a,b){
+    if(fSub)data=data.filter(function(u){return u.subscription_type===fSub});
+    if(fGender)data=data.filter(function(u){
+        var g=u.gender||(u.raw_user_meta_data&&u.raw_user_meta_data.gender)||'';
+        return g===fGender;
+    });
+    if(fStatus==='online')data=data.filter(function(u){return u.last_seen_at&&(now-new Date(u.last_seen_at).getTime())<300000});
+    if(fStatus==='active7')data=data.filter(function(u){return u.last_seen_at&&(now-new Date(u.last_seen_at).getTime())<604800000});
+    if(fStatus==='inactive30')data=data.filter(function(u){return!u.last_seen_at||(now-new Date(u.last_seen_at).getTime())>2592000000});
+    if(fStatus==='expired')data=data.filter(function(u){return u.subscription_type!=='free'&&u.subscription_end&&new Date(u.subscription_end)<new Date()});
+    // فلتر المصدر (يحتاج payMap — نطبقه بعد بناء payMap)
+    // ✅ ترتيب
+    if(fSort==='newest')data.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)});
+    else if(fSort==='oldest')data.sort(function(a,b){return new Date(a.created_at)-new Date(b.created_at)});
+    else if(fSort==='last_seen')data.sort(function(a,b){return new Date(b.last_seen_at||0)-new Date(a.last_seen_at||0)});
+    else if(fSort==='name_az')data.sort(function(a,b){return(a.full_name||'').localeCompare(b.full_name||'','ar')});
+    else{data.sort(function(a,b){
         var aOnline=a.last_seen_at&&(now-new Date(a.last_seen_at).getTime())<300000?1:0;
         var bOnline=b.last_seen_at&&(now-new Date(b.last_seen_at).getTime())<300000?1:0;
         if(bOnline!==aOnline)return bOnline-aOnline;
         return new Date(b.created_at)-new Date(a.created_at);
-    });
+    });}
+    // عداد
+    $('u-count').textContent='('+data.length+')';
     var h='';
     data.forEach(function(u){
         var bg=u.subscription_type==='monthly'?'bg-m':u.subscription_type==='yearly'?'bg-y':'bg-f';
@@ -2263,9 +2317,39 @@ async function loadU(){
             else if(dv==='mobile')devBadge='<span style="background:rgba(99,102,241,0.1);color:#818cf8;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700">📱 متصفح</span>';
             else devBadge='<span style="background:rgba(139,92,246,0.1);color:#a78bfa;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700">💻 كمبيوتر</span>';
         }
-        h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+escHtml(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+escHtml(u.full_name||'—')+'</span>'+onlineDot+roleBadge+'</div></td><td class="p-3 text-purple-200/70 text-sm">'+escHtml(u.email||'')+'</td><td class="p-3 text-center">'+devBadge+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span>'+subLabel+'</td><td class="p-3 text-center">'+couponCol+'</td><td class="p-3 text-center">'+expInfo+'</td><td class="p-3 text-center text-purple-200/60 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+escHtml(u.id)+'\')">✏️</button></td></tr>'
+        // ✅ فلتر المصدر
+        if(fSource==='coupon'&&!couponCode)return;
+        if(fSource==='paid'&&!isPaid)return;
+        if(fSource==='no_coupon'&&couponCode)return;
+        // ✅ آخر زيارة
+        var lastVisit='<span class="text-purple-200/20">—</span>';
+        if(u.last_seen_at){
+            var lv=new Date(u.last_seen_at);
+            var diff=Math.floor((now-lv.getTime())/60000);
+            if(diff<5)lastVisit='<span style="color:#34d399;font-size:11px;font-weight:700">الآن</span>';
+            else if(diff<60)lastVisit='<span style="font-size:11px;color:rgba(196,181,253,0.6)">'+diff+' د</span>';
+            else if(diff<1440)lastVisit='<span style="font-size:11px;color:rgba(196,181,253,0.5)">'+Math.floor(diff/60)+' س</span>';
+            else lastVisit='<span style="font-size:11px;color:rgba(196,181,253,0.4)">'+Math.floor(diff/1440)+' ي</span>';
+        }
+        // ✅ الجوال
+        var phoneCol=u.phone?'<span style="font-size:12px;direction:ltr;display:inline-block;color:rgba(196,181,253,0.7)">'+escHtml(u.phone)+'</span>':'<span class="text-purple-200/20">—</span>';
+        h+='<tr class="tr"><td class="p-3"><div class="flex items-center gap-2"><span>'+escHtml(u.avatar_emoji||'👤')+'</span><span class="font-bold">'+escHtml(u.full_name||'—')+'</span>'+onlineDot+roleBadge+'</div></td><td class="p-3">'+phoneCol+'</td><td class="p-3 text-purple-200/70 text-sm">'+escHtml(u.email||'')+'</td><td class="p-3 text-center">'+devBadge+'</td><td class="p-3 text-center"><span class="bg '+bg+'">'+lb+'</span>'+subLabel+'</td><td class="p-3 text-center">'+couponCol+'</td><td class="p-3 text-center">'+expInfo+'</td><td class="p-3 text-center">'+lastVisit+'</td><td class="p-3 text-center text-purple-200/60 text-xs">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-SA'):'')+'</td><td class="p-3 text-center"><button class="bs" onclick="editU(\''+escHtml(u.id)+'\')">✏️</button></td></tr>'
     });
     $('u-list').innerHTML=h;
+}
+// ✅ مسح الفلاتر
+function resetUFilters(){$('us').value='';$('uf-sort').value='newest';$('uf-sub').value='';$('uf-gender').value='';$('uf-source').value='';$('uf-status').value='';loadU()}
+// ✅ تصدير CSV
+function exportUsersCSV(){
+    var rows=[['الاسم','الجوال','الإيميل','الاشتراك','التسجيل']];
+    document.querySelectorAll('#u-list tr').forEach(function(tr){
+        var cells=tr.querySelectorAll('td');
+        if(cells.length>=9)rows.push([cells[0].textContent.trim(),cells[1].textContent.trim(),cells[2].textContent.trim(),cells[4].textContent.trim(),cells[8].textContent.trim()]);
+    });
+    var csv='\uFEFF'+rows.map(function(r){return r.join(',')}).join('\n');
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='madarek-users-'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+    toast('تم تصدير '+rows.length+' سطر ✅',true);
 }
 
 async function editU(id){
