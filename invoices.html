@@ -56,7 +56,7 @@
             .stat-grid{grid-template-columns:1fr !important}
         }
         /* قالب PDF مخفي */
-        #pdf-template{position:fixed;left:-9999px;top:0;width:595px;background:#fff;color:#000;font-family:'Tajawal',sans-serif;padding:40px;direction:rtl}
+        #pdf-template{position:absolute;left:0;top:0;width:595px;background:#fff;color:#000;font-family:'Tajawal',sans-serif;padding:40px;direction:rtl;z-index:-9999;visibility:hidden}
     </style>
 </head>
 <body>
@@ -403,27 +403,22 @@
 
             // عرض القالب مؤقتاً للتصوير
             var tpl = document.getElementById('pdf-template');
-            tpl.style.position = 'fixed';
-            tpl.style.left = '0';
-            tpl.style.top = '0';
-            tpl.style.zIndex = '-1';
-            tpl.style.opacity = '1';
+            tpl.style.visibility = 'visible';
+            tpl.style.zIndex = '1';
 
             // انتظار رسم العناصر
-            await new Promise(function(r) { setTimeout(r, 200); });
+            await new Promise(function(r) { setTimeout(r, 300); });
 
             var canvas = await html2canvas(document.getElementById('pdf-content'), {
-                scale: 2.5,
+                scale: 2,
                 useCORS: true,
                 backgroundColor: '#ffffff',
-                width: 595,
-                windowWidth: 595,
                 logging: false
             });
 
             // إخفاء القالب
-            tpl.style.left = '-9999px';
-            tpl.style.opacity = '0';
+            tpl.style.visibility = 'hidden';
+            tpl.style.zIndex = '-9999';
 
             var imgData = canvas.toDataURL('image/png');
             var pdfWidth = W;
