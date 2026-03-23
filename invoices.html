@@ -173,8 +173,9 @@
             <div style="display:flex;gap:30px;margin-bottom:25px">
                 <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
                     <p style="font-size:11px;color:#6366f1;font-weight:700;margin:0 0 6px 0">بيانات المنشأة</p>
-                    <p style="margin:2px 0;font-size:12px;font-weight:700">مدارك النخبة للخدمات التعليمية</p>
-                    <p style="margin:2px 0;font-size:11px;color:#6b7280">الرقم الضريبي: [يُضاف لاحقاً]</p>
+                    <p style="margin:2px 0;font-size:12px;font-weight:700">مؤسسة مدارك النخبة</p>
+                    <p style="margin:2px 0;font-size:11px;color:#6b7280">سجل تجاري: 7041003901</p>
+                    <p style="margin:2px 0;font-size:11px;color:#6b7280">الرقم الضريبي: 302247284800003</p>
                     <p style="margin:2px 0;font-size:11px;color:#6b7280">المملكة العربية السعودية</p>
                 </div>
                 <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
@@ -213,10 +214,33 @@
                 </div>
             </div>
 
-            <!-- ختم سُدّد -->
-            <div style="text-align:center;margin:20px 0">
-                <div style="display:inline-block;border:3px solid #10b981;border-radius:12px;padding:8px 32px;transform:rotate(-5deg)">
-                    <span style="font-size:24px;font-weight:900;color:#10b981;font-family:'Cairo',sans-serif">سُدّدت ✓</span>
+            <!-- الأختام -->
+            <div style="display:flex;justify-content:space-around;align-items:center;margin:25px 0">
+                <!-- ختم سُدّدت أخضر -->
+                <div style="text-align:center">
+                    <div style="display:inline-block;width:100px;height:100px;border:4px solid #10b981;border-radius:50%;position:relative;transform:rotate(-8deg)">
+                        <div style="position:absolute;inset:4px;border:2px solid #10b981;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                            <span style="font-size:18px;font-weight:900;color:#10b981;font-family:'Cairo',sans-serif;line-height:1">سُدّدت</span>
+                            <span style="font-size:20px;color:#10b981;margin-top:2px">✓</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- شعار التاج (م) بالنص -->
+                <div style="text-align:center">
+                    <div style="display:inline-flex;align-items:center;justify-content:center;width:70px;height:70px;border-radius:16px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:2px solid rgba(99,102,241,0.3)">
+                        <span style="font-size:36px;font-weight:900;color:#a5b4fc;font-family:'Cairo',sans-serif">م</span>
+                    </div>
+                    <p style="font-size:9px;color:#6b7280;margin:4px 0 0 0">مدارك النخبة</p>
+                </div>
+                <!-- ختم دائري أزرق — مؤسسة مدارك النخبة -->
+                <div style="text-align:center">
+                    <div style="display:inline-block;width:100px;height:100px;border:4px solid #2563eb;border-radius:50%;position:relative;transform:rotate(5deg)">
+                        <div style="position:absolute;inset:4px;border:2px solid #2563eb;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px">
+                            <span style="font-size:8px;font-weight:700;color:#2563eb;text-align:center;line-height:1.3">مؤسسة مدارك النخبة</span>
+                            <span style="font-size:7px;color:#2563eb;margin-top:2px">سجل: 7041003901</span>
+                            <span style="font-size:14px;color:#2563eb;margin-top:1px">★</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -356,42 +380,53 @@
         var inv = allInvoices.find(function(i) { return i.id === invoiceId; });
         if (!inv) { toast('ما لقينا الفاتورة', false); return; }
 
-        // تعبئة قالب PDF
-        document.getElementById('pdf-inv-number').textContent = inv.invoice_number;
-        document.getElementById('pdf-inv-date').textContent = new Date(inv.created_at).toLocaleDateString('ar-SA', {
-            year: 'numeric', month: 'long', day: 'numeric'
-        });
-        document.getElementById('pdf-customer-name').textContent = inv.customer_name;
-        document.getElementById('pdf-customer-phone').textContent = inv.customer_phone || '—';
-        document.getElementById('pdf-service').textContent = 'اشتراك ' + inv.plan_name + ' — مدارك النخبة';
-        document.getElementById('pdf-before-tax').textContent = Number(inv.amount_before_tax).toFixed(2) + ' ر.س';
-        document.getElementById('pdf-tax').textContent = Number(inv.tax_amount).toFixed(2) + ' ر.س';
-        document.getElementById('pdf-total').textContent = Number(inv.total_amount).toFixed(2) + ' ر.س';
-        document.getElementById('pdf-grand-total').textContent = Number(inv.total_amount).toFixed(2);
-
-        // تحويل لـ PDF
         try {
-            var element = document.getElementById('pdf-content');
-            // نقل القالب مؤقتاً للعرض
-            element.parentElement.style.left = '0';
-            element.parentElement.style.position = 'absolute';
+            var { jsPDF } = window.jspdf;
+            var pdf = new jsPDF('p', 'mm', 'a4');
+            var W = pdf.internal.pageSize.getWidth(); // 210mm
+            var dateStr = new Date(inv.created_at).toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
 
-            var canvas = await html2canvas(element, {
-                scale: 2,
+            // ═══ خط يدعم العربي ═══
+            // jsPDF ما يدعم العربي بدون خط مخصص — نستخدم html2canvas كـ fallback
+            // بنرسم القالب المخفي بعد عرضه مؤقتاً
+
+            // تعبئة القالب
+            document.getElementById('pdf-inv-number').textContent = inv.invoice_number;
+            document.getElementById('pdf-inv-date').textContent = dateStr;
+            document.getElementById('pdf-customer-name').textContent = inv.customer_name;
+            document.getElementById('pdf-customer-phone').textContent = inv.customer_phone || '—';
+            document.getElementById('pdf-service').textContent = 'اشتراك ' + inv.plan_name + ' — مدارك النخبة';
+            document.getElementById('pdf-before-tax').textContent = Number(inv.amount_before_tax).toFixed(2) + ' ر.س';
+            document.getElementById('pdf-tax').textContent = Number(inv.tax_amount).toFixed(2) + ' ر.س';
+            document.getElementById('pdf-total').textContent = Number(inv.total_amount).toFixed(2) + ' ر.س';
+            document.getElementById('pdf-grand-total').textContent = Number(inv.total_amount).toFixed(2);
+
+            // عرض القالب مؤقتاً للتصوير
+            var tpl = document.getElementById('pdf-template');
+            tpl.style.position = 'fixed';
+            tpl.style.left = '0';
+            tpl.style.top = '0';
+            tpl.style.zIndex = '-1';
+            tpl.style.opacity = '1';
+
+            // انتظار رسم العناصر
+            await new Promise(function(r) { setTimeout(r, 200); });
+
+            var canvas = await html2canvas(document.getElementById('pdf-content'), {
+                scale: 2.5,
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 width: 595,
-                windowWidth: 595
+                windowWidth: 595,
+                logging: false
             });
 
-            // إرجاع القالب
-            element.parentElement.style.left = '-9999px';
-            element.parentElement.style.position = 'fixed';
+            // إخفاء القالب
+            tpl.style.left = '-9999px';
+            tpl.style.opacity = '0';
 
-            var { jsPDF } = window.jspdf;
-            var pdf = new jsPDF('p', 'mm', 'a4');
             var imgData = canvas.toDataURL('image/png');
-            var pdfWidth = pdf.internal.pageSize.getWidth();
+            var pdfWidth = W;
             var pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
