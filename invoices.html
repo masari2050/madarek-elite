@@ -388,24 +388,26 @@
         // SVG شعار التاج
         var tajSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="55" height="55"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#g)"/><path d="M10 48 L10 28 L20 37 L32 14 L44 37 L54 28 L54 48 Z" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,0.1)"/><line x1="8" y1="52" x2="56" y2="52" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg>';
 
-        // SVG ختم المؤسسة الأزرق الدائري (واقعي)
-        var blueStampSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="130" height="130">'
-        // الدائرة الخارجية
-        +'<circle cx="100" cy="100" r="95" fill="none" stroke="#1d4ed8" stroke-width="4" opacity="0.8"/>'
-        +'<circle cx="100" cy="100" r="88" fill="none" stroke="#1d4ed8" stroke-width="2" opacity="0.6"/>'
-        +'<circle cx="100" cy="100" r="60" fill="none" stroke="#1d4ed8" stroke-width="1.5" opacity="0.5"/>'
-        // النص الدائري العربي (فوق)
-        +'<defs><path id="topArc" d="M 30,100 a 70,70 0 0,1 140,0"/>'
-        +'<path id="bottomArc" d="M 170,100 a 70,70 0 0,1 -140,0"/></defs>'
-        +'<text font-family="Tajawal,sans-serif" font-size="14" font-weight="700" fill="#1d4ed8" text-anchor="middle">'
+        // SVG ختم المؤسسة الأزرق الدائري (واقعي — نص كبير واضح)
+        var blueStampSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="150" height="150">'
+        +'<circle cx="150" cy="150" r="142" fill="none" stroke="#1d4ed8" stroke-width="6" opacity="0.85"/>'
+        +'<circle cx="150" cy="150" r="130" fill="none" stroke="#1d4ed8" stroke-width="3" opacity="0.6"/>'
+        +'<circle cx="150" cy="150" r="80" fill="none" stroke="#1d4ed8" stroke-width="2" opacity="0.5"/>'
+        // مسارات النص الدائري
+        +'<defs>'
+        +'<path id="topArc" d="M 40,150 a 110,110 0 0,1 220,0"/>'
+        +'<path id="bottomArc" d="M 260,150 a 110,110 0 0,1 -220,0"/>'
+        +'</defs>'
+        // النص العربي فوق
+        +'<text font-family="Cairo,Tajawal,sans-serif" font-size="22" font-weight="900" fill="#1d4ed8" text-anchor="middle" letter-spacing="2">'
         +'<textPath href="#topArc" startOffset="50%">مؤسسة مدارك النخبة</textPath></text>'
-        // النص الدائري الإنجليزي (تحت)
-        +'<text font-family="Tajawal,sans-serif" font-size="10" font-weight="600" fill="#1d4ed8" text-anchor="middle">'
+        // النص الإنجليزي تحت
+        +'<text font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#1d4ed8" text-anchor="middle" letter-spacing="3">'
         +'<textPath href="#bottomArc" startOffset="50%">MADAREK ELITE EST.</textPath></text>'
-        // النجمة بالنص
-        +'<text x="100" y="90" text-anchor="middle" font-size="22" fill="#1d4ed8">★</text>'
+        // النجمة
+        +'<text x="150" y="138" text-anchor="middle" font-size="30" fill="#1d4ed8">★</text>'
         // رقم السجل
-        +'<text x="100" y="115" text-anchor="middle" font-family="Tajawal,sans-serif" font-size="11" font-weight="700" fill="#1d4ed8" direction="ltr">CR.7041003901</text>'
+        +'<text x="150" y="172" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#1d4ed8">CR.7041003901</text>'
         +'</svg>';
 
         // SVG ختم سُدّدت أخضر دائري
