@@ -123,8 +123,8 @@
             show('state-success');
             gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':parseFloat(data.amount)||1.0,'currency':'SAR','transaction_id':paymentId||''});
             ttq.track('CompletePayment',{value:parseFloat(data.amount)||1.0,currency:'SAR',content_name:data.plan==='yearly'?'Yearly Plan':'Monthly Plan'});
-            // إنشاء فاتورة ضريبية تلقائياً
-            if(typeof saveInvoice==='function'){try{var sess=await sb.auth.getSession();var uid=sess&&sess.data&&sess.data.session?sess.data.session.user.id:null;saveInvoice({userId:uid,customerName:sess&&sess.data&&sess.data.session?sess.data.session.user.email:'عميل',customerPhone:null,planName:data.plan==='yearly'?'سنوي':'شهري',totalAmount:parseFloat(data.amount)||0,paymentId:paymentId||''});}catch(invErr){console.warn('[payment-callback] فاتورة:',invErr);}}
+            // إنشاء فاتورة ضريبية تلقائياً — جلب الجوال من profiles
+            if(typeof saveInvoice==='function'){try{var sess=await sb.auth.getSession();var uid=sess&&sess.data&&sess.data.session?sess.data.session.user.id:null;var userPhone=null;var userName=sess&&sess.data&&sess.data.session?sess.data.session.user.email:'عميل';if(uid){try{var{data:prof}=await sb.from('profiles').select('phone,full_name').eq('id',uid).single();if(prof){userPhone=prof.phone||null;if(prof.full_name)userName=prof.full_name}}catch(_){}}saveInvoice({userId:uid,customerName:userName,customerPhone:userPhone,planName:data.plan==='yearly'?'سنوي':'شهري',totalAmount:parseFloat(data.amount)||0,paymentId:paymentId||''});}catch(invErr){console.warn('[payment-callback] فاتورة:',invErr);}}
             var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';
             document.getElementById('success-plan').textContent = 'تم تفعيل اشتراكك ال' + planName + ' بنجاح!';
             var detail = data.amount > 0

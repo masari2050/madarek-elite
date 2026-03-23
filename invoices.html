@@ -102,6 +102,11 @@
             </div>
         </div>
 
+        <!-- البحث -->
+        <div class="glass" style="padding:12px 20px;margin-bottom:12px">
+            <input type="text" class="inp" id="search-box" placeholder="ابحث برقم الفاتورة، الاسم، أو الجوال..." oninput="filterSearch()" style="width:100%">
+        </div>
+
         <!-- الفلاتر -->
         <div class="glass" style="padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
             <label style="font-size:.85rem;font-weight:700;color:rgba(196,181,253,0.6)">من:</label>
@@ -323,7 +328,27 @@
         document.getElementById('filter-from').value = '';
         document.getElementById('filter-to').value = '';
         document.getElementById('filter-plan').value = '';
+        document.getElementById('search-box').value = '';
         loadInvoices();
+    }
+
+    // ═══ بحث نصي (client-side) ═══
+    function filterSearch() {
+        var q = document.getElementById('search-box').value.trim().toLowerCase();
+        if (!q) { renderInvoices(); updateStats(); return; }
+
+        var filtered = allInvoices.filter(function(inv) {
+            return (inv.invoice_number || '').toLowerCase().indexOf(q) !== -1
+                || (inv.customer_name || '').toLowerCase().indexOf(q) !== -1
+                || (inv.customer_phone || '').toLowerCase().indexOf(q) !== -1;
+        });
+
+        // عرض النتائج المفلترة مؤقتاً
+        var backup = allInvoices;
+        allInvoices = filtered;
+        renderInvoices();
+        updateStats();
+        allInvoices = backup;
     }
 
     // ═══ تصدير PDF ═══
