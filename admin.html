@@ -2299,7 +2299,7 @@ async function loadU(){
             }
         }
         // ✅ عمود الكوبون
-        var couponCol=couponCode?'<span style="background:rgba(251,191,36,0.1);color:#fbbf24;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:bold">'+escHtml(couponCode)+'</span>':'<span class="text-purple-200/20">—</span>';
+        var couponCol=(couponCode && u.subscription_type!=='free')?'<span style="background:rgba(251,191,36,0.1);color:#fbbf24;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:bold">'+escHtml(couponCode)+'</span>':'<span class="text-purple-200/20">—</span>';
         var expInfo='';
         if(u.subscription_type!=='free'&&u.subscription_end){
             var ed=new Date(u.subscription_end);
@@ -2318,9 +2318,9 @@ async function loadU(){
             else devBadge='<span style="background:rgba(139,92,246,0.1);color:#a78bfa;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700">💻 كمبيوتر</span>';
         }
         // ✅ فلتر المصدر
-        if(fSource==='coupon'&&!couponCode)return;
+        if(fSource==='coupon'&&(!couponCode||u.subscription_type==='free'))return;
         if(fSource==='paid'&&!isPaid)return;
-        if(fSource==='no_coupon'&&couponCode)return;
+        if(fSource==='no_coupon'&&(couponCode&&u.subscription_type!=='free'))return;
         // ✅ آخر زيارة
         var lastVisit='<span class="text-purple-200/20">—</span>';
         if(u.last_seen_at){
@@ -3524,7 +3524,7 @@ function renderUserDetails(users){
                 subBadge += ' <span style="background:rgba(139,92,246,0.15);color:#a78bfa;padding:1px 6px;border-radius:8px;font-size:10px;margin-right:4px;font-weight:700">يدوي</span>';
             }
         }
-        var couponInfo = u.used_coupon ? '<span style="background:rgba(251,191,36,0.1);color:#fbbf24;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:bold">'+escHtml(u.used_coupon)+'</span>' : '<span class="text-purple-200/20">—</span>';
+        var couponInfo = (u.used_coupon && u.subscription_type!=='free') ? '<span style="background:rgba(251,191,36,0.1);color:#fbbf24;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:bold">'+escHtml(u.used_coupon)+'</span>' : '<span class="text-purple-200/20">—</span>';
 
         h += '<tr class="tr">'
             + '<td class="p-2"><div class="flex items-center gap-2">'
