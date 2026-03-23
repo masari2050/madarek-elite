@@ -388,27 +388,8 @@
         // SVG شعار التاج
         var tajSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="55" height="55"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#g)"/><path d="M10 48 L10 28 L20 37 L32 14 L44 37 L54 28 L54 48 Z" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,0.1)"/><line x1="8" y1="52" x2="56" y2="52" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg>';
 
-        // SVG ختم المؤسسة الأزرق الدائري (واقعي — نص كبير واضح)
-        var blueStampSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="150" height="150">'
-        +'<circle cx="150" cy="150" r="142" fill="none" stroke="#1d4ed8" stroke-width="6" opacity="0.85"/>'
-        +'<circle cx="150" cy="150" r="130" fill="none" stroke="#1d4ed8" stroke-width="3" opacity="0.6"/>'
-        +'<circle cx="150" cy="150" r="80" fill="none" stroke="#1d4ed8" stroke-width="2" opacity="0.5"/>'
-        // مسارات النص الدائري
-        +'<defs>'
-        +'<path id="topArc" d="M 40,150 a 110,110 0 0,1 220,0"/>'
-        +'<path id="bottomArc" d="M 260,150 a 110,110 0 0,1 -220,0"/>'
-        +'</defs>'
-        // النص العربي فوق
-        +'<text font-family="Cairo,Tajawal,sans-serif" font-size="22" font-weight="900" fill="#1d4ed8" text-anchor="middle" letter-spacing="2">'
-        +'<textPath href="#topArc" startOffset="50%">مؤسسة مدارك النخبة</textPath></text>'
-        // النص الإنجليزي تحت
-        +'<text font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#1d4ed8" text-anchor="middle" letter-spacing="3">'
-        +'<textPath href="#bottomArc" startOffset="50%">MADAREK ELITE EST.</textPath></text>'
-        // النجمة
-        +'<text x="150" y="138" text-anchor="middle" font-size="30" fill="#1d4ed8">★</text>'
-        // رقم السجل
-        +'<text x="150" y="172" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#1d4ed8">CR.7041003901</text>'
-        +'</svg>';
+        // ختم المؤسسة الأزرق — صورة حقيقية
+        var blueStampHTML = '<img src="stamp.png" alt="ختم مؤسسة مدارك النخبة" style="width:140px;height:140px;opacity:0.85;">';
 
         // SVG ختم سُدّدت أخضر دائري
         var greenStampSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="110" height="110">'
@@ -472,7 +453,7 @@
         // شعار التاج بالنص
         +'<div style="text-align:center">'+tajSVG+'<p style="font-size:9px;color:#6b7280;margin-top:4px;font-weight:700">مدارك النخبة</p></div>'
         // ختم المؤسسة الأزرق
-        +'<div style="transform:rotate(5deg)">'+blueStampSVG+'</div>'
+        +'<div style="transform:rotate(5deg)">'+blueStampHTML+'</div>'
         +'</div>'
         // التذييل
         +'<div class="footer"><p style="font-size:10px;color:#9ca3af">هذه فاتورة ضريبية مبسّطة وفق أنظمة هيئة الزكاة والضريبة والجمارك</p>'
