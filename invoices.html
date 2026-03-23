@@ -376,62 +376,90 @@
     }
 
     // ═══ تصدير PDF ═══
-    async function exportPDF(invoiceId) {
+    function exportPDF(invoiceId) {
         var inv = allInvoices.find(function(i) { return i.id === invoiceId; });
         if (!inv) { toast('ما لقينا الفاتورة', false); return; }
 
-        try {
-            var { jsPDF } = window.jspdf;
-            var pdf = new jsPDF('p', 'mm', 'a4');
-            var W = pdf.internal.pageSize.getWidth(); // 210mm
-            var dateStr = new Date(inv.created_at).toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
+        var dateStr = new Date(inv.created_at).toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
+        var beforeTax = Number(inv.amount_before_tax).toFixed(2);
+        var taxAmt = Number(inv.tax_amount).toFixed(2);
+        var totalAmt = Number(inv.total_amount).toFixed(2);
 
-            // ═══ خط يدعم العربي ═══
-            // jsPDF ما يدعم العربي بدون خط مخصص — نستخدم html2canvas كـ fallback
-            // بنرسم القالب المخفي بعد عرضه مؤقتاً
+        var html = '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>فاتورة '+escHtml(inv.invoice_number)+'</title>'
+        +'<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">'
+        +'<style>*{font-family:"Tajawal",sans-serif;margin:0;padding:0;box-sizing:border-box}'
+        +'body{background:#fff;color:#000;padding:40px;direction:rtl;max-width:700px;margin:0 auto}'
+        +'@media print{body{padding:20px}button{display:none!important}}'
+        +'.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;border-bottom:3px solid #6366f1;padding-bottom:20px}'
+        +'.logo-box{width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,#1e1b4b,#2d2564);display:flex;align-items:center;justify-content:center;margin-bottom:8px}'
+        +'.logo-box span{font-size:30px;font-weight:900;color:#a5b4fc;font-family:"Cairo",sans-serif}'
+        +'.info-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;flex:1}'
+        +'.info-label{font-size:11px;color:#6366f1;font-weight:700;margin-bottom:6px}'
+        +'.tbl{width:100%;border-collapse:collapse;margin:20px 0}'
+        +'.tbl th{background:#6366f1;color:#fff;padding:10px 12px;text-align:center;font-size:12px}'
+        +'.tbl th:first-child{text-align:right;border-radius:0 8px 0 0}'
+        +'.tbl th:last-child{border-radius:8px 0 0 0}'
+        +'.tbl td{padding:12px;border-bottom:1px solid #e2e8f0;text-align:center;font-size:12px}'
+        +'.tbl td:first-child{text-align:right}'
+        +'.stamp-row{display:flex;justify-content:space-around;align-items:center;margin:30px 0}'
+        +'.stamp-green{width:100px;height:100px;border:4px solid #10b981;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-8deg)}'
+        +'.stamp-green-inner{border:2px solid #10b981;border-radius:50%;width:88px;height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center}'
+        +'.stamp-blue{width:100px;height:100px;border:4px solid #2563eb;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(5deg)}'
+        +'.stamp-blue-inner{border:2px solid #2563eb;border-radius:50%;width:88px;height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px}'
+        +'.total-box{background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:12px 24px;text-align:center;display:inline-block}'
+        +'.footer{border-top:2px solid #e2e8f0;padding-top:14px;margin-top:20px;text-align:center}'
+        +'.print-btn{display:block;margin:20px auto;background:#6366f1;color:#fff;border:none;padding:12px 40px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:"Tajawal",sans-serif}'
+        +'</style></head><body>'
+        // الهيدر
+        +'<div class="header"><div>'
+        +'<div class="logo-box"><span>م</span></div>'
+        +'<h2 style="font-family:Cairo,sans-serif;font-size:20px;color:#1e1b4b">مدارك النخبة</h2>'
+        +'<p style="font-size:11px;color:#6b7280">Madarek Elite Education Platform</p>'
+        +'</div><div style="text-align:left">'
+        +'<h3 style="font-size:22px;color:#6366f1;font-family:Cairo,sans-serif">فاتورة ضريبية</h3>'
+        +'<p style="font-size:12px;color:#6b7280">Tax Invoice</p>'
+        +'<p style="font-size:14px;font-weight:700;color:#1e1b4b;margin-top:4px">'+escHtml(inv.invoice_number)+'</p>'
+        +'<p style="font-size:12px;color:#6b7280">'+escHtml(dateStr)+'</p>'
+        +'</div></div>'
+        // بيانات المنشأة والعميل
+        +'<div style="display:flex;gap:20px;margin-bottom:25px">'
+        +'<div class="info-box"><p class="info-label">بيانات المنشأة</p>'
+        +'<p style="font-size:12px;font-weight:700">مؤسسة مدارك النخبة</p>'
+        +'<p style="font-size:11px;color:#6b7280">سجل تجاري: 7041003901</p>'
+        +'<p style="font-size:11px;color:#6b7280">الرقم الضريبي: 302247284800003</p>'
+        +'<p style="font-size:11px;color:#6b7280">المملكة العربية السعودية</p>'
+        +'</div>'
+        +'<div class="info-box"><p class="info-label">بيانات العميل</p>'
+        +'<p style="font-size:12px;font-weight:700">'+escHtml(inv.customer_name)+'</p>'
+        +'<p style="font-size:11px;color:#6b7280">'+(inv.customer_phone?escHtml(inv.customer_phone):'—')+'</p>'
+        +'</div></div>'
+        // الجدول
+        +'<table class="tbl"><thead><tr><th>الخدمة</th><th>المبلغ قبل الضريبة</th><th>ضريبة 15%</th><th>الإجمالي</th></tr></thead>'
+        +'<tbody><tr><td>اشتراك '+escHtml(inv.plan_name)+' — مدارك النخبة</td><td>'+beforeTax+' ر.س</td><td>'+taxAmt+' ر.س</td><td style="font-weight:700">'+totalAmt+' ر.س</td></tr></tbody></table>'
+        // الإجمالي
+        +'<div style="text-align:left;margin:15px 0"><div class="total-box"><span style="font-size:11px;color:#15803d;display:block">الإجمالي المستحق</span><span style="font-size:22px;font-weight:900;color:#15803d;font-family:Cairo,sans-serif">'+totalAmt+'</span><span style="font-size:11px;color:#15803d"> ريال</span></div></div>'
+        // الأختام
+        +'<div class="stamp-row">'
+        // ختم سُدّدت أخضر
+        +'<div class="stamp-green"><div class="stamp-green-inner"><span style="font-size:18px;font-weight:900;color:#10b981;font-family:Cairo,sans-serif">سُدّدت</span><span style="font-size:20px;color:#10b981">✓</span></div></div>'
+        // شعار التاج
+        +'<div style="text-align:center"><div class="logo-box" style="width:70px;height:70px;margin:0 auto"><span style="font-size:36px">م</span></div><p style="font-size:9px;color:#6b7280;margin-top:4px">مدارك النخبة</p></div>'
+        // ختم أزرق
+        +'<div class="stamp-blue"><div class="stamp-blue-inner"><span style="font-size:8px;font-weight:700;color:#2563eb;text-align:center;line-height:1.3">مؤسسة مدارك النخبة</span><span style="font-size:7px;color:#2563eb;margin-top:2px">سجل: 7041003901</span><span style="font-size:14px;color:#2563eb;margin-top:1px">★</span></div></div>'
+        +'</div>'
+        // التذييل
+        +'<div class="footer"><p style="font-size:10px;color:#9ca3af">هذه فاتورة ضريبية مبسّطة وفق أنظمة هيئة الزكاة والضريبة والجمارك</p>'
+        +'<p style="font-size:10px;color:#9ca3af">Simplified Tax Invoice per ZATCA regulations</p>'
+        +'<p style="font-size:10px;color:#9ca3af">madarekelite.com</p></div>'
+        // زر طباعة
+        +'<button class="print-btn" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>'
+        +'</body></html>';
 
-            // تعبئة القالب
-            document.getElementById('pdf-inv-number').textContent = inv.invoice_number;
-            document.getElementById('pdf-inv-date').textContent = dateStr;
-            document.getElementById('pdf-customer-name').textContent = inv.customer_name;
-            document.getElementById('pdf-customer-phone').textContent = inv.customer_phone || '—';
-            document.getElementById('pdf-service').textContent = 'اشتراك ' + inv.plan_name + ' — مدارك النخبة';
-            document.getElementById('pdf-before-tax').textContent = Number(inv.amount_before_tax).toFixed(2) + ' ر.س';
-            document.getElementById('pdf-tax').textContent = Number(inv.tax_amount).toFixed(2) + ' ر.س';
-            document.getElementById('pdf-total').textContent = Number(inv.total_amount).toFixed(2) + ' ر.س';
-            document.getElementById('pdf-grand-total').textContent = Number(inv.total_amount).toFixed(2);
-
-            // عرض القالب مؤقتاً للتصوير
-            var tpl = document.getElementById('pdf-template');
-            tpl.style.visibility = 'visible';
-            tpl.style.zIndex = '1';
-
-            // انتظار رسم العناصر
-            await new Promise(function(r) { setTimeout(r, 300); });
-
-            var canvas = await html2canvas(document.getElementById('pdf-content'), {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false
-            });
-
-            // إخفاء القالب
-            tpl.style.visibility = 'hidden';
-            tpl.style.zIndex = '-9999';
-
-            var imgData = canvas.toDataURL('image/png');
-            var pdfWidth = W;
-            var pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(inv.invoice_number + '.pdf');
-
-            toast('تم تصدير الفاتورة ✅', true);
-        } catch (err) {
-            console.error('[invoices] خطأ في التصدير:', err);
-            toast('فشل تصدير الـ PDF', false);
-        }
+        var w = window.open('', '_blank', 'width=750,height=900');
+        if (!w) { toast('فعّل النوافذ المنبثقة عشان تطبع الفاتورة', false); return; }
+        w.document.write(html);
+        w.document.close();
+        toast('تم فتح الفاتورة — اضغط طباعة أو Ctrl+P', true);
     }
 
     // ═══ أدوات ═══
