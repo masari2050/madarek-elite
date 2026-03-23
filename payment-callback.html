@@ -62,6 +62,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="invoice-handler.js"></script>
     <script>
     var sb = window.supabase.createClient(
         'https://czzcmbxejxbotjemyuqf.supabase.co',
@@ -122,6 +123,8 @@
             show('state-success');
             gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':parseFloat(data.amount)||1.0,'currency':'SAR','transaction_id':paymentId||''});
             ttq.track('CompletePayment',{value:parseFloat(data.amount)||1.0,currency:'SAR',content_name:data.plan==='yearly'?'Yearly Plan':'Monthly Plan'});
+            // إنشاء فاتورة ضريبية تلقائياً
+            if(typeof saveInvoice==='function'){try{var sess=await sb.auth.getSession();var uid=sess&&sess.data&&sess.data.session?sess.data.session.user.id:null;saveInvoice({userId:uid,customerName:sess&&sess.data&&sess.data.session?sess.data.session.user.email:'عميل',customerPhone:null,planName:data.plan==='yearly'?'سنوي':'شهري',totalAmount:parseFloat(data.amount)||0,paymentId:paymentId||''});}catch(invErr){console.warn('[payment-callback] فاتورة:',invErr);}}
             var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';
             document.getElementById('success-plan').textContent = 'تم تفعيل اشتراكك ال' + planName + ' بنجاح!';
             var detail = data.amount > 0

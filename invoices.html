@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفواتير - مدارك النخبة</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF لتصدير الفواتير -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh;color:#fff}
+        .glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1rem}
+        .inp{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;padding:.65rem 1rem;color:#fff;font-size:.9rem;transition:all .2s;font-family:'Tajawal',sans-serif}
+        .inp:focus{outline:none;border-color:rgba(139,92,246,0.5);box-shadow:0 0 0 3px rgba(139,92,246,0.1)}
+        .inp option{background:#1a1145;color:#fff}
+        .bp{background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:10px 24px;border-radius:.75rem;font-weight:700;font-size:.9rem;color:#fff;transition:all .2s;border:none;cursor:pointer}
+        .bp:hover{box-shadow:0 8px 25px rgba(99,102,241,0.3);transform:translateY(-1px)}
+        .bs{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#c4b5fd;padding:8px 16px;border-radius:.75rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .bs:hover{background:rgba(255,255,255,0.1)}
+        .tr{border-bottom:1px solid rgba(255,255,255,0.04)}.tr:hover{background:rgba(255,255,255,0.03)}
+        .stat-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:20px;text-align:center;backdrop-filter:blur(10px)}
+        .stat-num{font-size:1.8rem;font-weight:900;font-family:'Cairo',sans-serif}
+        .stat-label{font-size:.8rem;color:rgba(196,181,253,0.5);margin-top:4px}
+        .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:12px;font-size:.95rem;font-weight:700;z-index:999;animation:sd .4s ease}
+        .tok{background:linear-gradient(135deg,#10b981,#14b8a6);color:#fff}
+        .ter{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+        @keyframes sd{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .pdf-btn{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#34d399;padding:6px 14px;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s}
+        .pdf-btn:hover{background:rgba(16,185,129,0.25)}
+        .bg-m{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2);display:inline-block;padding:3px 12px;border-radius:999px;font-size:.8rem;font-weight:700}
+        .bg-y{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.2);display:inline-block;padding:3px 12px;border-radius:999px;font-size:.8rem;font-weight:700}
+        .empty-state{text-align:center;padding:60px 20px;color:rgba(196,181,253,0.4)}
+        .empty-state .icon{font-size:3rem;margin-bottom:12px}
+        /* Madarek Logo */
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-size:9px;color:rgba(196,181,253,0.4);margin-top:1px;display:block;font-family:'Tajawal',sans-serif}
+        /* الجدول متجاوب */
+        .inv-table{width:100%;border-collapse:collapse}
+        .inv-table th{font-size:.8rem;color:rgba(196,181,253,0.4);font-weight:700;padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)}
+        .inv-table td{font-size:.88rem;padding:14px 10px;vertical-align:middle}
+        @media(max-width:768px){
+            .inv-table{display:block;overflow-x:auto;white-space:nowrap}
+            .stat-grid{grid-template-columns:1fr 1fr !important}
+        }
+        @media(max-width:480px){
+            .stat-grid{grid-template-columns:1fr !important}
+        }
+        /* قالب PDF مخفي */
+        #pdf-template{position:fixed;left:-9999px;top:0;width:595px;background:#fff;color:#000;font-family:'Tajawal',sans-serif;padding:40px;direction:rtl}
+    </style>
+</head>
+<body>
+    <!-- الهيدر -->
+    <div style="padding:20px 28px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:16px">
+            <a href="admin.html" class="bs" style="display:flex;align-items:center;gap:6px">
+                <span>→</span> لوحة الإدارة
+            </a>
+            <div>
+                <h1 style="font-family:'Cairo',sans-serif;font-size:1.3rem;font-weight:900;margin:0">الفواتير الضريبية</h1>
+                <p style="font-size:.75rem;color:rgba(196,181,253,0.4);margin:0">إدارة ومتابعة فواتير المشتركين</p>
+            </div>
+        </div>
+        <a href="index.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <span style="font-size:18px;font-weight:900;color:#a5b4fc">م</span>
+            </div>
+            <div>
+                <span class="name">مدارك النخبة</span>
+                <span class="tag">Madarek Elite</span>
+            </div>
+        </a>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div style="max-width:1200px;margin:0 auto;padding:24px 20px">
+
+        <!-- إحصائيات سريعة -->
+        <div class="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+            <div class="stat-card">
+                <div class="stat-num" style="color:#818cf8" id="stat-count">-</div>
+                <div class="stat-label">إجمالي الفواتير</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#34d399" id="stat-revenue">-</div>
+                <div class="stat-label">الإيرادات (ريال)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" style="color:#fbbf24" id="stat-tax">-</div>
+                <div class="stat-label">الضريبة المحصّلة (ريال)</div>
+            </div>
+        </div>
+
+        <!-- الفلاتر -->
+        <div class="glass" style="padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <label style="font-size:.85rem;font-weight:700;color:rgba(196,181,253,0.6)">من:</label>
+            <input type="date" class="inp" id="filter-from" style="width:auto">
+            <label style="font-size:.85rem;font-weight:700;color:rgba(196,181,253,0.6)">إلى:</label>
+            <input type="date" class="inp" id="filter-to" style="width:auto">
+            <select class="inp" id="filter-plan" style="width:auto">
+                <option value="">كل الخطط</option>
+                <option value="شهري">شهري</option>
+                <option value="سنوي">سنوي</option>
+            </select>
+            <button class="bp" onclick="loadInvoices()" style="padding:8px 20px">🔍 بحث</button>
+            <button class="bs" onclick="resetFilters()">مسح الفلاتر</button>
+        </div>
+
+        <!-- جدول الفواتير -->
+        <div class="glass" style="padding:0;overflow:hidden">
+            <div id="invoices-container">
+                <table class="inv-table">
+                    <thead>
+                        <tr style="background:rgba(255,255,255,0.02)">
+                            <th>رقم الفاتورة</th>
+                            <th>العميل</th>
+                            <th>الخطة</th>
+                            <th>قبل الضريبة</th>
+                            <th>الضريبة 15%</th>
+                            <th>الإجمالي</th>
+                            <th>التاريخ</th>
+                            <th>تصدير</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoices-body">
+                    </tbody>
+                </table>
+            </div>
+            <!-- حالة فارغة -->
+            <div id="empty-state" class="empty-state hidden">
+                <div class="icon">📄</div>
+                <p style="font-size:1rem;font-weight:700;margin-bottom:4px">لا توجد فواتير</p>
+                <p style="font-size:.85rem">الفواتير تُنشأ تلقائياً عند كل عملية دفع ناجحة</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- قالب PDF (مخفي — يُستخدم للتصدير) -->
+    <div id="pdf-template">
+        <div id="pdf-content" style="font-family:'Tajawal',sans-serif;direction:rtl;color:#000">
+            <!-- الهيدر -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;border-bottom:3px solid #6366f1;padding-bottom:20px">
+                <div>
+                    <img id="pdf-logo" src="logo.png" alt="مدارك النخبة" style="width:60px;height:60px;border-radius:12px;margin-bottom:8px" onerror="this.style.display='none'">
+                    <h2 style="margin:0;font-family:'Cairo',sans-serif;font-size:20px;color:#1e1b4b">مدارك النخبة</h2>
+                    <p style="margin:2px 0;font-size:11px;color:#6b7280">Madarek Elite Education Platform</p>
+                </div>
+                <div style="text-align:left">
+                    <h3 style="margin:0;font-size:22px;color:#6366f1;font-family:'Cairo',sans-serif">فاتورة ضريبية</h3>
+                    <p style="margin:4px 0;font-size:12px;color:#6b7280">Tax Invoice</p>
+                    <p id="pdf-inv-number" style="margin:4px 0;font-size:14px;font-weight:700;color:#1e1b4b"></p>
+                    <p id="pdf-inv-date" style="margin:2px 0;font-size:12px;color:#6b7280"></p>
+                </div>
+            </div>
+
+            <!-- بيانات المنشأة والعميل -->
+            <div style="display:flex;gap:30px;margin-bottom:25px">
+                <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
+                    <p style="font-size:11px;color:#6366f1;font-weight:700;margin:0 0 6px 0">بيانات المنشأة</p>
+                    <p style="margin:2px 0;font-size:12px;font-weight:700">مدارك النخبة للخدمات التعليمية</p>
+                    <p style="margin:2px 0;font-size:11px;color:#6b7280">الرقم الضريبي: [يُضاف لاحقاً]</p>
+                    <p style="margin:2px 0;font-size:11px;color:#6b7280">المملكة العربية السعودية</p>
+                </div>
+                <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
+                    <p style="font-size:11px;color:#6366f1;font-weight:700;margin:0 0 6px 0">بيانات العميل</p>
+                    <p id="pdf-customer-name" style="margin:2px 0;font-size:12px;font-weight:700"></p>
+                    <p id="pdf-customer-phone" style="margin:2px 0;font-size:11px;color:#6b7280"></p>
+                </div>
+            </div>
+
+            <!-- جدول الفاتورة -->
+            <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+                <thead>
+                    <tr style="background:#6366f1;color:#fff">
+                        <th style="padding:10px 12px;text-align:right;font-size:12px;border-radius:8px 0 0 0">الخدمة</th>
+                        <th style="padding:10px 12px;text-align:center;font-size:12px">المبلغ قبل الضريبة</th>
+                        <th style="padding:10px 12px;text-align:center;font-size:12px">ضريبة 15%</th>
+                        <th style="padding:10px 12px;text-align:center;font-size:12px;border-radius:0 8px 0 0">الإجمالي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="pdf-service" style="padding:12px;font-size:12px;border-bottom:1px solid #e2e8f0"></td>
+                        <td id="pdf-before-tax" style="padding:12px;text-align:center;font-size:12px;border-bottom:1px solid #e2e8f0"></td>
+                        <td id="pdf-tax" style="padding:12px;text-align:center;font-size:12px;border-bottom:1px solid #e2e8f0"></td>
+                        <td id="pdf-total" style="padding:12px;text-align:center;font-size:13px;font-weight:700;border-bottom:1px solid #e2e8f0"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- الإجمالي -->
+            <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+                <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:12px 24px;text-align:center">
+                    <span style="font-size:11px;color:#15803d;display:block">الإجمالي المستحق</span>
+                    <span id="pdf-grand-total" style="font-size:22px;font-weight:900;color:#15803d;font-family:'Cairo',sans-serif"></span>
+                    <span style="font-size:11px;color:#15803d"> ريال</span>
+                </div>
+            </div>
+
+            <!-- ختم سُدّد -->
+            <div style="text-align:center;margin:20px 0">
+                <div style="display:inline-block;border:3px solid #10b981;border-radius:12px;padding:8px 32px;transform:rotate(-5deg)">
+                    <span style="font-size:24px;font-weight:900;color:#10b981;font-family:'Cairo',sans-serif">سُدّدت ✓</span>
+                </div>
+            </div>
+
+            <!-- التذييل -->
+            <div style="border-top:2px solid #e2e8f0;padding-top:14px;margin-top:20px;text-align:center">
+                <p style="font-size:10px;color:#9ca3af;margin:0">هذه فاتورة ضريبية مبسّطة وفق أنظمة هيئة الزكاة والضريبة والجمارك</p>
+                <p style="font-size:10px;color:#9ca3af;margin:2px 0">Simplified Tax Invoice per ZATCA regulations</p>
+                <p style="font-size:10px;color:#9ca3af;margin:2px 0">madarekelite.com</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    // ═══ Supabase ═══
+    var sb = window.supabase.createClient(
+        'https://czzcmbxejxbotjemyuqf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+    );
+
+    var allInvoices = [];
+
+    // ═══ التحقق من الأدمن ═══
+    async function checkAdmin() {
+        var { data: { session } } = await sb.auth.getSession();
+        if (!session) { location.href = 'admin-login.html'; return false; }
+
+        var { data: p } = await sb.from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+
+        if (!p || p.role !== 'admin') {
+            location.href = 'admin-login.html';
+            return false;
+        }
+        return true;
+    }
+
+    // ═══ تحميل الفواتير ═══
+    async function loadInvoices() {
+        var query = sb.from('invoices').select('*').order('created_at', { ascending: false });
+
+        // فلتر التاريخ
+        var from = document.getElementById('filter-from').value;
+        var to = document.getElementById('filter-to').value;
+        if (from) query = query.gte('created_at', from + 'T00:00:00');
+        if (to) query = query.lte('created_at', to + 'T23:59:59');
+
+        // فلتر الخطة
+        var plan = document.getElementById('filter-plan').value;
+        if (plan) query = query.eq('plan_name', plan);
+
+        var { data, error } = await query;
+
+        if (error) {
+            toast('خطأ في تحميل الفواتير: ' + error.message, false);
+            return;
+        }
+
+        allInvoices = data || [];
+        renderInvoices();
+        updateStats();
+    }
+
+    // ═══ عرض الفواتير ═══
+    function renderInvoices() {
+        var tbody = document.getElementById('invoices-body');
+        var empty = document.getElementById('empty-state');
+
+        if (allInvoices.length === 0) {
+            tbody.innerHTML = '';
+            empty.classList.remove('hidden');
+            return;
+        }
+
+        empty.classList.add('hidden');
+        tbody.innerHTML = allInvoices.map(function(inv) {
+            var planClass = inv.plan_name === 'سنوي' ? 'bg-y' : 'bg-m';
+            var date = new Date(inv.created_at).toLocaleDateString('ar-SA', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+            return '<tr class="tr">'
+                + '<td style="font-weight:700;font-size:.85rem;color:#a5b4fc">' + escHtml(inv.invoice_number) + '</td>'
+                + '<td>' + escHtml(inv.customer_name) + '</td>'
+                + '<td><span class="' + planClass + '">' + escHtml(inv.plan_name) + '</span></td>'
+                + '<td>' + Number(inv.amount_before_tax).toFixed(2) + '</td>'
+                + '<td style="color:#fbbf24">' + Number(inv.tax_amount).toFixed(2) + '</td>'
+                + '<td style="font-weight:700">' + Number(inv.total_amount).toFixed(2) + ' ر.س</td>'
+                + '<td style="font-size:.8rem;color:rgba(196,181,253,0.5)">' + date + '</td>'
+                + '<td><button class="pdf-btn" onclick="exportPDF(\'' + inv.id + '\')">📄 PDF</button></td>'
+                + '</tr>';
+        }).join('');
+    }
+
+    // ═══ تحديث الإحصائيات ═══
+    function updateStats() {
+        var count = allInvoices.length;
+        var revenue = allInvoices.reduce(function(s, i) { return s + Number(i.total_amount); }, 0);
+        var tax = allInvoices.reduce(function(s, i) { return s + Number(i.tax_amount); }, 0);
+
+        document.getElementById('stat-count').textContent = count;
+        document.getElementById('stat-revenue').textContent = revenue.toFixed(2);
+        document.getElementById('stat-tax').textContent = tax.toFixed(2);
+    }
+
+    // ═══ مسح الفلاتر ═══
+    function resetFilters() {
+        document.getElementById('filter-from').value = '';
+        document.getElementById('filter-to').value = '';
+        document.getElementById('filter-plan').value = '';
+        loadInvoices();
+    }
+
+    // ═══ تصدير PDF ═══
+    async function exportPDF(invoiceId) {
+        var inv = allInvoices.find(function(i) { return i.id === invoiceId; });
+        if (!inv) { toast('ما لقينا الفاتورة', false); return; }
+
+        // تعبئة قالب PDF
+        document.getElementById('pdf-inv-number').textContent = inv.invoice_number;
+        document.getElementById('pdf-inv-date').textContent = new Date(inv.created_at).toLocaleDateString('ar-SA', {
+            year: 'numeric', month: 'long', day: 'numeric'
+        });
+        document.getElementById('pdf-customer-name').textContent = inv.customer_name;
+        document.getElementById('pdf-customer-phone').textContent = inv.customer_phone || '—';
+        document.getElementById('pdf-service').textContent = 'اشتراك ' + inv.plan_name + ' — مدارك النخبة';
+        document.getElementById('pdf-before-tax').textContent = Number(inv.amount_before_tax).toFixed(2) + ' ر.س';
+        document.getElementById('pdf-tax').textContent = Number(inv.tax_amount).toFixed(2) + ' ر.س';
+        document.getElementById('pdf-total').textContent = Number(inv.total_amount).toFixed(2) + ' ر.س';
+        document.getElementById('pdf-grand-total').textContent = Number(inv.total_amount).toFixed(2);
+
+        // تحويل لـ PDF
+        try {
+            var element = document.getElementById('pdf-content');
+            // نقل القالب مؤقتاً للعرض
+            element.parentElement.style.left = '0';
+            element.parentElement.style.position = 'absolute';
+
+            var canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                width: 595,
+                windowWidth: 595
+            });
+
+            // إرجاع القالب
+            element.parentElement.style.left = '-9999px';
+            element.parentElement.style.position = 'fixed';
+
+            var { jsPDF } = window.jspdf;
+            var pdf = new jsPDF('p', 'mm', 'a4');
+            var imgData = canvas.toDataURL('image/png');
+            var pdfWidth = pdf.internal.pageSize.getWidth();
+            var pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(inv.invoice_number + '.pdf');
+
+            toast('تم تصدير الفاتورة ✅', true);
+        } catch (err) {
+            console.error('[invoices] خطأ في التصدير:', err);
+            toast('فشل تصدير الـ PDF', false);
+        }
+    }
+
+    // ═══ أدوات ═══
+    function escHtml(str) {
+        if (!str) return '';
+        var d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function toast(msg, ok) {
+        var t = document.createElement('div');
+        t.className = 'toast ' + (ok ? 'tok' : 'ter');
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(function() { t.remove(); }, 3000);
+    }
+
+    // ═══ التشغيل ═══
+    (async function() {
+        var ok = await checkAdmin();
+        if (ok) loadInvoices();
+    })();
+    </script>
+</body>
+</html>
