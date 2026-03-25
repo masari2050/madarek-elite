@@ -39,7 +39,7 @@
   var defaultMessages = {
     firstVisit: { emoji: '👋', text: 'أهلاً فيك! جرّب حل سؤال مجاني وشف مستواك', btn: 'جرّب الحين', link: 'select-section.html', color: '#6366f1' },
     returnVisitor: { emoji: '🔥', text: 'حياك مرة ثانية! سجّل حساب مجاني وتابع تقدّمك', btn: 'سجّل مجاناً', link: 'register.html', color: '#10b981' },
-    pricing: { emoji: '🎁', text: 'عرض حصري! استخدم الكوبون واحصل على خصم مميز', coupon: 'RAMADAN26', color: '#f59e0b' },
+    pricing: { emoji: '🎁', text: 'عندك كوبون خصم؟ استخدمه واحصل على خصم مميز', coupon: '', color: '#f59e0b' },
     loggedIdle: { emoji: '📚', text: 'الاختبار يحتاج ممارسة مستمرة — حل أسئلة اليوم وطوّر مستواك!', btn: 'تدرّب الحين', link: 'select-section.html', color: '#6366f1' },
     idle: [
       { emoji: '📝', text: 'الممارسة العملية أقوى طريقة للاستعداد — جرّب تحل سؤال الحين!', color: '#8b5cf6' },
