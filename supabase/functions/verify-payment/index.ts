@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://madarekelite.com',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
@@ -19,20 +19,25 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // ── محاولة التحقق من المستخدم (اختياري) ──
-    let user: any = null
-    try {
-      const authHeader = req.headers.get('Authorization')
-      if (authHeader) {
-        const supabaseUser = createClient(
-          Deno.env.get('SUPABASE_URL') ?? '',
-          Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-          { global: { headers: { Authorization: authHeader } } }
-        )
-        const { data } = await supabaseUser.auth.getUser()
-        user = data?.user || null
-      }
-    } catch (_) { /* الجلسة منتهية — نكمل بدونها */ }
+    // ── التحقق من المستخدم (إجباري) ──
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    const supabaseUser = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    )
+    const { data: { user }, error: authErr } = await supabaseUser.auth.getUser()
+    if (authErr || !user) {
+      return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
 
     // ── قراءة paymentId ──
     const { paymentId } = await req.json()
@@ -103,17 +108,11 @@ serve(async (req) => {
     const refUserId = parts[0] || ''
     const plan = parts[1] || 'monthly'
 
-    // تحديد المستخدم: من الجلسة أو من CustomerReference
-    const targetUserId = user?.id || refUserId
+    // تحديد المستخدم: من الجلسة (إجباري الآن)
+    const targetUserId = user.id
 
-    if (!targetUserId) {
-      return new Response(JSON.stringify({ error: 'لم نتمكن من تحديد المستخدم' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      })
-    }
-
-    // لو المستخدم مسجّل دخول، تأكد إنه نفس صاحب الفاتورة
-    if (user && refUserId && refUserId !== user.id) {
+    // تأكد إن الفاتورة تخص نفس المستخدم
+    if (refUserId && refUserId !== user.id) {
       return new Response(JSON.stringify({ error: 'هذه الفاتورة ليست لحسابك' }), {
         status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
