@@ -319,20 +319,33 @@
                 if(r.data&&r.data.subscription_type)userSub=r.data.subscription_type;
             }catch(e){}
             if(!TASREEBAT_SETS.length)return;
-            // حساب تقدم كل مجموعة تسريبات
+            // حساب تقدم كل مجموعة تسريبات — query واحد بدل 18
             if(userId && userSub!=='free'){
-                for(var i=0;i<TASREEBAT_SETS.length;i++){
-                    var set=TASREEBAT_SETS[i];
-                    try{
-                        var allQ=await sb.from('questions').select('id').gte('created_at',set.createdAfter).lt('created_at',set.createdBefore);
-                        var allIds=(allQ.data||[]).map(function(q){return q.id;});
-                        if(allIds.length){
-                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',allIds);
-                            var uniqueDone=[...new Set((done.data||[]).map(function(a){return a.question_id;}))];
-                            tasreebProgress[set.id]={total:allIds.length,done:uniqueDone.length,remaining:allIds.length-uniqueDone.length};
+                try{
+                    // 1. جلب كل أسئلة التسريبات بـ query واحد
+                    var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
+                    var maxDate=TASREEBAT_SETS[0].createdBefore;
+                    var allQ=await sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate);
+                    var allQData=allQ.data||[];
+                    // 2. جلب كل المحاولات بـ query واحد
+                    var allIds=allQData.map(function(q){return q.id;});
+                    var doneMap={};
+                    if(allIds.length){
+                        // تقسيم لو كثير (Supabase limit)
+                        for(var chunk=0;chunk<allIds.length;chunk+=500){
+                            var batch=allIds.slice(chunk,chunk+500);
+                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',batch);
+                            (done.data||[]).forEach(function(a){doneMap[a.question_id]=true;});
                         }
-                    }catch(e){}
-                }
+                    }
+                    // 3. توزيع على كل set
+                    TASREEBAT_SETS.forEach(function(set){
+                        var setQs=allQData.filter(function(q){return q.created_at>=set.createdAfter&&q.created_at<set.createdBefore;});
+                        var total=setQs.length;
+                        var doneCount=setQs.filter(function(q){return doneMap[q.id];}).length;
+                        if(total)tasreebProgress[set.id]={total:total,done:doneCount,remaining:total-doneCount};
+                    });
+                }catch(e){}
             }
             var section=document.getElementById('tasreebatSection'),grid=document.getElementById('tasreebatGrid');
             var isPro=(userSub!=='free');
