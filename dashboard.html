@@ -115,11 +115,25 @@
     <main class="max-w-4xl mx-auto px-4 pb-12">
 
         <!-- 🔥 بانر التسريبات الجديدة -->
-        <div onclick="location.href='select-section.html'" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:12px 16px;border-radius:16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
-            <span style="font-size:18px">🔥</span>
-            <span style="color:#fff;font-size:13px;font-weight:700">تسريبات جديدة!</span>
-            <span style="color:rgba(255,255,255,0.8);font-size:12px">٥٥ سؤال — ٢٤ و ٢٦ و ٢٨ مارس</span>
-            <span style="background:rgba(255,255,255,0.2);color:#fff;font-size:11px;padding:2px 10px;border-radius:20px;font-weight:600">جرّب ←</span>
+        <style>
+        @keyframes dbShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        @keyframes dbPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+        .db-tasreeb{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);padding:14px 16px;border-radius:16px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden;border:1px solid rgba(139,92,246,0.3)}
+        .db-tasreeb::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.12),transparent);background-size:200% 100%;animation:dbShimmer 3s infinite linear}
+        .db-tasreeb .db-fire{animation:dbPulse 1.5s infinite;display:inline-block}
+        .db-tasreeb .db-new{background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;letter-spacing:0.5px}
+        .db-tasreeb .db-cta{background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-size:12px;padding:5px 14px;border-radius:20px;font-weight:700;box-shadow:0 2px 10px rgba(99,102,241,0.4)}
+        </style>
+        <div class="db-tasreeb" onclick="location.href='select-section.html'">
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px">
+                <div style="display:flex;align-items:center;gap:5px">
+                    <span class="db-fire" style="font-size:18px">🔥</span>
+                    <span style="color:#fff;font-size:14px;font-weight:800">تسريبات اختبارات القدرات</span>
+                    <span class="db-new">NEW</span>
+                </div>
+                <div style="color:rgba(255,255,255,0.6);font-size:11px">أسئلة حقيقية من تجميعات ٢٤ و ٢٦ و ٢٨ مارس</div>
+                <span class="db-cta">جرّب الحين ←</span>
+            </div>
         </div>
 
         <!-- ═══ 1. Hero Action Card ═══ -->
