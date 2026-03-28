@@ -1,100 +1,82 @@
 // ══════════════════════════════════════════════════════════
 //  biometric.js — مدارك النخبة
 //  نظام البصمة (Face ID / Touch ID) للتطبيق فقط
-//  يعمل مع Capacitor + @aparajita/capacitor-biometric-auth
-//  + @capacitor/preferences
+//  يتواصل مع Swift عبر WKWebView message handler
+//  يستخدم localStorage للتخزين
 // ══════════════════════════════════════════════════════════
 (function(){
     'use strict';
 
-    // ── كشف التطبيق (نفس طريقة باقي الملفات) ──
+    // ── كشف التطبيق ──
     var ua = navigator.userAgent || '';
     var isApp = !!(window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1));
-    console.log('[Biometric] isApp=' + isApp + ', Capacitor=' + !!window.Capacitor);
-    if(!isApp) return; // المتصفح ما يحتاج بصمة
+    if(!isApp) return;
 
     var MAX_FAILURES = 3;
-    var PREF_KEY = 'biometric_enabled';
+    var STORE_KEY = 'madarek_biometric_enabled';
     var _overlay = null;
     var _failCount = 0;
+    var _callbacks = {};
+    var _callbackId = 0;
 
-    // ── الوصول للـ Plugins عبر Bridge ──
-    function getBiometricPlugin(){
-        try {
-            var p = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.BiometricAuthNative;
-            console.log('[Biometric] plugin BiometricAuthNative=' + !!p);
-            return p || null;
-        } catch(e){ console.log('[Biometric] plugin error: ' + e); return null; }
-    }
-    function getPreferencesPlugin(){
-        try {
-            var p = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences;
-            console.log('[Biometric] plugin Preferences=' + !!p);
-            return p || null;
-        } catch(e){ return null; }
+    // ══════════════════════════════════════
+    //  Callback system — Swift يرد عبر هذي
+    // ══════════════════════════════════════
+    window._biometricCallback = function(id, result){
+        if(_callbacks[id]){
+            _callbacks[id](result);
+            delete _callbacks[id];
+        }
+    };
+
+    function callNative(action, extra){
+        return new Promise(function(resolve){
+            var id = 'bio_' + (++_callbackId);
+            _callbacks[id] = resolve;
+            var msg = Object.assign({ action: action, callbackId: id }, extra || {});
+            try {
+                window.webkit.messageHandlers.biometricAuth.postMessage(msg);
+            } catch(e){
+                console.log('[Biometric] Native handler not available: ' + e);
+                resolve(null);
+            }
+            // timeout — لو Swift ما رد خلال 10 ثواني
+            setTimeout(function(){ if(_callbacks[id]){ _callbacks[id](null); delete _callbacks[id]; } }, 10000);
+        });
     }
 
     // ══════════════════════════════════════
-    //  Preferences helpers
+    //  localStorage helpers
     // ══════════════════════════════════════
     window._biometric = window._biometric || {};
 
-    window._biometric.isEnabled = async function(){
-        var prefs = getPreferencesPlugin();
-        if(!prefs) return false;
-        try {
-            var res = await prefs.get({ key: PREF_KEY });
-            return res.value === 'true';
-        } catch(e){ return false; }
+    window._biometric.isEnabled = function(){
+        return localStorage.getItem(STORE_KEY) === 'true';
     };
 
-    window._biometric.setEnabled = async function(val){
-        var prefs = getPreferencesPlugin();
-        if(!prefs) return;
-        try {
-            if(val){
-                await prefs.set({ key: PREF_KEY, value: 'true' });
-            } else {
-                await prefs.remove({ key: PREF_KEY });
-            }
-        } catch(e){}
+    window._biometric.setEnabled = function(val){
+        if(val) localStorage.setItem(STORE_KEY, 'true');
+        else localStorage.removeItem(STORE_KEY);
     };
 
     // ══════════════════════════════════════
     //  البصمة — فحص الدعم
     // ══════════════════════════════════════
     window._biometric.checkAvailable = async function(){
-        var plugin = getBiometricPlugin();
-        if(!plugin) return { available: false, type: 'none' };
-        try {
-            var res = await plugin.checkBiometry();
-            var typeName = 'none';
-            // biometryType: 0=none, 1=touchId, 2=faceId, 3=fingerprint, 4=faceAuth
-            if(res.biometryType === 1) typeName = 'Touch ID';
-            else if(res.biometryType === 2) typeName = 'Face ID';
-            else if(res.biometryType === 3) typeName = 'بصمة الإصبع';
-            else if(res.biometryType === 4) typeName = 'التعرف على الوجه';
-            else if(res.biometryType > 0) typeName = 'بصمة';
-            return { available: !!res.isAvailable, type: typeName };
-        } catch(e){ return { available: false, type: 'none' }; }
+        var result = await callNative('check');
+        if(!result) return { available: false, type: 'none' };
+        console.log('[Biometric] check: available=' + result.available + ', type=' + result.type);
+        return { available: !!result.available, type: result.type || 'none' };
     };
 
     // ══════════════════════════════════════
     //  البصمة — تسجيل الدخول
     // ══════════════════════════════════════
     window._biometric.authenticate = async function(){
-        var plugin = getBiometricPlugin();
-        if(!plugin) return false;
-        try {
-            await plugin.authenticate({
-                reason: 'سجّل دخولك بالبصمة',
-                cancelTitle: 'إلغاء',
-                allowDeviceCredential: false
-            });
-            return true; // نجحت
-        } catch(e){
-            return false; // فشلت أو ألغاها المستخدم
-        }
+        var result = await callNative('authenticate', { reason: 'سجّل دخولك بالبصمة' });
+        if(!result) return false;
+        console.log('[Biometric] authenticate: success=' + result.success);
+        return !!result.success;
     };
 
     // ══════════════════════════════════════
@@ -142,9 +124,7 @@
 
         _failCount++;
         if(_failCount >= MAX_FAILURES){
-            // 3 محاولات فشلت — ارجع لتسجيل الدخول
             removeOverlay();
-            // امسح الجلسة عشان يسجل دخول من جديد
             try {
                 if(window.sb && window.sb.auth) await window.sb.auth.signOut();
                 else if(window.SB && window.SB.auth) await window.SB.auth.signOut();
@@ -153,7 +133,6 @@
             return;
         }
 
-        // اعرض زر إعادة المحاولة
         var retryBtn = document.getElementById('bio-retry-btn');
         var failMsg = document.getElementById('bio-fail-msg');
         if(retryBtn) retryBtn.style.display = 'block';
@@ -169,12 +148,9 @@
     window._biometric.promptEnable = async function(){
         console.log('[Biometric] promptEnable called');
         var bio = await window._biometric.checkAvailable();
-        console.log('[Biometric] available=' + bio.available + ', type=' + bio.type);
-        if(!bio.available) return;
+        if(!bio.available){ console.log('[Biometric] not available, skipping prompt'); return; }
 
-        var alreadyEnabled = await window._biometric.isEnabled();
-        console.log('[Biometric] alreadyEnabled=' + alreadyEnabled);
-        if(alreadyEnabled) return;
+        if(window._biometric.isEnabled()){ console.log('[Biometric] already enabled'); return; }
 
         // Modal
         var modal = document.createElement('div');
@@ -192,10 +168,10 @@
 
         return new Promise(function(resolve){
             document.getElementById('bio-enable-btn').addEventListener('click', async function(){
-                // جرّب البصمة أول (عشان يوافق النظام)
                 var ok = await window._biometric.authenticate();
                 if(ok){
-                    await window._biometric.setEnabled(true);
+                    window._biometric.setEnabled(true);
+                    console.log('[Biometric] enabled successfully');
                 }
                 modal.parentNode.removeChild(modal);
                 resolve(ok);
@@ -211,28 +187,21 @@
     //  التشغيل التلقائي عند فتح الصفحة
     // ══════════════════════════════════════
     async function initBiometricGuard(){
-        // لا تشغّل البصمة على صفحة تسجيل الدخول أو التسجيل أو الديمو
         var path = window.location.pathname.toLowerCase();
         if(path.indexOf('login') !== -1 || path.indexOf('register') !== -1 || path.indexOf('demo') !== -1){
             return;
         }
 
-        var enabled = await window._biometric.isEnabled();
-        if(!enabled) return;
+        if(!window._biometric.isEnabled()) return;
 
-        // تأكد إن فيه جلسة محفوظة أصلاً
         var hasSession = !!(localStorage.getItem('madarek_session_backup') || localStorage.getItem('sb-czzcmbxejxbotjemyuqf-auth-token'));
-        if(!hasSession) return; // ما فيه جلسة — خله يسجل دخول عادي
+        if(!hasSession) return;
 
-        // اعرض overlay فوراً
         createOverlay();
-
-        // شغّل البصمة
         _failCount = 0;
         runBiometric();
     }
 
-    // ── ابدأ بعد تحميل DOM ──
     if(document.readyState === 'loading'){
         document.addEventListener('DOMContentLoaded', initBiometricGuard);
     } else {
