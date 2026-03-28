@@ -318,6 +318,10 @@
             var session = await window._madarekRestoreSession(sb);
             if (session) {
                 localStorage.setItem('khawariz_user', JSON.stringify({ id: session.user.id, email: session.user.email, name: session.user.user_metadata?.name || '' }));
+                // 🔐 عرض prompt البصمة عند الدخول التلقائي (أول مرة فقط)
+                if(window._biometric && window._biometric.promptEnable){
+                    try { await window._biometric.promptEnable(); } catch(e){}
+                }
                 window.location.href = 'dashboard.html';
             }
         })();
