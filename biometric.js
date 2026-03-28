@@ -14,6 +14,7 @@
 
     var MAX_FAILURES = 3;
     var STORE_KEY = 'madarek_biometric_enabled';
+    var SESSION_KEY = 'madarek_bio_passed'; // sessionStorage — ينمسح لو أغلق التطبيق
     var _overlay = null;
     var _failCount = 0;
     var _callbacks = {};
@@ -118,6 +119,7 @@
         var success = await window._biometric.authenticate();
         if(success){
             _failCount = 0;
+            try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){}
             removeOverlay();
             return;
         }
@@ -171,6 +173,7 @@
                 var ok = await window._biometric.authenticate();
                 if(ok){
                     window._biometric.setEnabled(true);
+                    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){}
                     console.log('[Biometric] enabled successfully');
                 }
                 modal.parentNode.removeChild(modal);
@@ -193,6 +196,9 @@
         }
 
         if(!window._biometric.isEnabled()) return;
+
+        // لو البصمة نجحت بنفس الجلسة — لا تطلبها مرة ثانية
+        try { if(sessionStorage.getItem(SESSION_KEY)) return; } catch(e){}
 
         var hasSession = !!(localStorage.getItem('madarek_session_backup') || localStorage.getItem('sb-czzcmbxejxbotjemyuqf-auth-token'));
         if(!hasSession) return;
