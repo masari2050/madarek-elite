@@ -7,8 +7,10 @@
 (function(){
     'use strict';
 
-    // ── كشف التطبيق ──
-    var isApp = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+    // ── كشف التطبيق (نفس طريقة باقي الملفات) ──
+    var ua = navigator.userAgent || '';
+    var isApp = !!(window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1));
+    console.log('[Biometric] isApp=' + isApp + ', Capacitor=' + !!window.Capacitor);
     if(!isApp) return; // المتصفح ما يحتاج بصمة
 
     var MAX_FAILURES = 3;
@@ -18,10 +20,18 @@
 
     // ── الوصول للـ Plugins عبر Bridge ──
     function getBiometricPlugin(){
-        try { return window.Capacitor.Plugins.BiometricAuthNative; } catch(e){ return null; }
+        try {
+            var p = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.BiometricAuthNative;
+            console.log('[Biometric] plugin BiometricAuthNative=' + !!p);
+            return p || null;
+        } catch(e){ console.log('[Biometric] plugin error: ' + e); return null; }
     }
     function getPreferencesPlugin(){
-        try { return window.Capacitor.Plugins.Preferences; } catch(e){ return null; }
+        try {
+            var p = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences;
+            console.log('[Biometric] plugin Preferences=' + !!p);
+            return p || null;
+        } catch(e){ return null; }
     }
 
     // ══════════════════════════════════════
@@ -157,10 +167,13 @@
     //  عرض prompt التفعيل (أول مرة)
     // ══════════════════════════════════════
     window._biometric.promptEnable = async function(){
+        console.log('[Biometric] promptEnable called');
         var bio = await window._biometric.checkAvailable();
+        console.log('[Biometric] available=' + bio.available + ', type=' + bio.type);
         if(!bio.available) return;
 
         var alreadyEnabled = await window._biometric.isEnabled();
+        console.log('[Biometric] alreadyEnabled=' + alreadyEnabled);
         if(alreadyEnabled) return;
 
         // Modal
