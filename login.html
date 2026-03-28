@@ -108,6 +108,7 @@
     <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="session-keeper.js"></script>
+    <script src="biometric.js"></script>
     <script>
         // ── الخطوة الأولى: اقرأ التوكنات/المعرّفات قبل createClient ──
         var _rawAt = null, _rawRt = null, _isRecoveryUrl = false, _tokenHash = null;
@@ -343,6 +344,10 @@
                 if (error) throw error;
                 _loginAttempts = 0; // نجاح — نصفّر العداد
                 localStorage.setItem('khawariz_user', JSON.stringify({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name || '' }));
+                // 🔐 عرض prompt البصمة (في التطبيق فقط)
+                if(window._biometric && window._biometric.promptEnable){
+                    try { await window._biometric.promptEnable(); } catch(e){}
+                }
                 window.location.href = 'dashboard.html';
             } catch (error) {
                 _loginAttempts++;
