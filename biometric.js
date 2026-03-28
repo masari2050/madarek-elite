@@ -121,6 +121,11 @@
             _failCount = 0;
             try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){}
             removeOverlay();
+            // وديه للداشبورد مباشرة
+            var path = window.location.pathname.toLowerCase();
+            if(path.indexOf('dashboard') === -1){
+                window.location.href = '/dashboard.html';
+            }
             return;
         }
 
@@ -205,7 +210,8 @@
 
         createOverlay();
         _failCount = 0;
-        runBiometric();
+        // تأخير بسيط عشان Swift handler يكون جاهز
+        setTimeout(function(){ runBiometric(); }, 1500);
     }
 
     if(document.readyState === 'loading'){
