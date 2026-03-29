@@ -291,5 +291,84 @@
         } catch(e){}
     })();
     </script>
+
+<!-- 📲 Popup تحميل التطبيق — للمسجلين بعد نتيجة الاختبار -->
+<style>
+@keyframes appPopSlide{0%{opacity:0;transform:translate(-50%,30px) scale(0.95)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes appPopGlow{0%,100%{box-shadow:0 8px 40px rgba(99,102,241,0.25)}50%{box-shadow:0 12px 50px rgba(99,102,241,0.4)}}
+@keyframes appPhoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#app-dl-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:9998;display:none;align-items:center;justify-content:center}
+#app-dl-overlay.show{display:flex}
+#app-dl-popup{position:relative;width:360px;max-width:calc(100vw - 28px);background:linear-gradient(160deg,#13103a,#1a1450,#13103a);border:1.5px solid rgba(99,102,241,0.2);border-radius:24px;padding:32px 24px 28px;text-align:center;animation:appPopSlide 0.5s ease,appPopGlow 3s ease-in-out infinite;direction:rtl;font-family:'Tajawal',sans-serif;overflow:hidden}
+#app-dl-popup::before{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,0.1),transparent 70%);pointer-events:none}
+#app-dl-popup .adl-close{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5;line-height:1}
+#app-dl-popup .adl-close:hover{color:#fff;background:rgba(255,255,255,0.12)}
+#app-dl-popup .adl-phone{font-size:64px;display:block;margin-bottom:16px;animation:appPhoneFloat 3s ease-in-out infinite}
+#app-dl-popup .adl-title{font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:10px;line-height:1.4}
+#app-dl-popup .adl-desc{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:24px}
+#app-dl-popup .adl-stores{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#app-dl-popup .adl-store{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:14px;font-size:14px;font-weight:700;color:#fff;text-decoration:none;transition:all .25s}
+#app-dl-popup .adl-store:hover{transform:translateY(-2px)}
+#app-dl-popup .adl-ios{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1.5px solid rgba(99,102,241,0.3)}
+#app-dl-popup .adl-ios:hover{box-shadow:0 6px 20px rgba(99,102,241,0.35)}
+#app-dl-popup .adl-android{background:linear-gradient(135deg,#064e3b,#065f46);border:1.5px solid rgba(16,185,129,0.3)}
+#app-dl-popup .adl-android:hover{box-shadow:0 6px 20px rgba(16,185,129,0.35)}
+@media(max-width:400px){
+  #app-dl-popup{padding:26px 18px 22px}
+  #app-dl-popup .adl-title{font-size:18px}
+  #app-dl-popup .adl-store{padding:10px 16px;font-size:13px}
+}
+</style>
+
+<div id="app-dl-overlay">
+    <div id="app-dl-popup">
+        <button class="adl-close" id="adl-close-btn">✕</button>
+        <span class="adl-phone">📲</span>
+        <h3 class="adl-title">ذاكر في أي مكان وما تفوتك مسألة 📲</h3>
+        <p class="adl-desc">حمّل التطبيق وخذ مدارك معك — إشعارات يومية، أسئلة، ونتائجك في جيبك</p>
+        <div class="adl-stores">
+            <a href="https://apps.apple.com/ca/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" class="adl-store adl-ios">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                App Store
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" class="adl-store adl-android">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M3.18 23.54L14.44 12 3.18.46C2.68.96 2.5 1.78 2.5 2.63v18.74c0 .85.18 1.67.68 2.17zM16.12 13.67L5.44 24l13.2-7.6-2.52-2.73zm2.44-2.44L21.5 12l-2.94 1.7-2.7-2.47 2.7-2zm-2.52-2.56L5.44 0l10.68 10.33 2.52-2.73z"/></svg>
+                Google Play
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    // لا تعرض داخل التطبيق
+    var ua = navigator.userAgent || '';
+    var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1);
+    if(isApp) return;
+
+    // مرة كل 3 أيام
+    var KEY = 'madarek_app_popup_last';
+    var last = parseInt(localStorage.getItem(KEY) || '0');
+    var threeDays = 3 * 24 * 60 * 60 * 1000;
+    if(Date.now() - last < threeDays) return;
+
+    // تأخير 3 ثواني بعد ظهور النتيجة
+    setTimeout(function(){
+        localStorage.setItem(KEY, Date.now());
+        var overlay = document.getElementById('app-dl-overlay');
+        overlay.classList.add('show');
+
+        document.getElementById('adl-close-btn').onclick = function(){
+            overlay.style.transition = 'opacity .3s';
+            overlay.style.opacity = '0';
+            setTimeout(function(){ overlay.classList.remove('show'); overlay.style.opacity = ''; }, 300);
+        };
+
+        overlay.onclick = function(e){
+            if(e.target === overlay) document.getElementById('adl-close-btn').click();
+        };
+    }, 3000);
+})();
+</script>
 </body>
 </html>
