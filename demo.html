@@ -401,7 +401,7 @@ function showResults() {
     localStorage.setItem('madarek_demo_done', JSON.stringify({score: score, total: 5, time: Date.now()}));
 
     // 📲 popup تحميل التطبيق — بعد الديمو
-    setTimeout(function(){ showAppPopup(); }, 2500);
+    setTimeout(function(){ showAppPopup(); }, 10000);
 
     // Ring color based on score (out of 5)
     var ring = document.getElementById('scoreRing');
