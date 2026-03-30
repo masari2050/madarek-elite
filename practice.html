@@ -398,7 +398,17 @@
         var session=await window._madarekRestoreSession(sb);
         if(!session){location.href='login.html';return false;}
         currentUser=session.user;
-        try{ var r=await sb.from('profiles').select('subscription_type').eq('id',currentUser.id).single(); if(r.data&&r.data.subscription_type)userSubscription=r.data.subscription_type; }catch(e){}
+        try{ var r=await sb.from('profiles').select('subscription_type,subscription_end').eq('id',currentUser.id).single();
+            if(r.data){
+                var st=r.data.subscription_type||'free';
+                // ✅ تحقق من انتهاء الاشتراك — لو subscription_end فات، يتعامل معه كمجاني
+                if(st!=='free' && r.data.subscription_end){
+                    var endDate=new Date(r.data.subscription_end);
+                    if(endDate<new Date()){ st='free'; /* اشتراك منتهي */ }
+                }
+                userSubscription=st;
+            }
+        }catch(e){}
         if(userSubscription==='free'){
             // 📅 حساب بداية الأسبوع (يوم الأحد) — التجربة تتجدد أسبوعياً
             var weekStart = new Date();

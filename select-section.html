@@ -319,8 +319,12 @@
             try{
                 var session=await window._madarekRestoreSession(sb);if(!session)return;
                 userId=session.user.id;
-                var r=await sb.from('profiles').select('subscription_type').eq('id',userId).single();
-                if(r.data&&r.data.subscription_type)userSub=r.data.subscription_type;
+                var r=await sb.from('profiles').select('subscription_type,subscription_end').eq('id',userId).single();
+                if(r.data&&r.data.subscription_type){
+                    userSub=r.data.subscription_type;
+                    // ✅ تحقق من انتهاء الاشتراك
+                    if(userSub!=='free' && r.data.subscription_end && new Date(r.data.subscription_end)<new Date()){ userSub='free'; }
+                }
             }catch(e){}
             if(!TASREEBAT_SETS.length)return;
             // حساب تقدم كل مجموعة تسريبات — query واحد بدل 18
