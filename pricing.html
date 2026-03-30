@@ -2,14 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <script>
-    /* Redirect to login if inside app — no pricing page in app */
-    (function(){
-        var ua = navigator.userAgent;
-        var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1);
-        if(isApp) window.location.replace('login.html');
-    })();
-    </script>
+    <!-- pricing.html متاح بالتطبيق والمتصفح -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="manifest" href="manifest.json">
