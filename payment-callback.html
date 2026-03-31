@@ -107,6 +107,16 @@
             return;
         }
 
+        // وضع اختبار: debug=true يفاير تاق Google Ads بدون تحقق من الدفع
+        if(params.get('debug') === 'true'){
+            show('state-success');
+            gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':1.0,'currency':'SAR','transaction_id':paymentId||''});
+            document.getElementById('success-plan').textContent = '[DEBUG] تم إطلاق تاق Google Ads conversion';
+            document.getElementById('success-detail').textContent = 'paymentId: ' + paymentId + ' — هذا وضع اختبار فقط';
+            console.log('[DEBUG] Google Ads conversion tag fired — send_to: AW-17989685111/9KtnCO6fkIUcEPeek4JD');
+            return;
+        }
+
         try { await sb.auth.getSession(); } catch(_){}
 
         var result = await verifyWithRetry(paymentId);
