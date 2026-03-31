@@ -400,8 +400,10 @@ function showResults() {
     // حفظ أن الزائر أكمل التجربة
     localStorage.setItem('madarek_demo_done', JSON.stringify({score: score, total: 5, time: Date.now()}));
 
-    // 📲 popup تحميل التطبيق — بعد الديمو
-    setTimeout(function(){ showAppPopup(); }, 10000);
+    // 🔥 popup تحويلي — بعد الديمو (مرة وحدة بس للأبد)
+    if(typeof showConvPopup === 'function') showConvPopup();
+    // 📲 popup تحميل التطبيق — بس لو التحويلي ما طلع
+    if(!_convPopupShown) setTimeout(function(){ showAppPopup(); }, 10000);
 
     // Ring color based on score (out of 5)
     var ring = document.getElementById('scoreRing');
@@ -478,6 +480,106 @@ function resetDemo() {
 }
 </script>
 <script src="analytics.js"></script>
+
+<!-- 🔥 Popup تحويلي — QUDRAT30 بعد التجربة -->
+<style>
+@keyframes convSlideUp{0%{opacity:0;transform:translateY(40px) scale(0.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes convPulse{0%,100%{box-shadow:0 8px 40px rgba(139,92,246,0.25)}50%{box-shadow:0 14px 50px rgba(139,92,246,0.45)}}
+@keyframes convShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes convTick{0%{opacity:0.5}50%{opacity:1}100%{opacity:0.5}}
+#conv-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(5px);z-index:9997;display:none;align-items:center;justify-content:center;padding:16px}
+#conv-overlay.show{display:flex}
+#conv-popup{position:relative;width:380px;max-width:100%;background:linear-gradient(160deg,#13103a,#1e1555,#13103a);border:1.5px solid rgba(139,92,246,0.25);border-radius:24px;padding:30px 24px 26px;text-align:center;animation:convSlideUp 0.5s ease,convPulse 3s ease-in-out infinite;direction:rtl;font-family:'Tajawal',sans-serif;overflow:hidden}
+#conv-popup::before{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,0.12),transparent 65%);pointer-events:none}
+.conv-close{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5;line-height:1}
+.conv-close:hover{color:#fff;background:rgba(255,255,255,0.12)}
+.conv-score{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:8px 18px;margin-bottom:16px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:#a5b4fc}
+.conv-title{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;line-height:1.4}
+.conv-desc{font-size:13.5px;color:rgba(255,255,255,0.5);line-height:1.75;margin-bottom:20px}
+.conv-coupon-box{background:rgba(139,92,246,0.08);border:1.5px dashed rgba(139,92,246,0.35);border-radius:14px;padding:14px;margin-bottom:18px}
+.conv-coupon-label{font-size:12px;color:rgba(196,181,253,0.5);margin-bottom:6px}
+.conv-coupon-code{font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;letter-spacing:3px;background:linear-gradient(110deg,#c4b5fd,#818cf8,#c4b5fd);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:convShimmer 4s linear infinite}
+.conv-coupon-discount{font-size:13px;font-weight:700;color:#a78bfa;margin-top:4px}
+.conv-timer{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px}
+.conv-timer-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 10px;min-width:52px;text-align:center}
+.conv-timer-num{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#e0e7ff;animation:convTick 1s ease-in-out infinite}
+.conv-timer-label{font-size:10px;color:rgba(196,181,253,0.35);margin-top:2px}
+.conv-timer-sep{font-size:20px;font-weight:900;color:rgba(196,181,253,0.2)}
+.conv-cta{display:block;width:100%;padding:14px;border-radius:14px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;color:#fff;background:linear-gradient(135deg,#7c3aed,#6366f1,#8b5cf6);border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 25px rgba(99,102,241,0.4);text-decoration:none;text-align:center}
+.conv-cta:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(99,102,241,0.5)}
+@media(max-width:400px){#conv-popup{padding:24px 18px 22px}.conv-title{font-size:19px}.conv-coupon-code{font-size:22px}}
+</style>
+
+<div id="conv-overlay">
+    <div id="conv-popup">
+        <button class="conv-close" id="conv-close-btn">✕</button>
+        <div class="conv-score" id="conv-score">📊 نتيجتك: 0 من 5</div>
+        <h3 class="conv-title">تبي تتحسّن؟</h3>
+        <p class="conv-desc">آلاف الأسئلة من التجميعات والتسريبات القريبة — تتفاعل معاك وتتحدّث باستمرار</p>
+        <div class="conv-coupon-box">
+            <p class="conv-coupon-label">كود خصم خاص لك</p>
+            <p class="conv-coupon-code">QUDRAT30</p>
+            <p class="conv-coupon-discount">خصم 30% على جميع الباقات</p>
+        </div>
+        <div class="conv-timer">
+            <div class="conv-timer-block"><div class="conv-timer-num" id="conv-hrs">48</div><div class="conv-timer-label">ساعة</div></div>
+            <span class="conv-timer-sep">:</span>
+            <div class="conv-timer-block"><div class="conv-timer-num" id="conv-mins">00</div><div class="conv-timer-label">دقيقة</div></div>
+            <span class="conv-timer-sep">:</span>
+            <div class="conv-timer-block"><div class="conv-timer-num" id="conv-secs">00</div><div class="conv-timer-label">ثانية</div></div>
+        </div>
+        <a href="pricing.html?coupon=QUDRAT30" class="conv-cta">اشترك الحين ✨</a>
+    </div>
+</div>
+
+<script>
+// بوب أب تحويلي — يتفعل من showResults()
+var _convPopupShown = false;
+function showConvPopup(){
+    if(_convPopupShown) return;
+    _convPopupShown = true;
+
+    // لا تظهر لو طلع قبل كذا (localStorage = مرة وحدة بس للأبد)
+    if(localStorage.getItem('madarek_conv_shown')) return;
+
+    // نتيجة الطالب
+    var demoData = JSON.parse(localStorage.getItem('madarek_demo_done') || '{}');
+    var el = document.getElementById('conv-score');
+    if(el && demoData.score !== undefined) el.textContent = '📊 نتيجتك: ' + demoData.score + ' من 5';
+
+    // عداد 48 ساعة — يكمل حتى لو أغلق
+    var TIMER_KEY = 'madarek_conv_timer_start';
+    var DURATION = 48 * 60 * 60 * 1000;
+    var startTime = parseInt(localStorage.getItem(TIMER_KEY) || '0');
+    if(!startTime || Date.now() - startTime > DURATION){
+        startTime = Date.now();
+        localStorage.setItem(TIMER_KEY, String(startTime));
+    }
+    function tick(){
+        var rem = Math.max(0, DURATION - (Date.now() - startTime));
+        var h = Math.floor(rem/3600000), m = Math.floor((rem%3600000)/60000), s = Math.floor((rem%60000)/1000);
+        document.getElementById('conv-hrs').textContent = h<10?'0'+h:h;
+        document.getElementById('conv-mins').textContent = m<10?'0'+m:m;
+        document.getElementById('conv-secs').textContent = s<10?'0'+s:s;
+    }
+    tick();
+    var tInt = setInterval(tick, 1000);
+
+    setTimeout(function(){
+        document.getElementById('conv-overlay').classList.add('show');
+
+        document.getElementById('conv-close-btn').onclick = function(){
+            localStorage.setItem('madarek_conv_shown','1');
+            var ov = document.getElementById('conv-overlay');
+            ov.style.transition='opacity .3s'; ov.style.opacity='0';
+            setTimeout(function(){ ov.classList.remove('show'); ov.style.opacity=''; clearInterval(tInt); }, 300);
+        };
+        document.getElementById('conv-overlay').onclick = function(e){
+            if(e.target === this) document.getElementById('conv-close-btn').click();
+        };
+    }, 2000);
+}
+</script>
 
 <!-- 📲 Popup تحميل التطبيق -->
 <style>
