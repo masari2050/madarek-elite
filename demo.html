@@ -495,18 +495,23 @@ function resetDemo() {
 .conv-close:hover{color:#fff;background:rgba(255,255,255,0.12)}
 .conv-score{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:8px 18px;margin-bottom:16px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:#a5b4fc}
 .conv-title{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;line-height:1.4}
-.conv-desc{font-size:13.5px;color:rgba(255,255,255,0.5);line-height:1.75;margin-bottom:20px}
+.conv-desc{font-size:15px;color:#fff;line-height:1.8;margin-bottom:20px;font-weight:500}
 .conv-coupon-box{background:rgba(139,92,246,0.08);border:1.5px dashed rgba(139,92,246,0.35);border-radius:14px;padding:14px;margin-bottom:18px}
 .conv-coupon-label{font-size:12px;color:rgba(196,181,253,0.5);margin-bottom:6px}
 .conv-coupon-code{font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;letter-spacing:3px;background:linear-gradient(110deg,#c4b5fd,#818cf8,#c4b5fd);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:convShimmer 4s linear infinite}
-.conv-coupon-discount{font-size:13px;font-weight:700;color:#a78bfa;margin-top:4px}
+.conv-coupon-discount{font-size:18px;font-weight:900;color:#fb923c;margin-top:6px}
+.conv-coupon-code{cursor:pointer;position:relative;transition:transform .15s}
+.conv-coupon-code:active{transform:scale(0.95)}
+.conv-copied{position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;font-size:12px;padding:4px 12px;border-radius:8px;white-space:nowrap;animation:convFadeOut 1.5s ease forwards;-webkit-text-fill-color:#fff}
+@keyframes convFadeOut{0%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+.conv-motivate{font-size:12.5px;color:rgba(251,146,60,0.8);margin-bottom:10px;font-weight:600}
 .conv-timer{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px}
-.conv-timer-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 10px;min-width:52px;text-align:center}
-.conv-timer-num{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#e0e7ff;animation:convTick 1s ease-in-out infinite}
-.conv-timer-label{font-size:10px;color:rgba(196,181,253,0.35);margin-top:2px}
-.conv-timer-sep{font-size:20px;font-weight:900;color:rgba(196,181,253,0.2)}
-.conv-cta{display:block;width:100%;padding:14px;border-radius:14px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;color:#fff;background:linear-gradient(135deg,#7c3aed,#6366f1,#8b5cf6);border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 25px rgba(99,102,241,0.4);text-decoration:none;text-align:center}
-.conv-cta:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(99,102,241,0.5)}
+.conv-timer-block{background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);border-radius:10px;padding:6px 10px;min-width:52px;text-align:center}
+.conv-timer-num{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#fb923c;animation:convTick 1s ease-in-out infinite}
+.conv-timer-label{font-size:10px;color:rgba(251,146,60,0.45);margin-top:2px}
+.conv-timer-sep{font-size:20px;font-weight:900;color:rgba(251,146,60,0.3)}
+.conv-cta{display:block;width:100%;padding:14px;border-radius:14px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;color:#fff;background:linear-gradient(135deg,#f97316,#fb923c,#f59e0b);border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 25px rgba(249,115,22,0.4);text-decoration:none;text-align:center}
+.conv-cta:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(249,115,22,0.5)}
 @media(max-width:400px){#conv-popup{padding:24px 18px 22px}.conv-title{font-size:19px}.conv-coupon-code{font-size:22px}}
 </style>
 
@@ -517,10 +522,11 @@ function resetDemo() {
         <h3 class="conv-title">تبي تتحسّن؟</h3>
         <p class="conv-desc">آلاف الأسئلة من التجميعات والتسريبات القريبة — تتفاعل معاك وتتحدّث باستمرار</p>
         <div class="conv-coupon-box">
-            <p class="conv-coupon-label">كود خصم خاص لك</p>
-            <p class="conv-coupon-code">QUDRAT30</p>
-            <p class="conv-coupon-discount">خصم 30% على جميع الباقات</p>
+            <p class="conv-coupon-label">كود خصم خاص لك — اضغط للنسخ</p>
+            <p class="conv-coupon-code" id="conv-code" onclick="var c=this;navigator.clipboard.writeText('QUDRAT30').then(function(){var s=document.createElement('span');s.className='conv-copied';s.textContent='✅ تم النسخ!';c.style.position='relative';c.appendChild(s);setTimeout(function(){s.remove()},1500)})">QUDRAT30</p>
+            <p class="conv-coupon-discount">خصم <span style="font-size:24px;font-weight:900">30%</span> على جميع الباقات</p>
         </div>
+        <p class="conv-motivate">لأنك ضيف علينا أول مرة — عرضك الخاص ينتهي خلال:</p>
         <div class="conv-timer">
             <div class="conv-timer-block"><div class="conv-timer-num" id="conv-hrs">48</div><div class="conv-timer-label">ساعة</div></div>
             <span class="conv-timer-sep">:</span>
