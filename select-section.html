@@ -117,7 +117,13 @@
                 <span class="text-[10px] px-2.5 py-1 rounded-full font-bold" style="background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.15));border:1px solid rgba(251,191,36,0.3);color:#fbbf24">مع شرح</span>
             </div>
             <p class="text-purple-200/50 text-xs mb-3">تدرّب عليها بشرح مفصّل وتنحسب في إحصائياتك 🎯</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="tasreebatGrid"></div>
+            <!-- ✅ Skeleton placeholder — نفس ارتفاع 3 كروت عشان ما تنط الصفحة -->
+            <div id="tasreebatSkeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div class="tasreeb-card" style="pointer-events:none"><div class="flex items-center gap-3"><span class="text-2xl" style="opacity:0.3">🔥</span><div><div style="width:120px;height:14px;border-radius:6px;background:rgba(255,255,255,0.06);margin-bottom:6px"></div><div style="width:180px;height:10px;border-radius:4px;background:rgba(255,255,255,0.04)"></div></div></div></div>
+                <div class="tasreeb-card" style="pointer-events:none"><div class="flex items-center gap-3"><span class="text-2xl" style="opacity:0.3">⚡</span><div><div style="width:110px;height:14px;border-radius:6px;background:rgba(255,255,255,0.06);margin-bottom:6px"></div><div style="width:160px;height:10px;border-radius:4px;background:rgba(255,255,255,0.04)"></div></div></div></div>
+                <div class="tasreeb-card" style="pointer-events:none"><div class="flex items-center gap-3"><span class="text-2xl" style="opacity:0.3">⚡</span><div><div style="width:115px;height:14px;border-radius:6px;background:rgba(255,255,255,0.06);margin-bottom:6px"></div><div style="width:170px;height:10px;border-radius:4px;background:rgba(255,255,255,0.04)"></div></div></div></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 hidden" id="tasreebatGrid"></div>
             <p id="tasreebLockMsg" class="hidden text-center text-amber-400/60 text-xs mt-3 cursor-pointer hover:text-amber-300 transition" onclick="location.href='pricing.html'">🔒 اشترك عشان تتدرب على التسريبات مع الشرح</p>
         </div>
 
@@ -317,20 +323,78 @@
         var TASREEB_SHOW_INITIAL=3; // عدد التسريبات المعروضة مبدئياً
         var userSub='free';
         var tasreebProgress={};
-        // ✅ رندر الكروت فوراً (sync) — بدون انتظار أي fetch
-        function renderTasreebatCards(){
+        // ✅ دالة واحدة: تجلب حالة الاشتراك + التقدم → تبني الكروت بالحالة الصحيحة → تبدّل الـ skeleton
+        async function loadTasreebat(){
             if(!TASREEBAT_SETS.length){document.getElementById('tasreebatSection').style.display='none';return}
+            var userId=null;
+            // 1. جلب حالة الاشتراك
+            try{
+                // محاولة أولى: _madarekRestoreSession
+                if(window._madarekRestoreSession){
+                    var session=await window._madarekRestoreSession(sb);
+                    if(session && session.user) userId=session.user.id;
+                }
+                // محاولة ثانية: getSession مباشرة (fallback)
+                if(!userId){
+                    var gs=await sb.auth.getSession();
+                    if(gs.data && gs.data.session && gs.data.session.user) userId=gs.data.session.user.id;
+                }
+                if(userId){
+                    var r=await sb.from('profiles').select('subscription_type,subscription_end').eq('id',userId).single();
+                    if(r.data&&r.data.subscription_type){
+                        userSub=r.data.subscription_type;
+                        if(userSub!=='free' && r.data.subscription_end && new Date(r.data.subscription_end)<new Date()){ userSub='free'; }
+                    }
+                }
+            }catch(e){console.log('tasreebat session error:',e)}
+            var isPro=(userSub!=='free');
+            // 2. حساب التقدم للمشتركين — query واحد
+            if(userId && isPro){
+                try{
+                    var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
+                    var maxDate=TASREEBAT_SETS[0].createdBefore;
+                    var allQ=await sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate);
+                    var allQData=allQ.data||[];
+                    var allIds=allQData.map(function(q){return q.id;});
+                    var doneMap={};
+                    if(allIds.length){
+                        for(var chunk=0;chunk<allIds.length;chunk+=500){
+                            var batch=allIds.slice(chunk,chunk+500);
+                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',batch);
+                            (done.data||[]).forEach(function(a){doneMap[a.question_id]=true;});
+                        }
+                    }
+                    TASREEBAT_SETS.forEach(function(set){
+                        var setQs=allQData.filter(function(q){return q.created_at>=set.createdAfter&&q.created_at<set.createdBefore;});
+                        var total=setQs.length;
+                        var doneCount=setQs.filter(function(q){return doneMap[q.id];}).length;
+                        if(total)tasreebProgress[set.id]={total:total,done:doneCount,remaining:total-doneCount};
+                    });
+                }catch(e){console.log('tasreebat progress error:',e)}
+            }
+            // 3. بناء الكروت بالحالة الصحيحة
             var grid=document.getElementById('tasreebatGrid');
             grid.innerHTML='';
             var showCount=TASREEB_SHOW_INITIAL||3;
             TASREEBAT_SETS.forEach(function(set,idx){
                 var card=document.createElement('div');
-                card.className='tasreeb-card locked';
-                card.setAttribute('data-tasreeb-idx',idx);
+                card.className='tasreeb-card'+(isPro?'':' locked');
                 if(idx>=showCount)card.classList.add('tasreeb-hidden');
                 if(idx===0)card.classList.add('tasreeb-new');
-                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+(idx===0?' <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px">جديد</span>':'')+'</h4><p class="text-purple-200/50 tasreeb-desc" style="font-size:10px">'+set.desc+'</p></div></div><span class="text-purple-200/40 text-sm tasreeb-action">🔒</span>';
-                card.onclick=function(){location.href='pricing.html'};
+                var prog=tasreebProgress[set.id];
+                var descText=set.desc;
+                var actionText='ابدأ ←';
+                if(isPro && prog && prog.done>0){
+                    if(prog.remaining>0){
+                        descText='باقي '+prog.remaining+' سؤال من '+prog.total+' — أكمل من وين وقفت';
+                        actionText='أكمل ←';
+                    }else{
+                        descText='خلّصت الـ '+prog.total+' كلها ✅ — عيد للمراجعة';
+                        actionText='عيد ←';
+                    }
+                }
+                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+(idx===0?' <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px">جديد</span>':'')+'</h4><p class="text-purple-200/50" style="font-size:10px">'+descText+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
+                card.onclick=isPro?function(){startTasreeb(idx)}:function(){location.href='pricing.html'};
                 grid.appendChild(card);
             });
             // زر عرض التسريبات الأقدم
@@ -353,76 +417,11 @@
                 };
                 grid.parentNode.insertBefore(toggleBtn,grid.nextSibling);
             }
-            document.getElementById('tasreebLockMsg').classList.remove('hidden');
-        }
-        // فوراً — بدون انتظار DOMContentLoaded
-        renderTasreebatCards();
-
-        // ✅ تحديث الحالة والتقدم بالخلفية (async) — بعد معرفة الاشتراك
-        async function loadTasreebat(){
-            var userId=null;
-            try{
-                var session=await window._madarekRestoreSession(sb);if(!session)return;
-                userId=session.user.id;
-                var r=await sb.from('profiles').select('subscription_type,subscription_end').eq('id',userId).single();
-                if(r.data&&r.data.subscription_type){
-                    userSub=r.data.subscription_type;
-                    if(userSub!=='free' && r.data.subscription_end && new Date(r.data.subscription_end)<new Date()){ userSub='free'; }
-                }
-            }catch(e){}
-            if(!TASREEBAT_SETS.length)return;
-            var isPro=(userSub!=='free');
-            // حساب تقدم كل مجموعة تسريبات — query واحد
-            if(userId && isPro){
-                try{
-                    var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
-                    var maxDate=TASREEBAT_SETS[0].createdBefore;
-                    var allQ=await sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate);
-                    var allQData=allQ.data||[];
-                    var allIds=allQData.map(function(q){return q.id;});
-                    var doneMap={};
-                    if(allIds.length){
-                        for(var chunk=0;chunk<allIds.length;chunk+=500){
-                            var batch=allIds.slice(chunk,chunk+500);
-                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',batch);
-                            (done.data||[]).forEach(function(a){doneMap[a.question_id]=true;});
-                        }
-                    }
-                    TASREEBAT_SETS.forEach(function(set){
-                        var setQs=allQData.filter(function(q){return q.created_at>=set.createdAfter&&q.created_at<set.createdBefore;});
-                        var total=setQs.length;
-                        var doneCount=setQs.filter(function(q){return doneMap[q.id];}).length;
-                        if(total)tasreebProgress[set.id]={total:total,done:doneCount,remaining:total-doneCount};
-                    });
-                }catch(e){}
-            }
-            // ✅ تحديث الكروت الموجودة بالبيانات الجديدة (اشتراك + تقدم)
-            var grid=document.getElementById('tasreebatGrid');
-            var cards=grid.querySelectorAll('.tasreeb-card');
-            cards.forEach(function(card){
-                var idx=parseInt(card.getAttribute('data-tasreeb-idx'));
-                var set=TASREEBAT_SETS[idx];
-                if(!set)return;
-                if(isPro){
-                    card.classList.remove('locked');
-                    var prog=tasreebProgress[set.id];
-                    var descText=set.desc;
-                    var actionText='ابدأ ←';
-                    if(prog && prog.done>0){
-                        if(prog.remaining>0){
-                            descText='باقي '+prog.remaining+' سؤال من '+prog.total+' — أكمل من وين وقفت';
-                            actionText='أكمل ←';
-                        }else{
-                            descText='خلّصت الـ '+prog.total+' كلها ✅ — عيد للمراجعة';
-                            actionText='عيد ←';
-                        }
-                    }
-                    card.querySelector('.tasreeb-desc').textContent=descText;
-                    card.querySelector('.tasreeb-action').innerHTML='<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>';
-                    card.onclick=function(){startTasreeb(idx)};
-                }
-            });
-            if(isPro)document.getElementById('tasreebLockMsg').classList.add('hidden');
+            if(!isPro)document.getElementById('tasreebLockMsg').classList.remove('hidden');
+            // 4. إخفاء الـ skeleton وإظهار الكروت الحقيقية
+            var skel=document.getElementById('tasreebatSkeleton');
+            if(skel)skel.style.display='none';
+            grid.classList.remove('hidden');
         }
         function startTasreeb(idx){
             var set=TASREEBAT_SETS[idx];
