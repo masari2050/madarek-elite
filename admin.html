@@ -3470,7 +3470,10 @@ async function markAllNotifRead(){
 async function loadUserDetails(page){
     if(page < 0) page = 0;
     anUsersPage = page;
-    var{data:users}=await sb.rpc('get_users_details',{page_num:page,page_size:30});
+    // ✅ الترتيب يتم في الـ DB عبر sort_by — مو فرونت إند
+    var sortBy = anCurrentSort || 'most';
+    var{data:users,error:rpcErr}=await sb.rpc('get_users_details',{page_num:page,page_size:30,sort_by:sortBy});
+    if(rpcErr){console.error('RPC error:',rpcErr);$('an-users-body').innerHTML='<tr><td colspan="8" class="text-center text-red-400 py-6 text-xs">خطأ في جلب البيانات: '+escHtml(rpcErr.message)+'</td></tr>';return}
     if(!users) users=[];
     // ✅ جلب أحداث الكوبونات المُستخدمة فعلاً فقط (applied/use)
     var{data:cEvents}=await sb.from('coupon_events').select('user_id,coupon_code,event_type').in('event_type',['applied','use']).order('created_at',{ascending:false});
@@ -3482,11 +3485,16 @@ async function loadUserDetails(page){
     });
     anUsersData = users;
 
-    // ترتيب افتراضي: الأكثر تدريباً
-    sortUsers(anCurrentSort||'most', document.querySelector('.an-sort-btn[data-sort="'+(anCurrentSort||'most')+'"]'));
+    // عرض المستخدمين (مرتبين جاهز من الـ DB) مع تطبيق الفلاتر المحلية
+    filterUserDetails();
 
     // المتصدرين
     renderLeaderboard();
+
+    // تحديث زر الترتيب النشط
+    document.querySelectorAll('.an-sort-btn').forEach(function(b){b.classList.remove('an-sort-active')});
+    var activeBtn = document.querySelector('.an-sort-btn[data-sort="'+sortBy+'"]');
+    if(activeBtn) activeBtn.classList.add('an-sort-active');
 
     $('an-page-num').textContent = 'صفحة ' + (page+1);
     $('an-prev-btn').disabled = page === 0;
@@ -3586,7 +3594,9 @@ function sortUsers(type, btnEl){
     anCurrentSort = type;
     document.querySelectorAll('.an-sort-btn').forEach(function(b){b.classList.remove('an-sort-active')});
     if(btnEl) btnEl.classList.add('an-sort-active');
-    filterUserDetails();
+    // ✅ إعادة تحميل من الـ DB بالترتيب الجديد (صفحة 0) — الترتيب يتم سيرفر ساي
+    _allUsersCache = null; // مسح الكاش عشان يجيب بالترتيب الجديد
+    loadUserDetails(0);
 }
 
 function debouncedSearch(){
@@ -3604,23 +3614,14 @@ function debouncedSearch(){
 
 async function searchAllUsers(query){
     try{
-        // بحث من الـ DB مباشرة — كل المستخدمين
+        // بحث من الـ DB مباشرة — كل المستخدمين بالترتيب الحالي
         var q = query.toLowerCase();
         if(!_allUsersCache){
-            // جلب كل المستخدمين مرة وحدة وكاشها
-            var{data:all}=await sb.rpc('get_users_details',{page_num:0,page_size:500});
+            var{data:all}=await sb.rpc('get_users_details',{page_num:0,page_size:500,sort_by:anCurrentSort||'most'});
             _allUsersCache = all || [];
         }
         var results = _allUsersCache.filter(function(u){
             return (u.full_name||'').toLowerCase().indexOf(q)!==-1 || (u.email||'').toLowerCase().indexOf(q)!==-1;
-        });
-        // ترتيب حسب الفلتر النشط
-        results.sort(function(a,b){
-            if(anCurrentSort === 'most') return (b.total_attempts||0) - (a.total_attempts||0);
-            if(anCurrentSort === 'least') return (a.total_attempts||0) - (b.total_attempts||0);
-            if(anCurrentSort === 'recent') return new Date(b.last_practice||0) - new Date(a.last_practice||0);
-            if(anCurrentSort === 'newest') return new Date(b.created_at||0) - new Date(a.created_at||0);
-            return 0;
         });
         renderUserDetails(results);
         $('an-page-num').textContent = 'نتائج البحث: ' + results.length;
@@ -3642,7 +3643,7 @@ async function filterUserDetails(){
     if(needsFullData){
         if(!_allUsersCache){
             $('an-users-body').innerHTML='<tr><td colspan="8" class="text-center text-purple-200/50 py-6 text-xs">جاري البحث في كل الأعضاء...</td></tr>';
-            var{data:all}=await sb.rpc('get_users_details',{page_num:0,page_size:500});
+            var{data:all}=await sb.rpc('get_users_details',{page_num:0,page_size:500,sort_by:anCurrentSort||'most'});
             _allUsersCache = all || [];
         }
         sourceData = _allUsersCache;
@@ -3658,15 +3659,7 @@ async function filterUserDetails(){
         if(actFilter === 'idle' && u.last_practice && new Date(u.last_practice).getTime() >= sevenDaysAgo) return false;
         return true;
     });
-
-    // ترتيب
-    filtered.sort(function(a,b){
-        if(anCurrentSort === 'most') return (b.total_attempts||0) - (a.total_attempts||0);
-        if(anCurrentSort === 'least') return (a.total_attempts||0) - (b.total_attempts||0);
-        if(anCurrentSort === 'recent') return new Date(b.last_practice||0) - new Date(a.last_practice||0);
-        if(anCurrentSort === 'newest') return new Date(b.created_at||0) - new Date(a.created_at||0);
-        return 0;
-    });
+    // ✅ الترتيب يجي جاهز من الـ DB — ما نحتاج ترتيب فرونت إند
 
     renderUserDetails(filtered);
 
