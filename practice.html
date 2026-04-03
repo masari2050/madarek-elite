@@ -155,6 +155,9 @@
                     <span class="inline-block bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full" id="sectionTitle">قدرات كمي</span>
                     <span class="text-gray-400 text-xs font-medium" id="questionNumLabel">سؤال 1</span>
                 </div>
+                <div id="questionTypeBadge" class="hidden mb-3">
+                    <span id="questionTypeLabel" style="display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:10px;background:rgba(139,92,246,0.08);color:#7c3aed;border:1px solid rgba(139,92,246,0.15)"></span>
+                </div>
                 <div class="mb-6">
                     <h3 class="text-lg font-bold text-gray-800 leading-relaxed" id="questionText"></h3>
                     <div id="questionImageContainer" class="hidden mt-4">
@@ -424,7 +427,7 @@
     function closePaywall(){ location.href='dashboard.html'; }
 
     // 🔒 جلب الأسئلة بدون الأجوبة الصحيحة (حماية من الغش)
-    var SAFE_COLUMNS='id,question_text,choices,image_url,section,sub_section,passage_id,passage_text,passage_order';
+    var SAFE_COLUMNS='id,question_text,choices,image_url,section,sub_section,topic,passage_id,passage_text,passage_order';
 
     async function loadQuestions(){
         var sel=localStorage.getItem('khawariz_selected_section');
@@ -589,6 +592,37 @@
         document.body.style.overflow = '';
     }
 
+    // ✅ تصنيف نوع السؤال حسب الـ topic
+    var _topicLabels={
+        'contextual_error':'🔍 حدد الكلمة الخاطئة سياقياً',
+        'error':'🔍 حدد الكلمة الخاطئة سياقياً',
+        'error_detection':'🔍 حدد الكلمة الخاطئة سياقياً',
+        'الخطأ السياقي':'🔍 حدد الكلمة الخاطئة سياقياً',
+        'خطأ سياقي':'🔍 حدد الكلمة الخاطئة سياقياً',
+        'sentence_completion':'📝 أكمل الفراغ',
+        'completion':'📝 أكمل الفراغ',
+        'إكمال الجمل':'📝 أكمل الفراغ',
+        'analogy':'🔄 اختر التناظر المناسب',
+        'تناظر لفظي':'🔄 اختر التناظر المناسب',
+        'reading':'📖 استيعاب مقروء',
+        'reading_comprehension':'📖 استيعاب مقروء',
+        'استيعاب المقروء':'📖 استيعاب مقروء',
+        'الاستيعاب المقروء':'📖 استيعاب مقروء',
+        'odd_word':'🔎 حدد المفردة الشاذة',
+        'المفردة الشاذة':'🔎 حدد المفردة الشاذة',
+        'vocabulary':'📚 معاني المفردات',
+        'grammar':'✍️ قواعد نحوية'
+    };
+    function getQuestionTypeLabel(q){
+        if(q.topic && _topicLabels[q.topic]) return _topicLabels[q.topic];
+        // تخمين ذكي لو ما فيه topic
+        var txt=(q.question_text||'').toLowerCase();
+        if(txt.indexOf('الخطأ السياقي')!==-1||txt.indexOf('الكلمة الخاطئة')!==-1||txt.indexOf('الخطأ')!==-1&&txt.indexOf('سياقي')!==-1) return '🔍 حدد الكلمة الخاطئة سياقياً';
+        if(txt.indexOf('أكمل')!==-1||txt.indexOf('الفراغ')!==-1) return '📝 أكمل الفراغ';
+        if(q.passage_id) return '📖 استيعاب مقروء';
+        return null; // لا نعرض بادج لو مو واضح النوع
+    }
+
     function displayQuestion(){
         if(currentQuestionIndex>=currentQuestions.length){showResults();return;}
         hasAnswered=false;
@@ -600,6 +634,16 @@
         var cleanText=normalizeArabicText((q.question_text||'').replace(/\\n/g,' ').replace(/\n/g,' ').trim());
         document.getElementById('questionText').innerHTML=safeSanitize(cleanText);
         document.getElementById('questionNumLabel').textContent='سؤال '+current+' من '+total;
+
+        // ✅ بادج نوع السؤال
+        var typeLabel=getQuestionTypeLabel(q);
+        var typeBadge=document.getElementById('questionTypeBadge');
+        if(typeLabel){
+            document.getElementById('questionTypeLabel').textContent=typeLabel;
+            typeBadge.classList.remove('hidden');
+        }else{
+            typeBadge.classList.add('hidden');
+        }
 
         // في المكس: عرض قسم كل سؤال بشكل مستقل
         var sel=localStorage.getItem('khawariz_selected_section');
