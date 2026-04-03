@@ -110,7 +110,7 @@
         </div>
 
         <!-- 🔥 تجميعات اختبارات سابقة -->
-        <div id="tasreebatSection" class="hidden animate-in delay-1 mb-8">
+        <div id="tasreebatSection" class="animate-in delay-1 mb-8">
             <div class="flex items-center gap-3 mb-3">
                 <span class="text-lg">🔥</span>
                 <h3 class="font-black">تسريبات اختبارات سابقة</h3>
@@ -317,70 +317,20 @@
         var TASREEB_SHOW_INITIAL=3; // عدد التسريبات المعروضة مبدئياً
         var userSub='free';
         var tasreebProgress={};
-        async function loadTasreebat(){
-            var userId=null;
-            try{
-                var session=await window._madarekRestoreSession(sb);if(!session)return;
-                userId=session.user.id;
-                var r=await sb.from('profiles').select('subscription_type,subscription_end').eq('id',userId).single();
-                if(r.data&&r.data.subscription_type){
-                    userSub=r.data.subscription_type;
-                    // ✅ تحقق من انتهاء الاشتراك
-                    if(userSub!=='free' && r.data.subscription_end && new Date(r.data.subscription_end)<new Date()){ userSub='free'; }
-                }
-            }catch(e){}
-            if(!TASREEBAT_SETS.length)return;
-            // حساب تقدم كل مجموعة تسريبات — query واحد بدل 18
-            if(userId && userSub!=='free'){
-                try{
-                    // 1. جلب كل أسئلة التسريبات بـ query واحد
-                    var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
-                    var maxDate=TASREEBAT_SETS[0].createdBefore;
-                    var allQ=await sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate);
-                    var allQData=allQ.data||[];
-                    // 2. جلب كل المحاولات بـ query واحد
-                    var allIds=allQData.map(function(q){return q.id;});
-                    var doneMap={};
-                    if(allIds.length){
-                        // تقسيم لو كثير (Supabase limit)
-                        for(var chunk=0;chunk<allIds.length;chunk+=500){
-                            var batch=allIds.slice(chunk,chunk+500);
-                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',batch);
-                            (done.data||[]).forEach(function(a){doneMap[a.question_id]=true;});
-                        }
-                    }
-                    // 3. توزيع على كل set
-                    TASREEBAT_SETS.forEach(function(set){
-                        var setQs=allQData.filter(function(q){return q.created_at>=set.createdAfter&&q.created_at<set.createdBefore;});
-                        var total=setQs.length;
-                        var doneCount=setQs.filter(function(q){return doneMap[q.id];}).length;
-                        if(total)tasreebProgress[set.id]={total:total,done:doneCount,remaining:total-doneCount};
-                    });
-                }catch(e){}
-            }
-            var section=document.getElementById('tasreebatSection'),grid=document.getElementById('tasreebatGrid');
-            var isPro=(userSub!=='free');
+        // ✅ رندر الكروت فوراً (sync) — بدون انتظار أي fetch
+        function renderTasreebatCards(){
+            if(!TASREEBAT_SETS.length){document.getElementById('tasreebatSection').style.display='none';return}
+            var grid=document.getElementById('tasreebatGrid');
             grid.innerHTML='';
             var showCount=TASREEB_SHOW_INITIAL||3;
             TASREEBAT_SETS.forEach(function(set,idx){
                 var card=document.createElement('div');
-                card.className='tasreeb-card'+(isPro?'':' locked');
+                card.className='tasreeb-card locked';
+                card.setAttribute('data-tasreeb-idx',idx);
                 if(idx>=showCount)card.classList.add('tasreeb-hidden');
-                var prog=tasreebProgress[set.id];
-                var descText=set.desc;
-                var actionText='ابدأ ←';
-                if(isPro && prog && prog.done>0){
-                    if(prog.remaining>0){
-                        descText='باقي '+prog.remaining+' سؤال من '+prog.total+' — أكمل من وين وقفت';
-                        actionText='أكمل ←';
-                    }else{
-                        descText='خلّصت الـ '+prog.total+' كلها ✅ — عيد للمراجعة';
-                        actionText='عيد ←';
-                    }
-                }
                 if(idx===0)card.classList.add('tasreeb-new');
-                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+(idx===0?' <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px">جديد</span>':'')+'</h4><p class="text-purple-200/50" style="font-size:10px">'+descText+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
-                card.onclick=isPro?function(){startTasreeb(idx)}:function(){location.href='pricing.html'};
+                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+(idx===0?' <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px">جديد</span>':'')+'</h4><p class="text-purple-200/50 tasreeb-desc" style="font-size:10px">'+set.desc+'</p></div></div><span class="text-purple-200/40 text-sm tasreeb-action">🔒</span>';
+                card.onclick=function(){location.href='pricing.html'};
                 grid.appendChild(card);
             });
             // زر عرض التسريبات الأقدم
@@ -403,8 +353,76 @@
                 };
                 grid.parentNode.insertBefore(toggleBtn,grid.nextSibling);
             }
-            if(!isPro)document.getElementById('tasreebLockMsg').classList.remove('hidden');
-            section.classList.remove('hidden');
+            document.getElementById('tasreebLockMsg').classList.remove('hidden');
+        }
+        // فوراً — بدون انتظار DOMContentLoaded
+        renderTasreebatCards();
+
+        // ✅ تحديث الحالة والتقدم بالخلفية (async) — بعد معرفة الاشتراك
+        async function loadTasreebat(){
+            var userId=null;
+            try{
+                var session=await window._madarekRestoreSession(sb);if(!session)return;
+                userId=session.user.id;
+                var r=await sb.from('profiles').select('subscription_type,subscription_end').eq('id',userId).single();
+                if(r.data&&r.data.subscription_type){
+                    userSub=r.data.subscription_type;
+                    if(userSub!=='free' && r.data.subscription_end && new Date(r.data.subscription_end)<new Date()){ userSub='free'; }
+                }
+            }catch(e){}
+            if(!TASREEBAT_SETS.length)return;
+            var isPro=(userSub!=='free');
+            // حساب تقدم كل مجموعة تسريبات — query واحد
+            if(userId && isPro){
+                try{
+                    var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
+                    var maxDate=TASREEBAT_SETS[0].createdBefore;
+                    var allQ=await sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate);
+                    var allQData=allQ.data||[];
+                    var allIds=allQData.map(function(q){return q.id;});
+                    var doneMap={};
+                    if(allIds.length){
+                        for(var chunk=0;chunk<allIds.length;chunk+=500){
+                            var batch=allIds.slice(chunk,chunk+500);
+                            var done=await sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',batch);
+                            (done.data||[]).forEach(function(a){doneMap[a.question_id]=true;});
+                        }
+                    }
+                    TASREEBAT_SETS.forEach(function(set){
+                        var setQs=allQData.filter(function(q){return q.created_at>=set.createdAfter&&q.created_at<set.createdBefore;});
+                        var total=setQs.length;
+                        var doneCount=setQs.filter(function(q){return doneMap[q.id];}).length;
+                        if(total)tasreebProgress[set.id]={total:total,done:doneCount,remaining:total-doneCount};
+                    });
+                }catch(e){}
+            }
+            // ✅ تحديث الكروت الموجودة بالبيانات الجديدة (اشتراك + تقدم)
+            var grid=document.getElementById('tasreebatGrid');
+            var cards=grid.querySelectorAll('.tasreeb-card');
+            cards.forEach(function(card){
+                var idx=parseInt(card.getAttribute('data-tasreeb-idx'));
+                var set=TASREEBAT_SETS[idx];
+                if(!set)return;
+                if(isPro){
+                    card.classList.remove('locked');
+                    var prog=tasreebProgress[set.id];
+                    var descText=set.desc;
+                    var actionText='ابدأ ←';
+                    if(prog && prog.done>0){
+                        if(prog.remaining>0){
+                            descText='باقي '+prog.remaining+' سؤال من '+prog.total+' — أكمل من وين وقفت';
+                            actionText='أكمل ←';
+                        }else{
+                            descText='خلّصت الـ '+prog.total+' كلها ✅ — عيد للمراجعة';
+                            actionText='عيد ←';
+                        }
+                    }
+                    card.querySelector('.tasreeb-desc').textContent=descText;
+                    card.querySelector('.tasreeb-action').innerHTML='<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>';
+                    card.onclick=function(){startTasreeb(idx)};
+                }
+            });
+            if(isPro)document.getElementById('tasreebLockMsg').classList.add('hidden');
         }
         function startTasreeb(idx){
             var set=TASREEBAT_SETS[idx];
