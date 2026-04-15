@@ -193,7 +193,7 @@
                 <span class="tb-main">اختبر نفسك بأسئلة جات فعلاً</span>
                 <span class="tb-fire">🔥</span>
             </div>
-            <div class="tb-sub">من أحدث تسريبات الأيام الماضية — ٣١ مارس</div>
+            <div class="tb-sub" id="tasreeb-date">من أحدث تسريبات الأيام الماضية — ١٤ أبريل</div>
             <span class="tb-cta">ابدأ الحين ←</span>
         </div>
     </div>
@@ -706,6 +706,16 @@
             if (count && count > 0) {
                 document.getElementById('liveQuestions').textContent = count + '+';
             }
+            /* ── آخر تاريخ تسريبة (تلقائي) — معطّل، النص ثابت يدوياً في HTML ── */
+            // var { data: latest } = await sb.from('questions').select('created_at').order('created_at',{ascending:false}).limit(1).single();
+            // if (latest && latest.created_at) {
+            //     var d = new Date(latest.created_at);
+            //     d.setHours(d.getHours() + 3);
+            //     var months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+            //     var dayAr = d.getDate().toLocaleString('ar-SA');
+            //     var el = document.getElementById('tasreeb-date');
+            //     if (el) el.textContent = 'من أحدث تسريبات الأيام الماضية — ' + dayAr + ' ' + months[d.getMonth()];
+            // }
         } catch(e){}
     })();
 

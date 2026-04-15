@@ -47,6 +47,9 @@
         .tasreeb-card.locked{opacity:0.55;cursor:pointer}
         .tasreeb-card.locked:hover{transform:none;box-shadow:none}
         .tasreeb-card.tasreeb-new{border-color:rgba(245,158,11,0.4);box-shadow:0 0 20px rgba(245,158,11,0.1)}
+        .tasreeb-skeleton{background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);border-radius:1rem;padding:14px 18px;height:58px;position:relative;overflow:hidden}
+        .tasreeb-skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);animation:skeletonShimmer 1.5s infinite}
+        @keyframes skeletonShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
         .tasreeb-hidden{display:none !important}
         .tasreeb-toggle-btn{text-align:center;margin-top:10px;padding:10px 20px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:rgba(251,191,36,0.7);background:rgba(251,191,36,0.05);border:1px dashed rgba(251,191,36,0.2);transition:all .3s ease}
         .tasreeb-toggle-btn:hover{background:rgba(251,191,36,0.1);color:#fbbf24;border-color:rgba(251,191,36,0.4)}
@@ -283,7 +286,7 @@
         const sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
         let questionCounts={quant:0,verbal:0,tahsili:0,mix:0},selectedSection='',selectedCount=10;
         const sectionMeta={quant:{name:'قدرات كمي',icon:'📊'},verbal:{name:'قدرات لفظي',icon:'📖'},tahsili:{name:'التحصيلي',icon:'🎓'},mix:{name:'كمي + لفظي 🔀',icon:'🔀'}};
-        async function loadQuestionCounts(){try{const[{count:qc},{count:vc},{count:tc}]=await Promise.all([sb.from('questions').select('id',{count:'exact',head:true}).eq('section','quant'),sb.from('questions').select('id',{count:'exact',head:true}).eq('section','verbal'),sb.from('questions').select('id',{count:'exact',head:true}).eq('section','tahsili')]);questionCounts.quant=qc||0;questionCounts.verbal=vc||0;questionCounts.tahsili=tc||0;questionCounts.mix=questionCounts.quant+questionCounts.verbal;document.getElementById('quantCount').textContent=questionCounts.quant;document.getElementById('verbalCount').textContent=questionCounts.verbal;document.getElementById('tahsiliCount').textContent=questionCounts.tahsili;document.getElementById('mixCount').textContent=questionCounts.mix;document.getElementById('quantBtn').disabled=(questionCounts.quant===0);document.getElementById('verbalBtn').disabled=(questionCounts.verbal===0);document.getElementById('tahsiliBtn').disabled=(questionCounts.tahsili===0);document.getElementById('mixBtn').disabled=(questionCounts.mix===0)}catch(e){}}
+        async function loadQuestionCounts(){try{const[{count:qc},{count:vc},{count:tc}]=await Promise.all([sb.from('questions').select('id',{count:'exact',head:true}).eq('section','quant').neq('disabled',true),sb.from('questions').select('id',{count:'exact',head:true}).eq('section','verbal').neq('disabled',true),sb.from('questions').select('id',{count:'exact',head:true}).eq('section','tahsili').neq('disabled',true)]);questionCounts.quant=qc||0;questionCounts.verbal=vc||0;questionCounts.tahsili=tc||0;questionCounts.mix=questionCounts.quant+questionCounts.verbal;document.getElementById('quantCount').textContent=questionCounts.quant;document.getElementById('verbalCount').textContent=questionCounts.verbal;document.getElementById('tahsiliCount').textContent=questionCounts.tahsili;document.getElementById('mixCount').textContent=questionCounts.mix;document.getElementById('quantBtn').disabled=(questionCounts.quant===0);document.getElementById('verbalBtn').disabled=(questionCounts.verbal===0);document.getElementById('tahsiliBtn').disabled=(questionCounts.tahsili===0);document.getElementById('mixBtn').disabled=(questionCounts.mix===0)}catch(e){}}
         function notifyStep(){alert('تم تسجيل اهتمامك، بنخبرك أول ما ينطلق قسم STEP');}
         function openModal(section){selectedSection=section;const meta=sectionMeta[section];document.getElementById('modalIcon').textContent=meta.icon;document.getElementById('modalTitle').textContent=meta.name;selectCount(10);checkAvailableCount();document.getElementById('trainingModal').classList.remove('hidden')}
         function closeModal(){document.getElementById('trainingModal').classList.add('hidden')}
@@ -295,6 +298,18 @@
 
         // 🔥 تسريبات حصرية للمشتركين
         var TASREEBAT_SETS=[
+            {id:'tasreeb-14-apr-2026',name:'تسريبات ١٤ أبريل',date:'١٤ أبريل ٢٠٢٦',emoji:'🔥',count:21,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-13T20:59:59',createdBefore:'2026-04-13T21:00:01'},
+            {id:'tasreeb-13-apr-2026',name:'تسريبات ١٣ أبريل',date:'١٣ أبريل ٢٠٢٦',emoji:'⚡',count:54,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-12T20:59:59',createdBefore:'2026-04-12T21:00:01'},
+            {id:'tasreeb-12-apr-2026',name:'تسريبات ١٢ أبريل',date:'١٢ أبريل ٢٠٢٦',emoji:'🚀',count:50,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-11T20:59:59',createdBefore:'2026-04-11T21:00:01'},
+            {id:'tasreeb-11-apr-2026',name:'تسريبات ١١ أبريل',date:'١١ أبريل ٢٠٢٦',emoji:'🌟',count:42,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-10T20:59:59',createdBefore:'2026-04-10T21:00:01'},
+            {id:'tasreeb-9-apr-2026',name:'تسريبات ٩ أبريل',date:'٩ أبريل ٢٠٢٦',emoji:'🔥',count:67,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-08T20:59:59',createdBefore:'2026-04-08T21:00:01'},
+            {id:'tasreeb-8-apr-2026',name:'تسريبات ٨ أبريل',date:'٨ أبريل ٢٠٢٦',emoji:'⚡',count:71,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-07T20:59:59',createdBefore:'2026-04-07T21:00:01'},
+            {id:'tasreeb-7-apr-2026',name:'تسريبات ٧ أبريل',date:'٧ أبريل ٢٠٢٦',emoji:'🚀',count:66,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-06T20:59:59',createdBefore:'2026-04-06T21:00:01'},
+            {id:'tasreeb-6-apr-2026',name:'تسريبات ٦ أبريل',date:'٦ أبريل ٢٠٢٦',emoji:'🔥',count:80,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-05T20:59:59',createdBefore:'2026-04-05T21:00:01'},
+            {id:'tasreeb-5-apr-2026',name:'تسريبات ٥ أبريل',date:'٥ أبريل ٢٠٢٦',emoji:'⚡',count:92,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-04T20:59:59',createdBefore:'2026-04-04T21:00:01'},
+            {id:'tasreeb-4-apr-2026',name:'تسريبات ٤ أبريل',date:'٤ أبريل ٢٠٢٦',emoji:'🔥',count:12,desc:'كمي — مع شرح مفصّل',createdAfter:'2026-04-03T23:59:59',createdBefore:'2026-04-04T00:00:01'},
+            {id:'tasreeb-2-apr-2026',name:'تسريبات ٢ أبريل',date:'٢ أبريل ٢٠٢٦',emoji:'⚡',count:113,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-01T23:59:59',createdBefore:'2026-04-02T07:00:01'},
+            {id:'tasreeb-1-apr-2026',name:'تسريبات ١ أبريل',date:'١ أبريل ٢٠٢٦',emoji:'🚀',count:93,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-31T23:59:59',createdBefore:'2026-04-01T07:00:01'},
             {id:'tasreeb-31-mar-2026',name:'تسريبات ٣١ مارس',date:'٣١ مارس ٢٠٢٦',emoji:'🔥',count:92,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-31T11:59:59',createdBefore:'2026-03-31T12:00:01'},
             {id:'tasreeb-30-mar-2026',name:'تسريبات ٣٠ مارس',date:'٣٠ مارس ٢٠٢٦',emoji:'⚡',count:70,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-30T11:59:59',createdBefore:'2026-03-30T12:00:01'},
             {id:'tasreeb-29-mar-2026',name:'تسريبات ٢٩ مارس',date:'٢٩ مارس ٢٠٢٦',emoji:'⚡',count:75,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-29T11:59:59',createdBefore:'2026-03-29T12:00:01'},
@@ -317,16 +332,16 @@
         var TASREEB_SHOW_INITIAL=3; // عدد التسريبات المعروضة مبدئياً
         var userSub='free';
         var tasreebProgress={};
-        // ✅ كاش الاشتراك في localStorage — عشان الـ sync render يعرف الحالة فوراً
+        // ✅ كاش الاشتراك — صلاحية ٢٤ ساعة
         var SUB_CACHE_KEY='madarek_sub_cache';
         function getCachedSub(){
-            try{var c=JSON.parse(localStorage.getItem(SUB_CACHE_KEY));if(c&&c.type&&(Date.now()-c.ts)<3600000)return c.type;}catch(e){}return null;
+            try{var c=JSON.parse(localStorage.getItem(SUB_CACHE_KEY));if(c&&c.type&&(Date.now()-c.ts)<86400000)return c.type;}catch(e){}return null;
         }
         function setCachedSub(type){
             try{localStorage.setItem(SUB_CACHE_KEY,JSON.stringify({type:type,ts:Date.now()}));}catch(e){}
         }
 
-        // ✅ بناء كروت التسريبات — sync فوري
+        // ✅ بناء كروت التسريبات
         function buildTasreebatCards(isPro){
             var grid=document.getElementById('tasreebatGrid');
             grid.innerHTML='';
@@ -379,7 +394,7 @@
             if(isPro){lockMsg.classList.add('hidden')}else{lockMsg.classList.remove('hidden')}
         }
 
-        // ✅ الخطوة ١: رسم فوري (sync) باستخدام الكاش — الصفحة ما تنط أبداً
+        // ✅ الخطوة ١: رسم فوري من الكاش (صلاحية ٢٤ ساعة)
         if(TASREEBAT_SETS.length){
             var cachedSub=getCachedSub();
             var cachedIsPro=(cachedSub&&cachedSub!=='free');
@@ -388,7 +403,7 @@
             document.getElementById('tasreebatSection').style.display='none';
         }
 
-        // ✅ الخطوة ٢: تحديث async بالخلفية (اشتراك + تقدم بشكل متوازي)
+        // ✅ الخطوة ٢: تحقق server-side (RPC) + تحديث الكروت
         async function loadTasreebat(){
             if(!TASREEBAT_SETS.length)return;
             var userId=null;
@@ -404,25 +419,26 @@
                 }
             }catch(e){console.log('tasreebat session:',e)}
             if(!userId){
-                // مو مسجل — تأكد الكروت مقفلة + امسح الكاش
+                // مو مسجل — الكروت مقفلة
                 setCachedSub('free');
-                if(userSub==='free') return; // الكروت صح أصلاً
+                if(userSub==='free') return;
                 userSub='free';
                 buildTasreebatCards(false);
                 return;
             }
-            // 2. جلب الاشتراك + التقدم بالتوازي (Promise.all)
+            // 2. تحقق server-side من الاشتراك (RPC) + جلب التقدم بالتوازي
             try{
-                var profilePromise=sb.from('profiles').select('subscription_type,subscription_end').eq('id',userId).single();
+                var subPromise=sb.rpc('get_my_subscription');
                 var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
                 var maxDate=TASREEBAT_SETS[0].createdBefore;
-                var questionsPromise=sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate);
-                var results=await Promise.all([profilePromise,questionsPromise]);
-                // معالجة الاشتراك
-                var profileData=results[0].data;
-                if(profileData&&profileData.subscription_type){
-                    userSub=profileData.subscription_type;
-                    if(userSub!=='free'&&profileData.subscription_end&&new Date(profileData.subscription_end)<new Date()) userSub='free';
+                var questionsPromise=sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate).neq('disabled',true);
+                var results=await Promise.all([subPromise,questionsPromise]);
+                // معالجة الاشتراك — من السيرفر مباشرة
+                var subData=results[0].data;
+                if(subData&&subData.status&&subData.status!=='free'){
+                    userSub=subData.status;
+                }else{
+                    userSub='free';
                 }
                 setCachedSub(userSub);
                 var isPro=(userSub!=='free');
