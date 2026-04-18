@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — تسجيل الدخول</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);var t=localStorage.getItem("madarek_theme");if(t==="dark")document.documentElement.setAttribute("data-t","d");}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+
+/* ── HEADER ── */
+.h-wrap{padding:40px 28px 16px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 60%)}
+.logo{width:72px;height:72px;border-radius:22px;overflow:hidden;margin:0 auto 14px;box-shadow:0 8px 28px rgba(109,93,246,.28)}
+.logo img{width:100%;height:100%}
+.greet{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--ps);color:var(--pri);font-size:11px;font-weight:700;border-radius:20px;margin-bottom:12px}
+.greet svg{width:12px;height:12px;stroke:var(--pri);fill:none;stroke-width:2}
+.h-title{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.h-sub{font-size:12px;color:var(--i3);line-height:1.7}
+
+/* ── BIOMETRIC ── */
+.bio-btn{width:calc(100% - 56px);margin:10px 28px 0;padding:13px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),var(--acc));color:#fff;font-size:13px;font-weight:700;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(109,93,246,.25)}
+.bio-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
+.bio-btn:active{transform:scale(.98)}
+.bio-divider{display:none;margin:18px 28px 0;align-items:center;gap:10px;color:var(--i4);font-size:10px;font-weight:600}
+.bio-divider.on,.bio-btn.on{display:flex}
+.bio-divider::before,.bio-divider::after{content:'';flex:1;height:1px;background:var(--ln2)}
+
+/* ── FORM ── */
+.form{margin:18px 16px 0;padding:20px 16px}
+.lbl{font-size:11px;font-weight:600;color:var(--i3);margin-bottom:6px;display:block}
+.input-row{position:relative;margin-bottom:14px}
+.input{width:100%;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--ln2);background:var(--s2);color:var(--ink);font-size:13px;outline:none;transition:all .2s;font-weight:500}
+.input:focus{border-color:var(--pri);background:var(--sf);box-shadow:0 0 0 3px var(--ps)}
+.input::placeholder{color:var(--i4);font-weight:400}
+.input[type=email],.input[type=password]{direction:ltr;text-align:right}
+.eye{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;color:var(--i3);border-radius:8px;transition:color .2s}
+.eye:hover{color:var(--pri)}
+.eye svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
+.submit{width:100%;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s;margin-top:4px}
+.submit:active{transform:scale(.98)}
+.submit:disabled{opacity:.6;cursor:not-allowed}
+.submit svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5}
+.forgot{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--pri);font-weight:600;padding:6px;cursor:pointer;background:none;border:none;width:100%;font-family:inherit;transition:opacity .2s}
+.forgot:hover{opacity:.75}
+
+/* ── BOTTOM ── */
+.bottom{text-align:center;margin:20px 28px 30px;font-size:12px;color:var(--i3)}
+.bottom a{color:var(--pri);font-weight:700;margin-right:4px}
+.bottom a:hover{text-decoration:underline}
+.back{display:block;text-align:center;margin:12px 0 20px;font-size:11px;color:var(--i4);padding:6px}
+.back:hover{color:var(--pri)}
+
+/* ── MOTIVATION ── */
+.motiv{margin:0 28px 4px;padding:12px 14px;background:var(--ss);border:1px solid rgba(34,197,94,.15);border-radius:var(--r);display:flex;align-items:center;gap:10px;font-size:11px;color:var(--i2);line-height:1.6}
+.motiv svg{width:16px;height:16px;stroke:var(--suc);fill:none;stroke-width:2;flex-shrink:0}
+.motiv b{color:var(--suc);font-weight:700}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:9999;padding:12px 22px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transition:all .3s;max-width:90%;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--dng)}
+.toast.ok{background:var(--suc)}
+.toast.info{background:var(--pri)}
+
+/* ── MODAL ── */
+.mdl{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
+.mdl.on{display:flex}
+.mdl-card{width:100%;max-width:380px;background:var(--sf);border-radius:20px;padding:24px 20px;border:1px solid var(--ln)}
+.mdl-h{font-size:17px;font-weight:700;text-align:center;margin-bottom:6px}
+.mdl-p{font-size:12px;color:var(--i3);text-align:center;margin-bottom:18px;line-height:1.7}
+.mdl-msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:11px;text-align:center;display:none}
+.mdl-msg.on{display:block}
+.mdl-msg.err{background:var(--ds);color:var(--dng)}
+.mdl-msg.ok{background:var(--ss);color:var(--suc)}
+.mdl-msg.info{background:var(--ps);color:var(--pri)}
+.mdl-cancel{width:100%;margin-top:10px;padding:10px;font-size:12px;color:var(--i3);background:none;border:none;cursor:pointer}
+
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="h-wrap">
+  <div class="logo"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
+  <div class="greet" id="greetBox">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    <span id="greetText">أهلاً بعودتك</span>
+  </div>
+  <div class="h-title">سجّل دخولك وكمّل رحلتك</div>
+  <div class="h-sub">كل يوم تدريب خطوة أقرب لحلمك</div>
+</div>
+
+<div class="motiv">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span><b>استمرارك</b> هو مفتاح نجاحك — سجّل دخولك وكمّل من حيث وقفت</span>
+</div>
+
+<button class="bio-btn" id="bioBtn" onclick="loginBio()">
+  <svg viewBox="0 0 24 24"><path d="M12 11c-2 0-3 1-3 3v2M12 11c2 0 3 1 3 3v2M12 7a4 4 0 014 4M12 7a4 4 0 00-4 4M4 12a8 8 0 0116 0M4 12v2a8 8 0 008 8 8 8 0 008-8v-2"/></svg>
+  <span id="bioLabel">دخول بالبصمة</span>
+</button>
+<div class="bio-divider" id="bioDiv"><span>أو بالبريد الإلكتروني</span></div>
+
+<div class="card form">
+  <form id="loginForm">
+    <label class="lbl">البريد الإلكتروني</label>
+    <div class="input-row">
+      <input class="input" type="email" id="email" placeholder="example@gmail.com" autocomplete="email" required>
+    </div>
+
+    <label class="lbl">كلمة المرور</label>
+    <div class="input-row">
+      <input class="input" type="password" id="password" placeholder="كلمة المرور" autocomplete="current-password" required>
+      <button type="button" class="eye" onclick="togglePw(this)" aria-label="إظهار/إخفاء كلمة المرور">
+        <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+    </div>
+
+    <button type="submit" class="submit" id="submitBtn">
+      <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      <span>تسجيل الدخول</span>
+    </button>
+
+    <button type="button" class="forgot" onclick="forgotPassword()">نسيت كلمة المرور؟</button>
+  </form>
+</div>
+
+<div class="bottom">
+  ما عندك حساب؟ <a href="register-v2.html">سجّل الآن</a>
+</div>
+<a href="welcome-v2.html" class="back">← العودة للرئيسية</a>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="mdl" id="forgotModal">
+  <div class="mdl-card">
+    <div class="mdl-h">نسيت كلمة المرور؟</div>
+    <div class="mdl-p">اكتب بريدك الإلكتروني وبنرسل لك رابط لتغييرها</div>
+    <label class="lbl">البريد الإلكتروني</label>
+    <div class="input-row">
+      <input class="input" type="email" id="forgotEmail" placeholder="example@gmail.com" autocomplete="email">
+    </div>
+    <button class="submit" onclick="sendResetLink()" id="forgotSendBtn">أرسل رابط التغيير</button>
+    <div class="mdl-msg" id="forgotMsg"></div>
+    <button class="mdl-cancel" onclick="closeModal('forgotModal')">إلغاء</button>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="mdl" id="resetModal">
+  <div class="mdl-card">
+    <div class="mdl-h">تغيير كلمة المرور</div>
+    <div class="mdl-p">اكتب كلمة المرور الجديدة</div>
+    <label class="lbl">كلمة المرور الجديدة</label>
+    <div class="input-row">
+      <input class="input" type="password" id="newPass" placeholder="6 أحرف على الأقل">
+    </div>
+    <label class="lbl">تأكيد كلمة المرور</label>
+    <div class="input-row">
+      <input class="input" type="password" id="confirmPass" placeholder="أعد كتابة كلمة المرور">
+    </div>
+    <button class="submit" onclick="saveNewPass()" id="resetSaveBtn">حفظ كلمة المرور الجديدة</button>
+    <div class="mdl-msg" id="resetMsg"></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../biometric.js"></script>
+<script>
+(function(){
+'use strict';
+
+// ── Read recovery tokens before createClient (for password reset flow) ──
+var _rawAt=null,_rawRt=null,_isRecoveryUrl=false,_tokenHash=null;
+try{
+  var q=new URLSearchParams(window.location.search);
+  if(q.get('token_hash')&&q.get('type')==='recovery'){_isRecoveryUrl=true;_tokenHash=q.get('token_hash');}
+  else{
+    var h=new URLSearchParams(window.location.hash.substring(1));
+    if(h.get('type')==='recovery'){_isRecoveryUrl=true;_rawAt=h.get('access_token');_rawRt=h.get('refresh_token');}
+    else if(q.get('type')==='recovery'||q.has('code')){_isRecoveryUrl=true;}
+  }
+}catch(e){}
+
+// ── Supabase ──
+var SUPA_URL='https://czzcmbxejxbotjemyuqf.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+var sb=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{flowType:'implicit',persistSession:true,autoRefreshToken:true}});
+
+// ── Time-based greeting ──
+(function(){
+  var h=new Date().getHours();
+  var greet=h<5?'مساء النور':h<12?'صباح الخير':h<18?'نهارك سعيد':'مساء الخير';
+  document.getElementById('greetText').textContent=greet+' — أهلاً بعودتك';
+})();
+
+// ── Brute force protection ──
+var _attempts=0,_locked=false,_lockTime=0;
+
+// ── Auto-login if session exists (skip on recovery URL) ──
+if(!_isRecoveryUrl){
+  (async function(){
+    try{
+      var r=await sb.auth.getSession();
+      if(r.data&&r.data.session){
+        if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(e){}}
+        window.location.href='dashboard-v2.html';
+      }
+    }catch(e){}
+  })();
+}
+
+// ── Biometric availability check ──
+(async function(){
+  if(!window._biometric||!window._biometric.checkAvailable)return;
+  try{
+    var bio=await window._biometric.checkAvailable();
+    if(bio.available&&window._biometric.isEnabled()){
+      document.getElementById('bioBtn').classList.add('on');
+      document.getElementById('bioDiv').classList.add('on');
+      var lbl=document.getElementById('bioLabel');
+      if(bio.type==='face')lbl.textContent='دخول بـ Face ID';
+      else if(bio.type==='touch'||bio.type==='fingerprint')lbl.textContent='دخول بالبصمة';
+    }
+  }catch(e){}
+})();
+
+window.loginBio=async function(){
+  if(!window._biometric||!window._biometric.authenticate)return;
+  var status=await window._biometric.authenticate();
+  if(status==='success'){
+    var r=await sb.auth.getSession();
+    if(r.data&&r.data.session){window.location.href='dashboard-v2.html';}
+    else{toast('جلستك انتهت — سجّل دخول بالبريد','err');}
+  }else if(status==='failed'){toast('البصمة ما نجحت — جرّب مرة ثانية','err');}
+};
+
+// ── Recovery URL handling ──
+var _recoverySession=null;
+sb.auth.onAuthStateChange(function(event,session){
+  if(event==='PASSWORD_RECOVERY'||(event==='SIGNED_IN'&&_isRecoveryUrl)){
+    _recoverySession=session;
+    document.getElementById('resetModal').classList.add('on');
+  }
+});
+if(_isRecoveryUrl){
+  (async function(){
+    if(_tokenHash){
+      try{
+        var v=await sb.auth.verifyOtp({token_hash:_tokenHash,type:'recovery'});
+        if(!v.error&&v.data&&v.data.session){_recoverySession=v.data.session;document.getElementById('resetModal').classList.add('on');return;}
+      }catch(e){}
+    }
+    var r=await sb.auth.getSession();
+    if(r.data&&r.data.session){_recoverySession=r.data.session;document.getElementById('resetModal').classList.add('on');return;}
+    if(_rawAt&&_rawRt){
+      var s=await sb.auth.setSession({access_token:_rawAt,refresh_token:_rawRt}).catch(function(){return{};});
+      if(s.data&&s.data.session){_recoverySession=s.data.session;document.getElementById('resetModal').classList.add('on');return;}
+    }
+    document.getElementById('resetModal').classList.add('on');
+    var m=document.getElementById('resetMsg');
+    m.textContent='جاري التحقق من الرابط...';m.className='mdl-msg info on';
+    document.getElementById('resetSaveBtn').disabled=true;
+    setTimeout(function(){
+      if(!_recoverySession){m.textContent='انتهت صلاحية الرابط — اطلب رابط جديد';m.className='mdl-msg err on';}
+    },60000);
+  })();
+}
+
+// ── Forgot password ──
+window.forgotPassword=function(){
+  var em=document.getElementById('email').value.trim();
+  if(em)document.getElementById('forgotEmail').value=em;
+  document.getElementById('forgotMsg').className='mdl-msg';
+  document.getElementById('forgotModal').classList.add('on');
+  setTimeout(function(){document.getElementById('forgotEmail').focus();},200);
+};
+window.sendResetLink=async function(){
+  var em=document.getElementById('forgotEmail').value.trim();
+  var m=document.getElementById('forgotMsg');
+  var btn=document.getElementById('forgotSendBtn');
+  if(!em){m.textContent='اكتب بريدك أولاً';m.className='mdl-msg err on';return;}
+  btn.disabled=true;btn.querySelector('span')&&(btn.querySelector('span').textContent='جاري الإرسال...');
+  btn.innerHTML='<span>جاري الإرسال...</span>';
+  try{
+    var {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:window.location.origin+'/v2/login-v2.html'});
+    if(error)throw error;
+    m.textContent='تم إرسال الرابط إلى '+em+' ✓';m.className='mdl-msg ok on';
+    btn.innerHTML='<span>تم الإرسال ✓</span>';
+    setTimeout(function(){closeModal('forgotModal');btn.disabled=false;btn.innerHTML='<span>أرسل رابط التغيير</span>';},3000);
+  }catch(e){
+    m.textContent='ما قدرنا نرسل — تأكد من البريد';m.className='mdl-msg err on';
+    btn.disabled=false;btn.innerHTML='<span>أرسل رابط التغيير</span>';
+  }
+};
+window.saveNewPass=async function(){
+  var p1=document.getElementById('newPass').value;
+  var p2=document.getElementById('confirmPass').value;
+  var m=document.getElementById('resetMsg');
+  if(!p1||p1.length<6){m.textContent='كلمة المرور لازم 6 أحرف على الأقل';m.className='mdl-msg err on';return;}
+  if(p1!==p2){m.textContent='كلمتا المرور غير متطابقتين';m.className='mdl-msg err on';return;}
+  try{
+    var {error}=await sb.auth.updateUser({password:p1});
+    if(error&&(error.message.includes('Auth')||error.message.includes('JWT')||error.message.includes('session')||error.status===401)){
+      if(_recoverySession){await sb.auth.setSession({access_token:_recoverySession.access_token,refresh_token:_recoverySession.refresh_token}).catch(function(){});}
+      else if(_rawAt&&_rawRt){await sb.auth.setSession({access_token:_rawAt,refresh_token:_rawRt}).catch(function(){});}
+      var r=await sb.auth.updateUser({password:p1});
+      if(r.error)throw r.error;
+    }else if(error){throw error;}
+    m.textContent='تم تغيير كلمة المرور بنجاح ✓';m.className='mdl-msg ok on';
+    setTimeout(function(){window.location.href='dashboard-v2.html';},1200);
+  }catch(e){
+    var mm=e.message||'';
+    m.textContent=(mm.includes('expired')||mm.includes('JWT')||mm.includes('session'))?'انتهت صلاحية الرابط — اطلب رابط جديد':'ما قدرنا نغيّر — حاول مرة ثانية';
+    m.className='mdl-msg err on';
+  }
+};
+window.closeModal=function(id){document.getElementById(id).classList.remove('on');};
+
+// ── Login submit ──
+document.getElementById('loginForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  if(_locked){
+    var remain=Math.ceil((_lockTime-Date.now())/1000);
+    if(remain>0){toast('كثرت المحاولات — انتظر '+remain+' ثانية','err');return;}
+    _locked=false;_attempts=0;
+  }
+  var em=document.getElementById('email').value.trim();
+  var pw=document.getElementById('password').value;
+  if(!em||!pw){toast('اكتب البريد وكلمة المرور','err');return;}
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.innerHTML='<span>جاري الدخول...</span>';
+  try{
+    var {data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+    if(error)throw error;
+    _attempts=0;
+    try{localStorage.setItem('khawariz_user',JSON.stringify({id:data.user.id,email:data.user.email,name:data.user.user_metadata?.name||''}));}catch(_){}
+    if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(_){}}
+    btn.innerHTML='<span>تم! جاري التحويل...</span>';
+    setTimeout(function(){window.location.href='dashboard-v2.html';},600);
+  }catch(err){
+    _attempts++;
+    if(_attempts>=10){_locked=true;_lockTime=Date.now()+120000;toast('كثرت المحاولات — حاول بعد دقيقتين','err');}
+    else if(_attempts>=5){_locked=true;_lockTime=Date.now()+30000;toast('كثرت المحاولات — انتظر 30 ثانية','err');}
+    else{toast('البريد أو كلمة المرور غير صحيحة','err');}
+    btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>تسجيل الدخول</span>';
+  }
+});
+
+// ── Password toggle ──
+window.togglePw=function(btn){
+  var inp=btn.previousElementSibling;
+  if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';}
+  else{inp.type='password';btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';}
+};
+
+// ── Toast ──
+function toast(msg,type){
+  var t=document.createElement('div');
+  t.className='toast '+(type||'info');
+  t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){t.classList.add('on');});
+  setTimeout(function(){t.classList.remove('on');setTimeout(function(){t.remove();},300);},3500);
+}
+
+})();
+</script>
+</body>
+</html>

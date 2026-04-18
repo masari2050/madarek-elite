@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — إنشاء حساب</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);var t=localStorage.getItem("madarek_theme");if(t==="dark")document.documentElement.setAttribute("data-t","d");}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--fem:#EC4899;--fs:rgba(236,72,153,.08);
+--mal:#3B82F6;--ms:rgba(59,130,246,.08);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--fs:rgba(236,72,153,.15);--ms:rgba(59,130,246,.15);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+
+/* ── HEADER ── */
+.h-wrap{padding:32px 28px 12px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 60%)}
+.logo{width:66px;height:66px;border-radius:20px;overflow:hidden;margin:0 auto 12px;box-shadow:0 8px 28px rgba(109,93,246,.28)}
+.logo img{width:100%;height:100%}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--as);color:var(--acc);font-size:10px;font-weight:700;border-radius:20px;margin-bottom:10px}
+.badge svg{width:12px;height:12px;stroke:var(--acc);fill:none;stroke-width:2}
+.h-title{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.h-sub{font-size:12px;color:var(--i3);line-height:1.7}
+
+/* ── MOTIVATION CHECKLIST ── */
+.motiv{margin:14px 16px 10px;padding:14px 16px;background:linear-gradient(135deg,var(--ps),var(--as));border-radius:var(--r2);border:1px solid var(--ln)}
+.motiv-h{font-size:12px;font-weight:700;color:var(--pt);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.motiv-h svg{width:14px;height:14px;stroke:var(--pt);fill:none;stroke-width:2.5}
+.motiv-list{display:flex;flex-direction:column;gap:8px}
+.motiv-i{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--i2);line-height:1.6}
+.motiv-i svg{width:15px;height:15px;stroke:var(--suc);fill:none;stroke-width:2.5;flex-shrink:0}
+
+/* ── PROGRESS ── */
+.prog-wrap{margin:0 16px 10px;padding:10px 14px;background:var(--s2);border-radius:var(--r);border:1px solid var(--ln);display:flex;align-items:center;gap:10px}
+.prog-bar{flex:1;height:4px;background:var(--ln2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--acc));width:0;border-radius:3px;transition:width .35s var(--ease)}
+.prog-lbl{font-size:10px;font-weight:700;color:var(--pri);white-space:nowrap}
+
+/* ── FORM ── */
+.form{margin:0 16px;padding:18px 16px}
+.lbl{font-size:11px;font-weight:600;color:var(--i3);margin-bottom:6px;display:block}
+.input-row{position:relative;margin-bottom:14px}
+.input{width:100%;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--ln2);background:var(--s2);color:var(--ink);font-size:13px;outline:none;transition:all .2s;font-weight:500}
+.input:focus{border-color:var(--pri);background:var(--sf);box-shadow:0 0 0 3px var(--ps)}
+.input::placeholder{color:var(--i4);font-weight:400}
+.input[type=email],.input[type=password],.input[type=tel]{direction:ltr;text-align:right}
+.input.ok{border-color:rgba(34,197,94,.4)}
+.input.bad{border-color:rgba(239,68,68,.4)}
+.eye{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;color:var(--i3);border-radius:8px}
+.eye:hover{color:var(--pri)}
+.eye svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
+
+.gender-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.gbtn{padding:12px;border-radius:var(--r);border:1.5px solid var(--ln2);background:var(--s2);color:var(--i3);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.gbtn:hover{border-color:var(--i4)}
+.gbtn.on-m{border-color:var(--mal);background:var(--ms);color:var(--mal);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.gbtn.on-f{border-color:var(--fem);background:var(--fs);color:var(--fem);box-shadow:0 0 0 3px rgba(236,72,153,.1)}
+
+.terms{display:flex;align-items:flex-start;gap:10px;margin:4px 0 14px;padding:4px 2px}
+.terms input{width:18px;height:18px;accent-color:var(--pri);margin-top:1px;flex-shrink:0}
+.terms label{font-size:11px;color:var(--i3);line-height:1.7;cursor:pointer}
+.terms a{color:var(--pri);font-weight:700}
+
+.submit{width:100%;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s}
+.submit:active{transform:scale(.98)}
+.submit:disabled{opacity:.6;cursor:not-allowed}
+.submit svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5}
+
+/* ── BOTTOM ── */
+.bottom{text-align:center;margin:16px 28px 10px;font-size:12px;color:var(--i3)}
+.bottom a{color:var(--pri);font-weight:700;margin-right:4px}
+.bottom a:hover{text-decoration:underline}
+.back{display:block;text-align:center;margin:6px 0 30px;font-size:11px;color:var(--i4);padding:6px}
+.back:hover{color:var(--pri)}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:9999;padding:12px 22px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transition:all .3s;max-width:90%;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--dng)}
+.toast.ok{background:var(--suc)}
+.toast.info{background:var(--pri)}
+
+/* ── SUCCESS SCREEN (email verification) ── */
+.success{display:none;padding:40px 28px;text-align:center}
+.success.on{display:block}
+.success-ic{width:72px;height:72px;border-radius:50%;background:var(--ss);display:grid;place-items:center;margin:0 auto 18px}
+.success-ic svg{width:36px;height:36px;stroke:var(--suc);fill:none;stroke-width:2.5}
+.success-h{font-size:20px;font-weight:700;margin-bottom:8px}
+.success-p{font-size:13px;color:var(--i3);line-height:1.8;margin-bottom:6px}
+.success-email{font-size:14px;font-weight:700;color:var(--pri);direction:ltr;display:inline-block;margin:8px 0 18px;padding:6px 14px;background:var(--ps);border-radius:12px}
+.success-note{font-size:11px;color:var(--i4);margin-top:16px}
+
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="mainScr">
+
+<div class="h-wrap">
+  <div class="logo"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
+  <div class="badge">
+    <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    ابدأ رحلتك مجاناً
+  </div>
+  <div class="h-title">أنشئ حسابك وانطلق</div>
+  <div class="h-sub">تسجيل سريع — ودقائق وبتكون جاهز للتدريب</div>
+</div>
+
+<div class="motiv">
+  <div class="motiv-h">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    ماذا ستحصل عليه
+  </div>
+  <div class="motiv-list">
+    <div class="motiv-i"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>أسئلة حقيقية من اختبارات سابقة</div>
+    <div class="motiv-i"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>شرح مفصّل بعد كل سؤال</div>
+    <div class="motiv-i"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تحليل ذكي لنقاط قوتك وضعفك</div>
+    <div class="motiv-i"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>التسريبات الرسمية أولاً بأول</div>
+    <div class="motiv-i"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تقارير دقيقة عن تقدّمك</div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-lbl" id="progLbl">٠٪ مكتمل</div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+</div>
+
+<div class="card form">
+  <form id="regForm">
+    <label class="lbl">الاسم الكامل</label>
+    <div class="input-row">
+      <input class="input" type="text" id="name" placeholder="مثال: محمد أحمد" autocomplete="name">
+    </div>
+
+    <label class="lbl">البريد الإلكتروني</label>
+    <div class="input-row">
+      <input class="input" type="email" id="email" placeholder="example@gmail.com" autocomplete="email">
+    </div>
+
+    <label class="lbl">رقم الجوال</label>
+    <div class="input-row">
+      <input class="input" type="tel" id="phone" placeholder="05xxxxxxxx" maxlength="10" inputmode="numeric" autocomplete="tel">
+    </div>
+
+    <label class="lbl">كلمة المرور</label>
+    <div class="input-row">
+      <input class="input" type="password" id="password" placeholder="6 أحرف على الأقل" autocomplete="new-password">
+      <button type="button" class="eye" onclick="togglePw(this)" aria-label="إظهار/إخفاء">
+        <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+    </div>
+
+    <label class="lbl">تأكيد كلمة المرور</label>
+    <div class="input-row">
+      <input class="input" type="password" id="confirmPassword" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password">
+      <button type="button" class="eye" onclick="togglePw(this)" aria-label="إظهار/إخفاء">
+        <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+    </div>
+
+    <label class="lbl">الجنس</label>
+    <div class="gender-row">
+      <button type="button" id="gMale" class="gbtn on-m" onclick="setGender('male')"><span>👦</span><span>ذكر</span></button>
+      <button type="button" id="gFemale" class="gbtn" onclick="setGender('female')"><span>👧</span><span>أنثى</span></button>
+    </div>
+    <input type="hidden" id="gender" value="male">
+
+    <div class="terms">
+      <input type="checkbox" id="terms">
+      <label for="terms">أوافق على <a href="../terms.html" target="_blank">شروط الاستخدام</a> و<a href="../privacy.html" target="_blank">سياسة الخصوصية</a></label>
+    </div>
+
+    <button type="submit" class="submit" id="submitBtn">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>إنشاء الحساب</span>
+    </button>
+  </form>
+</div>
+
+<div class="bottom">
+  عندك حساب؟ <a href="login-v2.html">سجّل دخول</a>
+</div>
+<a href="welcome-v2.html" class="back">← العودة للرئيسية</a>
+
+</div><!-- /mainScr -->
+
+<!-- EMAIL VERIFICATION SCREEN -->
+<div class="success" id="successScr">
+  <div class="success-ic">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+  </div>
+  <div class="success-h">تحقق من بريدك الإلكتروني</div>
+  <div class="success-p">أرسلنا رابط تأكيد إلى:</div>
+  <div class="success-email" id="successEmail">—</div>
+  <div class="success-p">افتح بريدك واضغط على رابط التأكيد<br>ثم ارجع هنا وسجّل دخول</div>
+  <a href="login-v2.html" class="submit" style="margin-top:22px;text-decoration:none;display:flex">
+    <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    <span>الذهاب لتسجيل الدخول</span>
+  </a>
+  <div class="success-note">ما وصلك الإيميل؟ تحقق من مجلد السبام</div>
+</div>
+
+</div><!-- /wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+'use strict';
+
+var SUPA_URL='https://czzcmbxejxbotjemyuqf.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+var sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+
+// ── Auto-redirect if already signed in ──
+(async function(){
+  try{
+    var r=await sb.auth.getSession();
+    if(r.data&&r.data.session)window.location.href=getRedirect();
+  }catch(e){}
+})();
+
+// ── Referral/coupon tracking ──
+var params=new URLSearchParams(window.location.search);
+var urlCoupon=params.get('coupon');
+var urlRef=params.get('ref');
+if(urlRef){try{localStorage.setItem('madarek_referral',urlRef);}catch(_){}}
+
+// ── Gender select ──
+window.setGender=function(g){
+  document.getElementById('gender').value=g;
+  document.getElementById('gMale').classList.toggle('on-m',g==='male');
+  document.getElementById('gFemale').classList.toggle('on-f',g==='female');
+  updateProgress();
+};
+
+// ── Password toggle ──
+window.togglePw=function(btn){
+  var inp=btn.previousElementSibling;
+  if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';}
+  else{inp.type='password';btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';}
+};
+
+// ── Progress indicator ──
+var fields=['name','email','phone','password','confirmPassword'];
+function fieldValid(id){
+  var v=(document.getElementById(id).value||'').trim();
+  if(!v)return false;
+  if(id==='email')return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  if(id==='phone')return /^05\d{8}$/.test(v);
+  if(id==='password')return v.length>=6;
+  if(id==='confirmPassword')return v===document.getElementById('password').value&&v.length>=6;
+  return v.length>=2;
+}
+function updateProgress(){
+  var done=0;
+  fields.forEach(function(f){
+    var valid=fieldValid(f);
+    if(valid)done++;
+    var el=document.getElementById(f);
+    if(el.value){el.classList.toggle('ok',valid);el.classList.toggle('bad',!valid);}
+    else{el.classList.remove('ok','bad');}
+  });
+  if(document.getElementById('terms').checked)done++;
+  var total=fields.length+1;
+  var pct=Math.round((done/total)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  var ar=['٠٪','١٠٪','٢٠٪','٣٠٪','٤٠٪','٥٠٪','٦٠٪','٧٠٪','٨٠٪','٩٠٪','١٠٠٪'];
+  var idx=Math.round(pct/10);
+  document.getElementById('progLbl').textContent=(ar[idx]||pct+'٪')+' مكتمل';
+}
+fields.forEach(function(f){document.getElementById(f).addEventListener('input',updateProgress);});
+document.getElementById('terms').addEventListener('change',updateProgress);
+
+// ── Submit ──
+document.getElementById('regForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var name=document.getElementById('name').value.trim();
+  var email=document.getElementById('email').value.trim();
+  var phone=document.getElementById('phone').value.trim();
+  var pw=document.getElementById('password').value;
+  var cpw=document.getElementById('confirmPassword').value;
+  var gender=document.getElementById('gender').value;
+  var terms=document.getElementById('terms').checked;
+
+  if(!name){toast('اكتب اسمك الكامل','err');return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('بريد إلكتروني غير صحيح','err');return;}
+  if(!phone||!/^05\d{8}$/.test(phone)){toast('الجوال لازم 10 أرقام يبدأ بـ 05','err');return;}
+  if(!pw||pw.length<6){toast('كلمة المرور لازم 6 أحرف على الأقل','err');return;}
+  if(pw!==cpw){toast('كلمتا المرور غير متطابقتين','err');return;}
+  if(!terms){toast('لازم توافق على الشروط','err');return;}
+
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.innerHTML='<span>جاري إنشاء الحساب...</span>';
+  try{
+    var res=await sb.auth.signUp({email:email,password:pw,options:{data:{name:name,gender:gender,phone:phone}}});
+    if(res.error){
+      var m=res.error.message||'';
+      if(m.includes('already registered'))toast('هذا البريد مسجّل مسبقاً','err');
+      else if(m.includes('Invalid email'))toast('البريد الإلكتروني غير صحيح','err');
+      else toast('حدث خطأ — حاول مرة ثانية','err');
+      btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>إنشاء الحساب</span>';
+      return;
+    }
+    if(phone&&res.data&&res.data.user){
+      try{await sb.from('profiles').update({phone:phone}).eq('id',res.data.user.id);}catch(_){}
+    }
+    try{
+      if(window.gtag)gtag('event','sign_up',{method:'email'});
+      if(window.ttq)ttq.track('CompleteRegistration',{content_name:'Madarek Elite Signup v2'});
+    }catch(_){}
+    if(res.data&&res.data.session){
+      toast('تم إنشاء الحساب بنجاح!','ok');
+      setTimeout(function(){window.location.href=getRedirect();},1000);
+    }else{
+      document.getElementById('successEmail').textContent=email;
+      document.getElementById('mainScr').style.display='none';
+      document.getElementById('successScr').classList.add('on');
+      window.scrollTo(0,0);
+    }
+  }catch(err){
+    toast('حدث خطأ غير متوقع','err');
+    btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>إنشاء الحساب</span>';
+  }
+});
+
+// ── Redirect logic (protected against open redirect) ──
+var ALLOWED=['pricing','dashboard','select-section','profile','stats'];
+function getRedirect(){
+  var r=params.get('redirect');
+  if(r&&ALLOWED.indexOf(r)===-1)r=null;
+  if(r==='pricing'&&urlCoupon)return 'pricing.html?coupon='+encodeURIComponent(urlCoupon);
+  if(r==='dashboard'||!r)return 'dashboard-v2.html';
+  return r+'.html';
+}
+
+// ── Toast ──
+function toast(msg,type){
+  var t=document.createElement('div');
+  t.className='toast '+(type||'info');
+  t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){t.classList.add('on');});
+  setTimeout(function(){t.classList.remove('on');setTimeout(function(){t.remove();},300);},3500);
+}
+
+})();
+</script>
+</body>
+</html>
