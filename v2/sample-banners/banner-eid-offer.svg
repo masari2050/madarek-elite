@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 450" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1230"/>
+      <stop offset="50%" stop-color="#2D1B69"/>
+      <stop offset="100%" stop-color="#6D5DF6"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.4"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="450" fill="url(#bg)"/>
+
+  <!-- Decorative glow -->
+  <circle cx="950" cy="150" r="250" fill="url(#glow)"/>
+  <circle cx="200" cy="400" r="180" fill="url(#glow)" opacity="0.6"/>
+
+  <!-- Decorative stars -->
+  <g opacity="0.5" fill="#FFD700">
+    <circle cx="1000" cy="80" r="3"/>
+    <circle cx="1080" cy="140" r="2"/>
+    <circle cx="920" cy="60" r="2"/>
+    <circle cx="150" cy="100" r="2"/>
+    <circle cx="80" cy="180" r="3"/>
+  </g>
+
+  <!-- Arabic lantern (فانوس) -->
+  <g transform="translate(1000, 225)" filter="url(#shadow)">
+    <!-- Top -->
+    <rect x="-22" y="-90" width="44" height="10" rx="2" fill="url(#gold)"/>
+    <rect x="-10" y="-100" width="20" height="12" rx="2" fill="url(#gold)"/>
+    <!-- Body -->
+    <path d="M -35 -80 L 35 -80 L 40 -20 L 35 40 L -35 40 L -40 -20 Z"
+          fill="url(#gold)" opacity="0.9"/>
+    <!-- Inner glow -->
+    <ellipse cx="0" cy="-10" rx="20" ry="30" fill="#FFF9C4" opacity="0.6"/>
+    <!-- Patterns -->
+    <path d="M -35 -40 L 35 -40 M -35 0 L 35 0 M -35 20 L 35 20"
+          stroke="#1A1230" stroke-width="1.5" opacity="0.5" fill="none"/>
+    <!-- Bottom -->
+    <rect x="-18" y="40" width="36" height="8" rx="2" fill="url(#gold)"/>
+    <path d="M 0 48 L 0 70" stroke="url(#gold)" stroke-width="2"/>
+    <circle cx="0" cy="75" r="5" fill="url(#gold)"/>
+  </g>
+
+  <!-- Gold badge "عرض خاص" -->
+  <g transform="translate(140, 110)">
+    <rect x="-80" y="-22" width="160" height="44" rx="22" fill="url(#gold)"/>
+    <text x="0" y="7" font-family="Tahoma, Arial" font-size="22" font-weight="bold"
+          fill="#1A1230" text-anchor="middle" direction="rtl">🎉 عرض العيد</text>
+  </g>
+
+  <!-- Main title -->
+  <text x="140" y="220" font-family="Tahoma, Arial" font-size="64" font-weight="900"
+        fill="#ffffff" direction="rtl" filter="url(#shadow)">خصم 50%</text>
+
+  <!-- Subtitle -->
+  <text x="140" y="275" font-family="Tahoma, Arial" font-size="32" font-weight="600"
+        fill="#FFD700" direction="rtl">على الاشتراك السنوي</text>
+
+  <!-- Description -->
+  <text x="140" y="320" font-family="Tahoma, Arial" font-size="20" font-weight="400"
+        fill="#ffffff" opacity="0.85" direction="rtl">وصول كامل لكل التسريبات والتدريبات — لمدة محدودة</text>
+
+  <!-- CTA Button -->
+  <g transform="translate(140, 370)">
+    <rect x="0" y="0" width="220" height="50" rx="25" fill="url(#gold)" filter="url(#shadow)"/>
+    <text x="110" y="32" font-family="Tahoma, Arial" font-size="20" font-weight="bold"
+          fill="#1A1230" text-anchor="middle" direction="rtl">اشترك الآن ←</text>
+  </g>
+
+  <!-- Logo/Brand mark -->
+  <text x="1140" y="425" font-family="Tahoma, Arial" font-size="14" font-weight="700"
+        fill="#ffffff" opacity="0.7" text-anchor="end" direction="rtl">مدارك النخبة</text>
+</svg>

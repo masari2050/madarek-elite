@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — الرئيسية</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:80px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* TICKER */
+.ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap}
+.ticker .kw{font-weight:700;margin-left:6px}
+.ticker-in{display:inline-block;animation:tick 22s linear infinite;padding-right:60px}
+@keyframes tick{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+
+/* HEADER */
+.hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.av{width:40px;height:40px;border-radius:50%;background:var(--pri);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.hdr-nm{font-size:15px;font-weight:700}.hdr-sub{font-size:11px;color:var(--i3);margin-top:1px}
+.sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;margin-right:6px;vertical-align:middle;letter-spacing:.3px}
+.sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
+.sub-badge.yearly{background:linear-gradient(135deg,#8B5CF6,#6D5DF6);color:#fff;border:1px solid rgba(139,92,246,.4)}
+.sub-badge.coupon{background:var(--as);color:var(--acc)}
+.sub-badge.free{background:var(--s2);color:var(--i4)}
+.hb{width:34px;height:34px;border-radius:10px;background:var(--sf);border:1px solid var(--ln2);display:grid;place-items:center;position:relative;cursor:pointer;transition:background .18s}
+.hb:active{background:var(--s2)}
+.hb svg{width:15px;height:15px;stroke:var(--i3);fill:none;stroke-width:2;stroke-linecap:round}
+.dot{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--acc);border:1.5px solid var(--sf)}
+
+/* AD BANNER */
+.ad-ban{margin:0 6px 14px;border-radius:var(--r2);overflow:hidden;color:#fff;padding:14px 16px;display:none}
+.ad-tag{font-size:10px;font-weight:700;background:rgba(255,215,0,.2);color:#FFD700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px}
+.ad-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.ad-sub{font-size:11px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:10px}
+.ad-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-size:11px;font-weight:700;border-radius:7px;font-family:inherit;cursor:pointer;border:none}
+
+/* STREAK */
+.streak{margin:0 6px 14px;padding:14px 16px}
+.stk-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.stk-l{display:flex;align-items:center;gap:8px}
+.stk-ic{width:32px;height:32px;border-radius:9px;background:var(--as);display:grid;place-items:center}
+.stk-ic svg{width:16px;height:16px;stroke:var(--acc);fill:none;stroke-width:2}
+.stk-ttl{font-size:14px;font-weight:700}
+.stk-b{font-size:11px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 10px;border-radius:20px}
+.days{display:flex;justify-content:space-between}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px}
+.dd{width:28px;height:28px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;transition:all .3s}
+.dd svg{width:12px;height:12px;stroke:var(--i4);fill:none;stroke-width:2.5}
+.dd.done{background:var(--pri);border-color:var(--pri)}.dd.done svg{stroke:#fff}
+.dd.today{border:2px solid var(--pri);background:transparent}.dd.today svg{stroke:var(--pri)}
+.dl{font-size:10px;color:var(--i4)}.day.cur .dl{color:var(--pri);font-weight:700}
+
+/* PLAN */
+.plan-card{margin:0 6px 14px;overflow:hidden}
+.plan-bar{height:3px;background:linear-gradient(90deg,var(--pri),var(--acc))}
+.plan-in{padding:16px}
+.plan-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.plan-ttl{font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px}
+.plan-ttl svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.plan-b{font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 9px;border-radius:20px}
+.task{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:background .18s}
+.task:hover{background:var(--ps)}.task:last-of-type{margin-bottom:12px}
+.ti{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.ti svg{width:15px;height:15px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ti.a{background:var(--ps)}.ti.a svg{stroke:var(--pri)}
+.ti.b{background:var(--ds)}.ti.b svg{stroke:var(--dng)}
+.ti.c{background:var(--as)}.ti.c svg{stroke:var(--acc)}
+.tn{font-size:13px;font-weight:600}.td{font-size:11px;color:var(--i3);margin-top:1px}
+.tc{font-size:13px;font-weight:700;color:var(--i4)}
+.sbtn{width:100%;padding:12px;border-radius:11px;background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s}
+.sbtn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
+.sbtn:active{transform:scale(.98)}
+
+/* PROGRESS RING */
+.prog{margin:0 6px 14px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.prog-r{position:relative;flex-shrink:0}
+.prog-svg{width:58px;height:58px;transform:rotate(-90deg)}
+.prog-bg{fill:none;stroke:var(--ln2);stroke-width:4}
+.prog-fill{fill:none;stroke:var(--pri);stroke-width:4;stroke-linecap:round;stroke-dasharray:157;stroke-dashoffset:157;transition:stroke-dashoffset 1.2s var(--ease)}
+.prog-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.prog-lbl{font-size:11px;color:var(--i3)}.prog-lv{font-size:14px;font-weight:700;margin:2px 0 6px}
+.prog-bar{height:4px;border-radius:2px;background:var(--ln2);overflow:hidden}
+.prog-bf{height:100%;border-radius:2px;background:var(--pri);width:0;transition:width 1.2s var(--ease)}
+.prog-xp{font-size:10px;color:var(--i4);margin-top:3px}
+
+/* AI BOX */
+.ai-box{margin:0 6px 14px;padding:14px 16px}
+.ai-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--pri);display:inline-block;margin-left:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-ttl{font-size:14px;font-weight:700;color:var(--pri);display:flex;align-items:center}
+.ai-ring{width:44px;height:44px;border-radius:50%;border:2.5px solid var(--pri);display:grid;place-items:center;flex-shrink:0;font-size:14px;font-weight:700;color:var(--pri)}
+.ai-body{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ai-sub{font-size:10px;color:var(--i4)}.ai-nm{font-size:14px;font-weight:700;margin:2px 0 3px}.ai-desc{font-size:11px;color:var(--i3);line-height:1.55}
+.cta{padding:8px 14px;border-radius:9px;border:1.5px solid var(--pm);color:var(--pt);font-size:12px;font-weight:600;transition:all .2s}
+.cta:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
+.cta-full{width:100%;display:flex;justify-content:center;margin-top:8px;padding:10px}
+
+/* LEADERBOARD TEASER */
+.lead-t{margin:0 6px 8px;padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;width:calc(100% - 32px);text-align:right}
+.lead-t .info{flex:1}.lead-t .n{font-size:13px;font-weight:600}.lead-t .d{font-size:11px;color:var(--i3);margin-top:1px}
+.lead-t > svg{width:16px;height:16px;stroke:var(--i3);fill:none;stroke-width:2;flex-shrink:0}
+.lead-t .arr svg{width:14px;height:14px;stroke:var(--i4);fill:none;stroke-width:2;transform:scaleX(-1)}
+
+/* SECTION HEADERS */
+.sh{display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:10px}
+.sh .t{font-size:14px;font-weight:700}.sh .a{font-size:12px;font-weight:600;color:var(--pt);cursor:pointer}
+
+/* TIPS — نصيحة واحدة يومياً */
+.tips{padding:0 16px;margin-bottom:14px}
+.tip{padding:14px 16px;background:var(--s2);border-radius:var(--r2);border:1px solid var(--ln);display:flex;gap:12px;align-items:flex-start;animation:si .4s var(--ease)}
+.tip-ic{width:36px;height:36px;border-radius:10px;background:var(--ps);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.tip-body{flex:1;min-width:0}
+.tip-ttl{font-size:13px;font-weight:700;margin-bottom:3px;color:var(--ink)}
+.tip-txt{font-size:12px;color:var(--i3);line-height:1.7}
+
+/* FOOTER */
+.ftr{padding:12px 16px;text-align:center;font-size:10px;color:var(--i4);border-top:1px solid var(--ln)}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:82px;left:16px;width:46px;height:46px;border-radius:50%;background:#25D366;display:grid;place-items:center;z-index:90;box-shadow:0 4px 16px rgba(37,211,102,.4);cursor:pointer;transition:transform .18s}
+.wa-float:active{transform:scale(.92)}
+.wa-float svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* SUBSCRIPTION BANNER */
+.sub-banner{margin:0 6px 14px;padding:12px 16px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff;display:none;align-items:center;gap:10px}
+.sub-banner svg{width:18px;height:18px;stroke:#FFD700;fill:none;stroke-width:2;flex-shrink:0}
+.sub-banner .t{font-size:12px;font-weight:600;flex:1}
+.sub-banner .btn{padding:6px 12px;background:rgba(255,255,255,.2);border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap}
+
+/* SKELETON */
+.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+<!-- TICKER -->
+<div class="ticker" id="tickerBar" style="display:none">
+  <span class="ticker-in" id="tickerText"></span>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="av" id="userAvatar">—</div>
+    <div>
+      <div class="hdr-nm"><span id="userName">مرحباً</span> <span class="sub-badge" id="subBadge" style="display:none"></span></div>
+      <div class="hdr-sub" id="userSub">جاري التحميل...</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px">
+    <button class="hb" onclick="toggleDark()" id="thBtn">
+      <svg id="thIco" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="hb" onclick="alert('الإشعارات قريباً')">
+      <div class="dot" id="notifDot" style="display:none"></div>
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- AD BANNER (main - from banners table) -->
+<div class="ad-ban" id="mainBanner"></div>
+
+<!-- IMAGE BANNER (from banners table) -->
+<div class="ad-ban" id="imageBanner"></div>
+
+<!-- SUBSCRIPTION WARNING (if about to expire) -->
+<div class="sub-banner" id="subBanner">
+  <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  <div class="t" id="subBannerText"></div>
+  <a class="btn" href="../pricing.html">جدّد الآن</a>
+</div>
+
+<!-- STREAK -->
+<div class="streak card" id="streakCard">
+  <div class="stk-h">
+    <div class="stk-l"><div class="stk-ic"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="stk-ttl">سلسلة الإنجاز</div></div>
+    <div class="stk-b" id="streakBadge">0 أيام</div>
+  </div>
+  <div class="days" id="streakDays"></div>
+</div>
+
+<!-- DAILY PLAN -->
+<div class="plan-card card">
+  <div class="plan-bar"></div>
+  <div class="plan-in">
+    <div class="plan-h">
+      <div class="plan-ttl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>خطة اليوم</div>
+      <div class="plan-b">مخصصة لك</div>
+    </div>
+    <div id="planTasks"></div>
+    <button class="sbtn" id="planCta" onclick="location.href='training-v2.html'"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ خطتك اليوم</button>
+  </div>
+</div>
+
+<!-- PROGRESS RING -->
+<div class="prog card" id="progCard">
+  <div class="prog-r">
+    <svg class="prog-svg" viewBox="0 0 58 58"><circle class="prog-bg" cx="29" cy="29" r="25"/><circle class="prog-fill" id="pFill" cx="29" cy="29" r="25"/></svg>
+    <div class="prog-val" id="progPct">0%</div>
+  </div>
+  <div class="prog-info">
+    <div class="prog-lbl">التقدم العام</div>
+    <div class="prog-lv" id="progLevel">المستوى 1 — مبتدئ</div>
+    <div class="prog-bar"><div class="prog-bf" id="xFill"></div></div>
+    <div class="prog-xp" id="progXP">0 / 200 XP للمستوى التالي</div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT -->
+<div class="ai-box card" id="aiBox">
+  <div class="ai-h">
+    <div class="ai-ttl"><span class="ai-dot"></span>مساعدك الذكي</div>
+    <button class="cta" onclick="location.href='reports-v2.html?tab=ai'">تقرير كامل</button>
+  </div>
+  <div class="ai-body">
+    <div class="ai-ring" id="aiPct">—</div>
+    <div>
+      <div class="ai-sub">نقطة تحتاج تركيزاً</div>
+      <div class="ai-nm" id="aiTopic">جاري التحليل...</div>
+      <div class="ai-desc" id="aiDesc">نحلل أداءك لنعطيك توصيات مخصصة</div>
+    </div>
+  </div>
+  <button class="cta cta-full" id="aiCta" onclick="location.href='training-v2.html'" style="display:none">ابدأ تدريباً مخصصاً</button>
+</div>
+
+<!-- LEADERBOARD TEASER -->
+<button class="lead-t card" id="leadTeaser" onclick="location.href='reports-v2.html?tab=lead'">
+  <svg viewBox="0 0 24 24"><path d="M12 15l-2 5-3-1 1 4h8l1-4-3 1-2-5z"/><circle cx="12" cy="8" r="6"/></svg>
+  <div class="info">
+    <div class="n">أنت في المرتبة <b style="color:var(--pri)" id="rankNum">#—</b> هذا الأسبوع</div>
+    <div class="d" id="rankDesc">جاري التحميل...</div>
+  </div>
+  <div class="arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+</button>
+
+<!-- TIP — واحدة يومياً -->
+<div class="sh"><div class="t">نصيحة اليوم</div></div>
+<div class="tips" id="tipsArea">
+  <div class="tip"><div class="tip-ic">💡</div><div class="tip-body"><div class="tip-ttl">جاري التحميل</div><div class="tip-txt">...</div></div></div>
+</div>
+
+<div class="ftr">مدارك النخبة · حيث يُصنع التميّز</div>
+
+<!-- WA FLOAT — يُحقن بواسطة whatsapp-float.js -->
+
+</div><!-- /wrap -->
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni on" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+
+const M = window.MadarekV2;
+const sb = M.getSb();
+let profile = null;
+let homeStats = null;
+
+// ── Init ──
+init();
+
+async function init() {
+    const qs = new URLSearchParams(window.location.search);
+    const isPreview = qs.has('preview');
+    const forceSubscriber = qs.get('force_subscriber') === 'true';
+
+    if (forceSubscriber) {
+        // وضع هجين: Supabase حقيقي + profile وهمي كمشترك
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            avatar_emoji: 'م',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            role: 'user',
+            xp: 560, level: 3, level_name: 'متدرب', streak_days: 5,
+            total_questions_solved: 488, total_correct: 320, total_sessions: 12,
+            referral_code: 'MADAR-PREVIEW'
+        };
+        window.A = window.A || {};
+        window.A.profile = profile;
+    } else if (isPreview) {
+        loadPreviewMode();
+        return;
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+
+        // مستخدم جديد لم يُكمل/يتخطى التشخيص → onboarding
+        if (profile.onboarding_completed === false && profile.onboarding_skipped === false) {
+            location.replace('onboarding-v2.html');
+            return;
+        }
+    }
+
+    // Init dark mode
+    if (localStorage.getItem('madarek_dark_mode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Render header immediately
+    renderHeader();
+    showSubBadge();
+
+    // Load everything in parallel
+    Promise.all([
+        loadHomeStats(),
+        loadBanners(),
+        loadStreak(),
+        loadTips(),
+        loadWeakTopics(),
+        checkNotifications(),
+        checkSubscription()
+    ]);
+}
+
+// ── Header ──
+function renderHeader() {
+    const name = profile.full_name || 'مستخدم';
+    const firstName = name.split(' ')[0];
+    document.getElementById('userName').textContent = 'أهلاً، ' + firstName;
+    document.getElementById('userAvatar').textContent = profile.avatar_emoji || firstName.charAt(0);
+}
+
+// ── Sub Badge ──
+function showSubBadge() {
+    const b = document.getElementById('subBadge');
+    const t = profile.subscription_type;
+    if (t === 'monthly') { b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = ''; }
+    else if (t === 'yearly') { b.textContent = '✦ Elite'; b.className = 'sub-badge yearly'; b.style.display = ''; }
+    else if (profile.used_coupon) { b.textContent = 'كوبون'; b.className = 'sub-badge coupon'; b.style.display = ''; }
+}
+
+// ── Home Stats ──
+async function loadHomeStats() {
+    try {
+        homeStats = await M.getHomeStats();
+        if (!homeStats) return;
+
+        // Total attempts + mistakes (تُستخدم لتحديد حالة المستخدم الجديد)
+        const [{ count: totalAttempts }, { count: mistakeCount }] = await Promise.all([
+            sb.from('attempts').select('*', { count: 'exact', head: true }).eq('user_id', profile.id),
+            sb.from('attempts').select('*', { count: 'exact', head: true }).eq('user_id', profile.id).eq('is_correct', false)
+        ]);
+        window.__attemptsTotal = totalAttempts || 0;
+        window.__mistakesTotal = mistakeCount || 0;
+
+        const isNewUser = (totalAttempts || 0) === 0 || profile.onboarding_skipped === true;
+
+        // Streak subtitle
+        const streak = homeStats.streak_days || 0;
+        if (isNewUser) {
+            document.getElementById('userSub').textContent = 'أهلاً بك — ابدأ رحلتك';
+        } else if (streak > 0) {
+            document.getElementById('userSub').textContent = 'واصل سلسلتك — اليوم ' + (streak > 7 ? streak : toArabicOrdinal(streak));
+        } else {
+            document.getElementById('userSub').textContent = 'ابدأ سلسلتك اليوم';
+        }
+
+        // Progress ring
+        const totalQ = homeStats.total_solved || 0;
+        const totalC = homeStats.total_correct || 0;
+        const accuracy = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0;
+        document.getElementById('progPct').textContent = accuracy + '%';
+        const offset = 157 - (157 * accuracy / 100);
+        setTimeout(() => { document.getElementById('pFill').style.strokeDashoffset = offset; }, 300);
+
+        // Level & XP
+        const level = homeStats.level || 1;
+        const levelName = homeStats.level_name || 'مبتدئ';
+        const xp = homeStats.xp || 0;
+        const xpForNext = level * 200;
+        const xpProgress = Math.min(100, (xp % 200) / 200 * 100);
+        document.getElementById('progLevel').textContent = 'المستوى ' + level + ' — ' + levelName;
+        document.getElementById('progXP').textContent = xp + ' / ' + xpForNext + ' XP للمستوى التالي';
+        setTimeout(() => { document.getElementById('xFill').style.width = xpProgress + '%'; }, 400);
+
+        // Rank
+        const rank = homeStats.rank || '—';
+        document.getElementById('rankNum').textContent = '#' + rank;
+        document.getElementById('rankDesc').textContent = isNewUser ? 'ابدأ التدريب لتظهر في الترتيب' : 'واصل التدريب لترتقي في الترتيب';
+
+        // ابنِ خطة اليوم حسب حالة المستخدم
+        await renderPlan(isNewUser, mistakeCount || 0);
+
+        // أخفِ مساعد AI للمستخدم الجديد (لا يوجد تاريخ لتحليله)
+        if (isNewUser) {
+            const aiBox = document.getElementById('aiBox');
+            if (aiBox) aiBox.style.display = 'none';
+        }
+
+    } catch(e) {
+        console.error('Stats error:', e);
+    }
+}
+
+// ── خطة اليوم الديناميكية ──
+// المشترك الجديد: اختبر مستواك (15 سؤال كمي+لفظي) + اختبار سريع مختلط + استكشف الأقسام
+// المشترك بأخطاء: تدريب على نقطة ضعف + مراجعة الأخطاء + اختبار سريع مختلط
+async function renderPlan(isNewUser, mistakeCount) {
+    const container = document.getElementById('planTasks');
+    if (!container) return;
+
+    let tasks = [];
+    if (isNewUser) {
+        // المشترك الجديد: اختبر مستواك (15 سؤال) + اختبار سريع مختلط + استكشف الأقسام
+        tasks = [
+            {
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                title: 'اختبر مستواك',
+                desc: '15 سؤال كمي + لفظي لتحديد مستواك',
+                href: 'practice-v2.html?section=mixed&count=15&mode=instant&diag=1',
+                num: 5
+            },
+            {
+                cls: 'c',
+                icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+                title: 'اختبار سريع مختلط',
+                desc: '10 أسئلة — 10 دقائق',
+                href: 'practice-v2.html?section=mixed&count=10&mode=instant',
+                num: 1
+            },
+            {
+                cls: 'b',
+                icon: '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+                title: 'استكشف الأقسام',
+                desc: 'اختر القسم اللي يناسبك',
+                href: 'training-v2.html',
+                num: 3
+            }
+        ];
+        const cta = document.getElementById('planCta');
+        if (cta) {
+            cta.innerHTML = '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>اختبر مستواك';
+            cta.setAttribute('onclick', "location.href='practice-v2.html?section=mixed&count=15&mode=instant&diag=1'");
+        }
+    } else {
+        // ── مشترك له بيانات: 3 خيارات مُخصّصة حسب أدائه ──
+        // 1. تدريب على نقطة ضعف (من تحليل attempts)
+        // 2. مراجعة الأخطاء
+        // 3. اختبار سريع مختلط
+        let weakTopicKey = null;
+        let weakTopicName = null;
+        try {
+            const since = new Date(Date.now() - 30 * 864e5).toISOString();
+            const { data: atts } = await sb.from('attempts')
+                .select('is_correct, questions!inner(topic,section)')
+                .eq('user_id', profile.id).gte('created_at', since);
+            const topicMap = {
+                algebra:'الجبر', geometry:'الهندسة', arithmetic:'الحساب', statistics:'الإحصاء',
+                percent:'النسب', percentage:'النسب', ratios:'النسب والتناسب', ratio:'النسب والتناسب',
+                fractions:'الكسور', word_problems:'المسائل اللفظية', equations:'المعادلات',
+                probability:'الاحتمالات', analogy:'التناظر', sentence_completion:'إكمال الجمل',
+                reading:'الاستيعاب', reading_comp:'الاستيعاب', antonyms:'المتضادات', synonyms:'المترادفات',
+                biology:'الأحياء', chemistry:'الكيمياء', physics:'الفيزياء', math:'الرياضيات'
+            };
+            const topicStats = {};
+            (atts || []).forEach(a => {
+                const t = a.questions?.topic;
+                if (!t) return;
+                if (!topicStats[t]) topicStats[t] = { c:0, tt:0 };
+                topicStats[t].tt++; if (a.is_correct) topicStats[t].c++;
+            });
+            const ranked = Object.entries(topicStats)
+                .filter(([,v]) => v.tt >= 3)
+                .map(([k,v]) => ({ key:k, acc: v.c/v.tt, count:v.tt }))
+                .sort((a,b) => a.acc - b.acc);
+            if (ranked.length > 0 && ranked[0].acc < 0.7) {
+                weakTopicKey = ranked[0].key;
+                weakTopicName = topicMap[ranked[0].key] || ranked[0].key;
+            }
+        } catch(e){}
+
+        // 1. تدريب على نقطة ضعف (أو تدريب مخصص إذا ما فيه نقطة واضحة)
+        if (weakTopicKey) {
+            tasks.push({
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                title: 'تدريب على ' + weakTopicName,
+                desc: 'نقطة ضعفك الأولى — من AI',
+                href: 'practice-v2.html?section=mixed&count=10&mode=instant&topic=' + encodeURIComponent(weakTopicKey),
+                num: 5
+            });
+        } else {
+            tasks.push({
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                title: 'تدريب مخصص',
+                desc: 'ابدأ التدريب اليوم',
+                href: 'training-v2.html',
+                num: 5
+            });
+        }
+
+        // 2. مراجعة الأخطاء (إن وجدت)
+        if (mistakeCount > 0) {
+            tasks.push({
+                cls: 'b',
+                icon: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+                title: 'مراجعة الأخطاء',
+                desc: mistakeCount + ' خطأ في انتظارك',
+                href: 'reports-v2.html?tab=err',
+                num: 3
+            });
+        }
+
+        // 3. اختبار سريع مختلط (دائماً)
+        tasks.push({
+            cls: 'c',
+            icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            title: 'اختبار سريع مختلط',
+            desc: '10 أسئلة — 10 دقائق',
+            href: 'practice-v2.html?section=mixed&count=10&mode=instant',
+            num: 1
+        });
+    }
+
+    container.innerHTML = tasks.map(t => {
+        const idAttr = t.id ? (' id="' + t.id + '"') : '';
+        return '<div class="task"' + idAttr + ' onclick="location.href=\'' + t.href + '\'">'
+            + '<div class="ti ' + t.cls + '">' + t.icon + '</div>'
+            + '<div style="flex:1"><div class="tn">' + esc(t.title) + '</div><div class="td">' + esc(t.desc) + '</div></div>'
+            + '<div class="tc">' + t.num + '</div>'
+            + '</div>';
+    }).join('');
+}
+
+// ── Banners ──
+async function loadBanners() {
+    try {
+        const banners = await M.getActiveBanners('dashboard');
+
+        banners.forEach(b => {
+            const cfg = b.config || {};
+            if (b.banner_type === 'ticker') {
+                const ticker = document.getElementById('tickerBar');
+                const kwColor = cfg.keyword_color || '#FF6B35';
+                const text = cfg.text || '';
+                const kw = cfg.keyword || '';
+                const content = (kw ? '<span class="kw" style="color:' + kwColor + '">' + esc(kw) + '</span>' : '') + esc(text);
+                document.getElementById('tickerText').innerHTML = content + '&nbsp;&nbsp;&nbsp;&nbsp;' + content;
+                ticker.style.display = 'block';
+                if (cfg.bg_color) ticker.style.background = cfg.bg_color;
+                if (cfg.text_color) ticker.style.color = cfg.text_color;
+                if (cfg.speed) {
+                    const dur = Math.max(5, 50 - cfg.speed / 2) + 's';
+                    document.querySelector('.ticker-in').style.animationDuration = dur;
+                }
+            }
+            else if (b.banner_type === 'main') {
+                const ban = document.getElementById('mainBanner');
+                const bgL = cfg.bg_left || '#1A1230';
+                const bgR = cfg.bg_right || '#2D1B69';
+                ban.style.background = 'linear-gradient(135deg,' + bgL + ',' + bgR + ')';
+                ban.style.display = 'block';
+                ban.innerHTML = '<div class="ad-tag">' + esc(cfg.tag || '') + '</div>'
+                    + '<div class="ad-title">' + esc(cfg.title || '') + '</div>'
+                    + '<div class="ad-sub">' + esc(cfg.subtitle || '') + '</div>'
+                    + '<button class="ad-btn" style="background:' + (cfg.btn_color || '#F59E0B') + ';color:' + (cfg.btn_text_color || '#1A1230') + '">' + esc(cfg.cta_text || 'المزيد') + '</button>';
+            }
+            else if (b.banner_type === 'image' && cfg.image_url) {
+                const ban = document.getElementById('imageBanner');
+                ban.style.display = 'block';
+                ban.style.padding = '0';
+                ban.style.cursor = cfg.link ? 'pointer' : 'default';
+                const img = '<img src="' + esc(cfg.image_url) + '" style="width:100%;border-radius:var(--r2);display:block" alt="">';
+                if (cfg.link && cfg.link_type === 'external') {
+                    ban.innerHTML = '<a href="'+esc(cfg.link)+'" target="_blank" rel="noopener" style="display:block">'+img+'</a>';
+                } else if (cfg.link && cfg.link_type === 'internal') {
+                    ban.innerHTML = '<a href="'+esc(cfg.link)+'" style="display:block">'+img+'</a>';
+                } else {
+                    ban.innerHTML = img;
+                }
+            }
+        });
+    } catch(e) {}
+}
+
+// ── Streak ──
+async function loadStreak() {
+    const dayNames = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+    const today = new Date();
+    const todayDay = today.getDay(); // 0=Sunday
+    const streakDays = homeStats?.streak_days || profile?.streak_days || 0;
+
+    document.getElementById('streakBadge').textContent = streakDays + ' ' + (streakDays === 1 ? 'يوم' : 'أيام');
+
+    // Get last 7 days of streak data
+    let completedDates = new Set();
+    try {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const { data } = await sb.from('daily_streaks')
+            .select('streak_date,completed')
+            .eq('user_id', profile.id)
+            .eq('completed', true)
+            .gte('streak_date', weekAgo.toISOString().split('T')[0]);
+        if (data) data.forEach(d => completedDates.add(d.streak_date));
+    } catch(e) {}
+
+    // Build week display (Saturday to Friday)
+    const container = document.getElementById('streakDays');
+    container.innerHTML = '';
+    // Start from Saturday (6)
+    const satOrder = [6, 0, 1, 2, 3, 4, 5];
+    const satNames = ['سبت', 'أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'];
+
+    for (let i = 0; i < 7; i++) {
+        const dayIdx = satOrder[i];
+        const diff = dayIdx - todayDay;
+        const date = new Date(today);
+        date.setDate(today.getDate() + diff);
+        const dateStr = date.toISOString().split('T')[0];
+        const isToday = diff === 0;
+        const isDone = completedDates.has(dateStr);
+        const isPast = date < today && !isToday;
+
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day' + (isToday ? ' cur' : '');
+
+        let ddClass = 'dd';
+        let icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>';
+        if (isDone) {
+            ddClass += ' done';
+            icon = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+        } else if (isToday) {
+            ddClass += ' today';
+            icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+        }
+
+        dayEl.innerHTML = '<div class="' + ddClass + '">' + icon + '</div><span class="dl">' + satNames[i] + '</span>';
+        container.appendChild(dayEl);
+    }
+}
+
+// ── Weak Topics (AI Assistant) ──
+async function loadWeakTopics() {
+    try {
+        // Find weakest topic from attempts
+        const { data: attempts } = await sb
+            .from('attempts')
+            .select('question_id, is_correct, questions(section, topic)')
+            .eq('user_id', profile.id)
+            .order('created_at', { ascending: false })
+            .limit(200);
+
+        // المستخدم الجديد (0 محاولات أو تخطى التشخيص) — AI مخفي أصلاً، نتوقف هنا
+        if (window.__attemptsTotal === 0 || profile.onboarding_skipped === true) return;
+
+        if (!attempts || attempts.length < 5) {
+            const aiTopicEl = document.getElementById('aiTopic');
+            const aiDescEl = document.getElementById('aiDesc');
+            if (aiTopicEl) aiTopicEl.textContent = 'ابدأ التدريب';
+            if (aiDescEl) aiDescEl.textContent = 'حل 5 أسئلة على الأقل وسنحلل أداءك ونعطيك توصيات مخصصة';
+            return;
+        }
+
+        // Group by topic
+        const topicStats = {};
+        attempts.forEach(a => {
+            const topic = a.questions?.topic || a.questions?.section || 'عام';
+            if (!topicStats[topic]) topicStats[topic] = { correct: 0, total: 0 };
+            topicStats[topic].total++;
+            if (a.is_correct) topicStats[topic].correct++;
+        });
+
+        // Find weakest (min accuracy, at least 3 attempts)
+        let weakest = null;
+        let weakestAcc = 100;
+        for (const [topic, stats] of Object.entries(topicStats)) {
+            if (stats.total < 3) continue;
+            const acc = Math.round((stats.correct / stats.total) * 100);
+            if (acc < weakestAcc) {
+                weakestAcc = acc;
+                weakest = topic;
+            }
+        }
+
+        if (weakest) {
+            const sectionMap = { quant: 'قدرات كمي', verbal: 'قدرات لفظي', tahsili: 'تحصيلي' };
+            const displayName = sectionMap[weakest] || weakest;
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            set('aiPct', weakestAcc + '%');
+            set('aiTopic', displayName);
+            set('aiDesc', 'أداؤك ' + weakestAcc + '% في هذا القسم. ننصح بـ 5 أسئلة يومياً هذا الأسبوع.');
+            const aiCta = document.getElementById('aiCta');
+            if (aiCta) { aiCta.style.display = ''; aiCta.textContent = 'ابدأ تدريباً مخصصاً على ' + displayName; }
+
+            // Update plan task 1 if rendered (returning user)
+            const t1 = document.querySelector('#planTask1 .tn');
+            const d1 = document.querySelector('#planTask1 .td');
+            if (t1) t1.textContent = 'تدريب على ' + displayName;
+            if (d1) d1.textContent = 'مختارة حسب أخطاءك الفعلية';
+        }
+    } catch(e) {
+        console.error('AI analysis error:', e);
+    }
+}
+
+// ── Tip — نصيحة واحدة يومياً (ثابتة للتاريخ، تتغير كل يوم) ──
+async function loadTips() {
+    try {
+        const tips = await M.getTips();
+        if (!tips || tips.length === 0) return;
+
+        // اختيار نصيحة بناءً على اليوم — ثابتة خلال اليوم الواحد، تتغير تلقائياً كل يوم
+        const now = new Date();
+        const dayKey = now.getFullYear() * 1000 + Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+        const tip = tips[dayKey % tips.length];
+
+        document.getElementById('tipsArea').innerHTML =
+            '<div class="tip"><div class="tip-ic">' + (tip.emoji || '💡') + '</div>'
+            + '<div class="tip-body"><div class="tip-ttl">' + esc(tip.title) + '</div>'
+            + '<div class="tip-txt">' + esc(tip.body) + '</div></div></div>';
+    } catch(e) {}
+}
+
+// ── Notifications ──
+async function checkNotifications() {
+    try {
+        const count = await M.getUnreadCount();
+        if (count > 0) {
+            document.getElementById('notifDot').style.display = 'block';
+        }
+    } catch(e) {}
+}
+
+// ── Subscription Check ──
+async function checkSubscription() {
+    if (!M.isSubscribed(profile)) {
+        // Show upgrade banner for free users
+        const banner = document.getElementById('subBanner');
+        banner.style.display = 'flex';
+        document.getElementById('subBannerText').textContent = 'اشترك الآن للوصول لجميع الأسئلة والتسريبات';
+        return;
+    }
+
+    const daysLeft = M.subscriptionDaysLeft(profile);
+    if (daysLeft > 0 && daysLeft <= 7) {
+        const banner = document.getElementById('subBanner');
+        banner.style.display = 'flex';
+        document.getElementById('subBannerText').textContent = 'اشتراكك ينتهي خلال ' + daysLeft + ' أيام — جدّد الآن';
+    }
+}
+
+// ── Dark Mode ──
+window.toggleDark = function() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('madarek_dark_mode', isDark);
+    // Update icon
+    const ico = document.getElementById('thIco');
+    if (isDark) {
+        ico.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    } else {
+        ico.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    }
+    // Save to profile
+    sb.from('profiles').update({ dark_mode: isDark }).eq('id', profile.id);
+};
+
+// ── Utils ──
+function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function toArabicOrdinal(n) {
+    const ordinals = ['', 'الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع'];
+    return ordinals[n] || n;
+}
+
+// ── Preview Mode (demo data, no auth needed) ──
+function loadPreviewMode() {
+    profile = { id: 'demo', full_name: 'عبدالله', avatar_emoji: 'ع', streak_days: 5, xp: 560, level: 3, level_name: 'متدرب' };
+    document.getElementById('userName').innerHTML = 'أهلاً، عبدالله <span class="sub-badge monthly" style="display:inline">Pro</span>';
+    document.getElementById('userAvatar').textContent = 'ع';
+    document.getElementById('userSub').textContent = 'واصل سلسلتك — اليوم الخامس';
+
+    // Ticker
+    const ticker = document.getElementById('tickerBar');
+    ticker.style.display = 'block';
+    document.getElementById('tickerText').innerHTML = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل &nbsp;&nbsp;&nbsp;&nbsp; <span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل';
+
+    // Main Banner
+    const ban = document.getElementById('mainBanner');
+    ban.style.background = 'linear-gradient(135deg,#1A1230,#2D1B69)';
+    ban.style.display = 'block';
+    ban.innerHTML = '<div class="ad-tag">اختبار محاكي أسبوعي</div><div class="ad-title">السبت القادم — القدرات</div><div class="ad-sub">اختبار جماعي بنفس الوقت لكل المشتركين — أعلى 3 يُعلَن عنهم</div><button class="ad-btn" style="background:#F59E0B;color:#1A1230">سجّل مشاركتي</button>';
+
+    // Streak
+    document.getElementById('streakBadge').textContent = '5 أيام';
+    const days = document.getElementById('streakDays');
+    const satNames = ['سبت','أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة'];
+    const states = ['done','done','done','done','today','',''];
+    days.innerHTML = satNames.map((n,i) => {
+        let cls = 'dd' + (states[i] === 'done' ? ' done' : states[i] === 'today' ? ' today' : '');
+        let ico = states[i] === 'done' ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+                : states[i] === 'today' ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>'
+                : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>';
+        return '<div class="day' + (states[i]==='today'?' cur':'') + '"><div class="'+cls+'">'+ico+'</div><span class="dl">'+n+'</span></div>';
+    }).join('');
+
+    // Progress
+    document.getElementById('progPct').textContent = '78%';
+    setTimeout(() => { document.getElementById('pFill').style.strokeDashoffset = 157 - (157 * 0.78); }, 300);
+    document.getElementById('progLevel').textContent = 'المستوى 3 — متدرب';
+    document.getElementById('progXP').textContent = '560 / 1000 XP للمستوى التالي';
+    setTimeout(() => { document.getElementById('xFill').style.width = '56%'; }, 400);
+
+    // AI
+    document.getElementById('aiPct').textContent = '38%';
+    document.getElementById('aiTopic').textContent = 'النسب والتناسب';
+    document.getElementById('aiDesc').textContent = 'أداؤك 38% في هذا القسم. ننصح بـ 5 أسئلة يومياً هذا الأسبوع.';
+    document.getElementById('aiCta').style.display = '';
+    document.getElementById('aiCta').textContent = 'ابدأ تدريباً مخصصاً على النسب';
+
+    // Plan — preview كمستخدم عائد (عنده أخطاء)
+    window.__attemptsTotal = 488; window.__mistakesTotal = 303;
+    renderPlan(false, 303);
+    const t1 = document.querySelector('#planTask1 .tn');
+    const d1 = document.querySelector('#planTask1 .td');
+    if (t1) t1.textContent = 'تدريب على النسب والتناسب';
+    if (d1) d1.textContent = 'مختارة حسب أخطاءك الفعلية';
+
+    // Rank
+    document.getElementById('rankNum').textContent = '#8';
+    document.getElementById('rankDesc').textContent = 'عبدالعزيز يتصدر بـ 523 XP — فرقك 89 نقطة';
+
+    // Notif dot
+    document.getElementById('notifDot').style.display = 'block';
+
+    // Tip — نصيحة واحدة يومياً
+    const demoTips = [
+        { ic:'⏰', ttl:'نظّم وقتك', txt:'خصص 30 دقيقة يومياً للتدريب — الاستمرارية أهم من الكثافة' },
+        { ic:'🎯', ttl:'ركّز على الضعف', txt:'راجع أخطاءك أولاً — التعلم من الخطأ أسرع طريق للتحسن' },
+        { ic:'📊', ttl:'تابع تقدمك', txt:'راقب إحصائياتك أسبوعياً — الأرقام ما تكذب' }
+    ];
+    const now = new Date();
+    const dayKey = now.getFullYear() * 1000 + Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+    const t = demoTips[dayKey % demoTips.length];
+    document.getElementById('tipsArea').innerHTML =
+        '<div class="tip"><div class="tip-ic">' + t.ic + '</div>'
+        + '<div class="tip-body"><div class="tip-ttl">' + t.ttl + '</div>'
+        + '<div class="tip-txt">' + t.txt + '</div></div></div>';
+}
+
+})();
+</script>
+</body>
+</html>

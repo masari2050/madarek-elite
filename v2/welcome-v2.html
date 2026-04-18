@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — ابدأ رحلتك</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg)}
+.scr{display:none;animation:si .3s var(--ease)}
+.scr.on{display:block}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+
+/* ── WELCOME ── */
+.w-wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 28px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 55%)}
+.w-logo{width:84px;height:84px;border-radius:24px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(109,93,246,.3)}
+.w-logo img{width:100%;height:100%}
+.w-brand{font-size:22px;font-weight:700;margin-bottom:4px}
+.w-tag{font-size:12px;color:var(--i3);margin-bottom:24px}
+.w-trial-b{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:20px;font-size:11px;font-weight:700;color:var(--suc);margin-bottom:18px}
+.w-trial-b svg{width:13px;height:13px;stroke:var(--suc);fill:none;stroke-width:2}
+.w-h{font-size:24px;font-weight:700;line-height:1.4;letter-spacing:-.02em;margin-bottom:10px}
+.w-p{font-size:12px;color:var(--i3);line-height:1.75;margin-bottom:24px}
+.w-btn{width:100%;max-width:300px;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;font-family:inherit;cursor:pointer;transition:transform .15s}
+.w-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
+.w-btn:active{transform:scale(.97)}
+.w-ln{width:100%;max-width:300px;padding:12px;border-radius:var(--r);border:1.5px solid var(--ln2);color:var(--i2);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;background:none;transition:all .2s}
+.w-ln:hover{border-color:var(--pri);color:var(--pri)}
+.w-stats{display:flex;gap:10px;margin-top:24px;width:100%;max-width:300px}
+.ws{flex:1;background:var(--s2);border-radius:12px;padding:10px 6px;text-align:center;border:1px solid var(--ln)}
+.ws .n{font-size:16px;font-weight:700;color:var(--pri)}.ws .l{font-size:9px;color:var(--i3);margin-top:2px}
+
+/* ── TRIAL ── */
+.trial-hdr{padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.trial-b{font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:4px}
+.trial-b svg{width:11px;height:11px;stroke:var(--suc);fill:none;stroke-width:2}
+.trial-prog{padding:0 16px;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.trial-step{font-size:11px;font-weight:700;color:var(--pri)}
+.trial-pb{flex:1;height:3px;border-radius:2px;background:var(--ln2);overflow:hidden}
+.trial-pbf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--pri),var(--acc));transition:width .4s var(--ease)}
+
+/* Question Card */
+.q-card{margin:8px 16px;padding:16px}
+.q-tag{font-size:9px;font-weight:700;color:var(--pri);background:var(--ps);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.q-img{width:100%;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:transform .2s}
+.q-img:active{transform:scale(1.02)}
+.q-txt{font-size:14px;font-weight:600;line-height:1.7}
+.q-opts{padding:8px 16px;display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:12px;border:1.5px solid var(--ln2);background:var(--sf);text-align:right;transition:all .18s;width:100%}
+.opt:active{transform:scale(.98)}
+.opt.ok{border-color:var(--suc);background:rgba(34,197,94,.12);border-width:2px}.opt.ok .opt-l{background:var(--suc);color:#fff}
+.opt.no{border-color:var(--dng);background:rgba(239,68,68,.12);border-width:2px}.opt.no .opt-l{background:var(--dng);color:#fff}
+.opt.dim{opacity:.5;pointer-events:none}
+.opt-l{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--i3);flex-shrink:0;transition:all .18s}
+.opt-v{font-size:13px;font-weight:600;flex:1}
+
+/* Feedback */
+.q-fb{margin:8px 16px;padding:14px;border-radius:var(--r);animation:si .3s var(--ease)}
+.q-fb.ok{background:rgba(34,197,94,.12);border:2px solid rgba(34,197,94,.35)}
+.q-fb.no{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.35)}
+.fb-title{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fb-title svg{width:15px;height:15px;fill:none;stroke-width:2.5}
+.q-fb.ok .fb-title{color:var(--suc)}.q-fb.ok .fb-title svg{stroke:var(--suc)}
+.q-fb.no .fb-title{color:var(--dng)}.q-fb.no .fb-title svg{stroke:var(--dng)}
+.fb-exp{background:#FEFCE8;border:1px solid #FDE68A;border-radius:9px;padding:10px 12px;font-size:11px;color:var(--i2);line-height:1.7}
+.fb-exp .lbl{font-size:9px;font-weight:700;color:#92400E;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.fb-exp .lbl svg{width:11px;height:11px;stroke:#92400E;fill:none;stroke-width:2}
+.q-next{width:calc(100% - 32px);margin:8px 16px 16px;padding:13px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:13px;font-weight:700;text-align:center;display:none;font-family:inherit;cursor:pointer;transition:transform .15s}
+.q-next:active{transform:scale(.98)}
+
+/* ── SUBSCRIBE ── */
+.sub-hero{padding:28px 20px 20px;text-align:center}
+.sub-logo{width:60px;height:60px;border-radius:18px;overflow:hidden;margin:0 auto 12px;box-shadow:0 6px 20px rgba(109,93,246,.25)}
+.sub-logo img{width:100%;height:100%}
+.sub-result{margin:0 6px 14px;padding:16px}
+.sub-rh{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sub-rh svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.sub-score{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.sub-ring{width:56px;height:56px;position:relative;flex-shrink:0}
+.sub-ring svg{width:56px;height:56px;transform:rotate(-90deg)}
+.sub-rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.sub-feats{padding:0 16px;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.sub-feat{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--i2)}
+.sub-feat svg{width:14px;height:14px;stroke:var(--suc);fill:none;stroke-width:2.5;flex-shrink:0}
+.plan-opt{margin:0 6px 10px;padding:16px;border-radius:var(--r2);border:2px solid var(--ln2);cursor:pointer;transition:all .2s;position:relative}
+.plan-opt.sel{border-color:var(--pri);background:var(--ps)}
+.plan-opt.pop{border-color:var(--pri)}
+.plan-pop{position:absolute;top:-10px;right:16px;background:var(--pri);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px}
+.plan-nm{font-size:14px;font-weight:700;margin-bottom:3px}
+.plan-price{font-size:22px;font-weight:700;color:var(--pri);display:flex;align-items:baseline;gap:4px}
+.plan-price small{font-size:11px;color:var(--i3);font-weight:400}
+.plan-save{font-size:10px;color:var(--suc);margin-top:3px;font-weight:600}
+.sub-cta{margin:0 6px;padding:15px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);border:none;font-family:inherit;cursor:pointer;transition:transform .15s}
+.sub-cta svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5}
+.sub-cta:active{transform:scale(.98)}
+.sub-skip{margin:12px auto;display:block;font-size:11px;color:var(--i3);background:none;border:none;cursor:pointer;font-family:inherit;transition:color .2s}
+.sub-skip:hover{color:var(--pri)}
+
+/* Coupon Box */
+.coupon-box{margin:12px 16px 0;padding:12px 14px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);display:flex;align-items:center;gap:8px}
+.coupon-box input{flex:1;border:1.5px solid var(--ln2);border-radius:9px;padding:9px 12px;font-size:12px;font-family:inherit;background:var(--sf);color:var(--ink);outline:none;transition:border-color .2s}
+.coupon-box input:focus{border-color:var(--pri)}
+.coupon-box button{padding:9px 16px;border-radius:9px;background:var(--pri);color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
+
+/* Referral Banner */
+.ref-banner{margin:10px 16px 0;padding:10px 14px;border-radius:10px;background:var(--ss);border:1px solid rgba(34,197,94,.15);font-size:11px;color:var(--suc);font-weight:600;display:none;align-items:center;gap:6px}
+.ref-banner svg{width:14px;height:14px;stroke:var(--suc);fill:none;stroke-width:2;flex-shrink:0}
+
+/* Image Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;display:none;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.on{display:flex}
+.lightbox img{max-width:95%;max-height:90vh;border-radius:8px}
+
+/* Loading */
+.loader{display:flex;align-items:center;justify-content:center;padding:60px;gap:8px}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--pri);animation:bounce .6s infinite alternate}
+.loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ══════ SCREEN 1: WELCOME ══════ -->
+<div class="scr on" id="s-w">
+<div class="w-wrap">
+  <div class="w-logo"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
+  <div class="w-brand">مدارك النخبة</div>
+  <div class="w-tag">حيث يُصنع التميّز</div>
+  <div class="w-trial-b"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>جرّب 5 أسئلة مجاناً</div>
+  <div class="w-h">تدرّب بذكاء،<br>حقّق أعلى النتائج</div>
+  <div class="w-p">أسئلة حقيقية من اختبارات سابقة · تحليل دقيق · نتائج مضمونة</div>
+  <button class="w-btn" onclick="startTrial()"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التجربة المجانية</button>
+  <button class="w-ln" onclick="goLogin()">لدي حساب — تسجيل الدخول</button>
+  <div class="w-stats">
+    <div class="ws"><div class="n" id="statQ">—</div><div class="l">سؤال</div></div>
+    <div class="ws"><div class="n" id="statU">—</div><div class="l">مشترك</div></div>
+    <div class="ws"><div class="n">98%</div><div class="l">رضى</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 2: TRIAL (5 أسئلة مجانية) ══════ -->
+<div class="scr" id="s-trial">
+<div class="trial-hdr">
+  <button onclick="go('s-w')" style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--i2)"><svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>رجوع</button>
+  <div class="trial-b"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>تجريبي مجاني</div>
+</div>
+<div class="trial-prog">
+  <div class="trial-step" id="tStep">1 / 5</div>
+  <div class="trial-pb"><div class="trial-pbf" id="tPb" style="width:20%"></div></div>
+  <div style="font-size:9px;color:var(--i3)">اكتشف مستواك</div>
+</div>
+<div id="trialArea">
+  <div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 3: SUBSCRIBE ══════ -->
+<div class="scr" id="s-sub">
+<div style="padding-bottom:30px">
+  <div class="sub-hero">
+    <div class="sub-logo"><img src="../icons/icon-192.png" alt=""></div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">نتيجتك التجريبية</div>
+    <div style="font-size:11px;color:var(--i3)">اكتشفت مستواك — اشترك عشان تكمل</div>
+  </div>
+
+  <!-- نتيجة التجربة -->
+  <div class="sub-result card">
+    <div class="sub-rh"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>أداؤك في الأسئلة التجريبية</div>
+    <div class="sub-score">
+      <div class="sub-ring">
+        <svg viewBox="0 0 56 56"><circle fill="none" stroke="var(--ln2)" stroke-width="4" cx="28" cy="28" r="24"/><circle id="scoreRing" fill="none" stroke="var(--pri)" stroke-width="4" stroke-linecap="round" stroke-dasharray="151" stroke-dashoffset="151" cx="28" cy="28" r="24"/></svg>
+        <div class="sub-rv" id="scoreText">0/5</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--i3);margin-bottom:3px">أجبت صح على</div>
+        <div style="font-size:13px;font-weight:600" id="scoreDesc">0 من 5 أسئلة</div>
+        <div style="font-size:10px;color:var(--acc);font-weight:700;margin-top:2px" id="scoreFeedback"></div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--i3);background:var(--s2);padding:10px 12px;border-radius:9px" id="scoreFooter">
+      اشترك وصل لـ <span id="totalQCount">3,000+</span> سؤال حقيقي مع شرح مفصّل لكل إجابة
+    </div>
+  </div>
+
+  <!-- ميزات الاشتراك -->
+  <div style="padding:0 16px;margin:0 0 12px"><div style="font-size:13px;font-weight:700;margin-bottom:10px">ميزات الاشتراك</div></div>
+  <div class="sub-feats">
+    <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="featQ">3,000+</span> سؤال من اختبارات حقيقية</div>
+    <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>شرح مفصّل لكل سؤال</div>
+    <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تقارير ذكية وتتبّع تقدّمك</div>
+    <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تسريبات فورية أسبوعياً</div>
+  </div>
+
+  <!-- اختيار الخطة -->
+  <div style="padding:0 16px;margin-bottom:4px"><div style="font-size:13px;font-weight:700;margin-bottom:12px">اختر خطتك</div></div>
+  <div id="plansArea"></div>
+
+  <!-- بنر الإحالة -->
+  <div class="ref-banner" id="refBanner">
+    <svg viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M12 12H4"/></svg>
+    <span id="refText"></span>
+  </div>
+
+  <!-- كوبون -->
+  <div class="coupon-box">
+    <input type="text" id="couponInput" placeholder="عندك كوبون؟ أدخله هنا" maxlength="20" autocomplete="off">
+    <button onclick="applyCoupon()">تطبيق</button>
+  </div>
+
+  <!-- زر الاشتراك -->
+  <button class="sub-cta" style="margin-top:14px" onclick="subscribe()">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    اشترك الآن وابدأ فوراً
+  </button>
+  <button class="sub-skip" onclick="skipToApp()">تصفّح بدون اشتراك</button>
+</div>
+</div>
+
+<!-- Image Lightbox -->
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')">
+  <img id="lbImg" src="" alt="">
+</div>
+
+</div><!-- /wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+
+// ── Supabase ──
+const SUPA_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── State ──
+let trialQuestions = [];
+let currentQ = 0;
+let trialCorrect = 0;
+let answered = false;
+let selectedPlan = 'quarterly'; // default
+let totalQuestions = 0;
+let referralCode = null;
+
+// ── Check URL params for referral ──
+const params = new URLSearchParams(window.location.search);
+if (params.get('ref')) {
+    referralCode = params.get('ref');
+    localStorage.setItem('madarek_referral', referralCode);
+} else if (localStorage.getItem('madarek_referral')) {
+    referralCode = localStorage.getItem('madarek_referral');
+}
+
+// ── Init ──
+init();
+
+async function init() {
+    // Check if already logged in
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+        window.location.href = 'dashboard-v2.html';
+        return;
+    }
+
+    // Load stats for welcome screen
+    loadWelcomeStats();
+    // Preload plans
+    loadPlans();
+}
+
+async function loadWelcomeStats() {
+    try {
+        const { count } = await sb.from('questions').select('*', { count: 'exact', head: true }).eq('disabled', false);
+        totalQuestions = count || 0;
+        document.getElementById('statQ').textContent = numberFmt(totalQuestions);
+        // تقريب لأقرب ألف للعرض المسوّق (مثلاً 3,590 → 3,000+)
+        const roundedK = Math.floor(totalQuestions / 1000) * 1000;
+        const roundedLabel = roundedK >= 1000 ? numberFmt(roundedK) + '+' : numberFmt(totalQuestions);
+        document.getElementById('totalQCount').textContent = roundedLabel;
+        document.getElementById('featQ').textContent = roundedLabel;
+
+        const { count: userCount } = await sb.from('profiles').select('*', { count: 'exact', head: true });
+        document.getElementById('statU').textContent = '+' + numberFmt(userCount || 0);
+    } catch(e) {
+        document.getElementById('statQ').textContent = '3,000+';
+        document.getElementById('statU').textContent = '+900';
+    }
+}
+
+async function loadPlans() {
+    try {
+        const { data } = await sb.from('plans').select('*').eq('is_active', true).order('sort_order');
+        if (data && data.length) renderPlans(data);
+        else renderDefaultPlans();
+    } catch(e) {
+        renderDefaultPlans();
+    }
+}
+
+function renderPlans(plans) {
+    const planLabels = { monthly: 'Pro', yearly: 'Elite' };
+    const area = document.getElementById('plansArea');
+    area.innerHTML = plans.map(p => {
+        const isFeatured = p.is_featured;
+        const isSelected = p.slug === selectedPlan;
+        const hasDiscount = p.original_price && Number(p.original_price) > Number(p.price);
+        const pct = hasDiscount ? Math.round((1 - Number(p.price)/Number(p.original_price)) * 100) : (p.discount_percentage || 0);
+        const label = planLabels[p.slug] || p.name;
+        const subtitle = p.slug === 'monthly' ? 'شهري' : p.slug === 'yearly' ? 'سنوي' : p.name;
+        const nameHtml = planLabels[p.slug]
+            ? `<div class="plan-nm">${label} <span style="font-size:11px;color:var(--i3);font-weight:500">— ${subtitle}</span></div>`
+            : `<div class="plan-nm">${p.name}</div>`;
+        return `<div class="plan-opt${isFeatured ? ' pop' : ''}${isSelected ? ' sel' : ''}" data-slug="${p.slug}" onclick="selectPlan('${p.slug}')">
+            ${isFeatured ? '<div class="plan-pop">الأوفر</div>' : ''}
+            ${nameHtml}
+            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+                ${hasDiscount ? '<span style="color:var(--i4);text-decoration:line-through;font-size:14px">'+p.original_price+' ريال</span>' : ''}
+                <div class="plan-price">${p.price} <small>ريال${p.duration_days <= 31 ? ' / شهر' : ''}</small></div>
+                ${hasDiscount ? '<span style="background:var(--dng);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px">-'+pct+'%</span>' : ''}
+            </div>
+            ${p.savings_text ? '<div class="plan-save">' + p.savings_text + '</div>' : ''}
+        </div>`;
+    }).join('');
+
+    // Show referral banner if applicable
+    if (referralCode) {
+        const refBanner = document.getElementById('refBanner');
+        refBanner.style.display = 'flex';
+        document.getElementById('refText').textContent = 'لديك إحالة — ستحصل على أيام مجانية إضافية عند الاشتراك';
+    }
+}
+
+function renderDefaultPlans() {
+    renderPlans([
+        { slug: 'monthly', name: 'شهري', price: 115, duration_days: 30, is_featured: false, savings_text: '' },
+        { slug: 'quarterly', name: '3 أشهر', price: 290, duration_days: 90, is_featured: true, savings_text: 'وفّر 55 ريال' },
+    ]);
+}
+
+// ── Navigation ──
+window.go = function(id) {
+    document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
+    window.scrollTo(0, 0);
+};
+
+window.goLogin = function() {
+    window.location.href = '../login.html';
+};
+
+window.skipToApp = function() {
+    window.location.href = '../register.html';
+};
+
+window.selectPlan = function(slug) {
+    selectedPlan = slug;
+    document.querySelectorAll('.plan-opt').forEach(el => {
+        el.classList.toggle('sel', el.dataset.slug === slug);
+    });
+};
+
+// ── Trial ──
+window.startTrial = async function() {
+    go('s-trial');
+    currentQ = 0;
+    trialCorrect = 0;
+
+    try {
+        // Get 5 random questions from different sections
+        const SAFE_COLS = 'id,question_text,choices,image_url,section,sub_section,topic,passage_id,passage_text,passage_order';
+
+        // Try to get a mix
+        const { data: qData } = await sb
+            .from('questions')
+            .select(SAFE_COLS)
+            .eq('disabled', false)
+            .is('passage_id', null)
+            .limit(100);
+
+        if (!qData || qData.length < 5) {
+            // Fallback: get any 5
+            const { data: fallback } = await sb
+                .from('questions')
+                .select(SAFE_COLS)
+                .eq('disabled', false)
+                .limit(50);
+            trialQuestions = shuffle(fallback || []).slice(0, 5);
+        } else {
+            trialQuestions = shuffle(qData).slice(0, 5);
+        }
+
+        if (trialQuestions.length === 0) {
+            document.getElementById('trialArea').innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--i3)">لا توجد أسئلة حالياً — جرب لاحقاً</div>';
+            return;
+        }
+
+        renderTrialQuestion();
+    } catch(e) {
+        document.getElementById('trialArea').innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--dng)">حدث خطأ — جرب مرة ثانية</div>';
+    }
+};
+
+function renderTrialQuestion() {
+    const q = trialQuestions[currentQ];
+    if (!q) return;
+    answered = false;
+
+    document.getElementById('tStep').textContent = (currentQ + 1) + ' / 5';
+    document.getElementById('tPb').style.width = ((currentQ + 1) * 20) + '%';
+
+    const sectionMap = { quant: 'قدرات كمي', verbal: 'قدرات لفظي', tahsili: 'تحصيلي', mixed: 'مختلط' };
+    const sectionLabel = sectionMap[q.section] || q.section || 'عام';
+    const choices = q.choices || [];
+    const hasImage = q.image_url && q.image_url.trim();
+
+    let html = '<div class="q-card card">';
+    html += '<div class="q-tag">' + esc(sectionLabel) + '</div>';
+    if (hasImage) {
+        html += '<img class="q-img" src="' + esc(q.image_url) + '" alt="صورة السؤال" onclick="openLightbox(this.src)">';
+    }
+    html += '<div class="q-txt">' + safeHtmlW(q.question_text) + '</div>';
+    html += '</div>';
+
+    html += '<div class="q-opts" id="trialOpts">';
+    choices.forEach((c, i) => {
+        html += '<button class="opt" data-idx="' + i + '" onclick="trialAnswer(this,' + i + ')">';
+        html += '<div class="opt-l">' + (i + 1) + '</div>';
+        html += '<div class="opt-v">' + safeHtmlW(c) + '</div>';
+        html += '</button>';
+    });
+    html += '</div>';
+
+    html += '<div id="tFb"></div>';
+    html += '<button class="q-next" id="tNext" onclick="nextTrialQ()">السؤال التالي</button>';
+
+    document.getElementById('trialArea').innerHTML = html;
+}
+
+window.trialAnswer = async function(btn, idx) {
+    if (answered) return;
+    answered = true;
+
+    const q = trialQuestions[currentQ];
+
+    // Call check_answer RPC to verify
+    let isCorrect = false;
+    try {
+        const { data } = await sb.rpc('check_answer', { q_id: q.id, selected_answer: idx });
+        isCorrect = data === true;
+    } catch(e) {
+        // Fallback: can't check, assume wrong
+        isCorrect = false;
+    }
+
+    if (isCorrect) trialCorrect++;
+
+    // Highlight buttons
+    const opts = document.querySelectorAll('#trialOpts .opt');
+    opts.forEach((o, i) => {
+        if (i === idx && isCorrect) o.classList.add('ok');
+        else if (i === idx && !isCorrect) o.classList.add('no');
+        if (i !== idx) o.classList.add('dim');
+    });
+
+    // Show feedback
+    const fbDiv = document.getElementById('tFb');
+    const fbClass = isCorrect ? 'ok' : 'no';
+    const fbIcon = isCorrect
+        ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    const fbText = isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة';
+
+    // Show blurred explanation — اعرض الشرح الحقيقي مع overlay ضبابي يحفّز للاشتراك
+    const realExp = q.explanation || 'الإجابة الصحيحة هي ' + (q.choices && q.choices[0] ? q.choices[0] : '—') + '. الشرح الكامل يوضّح كل خطوات الحل بالتفصيل مع أمثلة إضافية وطرق حل بديلة، ونصائح لتجنّب هذا الخطأ في المستقبل.';
+    fbDiv.innerHTML = '<div class="q-fb ' + fbClass + '"><div class="fb-title">' + fbIcon + fbText + '</div>'
+        + '<div class="fb-exp" style="position:relative;overflow:hidden">'
+        + '<div class="lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>الشرح المفصّل</div>'
+        + '<div style="filter:blur(5px);user-select:none;pointer-events:none;line-height:1.8">' + safeHtmlW(realExp) + '</div>'
+        + '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.88) 45%);padding:16px">'
+        +   '<div style="font-size:20px;margin-bottom:6px">🔒</div>'
+        +   '<button onclick="goSubFromTrial()" style="padding:10px 20px;background:var(--pri);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(109,93,246,.3)">🔓 اشترك لرؤية كل الشروح</button>'
+        + '</div>'
+        + '</div></div>';
+
+    // Show next button
+    const nextBtn = document.getElementById('tNext');
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = currentQ < 4 ? 'السؤال التالي' : 'عرض النتيجة';
+};
+
+window.nextTrialQ = function() {
+    currentQ++;
+    if (currentQ >= 5) {
+        showSubscribe();
+    } else {
+        renderTrialQuestion();
+    }
+};
+
+// ── Subscribe Screen ──
+function showSubscribe() {
+    go('s-sub');
+
+    // Animate score ring
+    const correct = trialCorrect;
+    const pct = (correct / 5);
+    const offset = 151 - (151 * pct);
+
+    setTimeout(() => {
+        document.getElementById('scoreRing').style.strokeDashoffset = offset;
+    }, 300);
+
+    document.getElementById('scoreText').textContent = correct + '/5';
+    document.getElementById('scoreDesc').textContent = correct + ' من 5 أسئلة';
+
+    let feedback = '';
+    if (correct === 5) feedback = 'ممتاز! أداء رائع';
+    else if (correct >= 4) feedback = 'أداء ممتاز — واصل';
+    else if (correct >= 3) feedback = 'أداء جيد — يمكن تحسينه';
+    else if (correct >= 1) feedback = 'محتاج تدريب أكثر — اشترك وتحسّن';
+    else feedback = 'لا تقلق — التدريب يصنع الفارق';
+
+    document.getElementById('scoreFeedback').textContent = feedback;
+}
+
+// ── Subscribe Actions ──
+window.subscribe = function() {
+    // Redirect to pricing page with selected plan
+    const url = '../pricing.html?plan=' + selectedPlan + (referralCode ? '&ref=' + referralCode : '');
+    window.location.href = url;
+};
+
+window.applyCoupon = async function() {
+    const input = document.getElementById('couponInput');
+    const code = input.value.trim().toUpperCase();
+    if (!code) return;
+
+    try {
+        const { data, error } = await sb.from('coupons')
+            .select('code,discount_type,discount_value,is_active,expires_at,max_uses,used_count')
+            .eq('code', code)
+            .eq('is_active', true)
+            .single();
+
+        if (error || !data) {
+            showToast('الكوبون غير صالح', 'error');
+            return;
+        }
+
+        // Check expiry
+        if (data.expires_at && new Date(data.expires_at) < new Date()) {
+            showToast('الكوبون منتهي الصلاحية', 'error');
+            return;
+        }
+
+        // Check max uses
+        if (data.max_uses && data.used_count >= data.max_uses) {
+            showToast('الكوبون وصل الحد الأقصى', 'error');
+            return;
+        }
+
+        // Store coupon for pricing page
+        localStorage.setItem('madarek_coupon', code);
+
+        let msg = '';
+        if (data.discount_type === 'free') msg = 'كوبون مجاني — اشتراك مجاني عند التسجيل';
+        else if (data.discount_type === 'percentage') msg = 'خصم ' + data.discount_value + '% مفعّل';
+        else msg = 'خصم ' + data.discount_value + ' ريال مفعّل';
+
+        showToast(msg, 'success');
+    } catch(e) {
+        showToast('حدث خطأ — جرب مرة ثانية', 'error');
+    }
+};
+
+// ── Lightbox ──
+window.openLightbox = function(src) {
+    document.getElementById('lbImg').src = src;
+    document.getElementById('lightbox').classList.add('on');
+};
+
+// ── Utils ──
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function safeHtmlW(s) {
+    if (!s) return '';
+    let html = esc(s);
+    html = html.replace(/&lt;br\s*\/?&gt;/gi, '<br>').replace(/&lt;hr\s*\/?&gt;/gi, '<hr>');
+    const allowed = ['p','strong','em','u','b','i','sup','sub','span','div'];
+    for (const tag of allowed) {
+        html = html.replace(new RegExp('&lt;(' + tag + ')&gt;','gi'), '<$1>');
+        html = html.replace(new RegExp('&lt;\\/(' + tag + ')&gt;','gi'), '</$1>');
+    }
+    return html;
+}
+
+window.goSubFromTrial = function() {
+    // انتقل لشاشة الاشتراك مباشرة من الشرح
+    showSubscribe();
+};
+
+function numberFmt(n) {
+    if (!n) return '0';
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function showToast(msg, type) {
+    type = type || 'info';
+    const colors = { success: '#10b981', error: '#ef4444', info: '#6D5DF6' };
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;padding:12px 24px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s;opacity:0;font-family:IBM Plex Sans Arabic,sans-serif;max-width:90%;text-align:center;';
+    t.style.background = colors[type] || colors.info;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.style.opacity = '1');
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+})();
+</script>
+</body>
+</html>

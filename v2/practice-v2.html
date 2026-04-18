@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — تدريب</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* HEADER */
+.q-hdr{padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.q-back{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:700;color:var(--i2)}
+.q-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.q-timer{display:flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:var(--pri)}
+.q-timer svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.q-end{font-size:12px;color:var(--dng);font-weight:700}
+
+/* PROGRESS */
+.q-prog{padding:0 16px 8px;display:flex;align-items:center;gap:8px}
+.q-nb{font-size:12px;font-weight:700;color:var(--pri);white-space:nowrap}
+.q-pb{flex:1;height:3px;border-radius:2px;background:var(--ln2);overflow:hidden}
+.q-pbf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--pri),var(--acc));transition:width .4s var(--ease)}
+.q-hint{font-size:10px;color:var(--i3)}
+
+/* PASSAGE */
+.q-passage{margin:0 6px 8px;padding:14px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);font-size:13px;line-height:1.8;color:var(--i2);max-height:200px;overflow-y:auto}
+.q-passage-lbl{font-size:10px;font-weight:700;color:var(--pri);margin-bottom:6px}
+
+/* QUESTION CARD */
+.q-card{margin:0 6px;padding:16px}
+.q-tag{font-size:10px;font-weight:700;color:var(--pri);background:var(--ps);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.q-img{width:100%;border-radius:10px;margin-bottom:10px;cursor:pointer;transition:transform .2s}
+.q-img:active{transform:scale(1.02)}
+.q-txt{font-size:14px;font-weight:600;line-height:1.7}
+
+/* OPTIONS */
+.q-opts{padding:8px 16px;display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:12px;border:1.5px solid var(--ln2);background:var(--sf);text-align:right;transition:all .18s;width:100%}
+.opt:active:not(.dim){transform:scale(.98)}
+.opt.ok{border-color:var(--suc);background:rgba(34,197,94,.12);border-width:2px}.opt.ok .opt-l{background:var(--suc);color:#fff}
+.opt.no{border-color:var(--dng);background:rgba(239,68,68,.12);border-width:2px}.opt.no .opt-l{background:var(--dng);color:#fff}
+.opt.dim{opacity:.5;pointer-events:none}
+.opt.correct-highlight{border-color:var(--suc);background:var(--ss)}.opt.correct-highlight .opt-l{background:var(--suc);color:#fff}
+.opt-l{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--i3);flex-shrink:0;transition:all .18s}
+.opt-v{font-size:14px;font-weight:600;flex:1}
+
+/* ACTIONS */
+.q-acts{display:flex;justify-content:space-between;padding:4px 16px}
+.q-act{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--i3);font-weight:500;padding:6px 0;transition:color .18s}
+.q-act:active{color:var(--pri)}
+.q-act svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.q-act.saved{color:var(--pri)}
+.q-act.saved svg{fill:var(--pri);stroke:var(--pri)}
+
+/* FEEDBACK */
+.q-fb{margin:8px 16px;padding:14px;border-radius:var(--r);animation:si .3s var(--ease)}
+.q-fb.ok{background:rgba(34,197,94,.12);border:2px solid rgba(34,197,94,.35)}
+.q-fb.no{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.35)}
+.fb-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fb-title svg{width:15px;height:15px;fill:none;stroke-width:2.5}
+.q-fb.ok .fb-title{color:var(--suc)}.q-fb.ok .fb-title svg{stroke:var(--suc)}
+.q-fb.no .fb-title{color:var(--dng)}.q-fb.no .fb-title svg{stroke:var(--dng)}
+.fb-exp{background:#FEFCE8;border:1px solid #FDE68A;border-radius:9px;padding:10px 12px;font-size:13px;color:var(--i2);line-height:1.7}
+.fb-exp .lbl{font-size:11px;font-weight:700;color:#92400E;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.fb-exp .lbl svg{width:11px;height:11px;stroke:#92400E;fill:none;stroke-width:2}
+.dark .fb-exp{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:#E8EAF6}
+.dark .fb-exp .lbl{color:#FCD34D}
+.dark .fb-exp .lbl svg{stroke:#FCD34D}
+.fb-warn{background:rgba(245,158,11,.12);border:1.5px solid rgba(245,158,11,.5);border-radius:9px;padding:10px 12px;margin-bottom:8px;font-size:12px;color:#92400E;line-height:1.6;font-weight:600}
+.dark .fb-warn{background:rgba(245,158,11,.15);color:#FCD34D}
+.fb-correct{background:rgba(34,197,94,.12);border:1.5px solid var(--suc);border-radius:9px;padding:10px 12px;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--suc);line-height:1.6}
+.fb-correct-lbl{display:block;font-size:11px;font-weight:700;margin-bottom:3px;opacity:.85}
+.dark .fb-correct{background:rgba(34,197,94,.18);color:#86EFAC}
+
+/* STATS BAR */
+.q-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 16px;border-top:1px solid var(--ln)}
+.qsb{padding:8px 6px;text-align:center;background:var(--s2);border-radius:9px;border:1px solid var(--ln)}
+.qsb .v{font-size:15px;font-weight:700}.qsb .l{font-size:8px;color:var(--i3);margin-top:1px}
+.qsb.ok .v{color:var(--suc)}.qsb.no .v{color:var(--dng)}.qsb.rt .v{color:var(--pri)}
+
+/* NEXT BUTTON — sticky حتى ما يتخفى تحت الشرح */
+.q-next{position:sticky;bottom:10px;width:calc(100% - 20px);margin:10px 10px 14px;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;text-align:center;display:none;font-family:inherit;cursor:pointer;transition:transform .15s;box-shadow:0 6px 20px rgba(109,93,246,.35);z-index:50}
+.q-next:active{transform:scale(.98)}
+.dark .q-next{box-shadow:0 6px 20px rgba(109,93,246,.5)}
+
+/* RESULTS SCREEN */
+.results{display:none;padding:12px 16px 24px;animation:si .4s var(--ease)}
+.results.on{display:block}
+.res-hero{position:relative;padding:14px 16px 18px;border-radius:var(--r2);overflow:hidden;text-align:center;margin-bottom:14px;background:linear-gradient(160deg,var(--pri) 0%,#4838C7 70%,#7E5BEF 100%);color:#fff;box-shadow:0 8px 24px rgba(109,93,246,.25)}
+.res-hero::before{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.15) 0%,transparent 70%);top:-80px;right:-50px;pointer-events:none}
+.res-hero::after{content:"";position:absolute;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,100,.2) 0%,transparent 70%);bottom:-60px;left:-30px;pointer-events:none}
+.res-hero.low{background:linear-gradient(160deg,#EF4444 0%,#B91C1C 100%);box-shadow:0 8px 24px rgba(239,68,68,.25)}
+.res-hero.mid{background:linear-gradient(160deg,#F59E0B 0%,#D97706 100%);box-shadow:0 8px 24px rgba(245,158,11,.3)}
+.res-hero.high{background:linear-gradient(160deg,#22C55E 0%,#16A34A 100%);box-shadow:0 8px 24px rgba(34,197,94,.25)}
+.res-hero.perfect{background:linear-gradient(160deg,#6D5DF6 0%,#F59E0B 100%);box-shadow:0 8px 28px rgba(109,93,246,.35)}
+.res-ring{width:110px;height:110px;position:relative;margin:0 auto 10px;z-index:1}
+.res-ring svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
+.res-rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff}
+.res-badge{display:inline-block;padding:3px 12px;border-radius:20px;background:rgba(255,255,255,.22);backdrop-filter:blur(8px);font-size:11px;font-weight:700;margin-bottom:6px;position:relative;z-index:1}
+.res-grade{font-size:20px;font-weight:800;margin-bottom:6px;position:relative;z-index:1;letter-spacing:-.01em}
+.res-desc{font-size:13px;color:rgba(255,255,255,.9);line-height:1.6;position:relative;z-index:1;max-width:320px;margin:0 auto}
+
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.res-stat{padding:14px 8px;border-radius:var(--r);background:var(--sf);border:1px solid var(--ln);text-align:center;transition:transform .2s}
+.res-stat:hover{transform:translateY(-2px);border-color:var(--pm)}
+.res-stat .v{font-size:22px;font-weight:800;line-height:1}
+.res-stat .l{font-size:10px;color:var(--i3);margin-top:4px;font-weight:600}
+
+/* MOTIVATION BANNER */
+.res-motiv{margin-bottom:16px;padding:14px 16px;border-radius:var(--r);background:linear-gradient(135deg,var(--ps),var(--pm));border:1px solid var(--pm);display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+.res-motiv::before{content:"";position:absolute;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(109,93,246,.15) 0%,transparent 70%);top:-20px;left:-20px;pointer-events:none}
+.res-motiv-ic{font-size:28px;flex-shrink:0;z-index:1}
+.res-motiv-body{flex:1;z-index:1}
+.res-motiv-t{font-size:14px;font-weight:700;color:var(--pri);margin-bottom:3px;line-height:1.4}
+.res-motiv-d{font-size:12px;color:var(--i2);line-height:1.5}
+
+.res-btns{display:flex;flex-direction:column;gap:8px}
+.res-btn{width:100%;padding:14px;border-radius:var(--r);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;border:none}
+.res-btn:active{transform:scale(.98)}
+.res-btn.pri{background:var(--pri);color:#fff;box-shadow:0 4px 14px rgba(109,93,246,.25)}
+.res-btn.pri:hover{background:var(--pt)}
+.res-btn.suc{background:var(--suc);color:#fff;box-shadow:0 4px 14px rgba(34,197,94,.22)}
+.res-btn.sec{background:var(--sf);border:1.5px solid var(--ln2);color:var(--i2)}
+.res-btn.sec:hover{border-color:var(--pri);color:var(--pri)}
+.res-btn svg{width:14px;height:14px;fill:none;stroke-width:2.2;stroke:currentColor}
+
+/* REVIEW SCREEN */
+.rev-scr{display:none;padding:12px 16px 24px;animation:si .3s var(--ease)}
+.rev-scr.on{display:block}
+.rev-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 0 14px}
+.rev-title{font-size:16px;font-weight:800}
+.rev-back{font-size:13px;font-weight:700;color:var(--pri);display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:var(--ps)}
+.rev-back svg{width:14px;height:14px;fill:none;stroke-width:2;stroke:currentColor}
+.rev-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.rev-sum-c{padding:8px 4px;text-align:center;border-radius:10px;border:1px solid var(--ln);background:var(--sf)}
+.rev-sum-c .v{font-size:16px;font-weight:800}
+.rev-sum-c .l{font-size:10px;color:var(--i3);margin-top:2px}
+.rev-sum-c.ok .v{color:var(--suc)}
+.rev-sum-c.no .v{color:var(--dng)}
+.rev-sum-c.rt .v{color:var(--pri)}
+.rev-filter{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.rev-filter::-webkit-scrollbar{display:none}
+.rev-fbtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--ln2);font-size:12px;font-weight:600;color:var(--i3);background:var(--sf);white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .2s;font-family:inherit}
+.rev-fbtn.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.rev-list{display:flex;flex-direction:column;gap:12px}
+.rev-q{padding:14px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2);animation:si .25s var(--ease) backwards}
+.rev-q.correct{border-left:4px solid var(--suc)}
+.rev-q.wrong{border-left:4px solid var(--dng)}
+.rev-q.skipped{border-left:4px solid var(--i4);opacity:.85}
+.rev-q-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.rev-q-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;color:var(--pri);background:var(--ps)}
+.rev-q-status{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
+.rev-q-status.ok{color:var(--suc)}
+.rev-q-status.no{color:var(--dng)}
+.rev-q-status.sk{color:var(--i4)}
+.rev-q-status svg{width:13px;height:13px;fill:none;stroke-width:2.4;stroke:currentColor}
+.rev-q-idx{font-size:11px;color:var(--i4);font-weight:700}
+.rev-q-txt{font-size:14px;font-weight:600;line-height:1.7;margin-bottom:10px}
+.rev-q-img{max-width:220px;max-height:120px;border-radius:8px;margin-bottom:8px;display:block;cursor:pointer}
+.rev-opts{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.rev-opt{padding:9px 12px;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:8px;border:1.5px solid var(--ln)}
+.rev-opt-l{width:22px;height:22px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--i3);flex-shrink:0}
+.rev-opt-v{flex:1}
+.rev-opt.user-wrong{border-color:var(--dng);background:rgba(239,68,68,.12);border-width:2px}
+.rev-opt.user-wrong .rev-opt-l{background:var(--dng);color:#fff}
+.rev-opt.correct{border-color:var(--suc);background:rgba(34,197,94,.12);border-width:2px}
+.rev-opt.correct .rev-opt-l{background:var(--suc);color:#fff}
+.rev-opt-tag{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:700;white-space:nowrap}
+.rev-opt-tag.u{background:var(--dng);color:#fff}
+.rev-opt-tag.c{background:var(--suc);color:#fff}
+.rev-q-exp{background:#FEFCE8;border:1px solid #FDE68A;border-radius:9px;padding:10px 12px;font-size:12px;color:var(--i2);line-height:1.7}
+.rev-q-exp .lbl{font-size:10px;font-weight:800;color:#92400E;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.rev-q-exp .lbl svg{width:11px;height:11px;fill:none;stroke-width:2;stroke:currentColor}
+.dark .rev-q-exp{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:#E8EAF6}
+.dark .rev-q-exp .lbl{color:#FCD34D}
+.rev-empty{padding:40px 20px;text-align:center;color:var(--i3);font-size:13px}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;display:none;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.on{display:flex}
+.lightbox img{max-width:95%;max-height:90vh;border-radius:8px}
+
+/* REPORT MODAL */
+.report-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.report-overlay.on{display:flex}
+.report-box{background:var(--sf);border-radius:var(--r2);padding:24px 20px;width:100%;max-width:340px}
+.report-box h3{font-size:15px;font-weight:700;margin-bottom:12px}
+.report-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.ropt{padding:10px 14px;border-radius:10px;border:1.5px solid var(--ln2);font-size:13px;text-align:right;cursor:pointer;transition:all .18s}
+.ropt.on{border-color:var(--pri);background:var(--ps);color:var(--pri);font-weight:600}
+.report-send{width:100%;padding:12px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;border:none;font-family:inherit;cursor:pointer}
+
+/* LOADING */
+.loader{display:flex;align-items:center;justify-content:center;padding:80px;gap:8px}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--pri);animation:bounce .6s infinite alternate}
+.loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="q-hdr">
+  <button class="q-back" onclick="confirmExit()"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>رجوع</button>
+  <div class="q-timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="timer">00:00</span></div>
+  <button class="q-end" onclick="confirmEnd()">إنهاء</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="q-prog">
+  <div class="q-nb" id="qNum">1 / 10</div>
+  <div class="q-pb"><div class="q-pbf" id="qBar" style="width:0%"></div></div>
+  <div class="q-hint" id="qHint">ابدأ بسم الله</div>
+</div>
+
+<!-- QUESTION AREA -->
+<div id="questionArea">
+  <div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+</div>
+
+<!-- RESULTS -->
+<div class="results" id="resultsScreen">
+  <!-- Hero مع gradient -->
+  <div class="res-hero" id="resHero">
+    <div class="res-badge" id="resBadge">نتيجتك</div>
+    <div class="res-ring">
+      <svg viewBox="0 0 100 100"><circle fill="none" stroke="rgba(255,255,255,.25)" stroke-width="6" cx="50" cy="50" r="42"/><circle id="resRing" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" cx="50" cy="50" r="42"/></svg>
+      <div class="res-rv" id="resPct">0%</div>
+    </div>
+    <div class="res-grade" id="resGrade"></div>
+    <div class="res-desc" id="resDesc"></div>
+  </div>
+
+  <!-- الإحصائيات -->
+  <div class="res-grid">
+    <div class="res-stat"><div class="v" style="color:var(--suc)" id="resCorrect">0</div><div class="l">صحيح</div></div>
+    <div class="res-stat"><div class="v" style="color:var(--dng)" id="resWrong">0</div><div class="l">خطأ</div></div>
+    <div class="res-stat"><div class="v" style="color:var(--pri)" id="resTime">0:00</div><div class="l">الوقت</div></div>
+  </div>
+
+  <!-- بنر تحفيزي -->
+  <div class="res-motiv">
+    <div class="res-motiv-ic" id="resMotivIc">⚡</div>
+    <div class="res-motiv-body">
+      <div class="res-motiv-t" id="resMotivT">—</div>
+      <div class="res-motiv-d" id="resMotivD">—</div>
+    </div>
+  </div>
+
+  <!-- الأزرار -->
+  <div class="res-btns">
+    <button class="res-btn pri" onclick="reviewAnswers()">
+      <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      مراجعة الإجابات
+    </button>
+    <button class="res-btn suc" onclick="restartSame()">
+      <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      أعد الاختبار
+    </button>
+    <button class="res-btn sec" onclick="location.href='training-v2.html'">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      رجوع للأقسام
+    </button>
+    <button class="res-btn sec" onclick="location.href='dashboard-v2.html'">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      الرئيسية
+    </button>
+  </div>
+</div>
+
+<!-- REVIEW SCREEN -->
+<div class="rev-scr" id="reviewScreen">
+  <div class="rev-hdr">
+    <div class="rev-title">مراجعة الإجابات</div>
+    <button class="rev-back" onclick="backToResults()">
+      <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>رجوع
+    </button>
+  </div>
+  <div class="rev-sum">
+    <div class="rev-sum-c ok"><div class="v" id="revOkN">0</div><div class="l">صحيح</div></div>
+    <div class="rev-sum-c no"><div class="v" id="revNoN">0</div><div class="l">خطأ</div></div>
+    <div class="rev-sum-c rt"><div class="v" id="revTotN">0</div><div class="l">الإجمالي</div></div>
+  </div>
+  <div class="rev-filter">
+    <button class="rev-fbtn on" data-rf="all" onclick="setReviewFilter(this,'all')">الكل</button>
+    <button class="rev-fbtn" data-rf="wrong" onclick="setReviewFilter(this,'wrong')">الأخطاء فقط</button>
+    <button class="rev-fbtn" data-rf="correct" onclick="setReviewFilter(this,'correct')">الصحيحة فقط</button>
+  </div>
+  <div class="rev-list" id="revList"></div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')">
+  <img id="lbImg" src="" alt="">
+</div>
+
+<!-- REPORT MODAL -->
+<div class="report-overlay" id="reportModal" onclick="if(event.target===this)this.classList.remove('on')">
+  <div class="report-box">
+    <h3>إبلاغ عن السؤال</h3>
+    <div class="report-opts">
+      <button class="ropt" onclick="selReport(this)">الإجابة الصحيحة خاطئة</button>
+      <button class="ropt" onclick="selReport(this)">خيار ناقص أو مكرر</button>
+      <button class="ropt" onclick="selReport(this)">نص السؤال غير واضح</button>
+      <button class="ropt" onclick="selReport(this)">صورة مفقودة أو خاطئة</button>
+    </div>
+    <button class="report-send" onclick="sendReport()">إرسال البلاغ</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+
+// ── URL Params ──
+const params = new URLSearchParams(window.location.search);
+const SECTION = params.get('section') || 'quant';
+const COUNT = parseInt(params.get('count')) || 10;
+const MODE = params.get('mode') || 'instant'; // instant | end
+const SECTION_NAME = params.get('name') || 'تدريب';
+const LEAK_GROUP_ID = params.get('leak') || null; // فلترة حسب leak_group
+const SAFE_COLS = 'id,question_text,choices,correct_index,image_url,section,sub_section,topic,passage_id,passage_text,passage_order,explanation,leak_group_id';
+
+const sectionMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'مختلط'};
+
+let profile = null;
+let questions = [];
+let currentIdx = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = false;
+let sessionId = null;
+let timerInterval = null;
+let elapsedSeconds = 0;
+let savedSet = new Set();
+let answers = []; // {qIdx, selectedIdx, isCorrect, questionData}
+let reportReason = '';
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+
+    const qs = new URLSearchParams(window.location.search);
+    const isPreview = qs.has('preview');
+    const forceSubscriber = qs.get('force_subscriber') === 'true';
+
+    if (forceSubscriber) {
+        // Supabase حقيقي + profile وهمي بدون تسجيل دخول
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            role: 'user',
+            total_questions_solved: 0, total_correct: 0, total_sessions: 0
+        };
+    } else if (isPreview) {
+        // Preview mock كامل
+        const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
+        profile = p || { id:'mock-user-00000000', full_name:'عبدالله', total_questions_solved:0, total_correct:0, total_sessions:0 };
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+    }
+
+    await loadQuestions();
+    startTimer();
+    // في وضع force_subscriber، لا ننشئ session (لا نكتب بيانات حقيقية)
+    if (!forceSubscriber) {
+        await createSession();
+        M.updateStreak();
+    }
+}
+
+async function loadQuestions() {
+    try {
+        let query = sb.from('questions').select(SAFE_COLS).eq('disabled', false);
+
+        // إذا جاء من تسريبة محددة، فلتر على leak_group_id فقط
+        if (LEAK_GROUP_ID) {
+            query = query.eq('leak_group_id', LEAK_GROUP_ID);
+        } else if (SECTION === 'mixed') {
+            query = query.in('section', ['quant','verbal']);
+        } else {
+            query = query.eq('section', SECTION);
+        }
+
+        // Get more than needed, then shuffle & slice
+        const { data, error } = await query.is('passage_id', null).limit(500);
+        if (error) throw error;
+
+        // استبعد الأسئلة بدون correct_index صالح (تنظيف دفاعي)
+        const valid = (data || []).filter(q => {
+            const n = q.choices?.length || 0;
+            return typeof q.correct_index === 'number' && q.correct_index >= 0 && q.correct_index < n;
+        });
+        questions = shuffle(valid).slice(0, COUNT);
+
+        if (questions.length === 0) {
+            const msg = LEAK_GROUP_ID
+                ? 'لا أسئلة في هذه التسريبة بعد — ستُضاف قريباً'
+                : 'لا توجد أسئلة في هذا القسم حالياً';
+            document.getElementById('questionArea').innerHTML = '<div style="padding:60px 16px;text-align:center;color:var(--i3)">'+msg+'</div>';
+            return;
+        }
+
+        renderQuestion();
+    } catch(e) {
+        document.getElementById('questionArea').innerHTML = '<div style="padding:60px 16px;text-align:center;color:var(--dng)">حدث خطأ في تحميل الأسئلة</div>';
+    }
+}
+
+async function createSession() {
+    try {
+        const { data } = await sb.from('practice_sessions').insert({
+            user_id: profile.id,
+            section: SECTION,
+            total_questions: questions.length,
+            correct_answers: 0,
+            wrong_answers: 0,
+            show_mode: MODE,
+            session_type: 'practice'
+        }).select('id').single();
+        if (data) sessionId = data.id;
+    } catch(e) {}
+}
+
+function renderQuestion() {
+    const q = questions[currentIdx];
+    if (!q) return;
+    answered = false;
+
+    // Update progress
+    document.getElementById('qNum').textContent = (currentIdx + 1) + ' / ' + questions.length;
+    document.getElementById('qBar').style.width = ((currentIdx + 1) / questions.length * 100) + '%';
+    if (currentIdx === 0) document.getElementById('qHint').textContent = 'ابدأ بسم الله';
+    else document.getElementById('qHint').textContent = '';
+
+    const tag = sectionMap[q.section] || q.section || 'عام';
+    const choices = q.choices || [];
+    const hasImage = q.image_url && q.image_url.trim();
+    const isSaved = savedSet.has(q.id);
+
+    let html = '';
+
+    // Passage
+    if (q.passage_text) {
+        html += '<div class="q-passage"><div class="q-passage-lbl">القطعة</div>' + safeHtml(q.passage_text) + '</div>';
+    }
+
+    // Card
+    html += '<div class="q-card card">';
+    html += '<div class="q-tag">' + esc(tag) + '</div>';
+    if (hasImage) {
+        html += '<img class="q-img" src="' + esc(q.image_url) + '" alt="صورة السؤال" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';
+    }
+    html += '<div class="q-txt">' + safeHtml(q.question_text) + '</div>';
+    html += '</div>';
+
+    // Options
+    html += '<div class="q-opts" id="opts">';
+    choices.forEach((c, i) => {
+        html += '<button class="opt" data-idx="' + i + '" onclick="answer(this,' + i + ')">';
+        html += '<div class="opt-l">' + (i + 1) + '</div>';
+        html += '<div class="opt-v">' + safeHtml(c) + '</div>';
+        html += '</button>';
+    });
+    html += '</div>';
+
+    // Actions
+    html += '<div class="q-acts">';
+    html += '<button class="q-act" onclick="openReport()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>إبلاغ</button>';
+    html += '<button class="q-act' + (isSaved ? ' saved' : '') + '" id="saveBtn" onclick="toggleSave()"><svg viewBox="0 0 24 24"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>' + (isSaved ? 'محفوظ' : 'حفظ') + '</button>';
+    html += '</div>';
+
+    // Feedback placeholder
+    html += '<div id="fbArea"></div>';
+
+    // Stats (hidden until answered in instant mode)
+    html += '<div id="statsArea" style="display:none"></div>';
+
+    // Next button
+    html += '<button class="q-next" id="nextBtn" onclick="nextQuestion()">' + (currentIdx < questions.length - 1 ? 'السؤال التالي' : 'عرض النتيجة') + '</button>';
+
+    document.getElementById('questionArea').innerHTML = html;
+    document.getElementById('questionArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+window.answer = async function(btn, idx) {
+    if (answered) return;
+    answered = true;
+
+    const q = questions[currentIdx];
+    let isCorrect = false;
+
+    // مصدر الحقيقة المحلي: correct_index إذا كان موجوداً صراحةً
+    // (يعالج حالات RPC غير المتوافق مع البيانات)
+    const hasLocalCorrectIdx = typeof q.correct_index === 'number' && q.correct_index >= 0 && q.correct_index < (q.choices?.length || 0);
+    if (hasLocalCorrectIdx) {
+        isCorrect = idx === q.correct_index;
+    } else {
+        // fallback للـ RPC عندما لا يوجد correct_index محلي
+        try {
+            const { data } = await sb.rpc('submit_answer', {
+                p_question_id: q.id,
+                p_selected_answer: idx
+            });
+            if (data && typeof data === 'object') {
+                isCorrect = data.correct === true;
+            } else {
+                isCorrect = data === true;
+            }
+        } catch(e) {
+            try {
+                const { data } = await sb.rpc('check_answer', { q_id: q.id, selected_answer: idx });
+                isCorrect = data === true;
+            } catch(e2) {}
+        }
+    }
+
+    if (isCorrect) correctCount++; else wrongCount++;
+    answers.push({ qIdx: currentIdx, selectedIdx: idx, isCorrect, questionData: q });
+
+    // Save attempt
+    try {
+        await sb.from('attempts').insert({
+            user_id: profile.id,
+            question_id: q.id,
+            selected_answer: idx,
+            is_correct: isCorrect,
+            session_id: sessionId
+        });
+    } catch(e) {}
+
+    // XP
+    M.addXP(isCorrect ? M.XP_REWARDS.CORRECT_ANSWER : M.XP_REWARDS.WRONG_ANSWER);
+
+    if (MODE === 'instant') {
+        showInstantFeedback(idx, isCorrect, q);
+    } else {
+        // End mode: just dim options, show next
+        const opts = document.querySelectorAll('#opts .opt');
+        opts.forEach(o => o.classList.add('dim'));
+        btn.classList.remove('dim');
+        btn.classList.add(isCorrect ? 'ok' : 'no');
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+};
+
+function showInstantFeedback(idx, isCorrect, q) {
+    const correctIdx = typeof q.correct_index === 'number' ? q.correct_index : null;
+    const missingCorrect = correctIdx === null;
+
+    // Highlight options: user's selection + the correct one when wrong
+    const opts = document.querySelectorAll('#opts .opt');
+    opts.forEach((o, i) => {
+        if (i === idx) {
+            o.classList.add(isCorrect ? 'ok' : 'no');
+        } else if (!isCorrect && correctIdx !== null && i === correctIdx) {
+            o.classList.add('ok');
+        } else {
+            o.classList.add('dim');
+        }
+    });
+
+    // Feedback box
+    const fbClass = isCorrect ? 'ok' : 'no';
+    const fbIcon = isCorrect
+        ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    const fbText = isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة';
+
+    let fbHtml = '<div class="q-fb ' + fbClass + '"><div class="fb-title">' + fbIcon + fbText + '</div>';
+    if (missingCorrect) {
+        fbHtml += '<div class="fb-warn">⚠️ هذا السؤال بدون إجابة محددة في النظام — لا يمكن التحقق تلقائياً. راجع الشرح في الأسفل.</div>';
+    }
+    if (q.explanation) {
+        fbHtml += '<div class="fb-exp"><div class="lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>شرح</div>' + safeHtml(q.explanation) + '</div>';
+    }
+    fbHtml += '</div>';
+    document.getElementById('fbArea').innerHTML = fbHtml;
+
+    // Stats
+    const pct = correctCount + wrongCount > 0 ? Math.round(correctCount / (correctCount + wrongCount) * 100) : 0;
+    document.getElementById('statsArea').innerHTML = '<div class="q-stats"><div class="qsb ok"><div class="v">' + correctCount + '</div><div class="l">صحيح</div></div><div class="qsb no"><div class="v">' + wrongCount + '</div><div class="l">خطأ</div></div><div class="qsb rt"><div class="v">' + pct + '%</div><div class="l">النسبة</div></div></div>';
+    document.getElementById('statsArea').style.display = '';
+
+    document.getElementById('nextBtn').style.display = 'block';
+
+    // Scroll to feedback
+    document.getElementById('fbArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+window.nextQuestion = function() {
+    currentIdx++;
+    if (currentIdx >= questions.length) {
+        finishSession();
+    } else {
+        renderQuestion();
+    }
+};
+
+// ── Finish ──
+async function finishSession() {
+    clearInterval(timerInterval);
+
+    // Update session
+    try {
+        await sb.from('practice_sessions').update({
+            correct_answers: correctCount,
+            wrong_answers: wrongCount,
+            completed_at: new Date().toISOString()
+        }).eq('id', sessionId);
+
+        // Update profile stats
+        await sb.from('profiles').update({
+            total_questions_solved: (profile.total_questions_solved || 0) + questions.length,
+            total_correct: (profile.total_correct || 0) + correctCount,
+            total_sessions: (profile.total_sessions || 0) + 1
+        }).eq('id', profile.id);
+
+        // ── تحديث user_leak_progress إذا جلسة تسريبة ──
+        if (LEAK_GROUP_ID) {
+            try {
+                // جلب السجل الحالي
+                const { data: existing } = await sb.from('user_leak_progress')
+                    .select('*')
+                    .eq('user_id', profile.id)
+                    .eq('leak_group_id', LEAK_GROUP_ID)
+                    .single();
+
+                // إجمالي أسئلة المجموعة
+                const { data: lg } = await sb.from('leak_groups').select('question_count').eq('id', LEAK_GROUP_ID).single();
+                const total = lg?.question_count || questions.length;
+                const newCompleted = Math.min(total, (existing?.completed_count || 0) + questions.length);
+                const newPct = total > 0 ? Math.round((newCompleted / total) * 100) : 0;
+                const newStatus = newPct >= 100 ? 'completed' : (newPct > 0 ? 'in_progress' : 'new');
+
+                const payload = {
+                    user_id: profile.id,
+                    leak_group_id: LEAK_GROUP_ID,
+                    completed_count: newCompleted,
+                    total_count: total,
+                    percentage: newPct,
+                    status: newStatus,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (existing) {
+                    await sb.from('user_leak_progress').update(payload).eq('id', existing.id);
+                } else {
+                    await sb.from('user_leak_progress').insert(payload);
+                }
+
+                // XP إضافي لإكمال تسريبة كاملة
+                if (newPct >= 100 && existing?.status !== 'completed') {
+                    M.addXP(M.XP_REWARDS.COMPLETE_LEAK || 50);
+                }
+            } catch(e) { console.warn('leak progress update failed:', e); }
+        }
+
+        // XP for session completion
+        M.addXP(M.XP_REWARDS.COMPLETE_SESSION);
+
+        // Check achievements
+        M.checkAchievements();
+    } catch(e) {}
+
+    showResults();
+}
+
+// ── Motivational Sentences by Performance Level ──
+const MOTIV_SENTENCES = {
+    perfect: [ // 100%
+        { grade: 'إبداع كامل! 🏆', desc: 'أداء استثنائي — كل الإجابات صحيحة' },
+        { grade: 'ماشاءالله 🔥', desc: 'أتقنت هذا القسم بالكامل — واصل للأعلى' },
+        { grade: 'علامة كاملة! ⭐', desc: 'أنت في أفضل حالاتك — حافظ على هذا المستوى' },
+        { grade: 'بطل! 💯', desc: 'نتيجة مثالية — دليل على تفوقك' },
+        { grade: 'استثنائي 🎯', desc: 'أداء لا يقارن — تستحق كل الفخر' },
+        { grade: 'قمة الإبداع 👑', desc: 'إجاباتك كلها دقيقة — تدريبك أثمر' },
+        { grade: 'نجم ⚡', desc: 'لا خطأ واحد — تركيز تام وفهم عميق' },
+        { grade: 'رائع جداً ✨', desc: '100% دقة — هذا هو المعيار الذي تستحقه' },
+        { grade: 'إتقان تام 🌟', desc: 'كل سؤال في مكانه — فخر حقيقي' },
+        { grade: 'مجتهد من الطراز الأول 🥇', desc: 'نتيجة تعكس ساعات تدريبك' }
+    ],
+    high: [ // 75-99%
+        { grade: 'ممتاز!', desc: 'أداء قوي — أنت على الطريق الصحيح' },
+        { grade: 'جيد جداً 🎯', desc: 'نتيجة ممتازة — مزيد من التدريب يوصلك للكمال' },
+        { grade: 'قريب من القمة ⭐', desc: 'أخطاء قليلة — راجعها وستتقن الباب' },
+        { grade: 'مستوى عالي 💪', desc: 'واضح أنك تفهم المادة — واصل' },
+        { grade: 'أداء رائع ✨', desc: 'النتيجة تعكس جهدك — الأفضل قادم' },
+        { grade: 'تقدّم ملحوظ 📈', desc: 'مستواك يرتفع — استمر بهذا التركيز' },
+        { grade: 'مجتهد 🌟', desc: 'دقة عالية — ركّز على الأخطاء لتصل للعلامة الكاملة' },
+        { grade: 'قريب من التميز 🏆', desc: 'خطوة واحدة تفصلك عن الممتاز' },
+        { grade: 'واعد جداً 🚀', desc: 'أداء يبشّر بالأفضل — واصل على نفس الوتيرة' },
+        { grade: 'فوق المتوسط 💎', desc: 'أعلى من معظم المتدربين — استمر' }
+    ],
+    mid: [ // 50-74%
+        { grade: 'جيد', desc: 'أداء مقبول — ركّز أكثر على نقاط الضعف' },
+        { grade: 'على الطريق 🚶', desc: 'نصف الطريق قطعته — واصل' },
+        { grade: 'في تقدم ⚙️', desc: 'راجع أخطاءك وستلاحظ فرقاً كبيراً' },
+        { grade: 'مستوى متوسط 📊', desc: 'التدريب المستمر سيرفع مستواك سريعاً' },
+        { grade: 'قابل للتحسن 💡', desc: 'عندك إمكانيات — مزيد من التركيز يُحدث فرقاً' },
+        { grade: 'بداية جيدة 🌱', desc: 'كل مشوار يبدأ بخطوة — تابع' },
+        { grade: 'في المنتصف', desc: 'نصف الإجابات صحيحة — النصف الآخر يحتاج مراجعة' },
+        { grade: 'لديك أساس 🧱', desc: 'ابنِ عليه — اقرأ الشرح وراجع مرة ثانية' },
+        { grade: 'محاولة جيدة 👍', desc: 'لا تيأس — التكرار يصنع الإتقان' },
+        { grade: 'قدم الاختبار 📝', desc: 'الآن راجع الأخطاء واختبر نفسك مرة أخرى' }
+    ],
+    low: [ // 1-49%
+        { grade: 'بداية صعبة', desc: 'البداية دائماً صعبة — الاستمرار هو السر' },
+        { grade: 'لا تقلق 💪', desc: 'كل خبير كان يوماً في مكانك — ابدأ بالأساسيات' },
+        { grade: 'فرصة للتعلم 📚', desc: 'كل خطأ درس — راجع الشروحات بهدوء' },
+        { grade: 'خطوة أولى 🌱', desc: 'المهم أنك بدأت — التحسن يأتي بالتكرار' },
+        { grade: 'صبراً وتدريباً ⏳', desc: 'النتائج الكبيرة تحتاج وقتاً — لا تستسلم' },
+        { grade: 'ركّز على الأساسيات 📖', desc: 'راجع القواعد الأساسية قبل الإعادة' },
+        { grade: 'لسه الطريق طويل 🛤️', desc: 'لكنه ممتع — كل خطوة تقربك من هدفك' },
+        { grade: 'أعد المحاولة 🔄', desc: 'الفشل جزء من النجاح — حاول مرة ثانية' },
+        { grade: 'لا تيأس ❤️', desc: 'أعظم الأبطال سقطوا أكثر مما نجحوا — قم وواصل' },
+        { grade: 'التدريب أساس التفوق 🎯', desc: 'أمامك وقت — استثمره بذكاء' }
+    ],
+    zero: [ // 0%
+        { grade: 'كل شيء يبدأ من هنا', desc: 'البداية دائماً صعبة — الاستمرار هو السر' },
+        { grade: 'لحظة تأمل 🧘', desc: 'خذ نفساً عميقاً واقرأ الشرح — ثم أعد الكرّة' },
+        { grade: 'لا تثبط ⚡', desc: 'النتيجة ليست نهاية — بل بداية رحلة التعلم' },
+        { grade: 'فرصة ذهبية 🌟', desc: 'كل الأخطاء أمامك لتتعلم منها — استفد' },
+        { grade: 'راجع الأساسيات 📖', desc: 'قد يحتاج الموضوع وقتاً أطول — ابدأ بالشرح' },
+        { grade: 'الطريق مفتوح 🛣️', desc: 'صفر اليوم ممكن يصير 100% مع التدريب' },
+        { grade: 'تعلّم من الأخطاء 🎓', desc: 'اضغط مراجعة الإجابات — ستفهم كل سؤال' },
+        { grade: 'أول محاولة 🌱', desc: 'لا يوجد من أتقن شيئاً من أول مرة' },
+        { grade: 'لا تحكم على نفسك ❤️', desc: 'النتيجة الأولى ليست دليلاً على قدراتك' },
+        { grade: 'ابدأ مجدداً 🔄', desc: 'اضغط أعد الاختبار — المرة القادمة ستكون أفضل' }
+    ]
+};
+
+// ── Motivational Banner (تحت الإحصائيات) ──
+const MOTIV_BANNERS = {
+    perfect: [
+        { ic:'🏆', t:'أنت قدوة للآخرين', d:'شارك نتيجتك مع أصدقائك وحمّسهم' },
+        { ic:'🎯', t:'إتقان مثالي', d:'هذي نتيجة لا تأتي صدفة — تدريبك ظاهر' },
+        { ic:'👑', t:'من النخبة', d:'قلة من المتدربين يصلون لهذا المستوى' }
+    ],
+    high: [
+        { ic:'📈', t:'في المسار الصحيح', d:'واصل وستصل للعلامة الكاملة قريباً' },
+        { ic:'⚡', t:'أداء قوي', d:'راجع الأخطاء القليلة وستكون ممتازاً' },
+        { ic:'🚀', t:'قريب من القمة', d:'خطوة صغيرة تفصلك عن الإتقان' }
+    ],
+    mid: [
+        { ic:'💡', t:'المراجعة سر النجاح', d:'اضغط مراجعة الإجابات لفهم أخطاءك' },
+        { ic:'📚', t:'واصل التدريب', d:'كل اختبار يرفع مستواك تدريجياً' },
+        { ic:'🎯', t:'ركّز على الأخطاء', d:'راجعها مرة ومرتين حتى تتقنها' }
+    ],
+    low: [
+        { ic:'🌱', t:'ابدأ بالشرح', d:'افهم المفهوم أولاً — الحفظ وحده لا يكفي' },
+        { ic:'🔄', t:'التكرار يصنع الإتقان', d:'لا تقارن نفسك بالآخرين — ركّز على تقدمك' },
+        { ic:'💪', t:'كل خبير بدأ من الصفر', d:'استمر ولا تستسلم — النتائج تأتي' }
+    ],
+    zero: [
+        { ic:'📖', t:'راجع الشرح أولاً', d:'افتح مراجعة الإجابات — كل سؤال فيه درس' },
+        { ic:'🌟', t:'البداية من هنا', d:'لا يوجد طريق للإتقان بدون أخطاء' },
+        { ic:'🎓', t:'التعلم رحلة', d:'خذ وقتك — الفهم أهم من السرعة' }
+    ]
+};
+
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function showResults() {
+    document.getElementById('questionArea').style.display = 'none';
+    document.querySelector('.q-hdr').style.display = 'none';
+    document.querySelector('.q-prog').style.display = 'none';
+
+    const total = correctCount + wrongCount;
+    const pct = total > 0 ? Math.round(correctCount / total * 100) : 0;
+    const mins = Math.floor(elapsedSeconds / 60);
+    const secs = elapsedSeconds % 60;
+
+    document.getElementById('resPct').textContent = pct + '%';
+    document.getElementById('resCorrect').textContent = correctCount;
+    document.getElementById('resWrong').textContent = wrongCount;
+    document.getElementById('resTime').textContent = mins + ':' + String(secs).padStart(2, '0');
+
+    // Animate ring
+    const offset = 264 - (264 * pct / 100);
+    setTimeout(() => { document.getElementById('resRing').style.strokeDashoffset = offset; }, 300);
+
+    // تحديد المستوى
+    let level = 'zero';
+    if (pct === 100) level = 'perfect';
+    else if (pct >= 75) level = 'high';
+    else if (pct >= 50) level = 'mid';
+    else if (pct > 0) level = 'low';
+    else level = 'zero';
+
+    // جمل تحفيزية عشوائية
+    const sentence = pickRandom(MOTIV_SENTENCES[level]);
+    document.getElementById('resGrade').textContent = sentence.grade;
+    document.getElementById('resDesc').textContent = sentence.desc;
+
+    // Badge
+    const badges = {
+        perfect: 'علامة كاملة 💯',
+        high: 'أداء ممتاز ⭐',
+        mid: 'أداء متوسط 📊',
+        low: 'تحتاج تدريب 💪',
+        zero: 'ابدأ من جديد 🌱'
+    };
+    document.getElementById('resBadge').textContent = badges[level];
+
+    // Hero gradient حسب المستوى
+    const hero = document.getElementById('resHero');
+    hero.classList.remove('low','mid','high','perfect');
+    if (level === 'perfect') hero.classList.add('perfect');
+    else if (level === 'high') hero.classList.add('high');
+    else if (level === 'mid') hero.classList.add('mid');
+    else if (level === 'low' || level === 'zero') hero.classList.add('low');
+
+    // بنر تحفيزي
+    const motiv = pickRandom(MOTIV_BANNERS[level]);
+    document.getElementById('resMotivIc').textContent = motiv.ic;
+    document.getElementById('resMotivT').textContent = motiv.t;
+    document.getElementById('resMotivD').textContent = motiv.d;
+
+    document.getElementById('resultsScreen').classList.add('on');
+}
+
+// ── Timer ──
+function startTimer() {
+    timerInterval = setInterval(() => {
+        elapsedSeconds++;
+        const m = Math.floor(elapsedSeconds / 60);
+        const s = elapsedSeconds % 60;
+        document.getElementById('timer').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }, 1000);
+}
+
+// ── Save/Report ──
+window.toggleSave = async function() {
+    const q = questions[currentIdx];
+    const btn = document.getElementById('saveBtn');
+    if (savedSet.has(q.id)) {
+        await M.unsaveQuestion(q.id);
+        savedSet.delete(q.id);
+        btn.classList.remove('saved');
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>حفظ';
+    } else {
+        await M.saveQuestion(q.id);
+        savedSet.add(q.id);
+        btn.classList.add('saved');
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>محفوظ';
+        showToast('تم حفظ السؤال', 'success');
+    }
+};
+
+window.openReport = function() {
+    reportReason = '';
+    document.querySelectorAll('.ropt').forEach(r => r.classList.remove('on'));
+    document.getElementById('reportModal').classList.add('on');
+};
+
+window.selReport = function(el) {
+    document.querySelectorAll('.ropt').forEach(r => r.classList.remove('on'));
+    el.classList.add('on');
+    reportReason = el.textContent;
+};
+
+window.sendReport = async function() {
+    if (!reportReason) { showToast('اختر سبب البلاغ', 'error'); return; }
+    const q = questions[currentIdx];
+    try {
+        await sb.from('reports').insert({
+            user_id: profile.id,
+            question_id: q.id,
+            reason: reportReason
+        });
+        showToast('تم إرسال البلاغ — شكراً لك', 'success');
+    } catch(e) {
+        showToast('حدث خطأ — جرب مرة ثانية', 'error');
+    }
+    document.getElementById('reportModal').classList.remove('on');
+};
+
+// ── Navigation ──
+window.confirmExit = function() {
+    if (currentIdx > 0 && !confirm('هل تريد الخروج؟ سيتم حفظ تقدمك.')) return;
+    clearInterval(timerInterval);
+    location.href = 'training-v2.html';
+};
+
+window.confirmEnd = function() {
+    if (!confirm('هل تريد إنهاء التدريب وعرض النتائج؟')) return;
+    finishSession();
+};
+
+window.restartSame = function() {
+    location.reload();
+};
+
+let currentReviewFilter = 'all';
+
+window.reviewAnswers = function() {
+    if (!answers || answers.length === 0) {
+        showToast('لا توجد إجابات للمراجعة', 'info');
+        return;
+    }
+    // أخفِ شاشة النتائج، أظهر شاشة المراجعة
+    document.getElementById('resultsScreen').classList.remove('on');
+    document.getElementById('reviewScreen').classList.add('on');
+
+    // تحديث الإحصائيات
+    const total = answers.length;
+    const ok = answers.filter(a => a.isCorrect).length;
+    document.getElementById('revOkN').textContent = ok;
+    document.getElementById('revNoN').textContent = total - ok;
+    document.getElementById('revTotN').textContent = total;
+
+    currentReviewFilter = 'all';
+    renderReviewList();
+    window.scrollTo(0, 0);
+};
+
+window.backToResults = function() {
+    document.getElementById('reviewScreen').classList.remove('on');
+    document.getElementById('resultsScreen').classList.add('on');
+    window.scrollTo(0, 0);
+};
+
+window.setReviewFilter = function(btn, filter) {
+    currentReviewFilter = filter;
+    document.querySelectorAll('.rev-fbtn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    renderReviewList();
+};
+
+function renderReviewList() {
+    const list = document.getElementById('revList');
+    let filtered = answers;
+    if (currentReviewFilter === 'wrong') filtered = answers.filter(a => !a.isCorrect);
+    else if (currentReviewFilter === 'correct') filtered = answers.filter(a => a.isCorrect);
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="rev-empty">لا نتائج في هذا الفلتر</div>';
+        return;
+    }
+
+    list.innerHTML = filtered.map((a, i) => {
+        const q = a.questionData || {};
+        const choices = q.choices || [];
+        const userIdx = a.selectedIdx;
+        const correctIdx = q.correct_index;
+        const knowCorrect = typeof correctIdx === 'number';
+        const isCorrect = a.isCorrect;
+        const cls = isCorrect ? 'correct' : (userIdx == null ? 'skipped' : 'wrong');
+        const tag = (sectionMap[q.section] || q.section || 'عام') + (q.topic ? ' · ' + q.topic : '');
+        const statusIcon = isCorrect
+            ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+            : '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        const statusCls = isCorrect ? 'ok' : 'no';
+        const statusText = isCorrect ? 'صحيح' : 'خطأ';
+        const hasImg = q.image_url && q.image_url.trim();
+
+        let html = '<div class="rev-q ' + cls + '" style="animation-delay:' + (i * .03) + 's">';
+        html += '<div class="rev-q-top">';
+        html += '<span class="rev-q-tag">' + esc(tag) + '</span>';
+        html += '<div style="display:flex;align-items:center;gap:8px">';
+        html += '<span class="rev-q-idx">#' + (a.qIdx + 1) + '</span>';
+        html += '<span class="rev-q-status ' + statusCls + '">' + statusIcon + statusText + '</span>';
+        html += '</div></div>';
+        if (hasImg) html += '<img class="rev-q-img" src="' + esc(q.image_url) + '" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';
+        html += '<div class="rev-q-txt">' + safeHtml(q.question_text || '') + '</div>';
+
+        // الخيارات مع ماركرات
+        html += '<div class="rev-opts">';
+        choices.forEach((c, ci) => {
+            const isUser = ci === userIdx;
+            const isRight = knowCorrect && ci === correctIdx;
+            let optCls = '';
+            let tag = '';
+            if (isUser && !isCorrect) { optCls = 'user-wrong'; tag = '<span class="rev-opt-tag u">إجابتك</span>'; }
+            if (isRight) { optCls = 'correct'; tag = '<span class="rev-opt-tag c">الصحيحة</span>'; }
+            if (isUser && isCorrect) { optCls = 'correct'; tag = '<span class="rev-opt-tag c">✓ إجابتك</span>'; }
+            html += '<div class="rev-opt ' + optCls + '">';
+            html += '<div class="rev-opt-l">' + (ci + 1) + '</div>';
+            html += '<div class="rev-opt-v">' + safeHtml(c) + '</div>';
+            html += tag;
+            html += '</div>';
+        });
+        html += '</div>';
+
+        // الشرح
+        if (q.explanation) {
+            html += '<div class="rev-q-exp"><div class="lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>الشرح</div>' + safeHtml(q.explanation) + '</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }).join('');
+}
+
+// ── Utils ──
+window.openLB = function(src) {
+    document.getElementById('lbImg').src = src;
+    document.getElementById('lightbox').classList.add('on');
+};
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+// safeHtml: escape then re-allow specific safe tags (br, p, strong, em, sup, sub, u, b, i)
+function safeHtml(s) {
+    if (!s) return '';
+    let html = esc(s);
+    // self-closing br / hr (with optional space/slash)
+    html = html.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+    html = html.replace(/&lt;hr\s*\/?&gt;/gi, '<hr>');
+    // paired tags
+    const allowed = ['p','strong','em','u','b','i','sup','sub','span','div'];
+    for (const tag of allowed) {
+        html = html.replace(new RegExp('&lt;(' + tag + ')&gt;','gi'), '<$1>');
+        html = html.replace(new RegExp('&lt;\\/(' + tag + ')&gt;','gi'), '</$1>');
+    }
+    return html;
+}
+
+function showToast(msg, type) {
+    type = type || 'info';
+    const colors = { success: '#10b981', error: '#ef4444', info: '#6D5DF6' };
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;padding:12px 24px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s;opacity:0;font-family:IBM Plex Sans Arabic,sans-serif;max-width:90%;text-align:center;';
+    t.style.background = colors[type] || colors.info;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.style.opacity = '1');
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+})();
+</script>
+</body>
+</html>

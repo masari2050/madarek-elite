@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — التدريب</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:80px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* HEADER */
+.ph{padding:14px 16px 10px;display:flex;align-items:center;gap:8px}
+.ph img{width:26px;height:26px;border-radius:7px}
+.ph .title{font-size:16px;font-weight:700;flex:1}
+.sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;margin-right:6px;letter-spacing:.3px}
+.sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
+.sub-badge.yearly{background:linear-gradient(135deg,#8B5CF6,#6D5DF6);color:#fff;border:1px solid rgba(139,92,246,.4)}
+.sub-badge.coupon{background:var(--as);color:var(--acc)}
+.sub-badge.free{background:var(--s2);color:var(--i4)}
+
+/* TRAINING CATS */
+.trn-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.cat{padding:16px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px;animation:si .3s var(--ease) backwards}
+.cat:nth-child(1){animation-delay:.05s}.cat:nth-child(2){animation-delay:.1s}.cat:nth-child(3){animation-delay:.15s}.cat:nth-child(4){animation-delay:.2s}.cat:nth-child(5){animation-delay:.25s}
+.cat:active{transform:scale(.98)}
+.ci{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
+.ci svg{width:22px;height:22px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ci.km{background:rgba(109,93,246,.1)}.ci.km svg{stroke:var(--pri)}
+.ci.lf{background:rgba(34,197,94,.1)}.ci.lf svg{stroke:var(--suc)}
+.ci.th{background:rgba(255,138,61,.1)}.ci.th svg{stroke:var(--acc)}
+.ci.mx{background:rgba(239,68,68,.08)}.ci.mx svg{stroke:var(--dng)}
+.ci.st{background:rgba(109,93,246,.06)}.ci.st svg{stroke:var(--i4)}
+.cat .n{font-size:14px;font-weight:700}.cat .d{font-size:11px;color:var(--i3);margin-top:2px}
+.cnt{font-size:12px;font-weight:700;color:var(--i4);background:var(--s2);padding:4px 10px;border-radius:20px;border:1px solid var(--ln);white-space:nowrap}
+.clk{font-size:10px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 8px;border-radius:6px}
+
+/* AI SUGGEST */
+.ai-suggest{margin:14px 16px 0;padding:12px 14px;border-radius:var(--r);background:var(--ps);border:1px solid var(--pm);display:none;align-items:center;gap:10px;cursor:pointer;transition:background .18s}
+.ai-suggest:active{background:var(--pm)}
+.ai-suggest svg{width:18px;height:18px;stroke:var(--pri);fill:none;stroke-width:2;flex-shrink:0}
+.ai-suggest .t{font-size:13px;font-weight:600;color:var(--pri)}
+.ai-suggest .d{font-size:11px;color:var(--i3);margin-top:1px}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.modal{background:var(--sf);border-radius:24px 24px 0 0;padding:24px 20px 32px;width:100%;max-width:400px;animation:slideUp .3s var(--ease)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.mdrag{width:36px;height:4px;background:var(--ln2);border-radius:2px;margin:0 auto 16px}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.mttl{font-size:16px;font-weight:700}
+.mclose{width:28px;height:28px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;cursor:pointer}
+.mclose svg{width:14px;height:14px;stroke:var(--i3);fill:none;stroke-width:2}
+.qnum-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.qnum{padding:14px 8px;border-radius:12px;border:1.5px solid var(--ln2);text-align:center;cursor:pointer;transition:all .18s}
+.qnum.on{border-color:var(--pri);background:var(--ps)}
+.qnum .n{font-size:18px;font-weight:700;color:var(--pri)}.qnum .l{font-size:10px;color:var(--i3);margin-top:2px}
+.sm-row{margin-bottom:12px}
+.sm-lbl{font-size:11px;color:var(--i3);margin-bottom:7px}
+.sm-opts{display:flex;gap:8px}
+.smo{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--ln2);text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--i3);transition:all .18s}
+.smo.on{border-color:var(--pri);background:var(--ps);color:var(--pri)}
+.tinfo{background:var(--s2);border-radius:11px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.tinfo .l{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tinfo .l svg{width:15px;height:15px;stroke:var(--i3);fill:none;stroke-width:2}
+.tinfo .v{font-size:14px;font-weight:700;color:var(--pri)}
+.mstart{width:100%;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border:none;font-family:inherit;cursor:pointer;transition:transform .15s}
+.mstart:active{transform:scale(.98)}
+.mstart svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
+.mhint{font-size:11px;color:var(--i4);text-align:center;margin-top:8px}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="ph">
+  <img src="../icons/icon-192.png" alt="">
+  <div class="title">التدريب <span class="sub-badge" id="subBadge" style="display:none"></span></div>
+</div>
+
+<!-- AI SUGGESTION -->
+<div class="ai-suggest" id="aiSuggest" onclick="startAIPlan()">
+  <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+  <div>
+    <div class="t" id="aiSuggestTitle">تدريب مخصص من المساعد الذكي</div>
+    <div class="d" id="aiSuggestDesc">اضغط لبدء تدريب على نقطة ضعفك</div>
+  </div>
+</div>
+
+<!-- TRAINING CATEGORIES -->
+<div style="padding:14px 16px 6px;font-size:13px;font-weight:700">اختر القسم</div>
+<div class="trn-list" id="catList">
+  <div class="cat card" onclick="openModal('quant','قدرات كمي')">
+    <div class="ci km"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+    <div style="flex:1"><div class="n">قدرات كمي</div><div class="d">النسب · الهندسة · الجبر · الإحصاء</div></div>
+    <div class="cnt" id="cnt-quant">—</div>
+  </div>
+  <div class="cat card" onclick="openModal('verbal','قدرات لفظي')">
+    <div class="ci lf"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+    <div style="flex:1"><div class="n">قدرات لفظي</div><div class="d">التناظر · إكمال الجمل · الاستيعاب</div></div>
+    <div class="cnt" id="cnt-verbal">—</div>
+  </div>
+  <div class="cat card" onclick="openModal('tahsili','تحصيلي')">
+    <div class="ci th"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/></svg></div>
+    <div style="flex:1"><div class="n">تحصيلي</div><div class="d">أحياء · كيمياء · فيزياء · رياضيات</div></div>
+    <div class="cnt" id="cnt-tahsili">—</div>
+  </div>
+  <div class="cat card" onclick="openModal('mixed','كمي + لفظي مختلط')">
+    <div class="ci mx"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+    <div style="flex:1"><div class="n">كمي + لفظي مختلط</div><div class="d">تدريب شامل من القسمين</div></div>
+    <div class="cnt" id="cnt-mixed">—</div>
+  </div>
+  <div class="cat card" style="opacity:.5;pointer-events:none">
+    <div class="ci st"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></div>
+    <div style="flex:1"><div class="n">STEP</div><div class="d">كفايات اللغة الإنجليزية</div></div>
+    <div class="clk">قريباً</div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- MODAL -->
+<div class="overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mdrag"></div>
+    <div class="mh"><div class="mttl" id="mttl">القسم</div><button class="mclose" onclick="closeModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div style="font-size:10px;color:var(--i3);margin-bottom:12px">اختر عدد الأسئلة</div>
+    <div class="qnum-row">
+      <div class="qnum" onclick="selQ(this,10)"><div class="n">10</div><div class="l">سريع</div></div>
+      <div class="qnum on" onclick="selQ(this,20)"><div class="n">20</div><div class="l">متوسط</div></div>
+      <div class="qnum" onclick="selQ(this,30)"><div class="n">30</div><div class="l">مكثّف</div></div>
+      <div class="qnum" onclick="selQ(this,50)"><div class="n">50</div><div class="l">ماراثون</div></div>
+    </div>
+    <div class="sm-row">
+      <div class="sm-lbl">وقت ظهور النتائج والشرح</div>
+      <div class="sm-opts">
+        <div class="smo on" onclick="selMode(this,'instant')">فوري بعد كل سؤال</div>
+        <div class="smo" onclick="selMode(this,'end')">في نهاية الاختبار</div>
+      </div>
+    </div>
+    <div class="tinfo"><div class="l"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>الوقت المتوقع</div><div class="v" id="mtime">20 دقيقة</div></div>
+    <button class="mstart" onclick="startPractice()"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التدريب</button>
+    <div class="mhint">الأسئلة تجي عشوائية من بنك الأسئلة</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="ni on" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+let profile = null;
+let selectedSection = '';
+let selectedSectionName = '';
+let selectedCount = 20;
+let selectedMode = 'instant';
+
+const qsTrain = new URLSearchParams(window.location.search);
+const isPreview = qsTrain.has('preview');
+const forceSubscriber = qsTrain.get('force_subscriber') === 'true';
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+    M.injectGlobalTicker('training');
+
+    if (forceSubscriber) {
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            role: 'user'
+        };
+        showSubBadge();
+        loadCounts();
+        // AI suggest يعتمد على attempts الشخصية — لن يظهر
+    } else if (isPreview) {
+        loadPreview();
+        return;
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+        showSubBadge();
+        loadCounts();
+        loadAISuggest();
+    }
+
+    // Auto-open from URL params
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('section')) {
+        const sMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'كمي + لفظي مختلط'};
+        openModal(p.get('section'), sMap[p.get('section')]||p.get('section'));
+    }
+}
+
+function showSubBadge() {
+    const b = document.getElementById('subBadge');
+    const t = profile.subscription_type;
+    if (t === 'monthly') { b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = ''; }
+    else if (t === 'yearly') { b.textContent = '✦ Elite'; b.className = 'sub-badge yearly'; b.style.display = ''; }
+    else if (profile.used_coupon) { b.textContent = 'كوبون'; b.className = 'sub-badge coupon'; b.style.display = ''; }
+    // free: no badge
+}
+
+async function loadCounts() {
+    try {
+        const sections = ['quant','verbal','tahsili'];
+        for (const s of sections) {
+            const {count} = await sb.from('questions').select('*',{count:'exact',head:true}).eq('section',s).eq('disabled',false);
+            const el = document.getElementById('cnt-'+s);
+            if (el) el.textContent = M.numberWithCommas(count||0) + ' سؤال';
+        }
+        // Mixed = quant + verbal
+        const {count:qc} = await sb.from('questions').select('*',{count:'exact',head:true}).in('section',['quant','verbal']).eq('disabled',false);
+        document.getElementById('cnt-mixed').textContent = M.numberWithCommas(qc||0) + ' سؤال';
+    } catch(e){}
+}
+
+async function loadAISuggest() {
+    try {
+        const {data} = await sb.from('attempts').select('is_correct, questions(section,topic)')
+            .eq('user_id',profile.id).order('created_at',{ascending:false}).limit(100);
+        if (!data || data.length < 5) return;
+        const stats = {};
+        data.forEach(a => {
+            const t = a.questions?.topic || a.questions?.section || 'عام';
+            if (!stats[t]) stats[t] = {c:0,t:0};
+            stats[t].t++; if (a.is_correct) stats[t].c++;
+        });
+        let weak=null, weakAcc=100;
+        for (const [k,v] of Object.entries(stats)) {
+            if (v.t<3) continue;
+            const acc = Math.round(v.c/v.t*100);
+            if (acc<weakAcc) { weakAcc=acc; weak=k; }
+        }
+        if (weak) {
+            const sMap={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي'};
+            const el = document.getElementById('aiSuggest');
+            el.style.display = 'flex';
+            document.getElementById('aiSuggestTitle').textContent = 'تدريب مخصص: ' + (sMap[weak]||weak);
+            document.getElementById('aiSuggestDesc').textContent = 'أداؤك '+weakAcc+'% — اضغط لتدريب مركّز';
+            el.setAttribute('data-section', weak);
+            el.setAttribute('data-name', sMap[weak]||weak);
+        }
+    } catch(e){}
+}
+
+window.startAIPlan = function() {
+    const el = document.getElementById('aiSuggest');
+    openModal(el.getAttribute('data-section'), el.getAttribute('data-name'));
+};
+
+window.openModal = function(section, name) {
+    selectedSection = section;
+    selectedSectionName = name;
+    document.getElementById('mttl').textContent = name;
+    document.getElementById('modal').classList.add('on');
+    updateTime();
+};
+
+window.closeModal = function() {
+    document.getElementById('modal').classList.remove('on');
+};
+
+window.selQ = function(el, n) {
+    document.querySelectorAll('.qnum').forEach(q => q.classList.remove('on'));
+    el.classList.add('on');
+    selectedCount = n;
+    updateTime();
+};
+
+window.selMode = function(el, mode) {
+    document.querySelectorAll('.smo').forEach(s => s.classList.remove('on'));
+    el.classList.add('on');
+    selectedMode = mode;
+};
+
+function updateTime() {
+    document.getElementById('mtime').textContent = selectedCount + ' دقيقة';
+}
+
+window.startPractice = function() {
+    closeModal();
+    const params = new URLSearchParams({
+        section: selectedSection,
+        count: selectedCount,
+        mode: selectedMode,
+        name: selectedSectionName
+    });
+    // Preserve preview/force_subscriber flags
+    const cur = new URLSearchParams(window.location.search);
+    if (cur.has('preview')) params.set('preview','1');
+    if (cur.get('force_subscriber') === 'true') params.set('force_subscriber','true');
+    window.location.href = 'practice-v2.html?' + params.toString();
+};
+
+// Preview mode
+function loadPreview() {
+    document.getElementById('cnt-quant').textContent = '1,143 سؤال';
+    document.getElementById('cnt-verbal').textContent = '1,461 سؤال';
+    document.getElementById('cnt-tahsili').textContent = '986 سؤال';
+    document.getElementById('cnt-mixed').textContent = '2,604 سؤال';
+    const el = document.getElementById('aiSuggest');
+    el.style.display = 'flex';
+    document.getElementById('aiSuggestTitle').textContent = 'تدريب مخصص: النسب والتناسب';
+    document.getElementById('aiSuggestDesc').textContent = 'أداؤك 38% — اضغط لتدريب مركّز';
+    const b = document.getElementById('subBadge');
+    b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = '';
+}
+})();
+</script>
+</body>
+</html>

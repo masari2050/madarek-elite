@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فاتورة — مدارك النخبة</title>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--pri-l:rgba(109,93,246,.08);
+--acc:#FF8A3D;--suc:#22C55E;--dng:#EF4444;--gold:#F59E0B;
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.08);--ln2:rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px 0}
+
+.wrap{max-width:780px;margin:0 auto;padding:0 20px}
+
+/* Action Bar (hidden on print) */
+.actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.actions .btn{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;border:none;transition:transform .15s}
+.actions .btn:active{transform:scale(.97)}
+.btn-pri{background:var(--pri);color:#fff}
+.btn-pri:hover{background:#5B4DD4}
+.btn-ghost{background:var(--sf);border:1px solid var(--ln2);color:var(--i2)}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* Invoice Sheet */
+.sheet{background:var(--sf);border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.06);border:1px solid var(--ln)}
+
+.head{padding:32px 36px;background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff;position:relative;overflow:hidden}
+.head::after{content:"";position:absolute;top:-40px;left:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
+.head::before{content:"";position:absolute;bottom:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04)}
+.head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;position:relative;z-index:1;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}
+.brand img{width:54px;height:54px;border-radius:12px;background:#fff;padding:6px}
+.brand .b-n{font-size:22px;font-weight:800;line-height:1.2}
+.brand .b-s{font-size:12px;opacity:.8;margin-top:3px}
+
+.inv-meta{text-align:left;font-size:12px}
+.inv-meta .lbl{opacity:.7;margin-bottom:3px}
+.inv-meta .num{font-size:20px;font-weight:800;font-family:monospace;letter-spacing:.5px}
+.inv-meta .dt{font-size:12px;opacity:.85;margin-top:8px}
+
+.status-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;margin-top:10px;letter-spacing:.3px}
+.status-paid{background:#22C55E;color:#fff}
+.status-pending{background:var(--gold);color:#1A1D2E}
+.status-cancelled{background:var(--dng);color:#fff}
+
+/* Info Section */
+.info{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--ln)}
+.info-col{padding:24px 36px}
+.info-col:first-child{border-left:1px solid var(--ln)}
+.info-col .ttl{font-size:10px;font-weight:700;color:var(--i4);letter-spacing:1px;margin-bottom:10px}
+.info-col .nm{font-size:16px;font-weight:700;margin-bottom:4px}
+.info-col .ln{font-size:13px;color:var(--i2);margin-bottom:3px}
+.info-col .ln b{color:var(--ink);margin-left:4px}
+
+/* Items Table */
+.items{padding:0 36px}
+.items table{width:100%;border-collapse:collapse;margin:20px 0}
+.items th{text-align:right;font-size:10px;font-weight:700;color:var(--i3);letter-spacing:.5px;text-transform:uppercase;padding:12px 6px;border-bottom:2px solid var(--ink)}
+.items td{padding:14px 6px;font-size:13px;border-bottom:1px dashed var(--ln)}
+.items td:last-child,.items th:last-child{text-align:left}
+.items .it-name{font-weight:700}
+.items .it-desc{font-size:11px;color:var(--i3);margin-top:2px}
+
+/* Totals */
+.totals{padding:0 36px 32px}
+.tot-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px}
+.tot-row.sub{color:var(--i2)}
+.tot-row.tax{color:var(--acc);font-weight:600}
+.tot-row.grand{margin-top:8px;padding-top:16px;border-top:2px solid var(--ink);font-size:18px;font-weight:800;color:var(--pri)}
+.tot-row.grand .v{background:var(--pri-l);padding:4px 14px;border-radius:10px}
+
+/* Footer */
+.ft{padding:24px 36px;background:var(--s2);border-top:1px solid var(--ln);text-align:center}
+.ft .msg{font-size:13px;color:var(--i2);margin-bottom:8px;line-height:1.8}
+.ft .vat{font-size:11px;color:var(--i4);margin-top:6px}
+.ft .stamp{display:inline-block;margin-top:14px;padding:8px 18px;border:2px dashed var(--pri);color:var(--pri);border-radius:10px;font-size:12px;font-weight:700;letter-spacing:.5px}
+
+/* Loading / Error */
+.loading{padding:80px 20px;text-align:center;color:var(--i3)}
+.err-box{padding:40px 20px;text-align:center}
+.err-box .ei{font-size:48px;margin-bottom:10px}
+.err-box .et{font-size:16px;font-weight:700;color:var(--dng);margin-bottom:6px}
+.err-box .ed{font-size:13px;color:var(--i3)}
+
+/* Print styles */
+@media print {
+    body{background:#fff;padding:0}
+    .actions{display:none}
+    .sheet{box-shadow:none;border:none;border-radius:0}
+    .head{background:#6D5DF6 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .head::before,.head::after{display:none}
+    .status-paid{background:#22C55E !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .ft{background:#FAF8F5 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .tot-row.grand{color:#6D5DF6 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .tot-row.grand .v{background:rgba(109,93,246,.08) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:10mm}
+}
+
+@media (max-width:540px){
+    .wrap{padding:0 12px}
+    .head{padding:22px 20px}
+    .info{grid-template-columns:1fr}
+    .info-col{padding:18px 22px}
+    .info-col:first-child{border-left:none;border-bottom:1px solid var(--ln)}
+    .items,.totals{padding-left:22px;padding-right:22px}
+    .ft{padding:20px 22px}
+    .brand .b-n{font-size:18px}
+    .inv-meta .num{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+    <!-- Action Bar (hidden on print) -->
+    <div class="actions">
+        <button class="btn btn-ghost" onclick="window.close()">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            إغلاق
+        </button>
+        <button class="btn btn-pri" onclick="window.print()">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            طباعة / حفظ PDF
+        </button>
+    </div>
+
+    <!-- Invoice Sheet -->
+    <div id="invSheet" class="sheet">
+        <div class="loading">جاري تحميل الفاتورة...</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script>
+(function(){
+'use strict';
+
+const params = new URLSearchParams(window.location.search);
+const INV_ID = params.get('id');
+
+if (!INV_ID) {
+    renderError('رقم الفاتورة غير محدد', 'تأكد من الرابط');
+    return;
+}
+
+const M = window.MadarekV2;
+const sb = M.getSb();
+
+load();
+
+async function load() {
+    try {
+        const { data: inv, error } = await sb.from('invoices').select('*').eq('id', INV_ID).single();
+        if (error) throw error;
+        if (!inv) { renderError('الفاتورة غير موجودة', 'تحقق من رقم الفاتورة'); return; }
+        render(inv);
+    } catch(e) {
+        renderError('خطأ في تحميل الفاتورة', e.message || '');
+    }
+}
+
+function renderError(t, d) {
+    document.getElementById('invSheet').innerHTML =
+        '<div class="err-box"><div class="ei">⚠️</div><div class="et">'+esc(t)+'</div><div class="ed">'+esc(d)+'</div></div>';
+}
+
+function render(inv) {
+    const created = new Date(inv.created_at);
+    const dt = created.toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
+    const time = created.toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit' });
+
+    const statusCls = inv.payment_status === 'paid' ? 'status-paid' : inv.payment_status === 'pending' ? 'status-pending' : 'status-cancelled';
+    const statusLabel = inv.payment_status === 'paid' ? '✓ مدفوعة' : inv.payment_status === 'pending' ? 'معلقة' : 'ملغاة';
+
+    const amountBefore = Number(inv.amount_before_tax || 0).toFixed(2);
+    const tax = Number(inv.tax_amount || 0).toFixed(2);
+    const total = Number(inv.total_amount || 0).toFixed(2);
+    const method = inv.payment_method || '—';
+    const methodLabel = method === 'visa' ? 'فيزا / ماستركارد' : method === 'apple_pay' ? 'Apple Pay' : method === 'mada' ? 'مدى' : method === 'stc_pay' ? 'STC Pay' : method;
+
+    document.title = 'فاتورة ' + (inv.invoice_number || '') + ' — مدارك النخبة';
+
+    document.getElementById('invSheet').innerHTML = `
+        <div class="head">
+            <div class="head-row">
+                <div class="brand">
+                    <img src="../icons/icon-192.png" alt="مدارك النخبة">
+                    <div>
+                        <div class="b-n">مدارك النخبة</div>
+                        <div class="b-s">منصّة تدريب القدرات والتحصيلي</div>
+                    </div>
+                </div>
+                <div class="inv-meta">
+                    <div class="lbl">رقم الفاتورة</div>
+                    <div class="num">${esc(inv.invoice_number || '—')}</div>
+                    <div class="dt">${dt} · ${time}</div>
+                    <div class="status-badge ${statusCls}">${statusLabel}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <div class="info-col">
+                <div class="ttl">المورّد</div>
+                <div class="nm">مؤسسة مدارك النخبة</div>
+                <div class="ln">الرقم الضريبي: ${esc(inv.seller_vat_number || '—')}</div>
+                <div class="ln">${esc(inv.seller_address || 'المملكة العربية السعودية')}</div>
+                <div class="ln">support@madarek-elite.com</div>
+            </div>
+            <div class="info-col">
+                <div class="ttl">العميل</div>
+                <div class="nm">${esc(inv.customer_name || '—')}</div>
+                ${inv.customer_phone ? '<div class="ln">الجوال: <b>'+esc(inv.customer_phone)+'</b></div>' : ''}
+                ${inv.customer_email ? '<div class="ln">البريد: <b>'+esc(inv.customer_email)+'</b></div>' : ''}
+                ${inv.customer_vat_number ? '<div class="ln">الرقم الضريبي: <b>'+esc(inv.customer_vat_number)+'</b></div>' : ''}
+            </div>
+        </div>
+
+        <div class="items">
+            <table>
+                <thead><tr><th>البند</th><th style="text-align:center">الكمية</th><th style="text-align:left">السعر</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="it-name">${esc(inv.plan_name || 'اشتراك مدارك النخبة')}</div>
+                            <div class="it-desc">${esc(inv.plan_description || 'وصول كامل لجميع المحتوى')}</div>
+                        </td>
+                        <td style="text-align:center">1</td>
+                        <td style="text-align:left"><b>${fmt(amountBefore)} ر.س</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="totals">
+            <div class="tot-row sub"><span>المجموع قبل الضريبة</span><span>${fmt(amountBefore)} ر.س</span></div>
+            <div class="tot-row tax"><span>ضريبة القيمة المضافة (15%)</span><span>${fmt(tax)} ر.س</span></div>
+            <div class="tot-row grand"><span>الإجمالي</span><span class="v">${fmt(total)} ر.س</span></div>
+        </div>
+
+        <div class="ft">
+            <div class="msg">شكراً لثقتك بمدارك النخبة — رحلتك نحو التميّز تبدأ هنا 🎓</div>
+            <div class="vat">رُمز الدفع: <b>${esc(methodLabel)}</b></div>
+            ${inv.payment_reference ? '<div class="vat">مرجع العملية: <b>'+esc(inv.payment_reference)+'</b></div>' : ''}
+            ${inv.payment_status === 'paid' ? '<div class="stamp">✓ مدفوعة بالكامل</div>' : ''}
+        </div>
+    `;
+}
+
+function esc(s) {
+    if (s === null || s === undefined) return '';
+    const d = document.createElement('div');
+    d.textContent = String(s);
+    return d.innerHTML;
+}
+
+function fmt(n) {
+    return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+})();
+</script>
+</body>
+</html>

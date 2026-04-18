@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — اختبار تشخيصي</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* INTRO */
+.intro{min-height:100dvh;display:flex;flex-direction:column;padding:20px 6px}
+.intro-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.intro-skip{font-size:13px;color:var(--i3);font-weight:600;padding:8px 12px;border-radius:10px;transition:all .15s}
+.intro-skip:hover{background:var(--s2);color:var(--ink)}
+.intro-logo-row{display:flex;align-items:center;gap:8px}
+.intro-logo-row img{width:26px;height:26px;border-radius:7px}
+.intro-logo-row span{font-size:14px;font-weight:700}
+
+.intro-hero{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:10px 16px}
+.intro-ic{width:88px;height:88px;border-radius:26px;background:linear-gradient(135deg,var(--pri),#8B5CF6);display:grid;place-items:center;margin-bottom:22px;box-shadow:0 12px 32px rgba(109,93,246,.3)}
+.intro-ic svg{width:42px;height:42px;stroke:#fff;fill:none;stroke-width:1.8}
+.intro-h{font-size:24px;font-weight:800;line-height:1.35;margin-bottom:10px;letter-spacing:-.01em}
+.intro-p{font-size:14px;color:var(--i3);line-height:1.8;margin-bottom:28px;max-width:320px}
+
+.intro-bullets{width:100%;max-width:320px;margin-bottom:28px}
+.ib-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--s2);border:1px solid var(--ln);border-radius:var(--r);margin-bottom:10px}
+.ib-num{width:28px;height:28px;border-radius:50%;background:var(--ps);color:var(--pri);font-weight:800;font-size:13px;display:grid;place-items:center;flex-shrink:0}
+.ib-txt{font-size:13px;font-weight:600;color:var(--i2);line-height:1.5;text-align:right;flex:1}
+
+.intro-btn{width:100%;max-width:320px;padding:15px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;cursor:pointer;border:none;transition:transform .15s;box-shadow:0 6px 20px rgba(109,93,246,.3)}
+.intro-btn:active{transform:scale(.98)}
+.intro-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2}
+.intro-note{font-size:11px;color:var(--i4);margin-top:10px;text-align:center}
+
+/* QUIZ */
+.quiz{display:none;padding:14px 6px 24px;animation:si .3s var(--ease)}
+.quiz.on{display:block}
+.quiz-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 10px}
+.quiz-back{font-size:12px;color:var(--i3);font-weight:600;padding:6px 10px;border-radius:8px}
+.quiz-prog{padding:0 10px 12px;display:flex;align-items:center;gap:10px}
+.quiz-step{font-size:12px;font-weight:700;color:var(--pri);white-space:nowrap}
+.quiz-pb{flex:1;height:4px;border-radius:2px;background:var(--ln2);overflow:hidden}
+.quiz-pbf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--pri),var(--acc));transition:width .4s var(--ease)}
+
+.q-card{margin:6px 10px;padding:18px}
+.q-tag{font-size:10px;font-weight:700;color:var(--pri);background:var(--ps);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
+.q-txt{font-size:15px;font-weight:600;line-height:1.75}
+.q-opts{padding:10px 10px;display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:10px;padding:14px;border-radius:12px;border:1.5px solid var(--ln2);background:var(--sf);text-align:right;transition:all .18s;width:100%;font-family:inherit;cursor:pointer}
+.opt:active{transform:scale(.98)}
+.opt.sel{border-color:var(--pri);background:var(--ps);border-width:2px}
+.opt.sel .opt-l{background:var(--pri);color:#fff}
+.opt-l{width:28px;height:28px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--i3);flex-shrink:0;transition:all .18s}
+.opt-v{font-size:14px;font-weight:600;flex:1}
+
+.q-next{position:sticky;bottom:10px;width:calc(100% - 20px);margin:12px 10px;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;text-align:center;font-family:inherit;cursor:pointer;border:none;box-shadow:0 6px 20px rgba(109,93,246,.35);transition:transform .15s}
+.q-next:disabled{opacity:.4;cursor:not-allowed}
+.q-next:active:not(:disabled){transform:scale(.98)}
+
+/* RESULTS */
+.result{display:none;min-height:100dvh;padding:28px 6px;flex-direction:column;align-items:center;text-align:center;animation:si .4s var(--ease)}
+.result.on{display:flex}
+.res-ic{width:92px;height:92px;border-radius:28px;background:linear-gradient(135deg,var(--suc),#16A34A);display:grid;place-items:center;margin:40px 0 20px;box-shadow:0 12px 32px rgba(34,197,94,.3)}
+.res-ic svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:2.5}
+.res-h{font-size:22px;font-weight:800;margin-bottom:10px}
+.res-p{font-size:13px;color:var(--i3);line-height:1.8;margin-bottom:26px;max-width:320px;padding:0 16px}
+.res-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:320px;margin-bottom:20px}
+.res-st{padding:16px 10px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);text-align:center}
+.res-st .v{font-size:24px;font-weight:800;color:var(--pri)}
+.res-st .l{font-size:11px;color:var(--i3);margin-top:4px}
+.res-weak{margin:0 10px 18px;padding:16px;background:linear-gradient(135deg,var(--ps),var(--pm));border:1px solid var(--pm);border-radius:var(--r);max-width:320px;width:calc(100% - 20px)}
+.res-weak-ttl{font-size:13px;font-weight:700;color:var(--pt);margin-bottom:6px}
+.res-weak-txt{font-size:12px;color:var(--i2);line-height:1.7}
+.res-btn{width:100%;max-width:320px;padding:15px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;cursor:pointer;border:none;transition:transform .15s;box-shadow:0 6px 20px rgba(109,93,246,.3)}
+.res-btn:active{transform:scale(.98)}
+
+/* LOADER */
+.loader{display:flex;align-items:center;justify-content:center;padding:80px;gap:8px}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--pri);animation:bounce .6s infinite alternate}
+.loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
+
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── INTRO ── -->
+<div class="intro" id="intro">
+  <div class="intro-top">
+    <div class="intro-logo-row">
+      <img src="../icons/icon-192.png" alt="">
+      <span>مدارك النخبة</span>
+    </div>
+    <button class="intro-skip" onclick="skipOnboarding()">تخطّى</button>
+  </div>
+
+  <div class="intro-hero">
+    <div class="intro-ic">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="intro-h">اختبار تشخيصي سريع</div>
+    <div class="intro-p">نسألك بعض الأسئلة لنفهم مستواك ونبني لك خطة مخصّصة — 15 سؤال فقط</div>
+
+    <div class="intro-bullets">
+      <div class="ib-item"><div class="ib-num">1</div><div class="ib-txt">أسئلة من القدرات الكمي واللفظي</div></div>
+      <div class="ib-item"><div class="ib-num">2</div><div class="ib-txt">حدد نقاط قوتك وضعفك بدقة</div></div>
+      <div class="ib-item"><div class="ib-num">3</div><div class="ib-txt">احصل على خطة تدريب مخصّصة لك</div></div>
+    </div>
+
+    <button class="intro-btn" onclick="startQuiz()">
+      ابدأ الاختبار
+      <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+    <div class="intro-note">يستغرق 5-7 دقائق · يمكنك التخطّي في أي وقت</div>
+  </div>
+</div>
+
+<!-- ── QUIZ ── -->
+<div class="quiz" id="quiz">
+  <div class="quiz-hdr">
+    <button class="quiz-back" onclick="skipOnboarding()">تخطّى</button>
+    <div style="font-size:12px;color:var(--i3);font-weight:600">اختبار تشخيصي</div>
+  </div>
+  <div class="quiz-prog">
+    <div class="quiz-step" id="qStep">1 / 15</div>
+    <div class="quiz-pb"><div class="quiz-pbf" id="qBar" style="width:0%"></div></div>
+  </div>
+  <div id="qArea">
+    <div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+  </div>
+</div>
+
+<!-- ── RESULT ── -->
+<div class="result" id="result">
+  <div class="res-ic">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="res-h">انتهى التشخيص!</div>
+  <div class="res-p" id="resP">حلّلنا إجاباتك وجهّزنا لك خطة تدريب مخصّصة</div>
+  <div class="res-stats">
+    <div class="res-st"><div class="v" id="resQuant">0/0</div><div class="l">القدرات الكمي</div></div>
+    <div class="res-st"><div class="v" id="resVerbal">0/0</div><div class="l">القدرات اللفظي</div></div>
+  </div>
+  <div class="res-weak" id="resWeakBox" style="display:none">
+    <div class="res-weak-ttl">📌 نقطة التركيز المقترحة</div>
+    <div class="res-weak-txt" id="resWeakTxt">—</div>
+  </div>
+  <button class="res-btn" onclick="goDashboard()">
+    <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    ابدأ رحلتي في مدارك
+  </button>
+</div>
+
+</div><!-- /wrap -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+const QUESTION_COUNT = 15;
+const SAFE_COLS = 'id,question_text,choices,correct_index,section,topic';
+let profile = null;
+let questions = [];
+let currentIdx = 0;
+let answers = []; // {qIdx, selectedIdx, isCorrect, section}
+let selected = null;
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+
+    const qs = new URLSearchParams(window.location.search);
+    const isPreview = qs.has('preview');
+    const forceSubscriber = qs.get('force_subscriber') === 'true';
+
+    if (forceSubscriber) {
+        profile = { id:'00000000-0000-0000-0000-000000000000', full_name:'مشترك تجريبي', subscription_type:'monthly', role:'user' };
+    } else if (isPreview) {
+        const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
+        profile = p || { id:'mock-user-00000000' };
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+
+        // لو أكمله أو تخطاه مسبقاً → للرئيسية
+        if (profile.onboarding_completed || profile.onboarding_skipped) {
+            location.replace('dashboard-v2.html');
+            return;
+        }
+    }
+}
+
+window.startQuiz = async function() {
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('quiz').classList.add('on');
+    await loadQuestions();
+};
+
+async function loadQuestions() {
+    try {
+        // نختار من قسمي quant و verbal فقط (بدون tahsili)
+        const half = Math.ceil(QUESTION_COUNT / 2); // 8
+        const other = QUESTION_COUNT - half; // 7
+
+        const [{ data: q1 }, { data: q2 }] = await Promise.all([
+            sb.from('questions').select(SAFE_COLS).eq('disabled', false).eq('section', 'quant').is('passage_id', null).limit(200),
+            sb.from('questions').select(SAFE_COLS).eq('disabled', false).eq('section', 'verbal').is('passage_id', null).limit(200)
+        ]);
+
+        const quantPool = shuffle(q1 || []);
+        const verbalPool = shuffle(q2 || []);
+        questions = shuffle([
+            ...quantPool.slice(0, half),
+            ...verbalPool.slice(0, other)
+        ]).slice(0, QUESTION_COUNT);
+
+        if (questions.length === 0) {
+            document.getElementById('qArea').innerHTML = '<div style="padding:60px 16px;text-align:center;color:var(--i3)">لا أسئلة متاحة — نتخطى الاختبار</div>';
+            setTimeout(skipOnboarding, 2000);
+            return;
+        }
+
+        renderQuestion();
+    } catch(e) {
+        console.error(e);
+        document.getElementById('qArea').innerHTML = '<div style="padding:60px 16px;text-align:center;color:var(--dng)">خطأ في تحميل الأسئلة</div>';
+    }
+}
+
+function renderQuestion() {
+    const q = questions[currentIdx];
+    if (!q) { finishQuiz(); return; }
+
+    document.getElementById('qStep').textContent = (currentIdx + 1) + ' / ' + questions.length;
+    document.getElementById('qBar').style.width = ((currentIdx + 1) / questions.length * 100) + '%';
+
+    const tag = q.section === 'quant' ? 'قدرات كمي' : 'قدرات لفظي';
+    selected = null;
+
+    let html = '<div class="q-card card">';
+    html += '<div class="q-tag">' + tag + '</div>';
+    html += '<div class="q-txt">' + safeHtml(q.question_text) + '</div>';
+    html += '</div>';
+
+    html += '<div class="q-opts">';
+    (q.choices || []).forEach((c, i) => {
+        html += '<button class="opt" data-idx="' + i + '" onclick="pickOption(' + i + ')">';
+        html += '<div class="opt-l">' + (i + 1) + '</div>';
+        html += '<div class="opt-v">' + safeHtml(c) + '</div>';
+        html += '</button>';
+    });
+    html += '</div>';
+
+    html += '<button class="q-next" id="nextBtn" disabled onclick="nextQuestion()">'
+        + (currentIdx < questions.length - 1 ? 'التالي' : 'عرض النتيجة') + '</button>';
+
+    document.getElementById('qArea').innerHTML = html;
+    window.scrollTo(0, 0);
+}
+
+window.pickOption = function(idx) {
+    selected = idx;
+    document.querySelectorAll('.opt').forEach((o, i) => o.classList.toggle('sel', i === idx));
+    document.getElementById('nextBtn').disabled = false;
+};
+
+window.nextQuestion = function() {
+    if (selected === null) return;
+    const q = questions[currentIdx];
+    const isCorrect = typeof q.correct_index === 'number' && selected === q.correct_index;
+    answers.push({ qIdx: currentIdx, selectedIdx: selected, isCorrect, section: q.section });
+    currentIdx++;
+    if (currentIdx >= questions.length) finishQuiz();
+    else renderQuestion();
+};
+
+async function finishQuiz() {
+    // احسب نتيجة الاختبار التشخيصي
+    const byS = { quant: {correct:0, total:0}, verbal: {correct:0, total:0} };
+    answers.forEach(a => {
+        if (!byS[a.section]) return;
+        byS[a.section].total++;
+        if (a.isCorrect) byS[a.section].correct++;
+    });
+
+    const qAcc = byS.quant.total > 0 ? byS.quant.correct / byS.quant.total : 0;
+    const vAcc = byS.verbal.total > 0 ? byS.verbal.correct / byS.verbal.total : 0;
+
+    let weakest = null;
+    if (byS.quant.total > 0 && byS.verbal.total > 0) weakest = qAcc < vAcc ? 'quant' : 'verbal';
+    else if (byS.quant.total > 0) weakest = 'quant';
+    else if (byS.verbal.total > 0) weakest = 'verbal';
+
+    let weaknessSource = 'diagnostic'; // من الاختبار التشخيصي افتراضياً
+
+    // إذا كان للمستخدم محاولات سابقة فعلية → تجاهل التشخيص واستند للتاريخ
+    try {
+        const { data: atts } = await sb
+            .from('attempts')
+            .select('is_correct, questions(section)')
+            .eq('user_id', profile.id)
+            .in('questions.section', ['quant','verbal'])
+            .limit(500);
+
+        if (atts && atts.length > 0) {
+            const realStats = { quant: {correct:0, total:0}, verbal: {correct:0, total:0} };
+            atts.forEach(a => {
+                const s = a.questions?.section;
+                if (!realStats[s]) return;
+                realStats[s].total++;
+                if (a.is_correct) realStats[s].correct++;
+            });
+
+            const qReal = realStats.quant.total > 0 ? realStats.quant.correct / realStats.quant.total : null;
+            const vReal = realStats.verbal.total > 0 ? realStats.verbal.correct / realStats.verbal.total : null;
+
+            let realWeakest = null;
+            if (qReal !== null && vReal !== null) realWeakest = qReal < vReal ? 'quant' : 'verbal';
+            else if (qReal !== null) realWeakest = 'quant';
+            else if (vReal !== null) realWeakest = 'verbal';
+
+            if (realWeakest) {
+                weakest = realWeakest;
+                weaknessSource = 'history';
+                byS.quant_history = realStats.quant;
+                byS.verbal_history = realStats.verbal;
+            }
+        }
+    } catch(e) { console.warn('history check failed:', e); }
+
+    const result = {
+        quant: byS.quant,
+        verbal: byS.verbal,
+        weakest,
+        weakness_source: weaknessSource,
+        quant_history: byS.quant_history || null,
+        verbal_history: byS.verbal_history || null,
+        completed_at: new Date().toISOString()
+    };
+
+    // احفظ في profiles
+    try {
+        await sb.from('profiles').update({
+            onboarding_completed: true,
+            onboarding_result: result
+        }).eq('id', profile.id);
+    } catch(e) { console.warn('save onboarding failed:', e); }
+
+    // اعرض النتيجة
+    document.getElementById('quiz').classList.remove('on');
+    const res = document.getElementById('result');
+    document.getElementById('resQuant').textContent = byS.quant.correct + '/' + byS.quant.total;
+    document.getElementById('resVerbal').textContent = byS.verbal.correct + '/' + byS.verbal.total;
+
+    if (weakest) {
+        const name = weakest === 'quant' ? 'القدرات الكمي' : 'القدرات اللفظي';
+        let acc, prefix;
+        if (weaknessSource === 'history') {
+            const hist = byS[weakest + '_history'];
+            acc = hist && hist.total > 0 ? Math.round((hist.correct / hist.total) * 100) : 0;
+            prefix = 'حسب تاريخك الفعلي (' + (hist?.total || 0) + ' سؤال سابق)';
+        } else {
+            acc = weakest === 'quant' ? Math.round(qAcc*100) : Math.round(vAcc*100);
+            prefix = 'حسب نتيجة التشخيص';
+        }
+        document.getElementById('resWeakBox').style.display = '';
+        document.getElementById('resWeakTxt').textContent =
+            prefix + '، يُنصح بالتركيز على ' + name + ' (' + acc + '%). سنبني خطة يومية تبدأ من هنا.';
+    }
+    res.classList.add('on');
+}
+
+window.skipOnboarding = async function() {
+    try {
+        await sb.from('profiles').update({ onboarding_skipped: true }).eq('id', profile.id);
+    } catch(e) {}
+    goDashboard();
+};
+
+window.goDashboard = function() {
+    const qs = new URLSearchParams(location.search);
+    const extra = qs.has('force_subscriber') ? '?force_subscriber=true' : (qs.has('preview') ? '?preview' : '');
+    location.replace('dashboard-v2.html' + extra);
+};
+
+// ── Utils ──
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function safeHtml(s) {
+    if (!s) return '';
+    let html = esc(s);
+    html = html.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+    const allowed = ['p','strong','em','u','b','i','sup','sub','span','div'];
+    for (const tag of allowed) {
+        html = html.replace(new RegExp('&lt;(' + tag + ')&gt;','gi'), '<$1>');
+        html = html.replace(new RegExp('&lt;\\/(' + tag + ')&gt;','gi'), '</$1>');
+    }
+    return html;
+}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — التقارير</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:80px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.ph{padding:14px 16px 10px;display:flex;align-items:center;gap:8px}
+.ph img{width:26px;height:26px;border-radius:7px}
+.ph .title{font-size:16px;font-weight:700;flex:1}
+
+/* SEGMENT */
+.seg{display:flex;margin:0 6px;background:var(--s2);border-radius:10px;padding:3px;border:1px solid var(--ln)}
+.seg-b{flex:1;padding:8px 4px;border-radius:8px;text-align:center;font-size:12px;font-weight:600;color:var(--i3);cursor:pointer;transition:all .2s}
+.seg-b.on{background:var(--pri);color:#fff}
+
+/* TABS — لون لكل تبويب */
+.rtabs{display:flex;border-bottom:1px solid var(--ln);margin:12px 0 0;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.rtabs::-webkit-scrollbar{display:none}
+.rtab{font-size:13px;font-weight:600;padding:10px 14px;color:var(--i3);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.rtab.on[data-tab="stats"]{color:var(--pri);border-bottom-color:var(--pri)}
+.rtab.on[data-tab="err"]{color:var(--dng);border-bottom-color:var(--dng)}
+.rtab.on[data-tab="saved"]{color:var(--acc);border-bottom-color:var(--acc)}
+.rtab.on[data-tab="ai"]{color:var(--gold);border-bottom-color:var(--gold)}
+.rtab.on[data-tab="lead"]{color:#8B5CF6;border-bottom-color:#8B5CF6}
+
+/* LOUNGE — bar chart animation */
+@keyframes grow{from{height:0}to{height:var(--final-h)}}
+.wk-bar{animation:grow .9s var(--ease) both}
+.wk-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.wk-num{font-size:10px;color:var(--i3);margin-bottom:4px;font-weight:700;opacity:0;animation:si .3s var(--ease) .9s both}
+
+/* TAB PANELS */
+.rp{display:none;animation:si .25s var(--ease)}
+.rp.on{display:block}
+
+/* STATS */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 0}
+.sc{padding:16px}
+.sc .lbl{font-size:11px;color:var(--i3);margin-bottom:6px}
+.sc .val{font-size:24px;font-weight:700;line-height:1}
+.sc .val small{font-size:13px;color:var(--i3);font-weight:400}
+.sc .ch{font-size:10px;font-weight:600;color:var(--suc);margin-top:4px}
+
+/* TOPIC TABLE */
+.topic-tbl{margin:14px 16px 0;padding:14px}
+.topic-tbl h4{font-size:14px;font-weight:700;margin-bottom:10px}
+.topic-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--ln)}
+.topic-row:last-child{border-bottom:none}
+.topic-row .tn{flex:1;font-size:13px;font-weight:600}
+.topic-row .tp{flex:2;height:6px;background:var(--s2);border-radius:3px;overflow:hidden}
+.topic-row .tpf{height:100%;border-radius:3px}
+.topic-row .tv{font-size:12px;font-weight:700;min-width:42px;text-align:left}
+
+/* ERROR / SAVED LIST */
+.filter-row{display:flex;gap:8px;padding:14px 16px 0;overflow-x:auto;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filt{padding:7px 14px;border-radius:20px;border:1.5px solid var(--ln2);font-size:12px;font-weight:600;color:var(--i3);white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .18s}
+.filt.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.err-list{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.err{padding:14px}
+.err-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.err-tag{font-size:10px;font-weight:700;color:var(--pri);background:var(--ps);padding:2px 8px;border-radius:10px}
+.err-dt{font-size:10px;color:var(--i4)}
+.err-q{font-size:14px;font-weight:600;line-height:1.7;margin-bottom:10px}
+.err-img{width:100%;border-radius:8px;margin-bottom:8px;cursor:pointer}
+.err-ans{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.err-a{padding:8px 12px;border-radius:8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.err-a.wrong{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.35);color:var(--dng)}
+.err-a.right{background:rgba(34,197,94,.12);border:2px solid rgba(34,197,94,.35);color:var(--suc)}
+.err-a .lbl{font-size:10px;font-weight:700}
+.err-exp{background:#FEFCE8;border:1px solid #FDE68A;border-radius:9px;padding:10px 12px;font-size:12px;color:var(--i2);line-height:1.7}
+.err-exp .lbl{font-size:10px;font-weight:700;color:#92400E;margin-bottom:4px}
+.dark .err-exp{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:#E8EAF6}
+.dark .err-exp .lbl{color:#FCD34D}
+.err-total{font-size:12px;color:var(--i3);padding:14px 16px 4px}
+
+/* AI REPORT */
+.ai-rpt{padding:14px 16px}
+.ai-dot-row{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.ai-dot-item{display:flex;gap:10px;align-items:start;padding:12px 14px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r)}
+.ai-dot-item .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.ai-dot-item.warn .dot{background:var(--dng)}
+.ai-dot-item.good .dot{background:var(--suc)}
+.ai-dot-item.info .dot{background:var(--pri)}
+.ai-dot-item .txt{font-size:13px;color:var(--i2);line-height:1.7}
+.ai-dot-item .txt b{color:var(--ink)}
+.ai-plan-box{padding:14px;border-radius:var(--r);background:linear-gradient(135deg,var(--ps),var(--pm));border:1px solid var(--pm);margin-top:8px}
+.ai-plan-ttl{font-size:14px;font-weight:700;color:var(--pri);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-plan-ttl svg{width:14px;height:14px;stroke:var(--pri);fill:none;stroke-width:2}
+.ai-plan-txt{font-size:12px;color:var(--i2);line-height:1.7;margin-bottom:10px}
+.ai-plan-btn{width:100%;padding:10px;border-radius:9px;background:var(--pri);color:#fff;font-size:13px;font-weight:700;border:none;font-family:inherit;cursor:pointer}
+
+/* LEADERBOARD */
+.lead-teaser{margin:14px 16px;padding:14px;text-align:center;background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff;border-radius:var(--r2)}
+.lead-teaser .t{font-size:14px;font-weight:700;margin-bottom:3px}
+.lead-teaser .d{font-size:12px;color:rgba(255,255,255,.75)}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:20px 16px 10px;align-items:end}
+.pod{text-align:center}
+.pod-av{width:56px;height:56px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:700;margin:0 auto 6px;position:relative}
+.pod.p1 .pod-av{width:64px;height:64px;font-size:22px;background:linear-gradient(135deg,#FFD700,#FFA500)}
+.pod-crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:20px}
+.pod-nm{font-size:13px;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod-xp{font-size:11px;color:var(--i3)}
+.pod-bar{height:0;background:var(--s2);border:1px solid var(--ln);border-radius:8px 8px 0 0;margin-top:8px;display:flex;align-items:flex-end;justify-content:center;font-size:13px;font-weight:700;color:var(--i3);padding-bottom:6px}
+.pod.p1 .pod-bar{height:60px;background:linear-gradient(180deg,rgba(255,215,0,.15),var(--s2))}
+.pod.p2 .pod-bar{height:40px}
+.pod.p3 .pod-bar{height:25px}
+.lead-list{padding:10px 16px 14px;display:flex;flex-direction:column;gap:6px}
+.lead-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r)}
+.lead-item.me{background:var(--ps);border-color:var(--pm)}
+.lead-rank{width:24px;text-align:center;font-size:13px;font-weight:700;color:var(--i3)}
+.lead-item.me .lead-rank{color:var(--pri)}
+.lead-av{width:32px;height:32px;border-radius:50%;background:var(--s2);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--i2);flex-shrink:0}
+.lead-nm{flex:1;font-size:13px;font-weight:600}
+.lead-xp{font-size:12px;font-weight:700;color:var(--pri)}
+
+/* EMPTY */
+.empty{padding:60px 16px;text-align:center;color:var(--i3);font-size:13px}
+.empty svg{width:48px;height:48px;stroke:var(--i4);fill:none;stroke-width:1.5;margin-bottom:10px}
+.empty-big{margin:16px;padding:32px 20px;text-align:center;background:linear-gradient(135deg,var(--ps),var(--pm));border-radius:var(--r2);border:1px solid var(--pm);animation:si .4s var(--ease)}
+.empty-big .em-ic{font-size:48px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+.empty-big .em-t{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.empty-big .em-d{font-size:13px;color:var(--i2);line-height:1.8;margin-bottom:16px}
+.empty-big .em-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:var(--pri);color:#fff;border-radius:22px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 12px rgba(109,93,246,.3);transition:transform .15s}
+.empty-big .em-btn:active{transform:scale(.97)}
+.empty-big .em-btn svg{width:14px;height:14px;stroke:#fff;fill:#fff;stroke-width:2}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+/* AI rich narrative */
+.ai-hero{margin:14px 16px 10px;padding:18px 16px;border-radius:var(--r2);background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid rgba(245,158,11,.25);position:relative;overflow:hidden}
+.dark .ai-hero{background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.08));border-color:rgba(245,158,11,.3)}
+.ai-hero::before{content:"✨";position:absolute;top:-8px;left:-6px;font-size:56px;opacity:.15}
+.ai-hero .hh{font-size:12px;font-weight:700;color:#92400E;margin-bottom:4px;letter-spacing:.3px}
+.dark .ai-hero .hh{color:#FCD34D}
+.ai-hero .ht{font-size:15px;font-weight:700;color:var(--ink);line-height:1.7;position:relative;z-index:1}
+.ai-section{margin:12px 16px 0}
+.ai-section-ttl{font-size:13px;font-weight:700;color:var(--i2);margin:14px 0 8px;display:flex;align-items:center;gap:6px}
+.ai-section-ttl::before{content:"";width:3px;height:14px;background:var(--pri);border-radius:2px}
+.ai-metric{padding:12px 14px;border-radius:var(--r);background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;gap:12px;margin-bottom:8px;animation:si .3s var(--ease) both}
+.ai-metric.weak{border-right:3px solid var(--dng)}
+.ai-metric.strong{border-right:3px solid var(--suc)}
+.ai-metric .mi{font-size:22px;flex-shrink:0}
+.ai-metric .mb{flex:1;min-width:0}
+.ai-metric .mt{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.ai-metric .md{font-size:11px;color:var(--i3)}
+.ai-metric .mv{font-size:16px;font-weight:700}
+.ai-metric.weak .mv{color:var(--dng)}
+.ai-metric.strong .mv{color:var(--suc)}
+.ai-predict{margin:14px 16px;padding:14px 16px;border-radius:var(--r);background:linear-gradient(135deg,var(--ps),rgba(139,92,246,.08));border:1px dashed var(--pm);font-size:13px;color:var(--i2);line-height:1.8}
+.ai-predict b{color:var(--pri);font-weight:700}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;display:none;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.on{display:flex}
+.lightbox img{max-width:95%;max-height:90vh;border-radius:8px}
+
+.loader{display:flex;align-items:center;justify-content:center;padding:60px;gap:8px}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--pri);animation:bounce .6s infinite alternate}
+.loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="ph">
+  <img src="../icons/icon-192.png" alt="">
+  <div class="title">التقارير</div>
+</div>
+
+<!-- SEGMENT -->
+<div class="seg">
+  <div class="seg-b on" data-period="week" onclick="setPeriod(this,'week')">الأسبوع</div>
+  <div class="seg-b" data-period="month" onclick="setPeriod(this,'month')">الشهر</div>
+  <div class="seg-b" data-period="all" onclick="setPeriod(this,'all')">الكل</div>
+</div>
+
+<!-- TABS -->
+<div class="rtabs">
+  <div class="rtab on" data-tab="stats" onclick="setTab(this,'stats')">إحصائياتي</div>
+  <div class="rtab" data-tab="err" onclick="setTab(this,'err')">أخطائي</div>
+  <div class="rtab" data-tab="saved" onclick="setTab(this,'saved')">المحفوظة</div>
+  <div class="rtab" data-tab="ai" onclick="setTab(this,'ai')">تقرير ذكي</div>
+  <div class="rtab" data-tab="lead" onclick="setTab(this,'lead')">المتصدرون</div>
+</div>
+
+<!-- STATS TAB -->
+<div class="rp on" id="rp-stats">
+  <div class="sgrid">
+    <div class="sc card"><div class="lbl">نسبة الدقة</div><div class="val" id="stAcc">—</div><div class="ch" id="stAccCh"></div></div>
+    <div class="sc card"><div class="lbl">الإجابات الصحيحة</div><div class="val" id="stCorrect">—</div><div class="ch" id="stCorrectCh"></div></div>
+    <div class="sc card"><div class="lbl">الأسئلة المحلولة</div><div class="val" id="stSolved">—</div><div class="ch" id="stSolvedCh"></div></div>
+    <div class="sc card"><div class="lbl">أيام التدريب</div><div class="val" id="stDays">—</div><div class="ch" id="stDaysCh"></div></div>
+  </div>
+
+  <!-- إحصائيات متقدمة -->
+  <div class="sgrid">
+    <div class="sc card">
+        <div class="lbl">متوسط وقت الإجابة</div>
+        <div class="val" id="stAvgTime">—<small>ث</small></div>
+        <div class="ch" id="stAvgTimeHint" style="color:var(--i4)"></div>
+    </div>
+    <div class="sc card">
+        <div class="lbl">أكثر قسم درّبت عليه</div>
+        <div class="val" id="stTopSection" style="font-size:18px">—</div>
+        <div class="ch" id="stTopSectionCount" style="color:var(--i4)"></div>
+    </div>
+  </div>
+
+  <!-- Mini chart — آخر 7 أيام -->
+  <div class="topic-tbl card">
+    <h4>نشاطك في آخر 7 أيام</h4>
+    <div id="weekChart" style="display:flex;align-items:flex-end;gap:6px;height:120px;padding:10px 4px 0">
+        <div class="loader" style="width:100%"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+    </div>
+    <div id="weekLabels" style="display:flex;gap:6px;padding:6px 4px 0;font-size:9px;color:var(--i4)"></div>
+  </div>
+
+  <div class="topic-tbl card">
+    <h4>الأداء حسب الموضوع</h4>
+    <div id="topicRows"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+  </div>
+</div>
+
+<!-- ERRORS TAB -->
+<div class="rp" id="rp-err">
+  <div class="err-total" id="errTotal">—</div>
+  <div class="filter-row">
+    <button class="filt on" data-f="all" onclick="setErrFilter(this,'all')">الكل</button>
+    <button class="filt" data-f="quant" onclick="setErrFilter(this,'quant')">كمي</button>
+    <button class="filt" data-f="verbal" onclick="setErrFilter(this,'verbal')">لفظي</button>
+    <button class="filt" data-f="tahsili" onclick="setErrFilter(this,'tahsili')">تحصيلي</button>
+  </div>
+  <div class="err-list" id="errList"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+</div>
+
+<!-- SAVED TAB -->
+<div class="rp" id="rp-saved">
+  <div class="err-total" id="savedTotal">—</div>
+  <div class="err-list" id="savedList"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+</div>
+
+<!-- AI REPORT TAB -->
+<div class="rp" id="rp-ai">
+  <div class="ai-rpt">
+    <div class="ai-dot-row" id="aiInsights"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+    <div class="ai-plan-box" id="aiPlan" style="display:none">
+      <div class="ai-plan-ttl"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>خطة الأسبوع الموصى بها</div>
+      <div class="ai-plan-txt" id="aiPlanTxt"></div>
+      <button class="ai-plan-btn" onclick="location.href='training-v2.html'">ابدأ الخطة الآن</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD TAB -->
+<div class="rp" id="rp-lead">
+  <div class="lead-teaser" id="leadTeaser" style="display:none">
+    <div class="t" id="leadTeaseTitle"></div>
+    <div class="d" id="leadTeaseDesc"></div>
+  </div>
+  <div class="podium" id="podium"></div>
+  <div class="lead-list" id="leadList"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+</div>
+
+</div><!-- /wrap -->
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')">
+  <img id="lbImg" src="" alt="">
+</div>
+
+<nav class="nav">
+  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni on" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+const sectionMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'مختلط'};
+const topicMap = {
+    algebra:'الجبر', geometry:'الهندسة', arithmetic:'الحساب', statistics:'الإحصاء',
+    percent:'النسب المئوية', percentage:'النسب المئوية', ratios:'النسب والتناسب', ratio:'النسب والتناسب',
+    fractions:'الكسور', word_problems:'المسائل اللفظية', equations:'المعادلات',
+    probability:'الاحتمالات', analogy:'التناظر', sentence_completion:'إكمال الجمل',
+    reading:'الاستيعاب', reading_comp:'الاستيعاب', antonyms:'المتضادات', synonyms:'المترادفات',
+    biology:'الأحياء', chemistry:'الكيمياء', physics:'الفيزياء', math:'الرياضيات', general:'عام'
+};
+function arTopic(t){ if(!t) return 'عام'; return topicMap[t] || sectionMap[t] || t; }
+let profile = null;
+let period = 'week';
+let currentTab = 'stats';
+let errFilter = 'all';
+let loaded = { stats:false, err:false, saved:false, ai:false, lead:false };
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+    M.injectGlobalTicker('reports');
+
+    const params = new URLSearchParams(window.location.search);
+    const isPreview = params.has('preview');
+    const forceSubscriber = params.get('force_subscriber') === 'true';
+
+    if (forceSubscriber) {
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            subscription_type: 'monthly',
+            xp: 560, level: 3, level_name: 'متدرب', streak_days: 5,
+            referral_code: 'MADAR-PREVIEW'
+        };
+    } else if (isPreview) {
+        loadPreviewMode();
+        return;
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+    }
+
+    // Deep link: ?tab=err|saved|ai|lead
+    const tab = params.get('tab');
+    const validTabs = ['stats','err','saved','ai','lead'];
+    if (tab && validTabs.includes(tab)) {
+        const tabEl = document.querySelector('[data-tab="'+tab+'"]');
+        if (tabEl) setTab(tabEl, tab);
+        else loadStatsTab();
+    } else {
+        loadStatsTab();
+    }
+}
+
+// ── Period & Tab ──
+window.setPeriod = function(el, p) {
+    document.querySelectorAll('.seg-b').forEach(s => s.classList.remove('on'));
+    el.classList.add('on');
+    period = p;
+    // Reset loaded and reload current
+    loaded = { stats:false, err:false, saved:false, ai:false, lead:false };
+    loadCurrentTab();
+};
+
+window.setTab = function(el, tab) {
+    document.querySelectorAll('.rtab').forEach(r => r.classList.remove('on'));
+    document.querySelectorAll('.rp').forEach(r => r.classList.remove('on'));
+    el.classList.add('on');
+    document.getElementById('rp-' + tab).classList.add('on');
+    currentTab = tab;
+    loadCurrentTab();
+};
+
+function loadCurrentTab() {
+    if (currentTab === 'stats' && !loaded.stats) loadStatsTab();
+    else if (currentTab === 'err' && !loaded.err) loadErrTab();
+    else if (currentTab === 'saved' && !loaded.saved) loadSavedTab();
+    else if (currentTab === 'ai' && !loaded.ai) loadAITab();
+    else if (currentTab === 'lead' && !loaded.lead) loadLeadTab();
+}
+
+// ── Period dates ──
+function getPeriodStart() {
+    const d = new Date();
+    if (period === 'week') d.setDate(d.getDate() - 7);
+    else if (period === 'month') d.setDate(d.getDate() - 30);
+    else d.setFullYear(2020);
+    return d.toISOString();
+}
+
+// ── STATS TAB ──
+async function loadStatsTab() {
+    try {
+        const since = getPeriodStart();
+        const { data: atts } = await sb.from('attempts')
+            .select('is_correct, created_at, questions(section,topic)')
+            .eq('user_id', profile.id).gte('created_at', since);
+        const all = atts || [];
+        const total = all.length;
+        const correct = all.filter(a => a.is_correct).length;
+        const acc = total > 0 ? Math.round(correct/total*100) : 0;
+
+        countUp('stAcc', acc, { suffix: '<small>%</small>', dur: 900 });
+        countUp('stCorrect', correct, { dur: 900 });
+        countUp('stSolved', total, { dur: 1100 });
+
+        // Training days
+        const { data: streaks } = await sb.from('daily_streaks')
+            .select('streak_date').eq('user_id', profile.id).eq('completed', true).gte('streak_date', since.split('T')[0]);
+        const days = streaks?.length || 0;
+        const maxDays = period==='week'?7:period==='month'?30:'∞';
+        countUp('stDays', days, { suffix: '<small>/' + maxDays + '</small>', dur: 800 });
+
+        // ── متوسط وقت الإجابة (من practice_sessions) ──
+        try {
+            const { data: sessions } = await sb.from('practice_sessions')
+                .select('total_questions,started_at,completed_at')
+                .eq('user_id', profile.id).gte('started_at', since).not('completed_at','is',null);
+            let totalSecs = 0, totalQs = 0;
+            (sessions||[]).forEach(s => {
+                if (s.completed_at && s.started_at && s.total_questions > 0) {
+                    const dur = (new Date(s.completed_at) - new Date(s.started_at)) / 1000;
+                    if (dur > 0 && dur < 7200) { // استبعد جلسات أطول من ساعتين (غير مكتملة فعلاً)
+                        totalSecs += dur; totalQs += s.total_questions;
+                    }
+                }
+            });
+            const avgSec = totalQs > 0 ? Math.round(totalSecs / totalQs) : 0;
+            if (avgSec) countUp('stAvgTime', avgSec, { suffix: '<small>ث</small>', dur: 800 });
+            else document.getElementById('stAvgTime').innerHTML = '—<small>ث</small>';
+            document.getElementById('stAvgTimeHint').textContent = avgSec > 0 ? ('من ' + (sessions.length) + ' جلسة') : 'لا جلسات مكتملة';
+        } catch(e){}
+
+        // ── أكثر قسم درّبت عليه ──
+        const secCounts = {};
+        all.forEach(a => {
+            const s = a.questions?.section;
+            if (s) secCounts[s] = (secCounts[s]||0) + 1;
+        });
+        const topSec = Object.entries(secCounts).sort((a,b)=>b[1]-a[1])[0];
+        if (topSec) {
+            document.getElementById('stTopSection').textContent = sectionMap[topSec[0]] || topSec[0];
+            document.getElementById('stTopSectionCount').textContent = topSec[1] + ' سؤال';
+        } else {
+            document.getElementById('stTopSection').textContent = '—';
+            document.getElementById('stTopSectionCount').textContent = 'ابدأ التدريب';
+        }
+
+        // ── Mini chart — نشاط آخر 7 أيام ──
+        const days7 = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(); d.setDate(d.getDate() - i);
+            days7.push({ date: d.toISOString().split('T')[0], label: ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'][d.getDay()].substring(0,3), count: 0 });
+        }
+        // جلب نشاط آخر 7 أيام من attempts (حتى لو period!=week)
+        const weekAgo = new Date(Date.now()-7*864e5).toISOString();
+        const { data: weekAtts } = await sb.from('attempts')
+            .select('created_at').eq('user_id', profile.id).gte('created_at', weekAgo);
+        (weekAtts||[]).forEach(a => {
+            const d = a.created_at.split('T')[0];
+            const day = days7.find(x => x.date === d);
+            if (day) day.count++;
+        });
+        const maxCount = Math.max(1, ...days7.map(d=>d.count));
+        const chart = document.getElementById('weekChart');
+        const labelsDiv = document.getElementById('weekLabels');
+        chart.innerHTML = days7.map((d, i) => {
+            const h = Math.max(4, (d.count/maxCount) * 100);
+            const color = d.count > 0 ? 'linear-gradient(180deg,var(--pri),#8B5CF6)' : 'var(--s3)';
+            const today = d.date === new Date().toISOString().split('T')[0];
+            return '<div class="wk-col"><div class="wk-num">'+d.count+'</div>'
+                + '<div class="wk-bar" style="width:100%;background:'+color+';border-radius:6px 6px 0 0;--final-h:'+h+'%;animation-delay:'+(i*60)+'ms;'
+                + (today?'box-shadow:0 0 0 2px var(--acc);':'')+'"></div></div>';
+        }).join('');
+        labelsDiv.innerHTML = days7.map(d => '<div style="flex:1;text-align:center">'+d.label+'</div>').join('');
+
+        // Topic breakdown
+        const topicStats = {};
+        all.forEach(a => {
+            const t = arTopic(a.questions?.topic) || sectionMap[a.questions?.section] || 'عام';
+            if (!topicStats[t]) topicStats[t] = {c:0,t:0};
+            topicStats[t].t++; if (a.is_correct) topicStats[t].c++;
+        });
+        const topics = Object.entries(topicStats).map(([k,v])=>({k,acc:Math.round(v.c/v.t*100),count:v.t}))
+            .sort((a,b)=>b.count-a.count).slice(0,6);
+
+        const rows = document.getElementById('topicRows');
+        if (topics.length === 0) {
+            rows.innerHTML = '<div class="empty" style="padding:20px 0">ابدأ التدريب وستظهر هنا نسبة دقتك في كل موضوع</div>';
+        } else {
+            rows.innerHTML = topics.map(t => {
+                const color = t.acc >= 75 ? 'var(--suc)' : t.acc >= 50 ? 'var(--pri)' : 'var(--dng)';
+                return '<div class="topic-row"><div class="tn">'+esc(t.k)+'</div><div class="tp"><div class="tpf" style="width:'+t.acc+'%;background:'+color+'"></div></div><div class="tv" style="color:'+color+'">'+t.acc+'%</div></div>';
+            }).join('');
+        }
+        loaded.stats = true;
+    } catch(e){console.error(e);}
+}
+
+// ── ERRORS TAB ──
+window.setErrFilter = function(el, f) {
+    document.querySelectorAll('.filt').forEach(x => x.classList.remove('on'));
+    el.classList.add('on');
+    errFilter = f;
+    loadErrTab();
+};
+
+async function loadErrTab() {
+    const list = document.getElementById('errList');
+    list.innerHTML = '<div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>';
+    try {
+        const since = getPeriodStart();
+        let q = sb.from('attempts')
+            .select('id, selected_answer, created_at, questions!inner(id,question_text,choices,correct_index,explanation,image_url,section,topic)')
+            .eq('user_id', profile.id).eq('is_correct', false)
+            .gte('created_at', since).order('created_at',{ascending:false}).limit(50);
+        const { data } = await q;
+        const filtered = errFilter === 'all' ? (data || []) : (data || []).filter(a => a.questions?.section === errFilter);
+        document.getElementById('errTotal').textContent = 'إجمالي الأخطاء: ' + filtered.length;
+
+        if (filtered.length === 0) {
+            list.innerHTML =
+                '<div class="empty-big">'
+              +   '<div class="em-ic">🎯</div>'
+              +   '<div class="em-t">لا أخطاء في الفترة المحددة</div>'
+              +   '<div class="em-d">إما أنك لم تتدرب بعد، أو أن إجاباتك كلها صحيحة — الحالتان تستحقان التدريب!</div>'
+              +   '<a class="em-btn" href="training-v2.html"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التدريب</a>'
+              + '</div>';
+            loaded.err = true;
+            return;
+        }
+
+        list.innerHTML = filtered.map(a => renderErrCard(a.questions, a.selected_answer, a.created_at)).join('');
+        loaded.err = true;
+    } catch(e){console.error(e);}
+}
+
+function renderErrCard(q, selectedIdx, dt) {
+    if (!q) return '';
+    const tag = sectionMap[q.section] || q.section || 'عام';
+    const dtStr = new Date(dt).toLocaleDateString('ar-SA', {month:'short',day:'numeric'});
+    const choices = q.choices || [];
+    const userAns = choices[selectedIdx] || '—';
+    const rightAns = choices[q.correct_index] || '—';
+    const hasImg = q.image_url && q.image_url.trim();
+    let html = '<div class="err card"><div class="err-head"><span class="err-tag">'+esc(tag)+'</span><span class="err-dt">'+dtStr+'</span></div>';
+    if (hasImg) html += '<img class="err-img" src="'+esc(q.image_url)+'" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';
+    html += '<div class="err-q">'+esc(q.question_text)+'</div>';
+    html += '<div class="err-ans">';
+    html += '<div class="err-a wrong"><span class="lbl">إجابتك</span><span>'+esc(userAns)+'</span></div>';
+    html += '<div class="err-a right"><span class="lbl">الصحيحة</span><span>'+esc(rightAns)+'</span></div>';
+    html += '</div>';
+    if (q.explanation) html += '<div class="err-exp"><div class="lbl">الشرح</div>'+esc(q.explanation)+'</div>';
+    html += '</div>';
+    return html;
+}
+
+// ── SAVED TAB ──
+async function loadSavedTab() {
+    const list = document.getElementById('savedList');
+    list.innerHTML = '<div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>';
+    try {
+        const { data } = await sb.from('saved_questions')
+            .select('saved_at, questions(id,question_text,choices,correct_index,explanation,image_url,section,topic)')
+            .eq('user_id', profile.id).order('saved_at',{ascending:false}).limit(50);
+        const arr = data || [];
+        document.getElementById('savedTotal').textContent = 'إجمالي المحفوظة: ' + arr.length;
+        if (arr.length === 0) {
+            list.innerHTML =
+                '<div class="empty-big">'
+              +   '<div class="em-ic">🔖</div>'
+              +   '<div class="em-t">لا أسئلة محفوظة بعد</div>'
+              +   '<div class="em-d">أثناء التدريب، اضغط أيقونة الحفظ على أي سؤال مهم وسيظهر هنا لمراجعته لاحقاً.</div>'
+              +   '<a class="em-btn" href="training-v2.html"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التدريب</a>'
+              + '</div>';
+            loaded.saved = true;
+            return;
+        }
+        list.innerHTML = arr.map(s => {
+            const q = s.questions;
+            if (!q) return '';
+            const tag = sectionMap[q.section] || q.section || 'عام';
+            const dt = new Date(s.saved_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+            const hasImg = q.image_url && q.image_url.trim();
+            let html = '<div class="err card"><div class="err-head"><span class="err-tag">'+esc(tag)+'</span><span class="err-dt">'+dt+'</span></div>';
+            if (hasImg) html += '<img class="err-img" src="'+esc(q.image_url)+'" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';
+            html += '<div class="err-q">'+esc(q.question_text)+'</div>';
+            // Show correct answer
+            const rightAns = (q.choices||[])[q.correct_index] || '—';
+            html += '<div class="err-ans"><div class="err-a right"><span class="lbl">الإجابة الصحيحة</span><span>'+esc(rightAns)+'</span></div></div>';
+            if (q.explanation) html += '<div class="err-exp"><div class="lbl">الشرح</div>'+esc(q.explanation)+'</div>';
+            html += '</div>';
+            return html;
+        }).join('');
+        loaded.saved = true;
+    } catch(e){console.error(e);}
+}
+
+// ── AI REPORT TAB — تحليل حقيقي بنص عربي احترافي ──
+async function loadAITab() {
+    const ins = document.getElementById('aiInsights');
+    const planBox = document.getElementById('aiPlan');
+    try {
+        const since = getPeriodStart();
+        const { data: atts } = await sb.from('attempts')
+            .select('is_correct, created_at, questions(section,topic)')
+            .eq('user_id', profile.id).gte('created_at', since);
+        const all = atts || [];
+
+        // ── مستخدم جديد: رسالة تحفيزية ──
+        if (all.length < 5) {
+            planBox.style.display = 'none';
+            ins.innerHTML =
+                '<div class="ai-hero">'
+                +   '<div class="hh">مرحباً بك</div>'
+                +   '<div class="ht">كل بطل بدأ من صفر. اليوم أنت على بعد 5 أسئلة من أول تقرير ذكي يكشف نقاط قوتك ويرسم لك الطريق.</div>'
+                + '</div>'
+                + '<div class="ai-section">'
+                +   '<div class="ai-section-ttl">لماذا التقرير الذكي؟</div>'
+                +   '<div class="ai-metric"><div class="mi">🎯</div><div class="mb"><div class="mt">يكتشف نقاط ضعفك</div><div class="md">يحلل كل موضوع لوحده ويحدد اللي محتاج تركيز</div></div></div>'
+                +   '<div class="ai-metric"><div class="mi">📈</div><div class="mb"><div class="mt">يتوقع تطورك</div><div class="md">بناءً على أدائك يخبرك كم راح تتقدم إذا التزمت</div></div></div>'
+                +   '<div class="ai-metric"><div class="mi">🗓️</div><div class="mb"><div class="mt">يرسم خطة أسبوعية</div><div class="md">عدد أسئلة محدد لكل قسم حسب مستواك</div></div></div>'
+                + '</div>'
+                + '<div class="ai-predict" style="text-align:center">ابدأ الآن بـ <b>10 أسئلة مختلطة</b> ونتقابل في التقرير الذكي 💪</div>';
+            loaded.ai = true;
+            return;
+        }
+
+        // ── إحصائيات عامة ──
+        const total = all.length;
+        const correct = all.filter(a => a.is_correct).length;
+        const overallAcc = Math.round(correct / total * 100);
+
+        // ── تحليل حسب القسم ──
+        const secStats = {};
+        all.forEach(a => {
+            const s = a.questions?.section;
+            if (!s) return;
+            if (!secStats[s]) secStats[s] = {c:0,t:0};
+            secStats[s].t++; if (a.is_correct) secStats[s].c++;
+        });
+
+        // ── تحليل حسب الموضوع (أدق من القسم) ──
+        const topicStats = {};
+        all.forEach(a => {
+            const t = a.questions?.topic;
+            if (!t) return;
+            if (!topicStats[t]) topicStats[t] = {c:0,t:0,section:a.questions?.section};
+            topicStats[t].t++; if (a.is_correct) topicStats[t].c++;
+        });
+
+        const topicRanked = Object.entries(topicStats)
+            .filter(([,v]) => v.t >= 3)
+            .map(([k,v]) => ({ key:k, name:arTopic(k), section:v.section, acc:Math.round(v.c/v.t*100), count:v.t }))
+            .sort((a,b) => a.acc - b.acc);
+
+        const weakTopics = topicRanked.filter(t => t.acc < 60).slice(0, 3);
+        const strongTopics = topicRanked.filter(t => t.acc >= 75).slice(-2).reverse();
+
+        // ── العنوان البطل (hero): ملخص ذكي واحد ──
+        const streak = profile.streak_days || 0;
+        let heroHeadline = '';
+        if (overallAcc >= 80) {
+            heroHeadline = 'أداؤك ممتاز — دقتك الإجمالية <b>' + overallAcc + '%</b> من أصل ' + total + ' سؤال. تحافظ على مستوى عالٍ.';
+        } else if (overallAcc >= 65) {
+            heroHeadline = 'أداؤك جيد — دقتك <b>' + overallAcc + '%</b> من ' + total + ' سؤال. خطوة صغيرة كل يوم تكفي للوصول للامتياز.';
+        } else if (overallAcc >= 50) {
+            heroHeadline = 'أنت في المنتصف — دقتك <b>' + overallAcc + '%</b>. معالجة نقطتين فقط قد ترفعك فوق 70%.';
+        } else {
+            heroHeadline = 'بداية الرحلة — دقتك <b>' + overallAcc + '%</b>. لا تقلق، الأرقام هنا تصعد بسرعة عندما تعرف <b>أين تركّز</b>.';
+        }
+
+        let html = '<div class="ai-hero"><div class="hh">ملخص ذكي</div><div class="ht">' + heroHeadline + '</div></div>';
+
+        // ── نقاط الضعف بالأرقام ──
+        if (weakTopics.length > 0) {
+            html += '<div class="ai-section"><div class="ai-section-ttl">نقاط تحتاج تركيز</div>';
+            weakTopics.forEach((t, i) => {
+                html += '<div class="ai-metric weak" style="animation-delay:'+(i*80)+'ms">'
+                     +    '<div class="mi">⚠️</div>'
+                     +    '<div class="mb"><div class="mt">'+esc(t.name)+'</div><div class="md">'+t.count+' محاولة · '+(sectionMap[t.section]||'')+'</div></div>'
+                     +    '<div class="mv">'+t.acc+'%</div>'
+                     +  '</div>';
+            });
+            html += '</div>';
+        } else if (topicRanked.length > 0) {
+            // لا توجد نقاط ضعف واضحة
+            html += '<div class="ai-section"><div class="ai-section-ttl">نقاط تحتاج تركيز</div>'
+                 +  '<div class="ai-metric"><div class="mi">✨</div><div class="mb"><div class="mt">لا نقاط ضعف ظاهرة</div><div class="md">أداؤك متوازن في كل المواضيع — واصل بنفس النمط</div></div></div>'
+                 +  '</div>';
+        }
+
+        // ── نقاط القوة ──
+        if (strongTopics.length > 0) {
+            html += '<div class="ai-section"><div class="ai-section-ttl">نقاط قوتك</div>';
+            strongTopics.forEach((t, i) => {
+                html += '<div class="ai-metric strong" style="animation-delay:'+(i*80)+'ms">'
+                     +    '<div class="mi">🏆</div>'
+                     +    '<div class="mb"><div class="mt">'+esc(t.name)+'</div><div class="md">'+t.count+' محاولة · استمر بنفس المستوى</div></div>'
+                     +    '<div class="mv">'+t.acc+'%</div>'
+                     +  '</div>';
+            });
+            html += '</div>';
+        }
+
+        // ── توقع التقدم (Prediction) ──
+        let predictText = '';
+        if (weakTopics.length > 0) {
+            const w = weakTopics[0];
+            // نموذج تقديري: بحل 5 أسئلة يومياً لأسبوع، الدقة ترفع ~20-25 نقطة في الموضوع الضعيف
+            const boost = Math.min(30, Math.round((75 - w.acc) * 0.55));
+            const expected = Math.min(85, w.acc + boost);
+            predictText = 'دقتك في <b>'+esc(w.name)+'</b> الآن <b>'+w.acc+'%</b> — لو حللت <b>5 أسئلة يومياً</b> لأسبوع، نتوقع أن ترتفع إلى <b>'+expected+'%</b> تقريباً.';
+        } else if (overallAcc < 75) {
+            const expected = Math.min(90, overallAcc + 10);
+            predictText = 'باستمرارك على نفس الوتيرة، دقتك الإجمالية متوقع أن تصل إلى <b>'+expected+'%</b> خلال الأسبوعين القادمين.';
+        } else {
+            predictText = 'أنت قريب من السقف — الأسئلة الصعبة والاختبارات المحاكية ستحافظ على مستواك وتطوّره أكثر.';
+        }
+        html += '<div class="ai-predict">🔮 <b>توقع</b>: ' + predictText + '</div>';
+
+        // ── حالة السلسلة ──
+        if (streak >= 7) {
+            html += '<div class="ai-section"><div class="ai-metric strong"><div class="mi">🔥</div><div class="mb"><div class="mt">سلسلة '+streak+' أيام متتالية</div><div class="md">الالتزام اليومي هو السر — لا تكسرها</div></div></div></div>';
+        } else if (streak < 2 && total >= 10) {
+            html += '<div class="ai-section"><div class="ai-metric weak"><div class="mi">📅</div><div class="mb"><div class="mt">لا توجد سلسلة حالياً</div><div class="md">حتى 5 أسئلة يومياً تبني عادة قوية خلال أسبوع</div></div></div></div>';
+        }
+
+        ins.innerHTML = html;
+
+        // ── خطة الأسبوع القادم ──
+        planBox.style.display = '';
+        let planTxt = '';
+        if (weakTopics.length >= 2) {
+            planTxt = 'الأسبوع القادم: ركّز على <b>'+esc(weakTopics[0].name)+'</b> و<b>'+esc(weakTopics[1].name)+'</b>. ابدأ بـ 5 أسئلة يومياً لكل موضوع + مراجعة أخطاء الأمس قبل النوم.';
+        } else if (weakTopics.length === 1) {
+            planTxt = 'الأسبوع القادم: 7 أسئلة يومياً في <b>'+esc(weakTopics[0].name)+'</b> + 3 أسئلة مختلطة للحفاظ على باقي المواضيع. المجموع 10 أسئلة × 7 أيام = <b>70 سؤال</b>.';
+        } else {
+            planTxt = 'الأسبوع القادم: حافظ على <b>10 أسئلة يومياً</b> من أقسام مختلطة. جرّب الاختبار المحاكي نهاية الأسبوع لقياس تقدمك.';
+        }
+        document.getElementById('aiPlanTxt').innerHTML = planTxt;
+
+        loaded.ai = true;
+    } catch(e){console.error(e);}
+}
+
+// ── LEADERBOARD TAB ──
+async function loadLeadTab() {
+    try {
+        const board = await M.getLeaderboard(period);
+        const myRank = board.find(b => b.user_id === profile.id)?.rank;
+        const myXP = profile.xp || 0;
+
+        // Teaser
+        if (board.length > 0) {
+            const topXP = board[0].xp || 0;
+            const gap = Math.max(0, topXP - myXP);
+            const t = document.getElementById('leadTeaser');
+            t.style.display = '';
+            if (myRank === 1) {
+                document.getElementById('leadTeaseTitle').textContent = 'أنت في القمة! 🏆';
+                document.getElementById('leadTeaseDesc').textContent = 'واصل التدريب لتحافظ على صدارتك';
+            } else {
+                document.getElementById('leadTeaseTitle').textContent = myRank ? ('المرتبة #' + myRank) : 'ابدأ لتدخل الترتيب';
+                document.getElementById('leadTeaseDesc').textContent = gap > 0 ? ('فرقك عن المرتبة الأولى ' + gap + ' نقطة') : 'تابع التدريب اليومي';
+            }
+        }
+
+        // Podium
+        const top3 = board.slice(0, 3);
+        const pod = document.getElementById('podium');
+        pod.innerHTML = '';
+        if (top3.length >= 2) {
+            // Order: 2, 1, 3 visually
+            const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+            const classes = ['p2','p1','p3'];
+            const crowns = ['','👑',''];
+            pod.innerHTML = order.map((p,i) => {
+                const cls = classes[i];
+                const pos = cls === 'p1' ? '1' : cls === 'p2' ? '2' : '3';
+                return '<div class="pod '+cls+'"><div class="pod-av">'+(crowns[i] ? '<div class="pod-crown">'+crowns[i]+'</div>' : '')+esc((p.name||'?').charAt(0))+'</div><div class="pod-nm">'+esc(p.name||'—')+'</div><div class="pod-xp">'+(p.xp||0)+' XP</div><div class="pod-bar">'+pos+'</div></div>';
+            }).join('');
+        }
+
+        // List (after podium)
+        const rest = board.slice(3, 20);
+        const list = document.getElementById('leadList');
+        if (board.length === 0) {
+            list.innerHTML = '<div class="empty">لا بيانات بعد — كن الأول!</div>';
+        } else {
+            let html = '';
+            // Include user if not in top-20
+            const inBoard = board.find(b => b.user_id === profile.id);
+            rest.forEach(p => {
+                const isMe = p.user_id === profile.id;
+                html += '<div class="lead-item'+(isMe?' me':'')+'"><div class="lead-rank">#'+p.rank+'</div><div class="lead-av">'+esc((p.name||'?').charAt(0))+'</div><div class="lead-nm">'+esc(p.name||'—')+(isMe?' (أنت)':'')+'</div><div class="lead-xp">'+(p.xp||0)+' XP</div></div>';
+            });
+            if (!inBoard && myRank) {
+                html += '<div class="lead-item me" style="margin-top:8px"><div class="lead-rank">#'+myRank+'</div><div class="lead-av">أنت</div><div class="lead-nm">'+esc(profile.full_name||'أنت')+' (أنت)</div><div class="lead-xp">'+myXP+' XP</div></div>';
+            }
+            list.innerHTML = html || '<div class="empty">الصدارة فقط — انضم للمنافسة</div>';
+        }
+        loaded.lead = true;
+    } catch(e){console.error(e);}
+}
+
+// ── Utils ──
+window.openLB = function(src){document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('on');};
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// Count-up animation للأرقام
+function countUp(elId, target, opts) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const dur = (opts && opts.dur) || 900;
+    const suffix = (opts && opts.suffix) || '';
+    const start = performance.now();
+    const from = 0;
+    function tick(now) {
+        const p = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = Math.round(from + (target - from) * eased);
+        el.innerHTML = val + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+// ── Preview: استخدم Mock DB عبر Supabase client ──
+async function loadPreviewMode() {
+    // profile من Mock DB
+    const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
+    profile = p || { id:'mock-user-00000000', full_name:'عبدالله الزهراني', xp:560 };
+
+    // Deep link tab support حتى في preview
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    const validTabs = ['stats','err','saved','ai','lead'];
+    if (tab && validTabs.includes(tab)) {
+        const tabEl = document.querySelector('[data-tab="'+tab+'"]');
+        if (tabEl) setTab(tabEl, tab);
+        else loadStatsTab();
+    } else {
+        loadStatsTab();
+    }
+}
+})();
+</script>
+</body>
+</html>

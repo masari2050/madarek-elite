@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — الملف الشخصي</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:80px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.ph{padding:14px 16px 10px;display:flex;align-items:center;gap:8px}
+.ph img{width:26px;height:26px;border-radius:7px}
+.ph .title{font-size:16px;font-weight:700;flex:1}
+
+/* USER HEADER */
+.uh{padding:18px 16px;display:flex;align-items:center;gap:14px;text-align:right}
+.uh-av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--pri),#4838C7);display:grid;place-items:center;color:#fff;font-size:22px;font-weight:700;flex-shrink:0}
+.uh-nm{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:.3px}
+.sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
+.sub-badge.yearly{background:linear-gradient(135deg,#8B5CF6,#6D5DF6);color:#fff;border:1px solid rgba(139,92,246,.4)}
+.sub-badge.coupon{background:var(--as);color:var(--acc)}
+.sub-badge.free{background:var(--s2);color:var(--i4)}
+.uh-sub{font-size:12px;color:var(--i3);margin-top:2px}
+
+/* LEVEL BOX */
+.lv-box{margin:0 6px 14px;padding:14px 16px}
+.lv-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.lv-t{font-size:14px;font-weight:700}
+.lv-xp{font-size:12px;color:var(--i3)}
+.lv-bar{height:8px;border-radius:4px;background:var(--s2);overflow:hidden}
+.lv-bf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--pri),var(--acc));transition:width 1s var(--ease);width:0}
+.lv-hint{font-size:11px;color:var(--i4);margin-top:6px}
+
+/* QUICK STATS */
+.qs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 14px}
+.qs{padding:14px;text-align:center}
+.qs-v{font-size:22px;font-weight:700;color:var(--pri)}
+.qs-l{font-size:11px;color:var(--i3);margin-top:4px}
+
+/* ACHIEVEMENTS */
+.sect-h{padding:0 16px;font-size:14px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.sect-h .a{font-size:12px;color:var(--pt);font-weight:600}
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 14px}
+.ach{padding:12px 8px;text-align:center;border-radius:var(--r);background:var(--sf);border:1px solid var(--ln);transition:all .18s}
+.ach.locked{opacity:.55;filter:grayscale(.3)}
+.ach.soon{border-color:var(--as);background:var(--as)}
+.ach-ic{font-size:28px;margin-bottom:6px;line-height:1}
+.ach-nm{font-size:11px;font-weight:700;margin-bottom:3px}
+.ach-d{font-size:8px;color:var(--i3);line-height:1.4;margin-bottom:6px;min-height:22px}
+.ach-pb{height:3px;border-radius:2px;background:var(--s2);overflow:hidden;margin-top:4px}
+.ach-pbf{height:100%;border-radius:2px;background:var(--pri)}
+.ach-st{font-size:8px;font-weight:700;margin-top:4px}
+.ach.unlocked .ach-st{color:var(--suc)}
+.ach.soon .ach-st{color:var(--acc)}
+.ach.locked .ach-st{color:var(--i4)}
+
+/* REFERRAL */
+.ref-box{margin:0 6px 14px;padding:16px;border-radius:var(--r2);background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff}
+.ref-t{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.ref-t svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
+.ref-desc{font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px}
+.ref-code-row{display:flex;gap:8px;margin-bottom:12px}
+.ref-code{flex:1;padding:10px 12px;background:rgba(255,255,255,.18);border-radius:9px;font-size:14px;font-weight:700;letter-spacing:1px;text-align:center;font-family:monospace}
+.ref-copy{padding:10px 14px;background:#fff;color:var(--pri);border-radius:9px;font-size:12px;font-weight:700;white-space:nowrap}
+.ref-share{width:100%;padding:11px;background:rgba(255,255,255,.2);border-radius:9px;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:12px}
+.ref-share svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2}
+.ref-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15)}
+.ref-stat{text-align:center}
+.ref-sv{font-size:18px;font-weight:700}.ref-sl{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px}
+
+/* SETTINGS */
+.settings-g{margin:0 6px 14px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--ln);background:var(--sf)}
+.setting{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--ln);cursor:pointer;transition:background .18s}
+.setting:last-child{border-bottom:none}
+.setting:active{background:var(--s2)}
+.set-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.set-ic svg{width:15px;height:15px;fill:none;stroke-width:1.8;stroke-linecap:round}
+.set-ic.pur{background:var(--ps)}.set-ic.pur svg{stroke:var(--pri)}
+.set-ic.grn{background:var(--ss)}.set-ic.grn svg{stroke:var(--suc)}
+.set-ic.gld{background:rgba(245,158,11,.1)}.set-ic.gld svg{stroke:var(--gold)}
+.set-ic.wa{background:rgba(37,211,102,.1)}.set-ic.wa svg{stroke:#25D366}
+.set-ic.rd{background:var(--ds)}.set-ic.rd svg{stroke:var(--dng)}
+.set-body{flex:1}
+.set-t{font-size:14px;font-weight:600}
+.set-s{font-size:11px;color:var(--i3);margin-top:1px}
+.set-arr{color:var(--i4)}.set-arr svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;transform:scaleX(-1)}
+
+/* TOGGLE */
+.tog{position:relative;width:40px;height:22px;background:var(--s2);border:1px solid var(--ln2);border-radius:20px;cursor:pointer;transition:all .2s;flex-shrink:0}
+.tog.on{background:var(--pri);border-color:var(--pri)}
+.tog::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.tog.on::after{right:20px}
+
+/* FS PILL */
+.fs-pill{min-width:36px;height:24px;padding:0 10px;border-radius:12px;background:var(--ps);color:var(--pri);font-size:13px;font-weight:700;display:grid;place-items:center;flex-shrink:0}
+html[data-fs="small"] .fs-pill{font-size:11px}
+html[data-fs="large"] .fs-pill{font-size:14px}
+
+/* ABOUT */
+.ftr{padding:12px 16px 6px;text-align:center;font-size:10px;color:var(--i4)}
+.ver{padding:0 16px 10px;text-align:center;font-size:10px;color:var(--i4)}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="ph">
+  <img src="../icons/icon-192.png" alt="">
+  <div class="title">الملف الشخصي</div>
+</div>
+
+<!-- USER HEADER -->
+<div class="uh card" style="margin:0 6px 14px">
+  <div class="uh-av" id="uhAv">—</div>
+  <div style="flex:1">
+    <div class="uh-nm" id="uhName">—<span class="sub-badge" id="subBadge" style="display:none"></span></div>
+    <div class="uh-sub" id="uhSub">—</div>
+  </div>
+</div>
+
+<!-- LEVEL -->
+<div class="lv-box card">
+  <div class="lv-top">
+    <div class="lv-t" id="lvT">المستوى — ...</div>
+    <div class="lv-xp" id="lvXP">0 / 200 XP</div>
+  </div>
+  <div class="lv-bar"><div class="lv-bf" id="lvBF"></div></div>
+  <div class="lv-hint" id="lvHint">احصل على XP بإكمال الجلسات التدريبية</div>
+</div>
+
+<!-- QUICK STATS -->
+<div class="qs-grid">
+  <div class="qs card"><div class="qs-v" id="qsQ">0</div><div class="qs-l">سؤال</div></div>
+  <div class="qs card"><div class="qs-v" id="qsS">0</div><div class="qs-l">اختبار</div></div>
+  <div class="qs card"><div class="qs-v" id="qsB">0</div><div class="qs-l">شارة</div></div>
+</div>
+
+<!-- ACHIEVEMENTS -->
+<div class="sect-h">الإنجازات</div>
+<div class="ach-grid" id="achGrid"></div>
+
+<!-- REFERRAL -->
+<div class="ref-box">
+  <div class="ref-t"><svg viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M15 11h5"/></svg>ادعُ أصدقاءك واربح</div>
+  <div class="ref-desc" id="refDesc">10 أيام مجانية لكل إحالة ناجحة + صديقك يحصل على 7 أيام إضافية</div>
+  <div class="ref-code-row">
+    <div class="ref-code" id="refCode">—</div>
+    <button class="ref-copy" onclick="copyRef()">نسخ</button>
+  </div>
+  <button class="ref-share" onclick="shareRef()">
+    <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    شارك رابط الإحالة
+  </button>
+  <div class="ref-stats">
+    <div class="ref-stat"><div class="ref-sv" id="refShared">0</div><div class="ref-sl">شاركوا</div></div>
+    <div class="ref-stat"><div class="ref-sv" id="refSub">0</div><div class="ref-sl">اشتركوا</div></div>
+    <div class="ref-stat"><div class="ref-sv" id="refDays">0</div><div class="ref-sl">يوم ربحت</div></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="sect-h">المعلومات والاشتراك</div>
+<div class="settings-g">
+  <div class="setting" onclick="editProfile()">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <div class="set-body"><div class="set-t">المعلومات الشخصية</div><div class="set-s" id="setPhone">تعديل الاسم والجوال</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+  <div class="setting" onclick="location.href='../pricing.html'">
+    <div class="set-ic gld"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="set-body"><div class="set-t" id="subT">الاشتراك</div><div class="set-s" id="subS">—</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+  <div class="setting" onclick="changePassword()">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <div class="set-body"><div class="set-t">كلمة المرور</div><div class="set-s">تغيير كلمة المرور</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+</div>
+
+<div class="sect-h">التفضيلات</div>
+<div class="settings-g">
+  <div class="setting" onclick="togglePref('notifications_enabled',this)">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+    <div class="set-body"><div class="set-t">الإشعارات</div><div class="set-s">تذكيرات يومية وإشعارات المتصدرين</div></div>
+    <div class="tog" id="togNotif"></div>
+  </div>
+  <div class="setting" onclick="togglePref('sound_enabled',this)">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
+    <div class="set-body"><div class="set-t">الأصوات</div><div class="set-s">أصوات الإجابات والإنجازات</div></div>
+    <div class="tog" id="togSound"></div>
+  </div>
+  <div class="setting" onclick="toggleDark()">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+    <div class="set-body"><div class="set-t">الوضع الداكن</div><div class="set-s">تبديل بين الوضع الفاتح والداكن</div></div>
+    <div class="tog" id="togDark"></div>
+  </div>
+  <div class="setting" onclick="cycleFontSize()">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+    <div class="set-body"><div class="set-t">حجم الخط</div><div class="set-s" id="fsLabel">متوسط</div></div>
+    <div class="fs-pill" id="fsPill">أ</div>
+  </div>
+</div>
+
+<!-- CONTACT + ABOUT -->
+<div class="sect-h">الدعم والمعلومات</div>
+<div class="settings-g">
+  <div class="setting" onclick="openWA()">
+    <div class="set-ic wa"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+    <div class="set-body"><div class="set-t">تواصل عبر واتساب</div><div class="set-s">نرد خلال 24 ساعة</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+  <div class="setting" onclick="location.href='about-v2.html'">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+    <div class="set-body"><div class="set-t">عن التطبيق</div><div class="set-s">الإصدار والسجل التجاري</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+  <div class="setting" onclick="location.href='privacy-v2.html'">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="set-body"><div class="set-t">سياسة الخصوصية</div><div class="set-s">كيف نتعامل مع بياناتك</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+  <div class="setting" onclick="location.href='terms-v2.html'">
+    <div class="set-ic pur"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+    <div class="set-body"><div class="set-t">شروط الاستخدام</div><div class="set-s">الأحكام والشروط</div></div>
+    <div class="set-arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
+  </div>
+</div>
+
+<!-- LOGOUT -->
+<div class="settings-g">
+  <div class="setting" onclick="doLogout()">
+    <div class="set-ic rd"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+    <div class="set-body"><div class="set-t" style="color:var(--dng)">تسجيل الخروج</div></div>
+  </div>
+</div>
+
+<div class="ver">مدارك النخبة · الإصدار 2.0.0</div>
+<div class="ftr">السجل التجاري: 620113</div>
+
+</div><!-- /wrap -->
+
+<nav class="nav">
+  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni on" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+let profile = null;
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+    M.injectGlobalTicker('profile');
+
+    const qs = new URLSearchParams(window.location.search);
+    const isPreview = qs.has('preview');
+    const forceSubscriber = qs.get('force_subscriber') === 'true';
+
+    if (forceSubscriber) {
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            phone: '0555555555',
+            avatar_emoji: 'م',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            role: 'user',
+            xp: 560, level: 3, level_name: 'متدرب', streak_days: 5,
+            total_questions_solved: 488, total_correct: 320, total_sessions: 12,
+            referral_code: 'MADAR-PREVIEW',
+            notifications_enabled: true, sound_enabled: true,
+            created_at: '2025-12-01T00:00:00Z'
+        };
+    } else if (isPreview) {
+        loadPreviewMode();
+        return;
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+    }
+
+    renderUser();
+    loadStats();
+    loadAchievements();
+    loadReferral();
+    loadToggles();
+}
+
+function renderUser() {
+    const name = profile.full_name || 'مستخدم';
+    document.getElementById('uhAv').textContent = profile.avatar_emoji || name.charAt(0);
+    document.getElementById('uhName').innerHTML = esc(name) + '<span class="sub-badge" id="subBadge"></span>';
+    // Sub badge
+    const b = document.getElementById('subBadge');
+    const t = profile.subscription_type;
+    if (t === 'monthly') { b.textContent = 'Pro'; b.className = 'sub-badge monthly'; }
+    else if (t === 'yearly') { b.textContent = '✦ Elite'; b.className = 'sub-badge yearly'; }
+    else if (profile.used_coupon) { b.textContent = 'كوبون'; b.className = 'sub-badge coupon'; }
+    else { b.textContent = 'مجاني'; b.className = 'sub-badge free'; }
+    // Join date
+    const joined = profile.created_at ? new Date(profile.created_at).toLocaleDateString('ar-SA',{year:'numeric',month:'long'}) : '—';
+    document.getElementById('uhSub').textContent = 'عضو منذ ' + joined;
+
+    // Phone
+    if (profile.phone) document.getElementById('setPhone').textContent = profile.phone;
+
+    // Subscription status
+    const subT = document.getElementById('subT');
+    const subS = document.getElementById('subS');
+    if (M.isSubscribed(profile)) {
+        const days = M.subscriptionDaysLeft(profile);
+        subT.textContent = t === 'yearly' ? 'خطة Elite السنوية' : t === 'monthly' ? 'خطة Pro الشهرية' : 'خطة نشطة';
+        subS.textContent = days > 0 ? ('ينتهي خلال ' + days + ' يوم') : 'دائمة';
+        if (days <= 7 && days > 0) subS.style.color = 'var(--acc)';
+    } else {
+        subT.textContent = 'اشترك الآن';
+        subS.textContent = 'لا يوجد اشتراك فعال';
+    }
+
+    // Level
+    const level = profile.level || 1;
+    const levelName = profile.level_name || 'مبتدئ';
+    const xp = profile.xp || 0;
+    const xpInLevel = xp % 200;
+    const xpForNext = 200;
+    document.getElementById('lvT').textContent = 'المستوى ' + level + ' — ' + levelName;
+    document.getElementById('lvXP').textContent = xp + ' XP';
+    setTimeout(() => { document.getElementById('lvBF').style.width = (xpInLevel/xpForNext*100) + '%'; }, 300);
+    document.getElementById('lvHint').textContent = 'تحتاج ' + (xpForNext - xpInLevel) + ' XP للوصول للمستوى ' + (level+1);
+}
+
+async function loadStats() {
+    const qs = profile.total_questions_solved || 0;
+    const ss = profile.total_sessions || 0;
+    document.getElementById('qsQ').textContent = M.numberWithCommas(qs);
+    document.getElementById('qsS').textContent = ss;
+    // Badges count
+    try {
+        const { count } = await sb.from('user_achievements').select('*',{count:'exact',head:true})
+            .eq('user_id', profile.id).eq('unlocked', true);
+        document.getElementById('qsB').textContent = count || 0;
+    } catch(e){}
+}
+
+async function loadAchievements() {
+    try {
+        const { data: allAch } = await sb.from('achievements').select('*').eq('is_active',true).order('sort_order');
+        const { data: userAch } = await sb.from('user_achievements').select('*').eq('user_id', profile.id);
+        const userMap = {};
+        (userAch||[]).forEach(u => userMap[u.achievement_id] = u);
+
+        const grid = document.getElementById('achGrid');
+        grid.innerHTML = (allAch||[]).map(a => {
+            const ua = userMap[a.id] || { current_value: 0, unlocked: false };
+            const unlocked = ua.unlocked;
+            const cur = ua.current_value || 0;
+            const pct = Math.min(100, Math.round((cur/a.target_value)*100));
+            const isSoon = !unlocked && pct >= 70;
+            const cls = unlocked ? 'unlocked' : (isSoon ? 'soon' : 'locked');
+            const status = unlocked ? '✓ مفتوح' : (isSoon ? cur+'/'+a.target_value+' قريب' : 'مقفل');
+            return '<div class="ach '+cls+'"><div class="ach-ic">'+a.icon+'</div><div class="ach-nm">'+esc(a.name)+'</div><div class="ach-d">'+esc(a.description||'')+'</div>'+(!unlocked?'<div class="ach-pb"><div class="ach-pbf" style="width:'+pct+'%"></div></div>':'')+'<div class="ach-st">'+status+'</div></div>';
+        }).join('');
+    } catch(e){}
+}
+
+async function loadReferral() {
+    try {
+        const stats = await M.getReferralStats();
+        if (!stats) return;
+        document.getElementById('refCode').textContent = stats.referral_code || '—';
+        document.getElementById('refShared').textContent = stats.shared || 0;
+        document.getElementById('refSub').textContent = stats.subscribed || 0;
+        document.getElementById('refDays').textContent = '+' + (stats.days_earned || 0);
+
+        // Update description from referral_settings
+        const { data: settings } = await sb.from('referral_settings').select('*').limit(1).single();
+        if (settings) {
+            document.getElementById('refDesc').textContent = settings.referrer_bonus_days + ' أيام مجانية لكل إحالة ناجحة + صديقك يحصل على ' + settings.referred_bonus_days + ' أيام إضافية';
+        }
+    } catch(e){}
+}
+
+function loadToggles() {
+    document.getElementById('togNotif').classList.toggle('on', profile.notifications_enabled !== false);
+    document.getElementById('togSound').classList.toggle('on', profile.sound_enabled !== false);
+    document.getElementById('togDark').classList.toggle('on', document.documentElement.classList.contains('dark'));
+    updateFsLabel();
+}
+
+const FS_ORDER = ['small', 'medium', 'large'];
+const FS_NAMES = { small: 'صغير', medium: 'متوسط', large: 'كبير' };
+
+function getFontSize() {
+    const v = localStorage.getItem('madarek_font_size');
+    return FS_ORDER.includes(v) ? v : 'medium';
+}
+
+function updateFsLabel() {
+    const fs = getFontSize();
+    const lbl = document.getElementById('fsLabel');
+    if (lbl) lbl.textContent = FS_NAMES[fs];
+}
+
+window.cycleFontSize = function() {
+    const cur = getFontSize();
+    const next = FS_ORDER[(FS_ORDER.indexOf(cur) + 1) % FS_ORDER.length];
+    localStorage.setItem('madarek_font_size', next);
+    if (next === 'medium') document.documentElement.removeAttribute('data-fs');
+    else document.documentElement.setAttribute('data-fs', next);
+    updateFsLabel();
+};
+
+// ── Actions ──
+window.copyRef = async function() {
+    const code = document.getElementById('refCode').textContent;
+    try {
+        await navigator.clipboard.writeText(code);
+        M.showToast('تم نسخ كود الإحالة', 'success');
+    } catch(e) {
+        M.showToast(code, 'info');
+    }
+};
+
+window.shareRef = async function() {
+    const code = document.getElementById('refCode').textContent;
+    const url = window.location.origin + '/v2/welcome-v2.html?ref=' + encodeURIComponent(code);
+    const text = 'جرّب مدارك النخبة — تدريب احترافي للرخصة المهنية. استخدم كودي للحصول على أيام مجانية: ' + code + '\n' + url;
+    if (navigator.share) {
+        try { await navigator.share({ title: 'مدارك النخبة', text, url }); } catch(e){}
+    } else {
+        try { await navigator.clipboard.writeText(text); M.showToast('تم نسخ الرابط', 'success'); } catch(e){}
+    }
+};
+
+window.togglePref = async function(key, row) {
+    const tog = row.querySelector('.tog');
+    const newVal = !tog.classList.contains('on');
+    tog.classList.toggle('on', newVal);
+    profile[key] = newVal;
+    try {
+        await sb.from('profiles').update({[key]: newVal}).eq('id', profile.id);
+    } catch(e){}
+};
+
+window.toggleDark = function() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('madarek_dark_mode', isDark);
+    document.getElementById('togDark').classList.toggle('on', isDark);
+    try { sb.from('profiles').update({dark_mode: isDark}).eq('id', profile.id); } catch(e){}
+};
+
+window.editProfile = function() {
+    const newName = prompt('الاسم الكامل:', profile.full_name || '');
+    if (!newName || newName === profile.full_name) return;
+    sb.from('profiles').update({full_name: newName}).eq('id', profile.id).then(() => {
+        profile.full_name = newName;
+        renderUser();
+        M.showToast('تم تحديث الاسم', 'success');
+    });
+};
+
+window.changePassword = async function() {
+    const newPw = prompt('كلمة المرور الجديدة (6 أحرف على الأقل):');
+    if (!newPw || newPw.length < 6) { M.showToast('كلمة المرور قصيرة', 'error'); return; }
+    const { error } = await sb.auth.updateUser({ password: newPw });
+    if (error) M.showToast('حدث خطأ — جرب مرة ثانية', 'error');
+    else M.showToast('تم تحديث كلمة المرور', 'success');
+};
+
+window.openWA = function() {
+    window.open('https://wa.me/966500000000', '_blank');
+};
+
+window.doLogout = async function() {
+    if (!confirm('هل تريد تسجيل الخروج؟')) return;
+    await M.signOut();
+};
+
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// ── Preview ──
+function loadPreviewMode() {
+    profile = { id:'demo', full_name:'عبدالله الزهراني', avatar_emoji:'ع', subscription_type:'monthly',
+        subscription_end:'2026-05-10', phone:'0555555555', xp:560, level:3, level_name:'متدرب',
+        total_questions_solved:488, total_sessions:12, created_at:'2025-12-01',
+        notifications_enabled:true, sound_enabled:true };
+    renderUser();
+    document.getElementById('qsQ').textContent = '488';
+    document.getElementById('qsS').textContent = '12';
+    document.getElementById('qsB').textContent = '3';
+
+    // Demo achievements
+    const achs = [
+        {name:'المئوي',icon:'💯',description:'حل 100 سؤال',unlocked:true,pct:100,status:'✓ مفتوح',cls:'unlocked'},
+        {name:'الخطوة الأولى',icon:'🎯',description:'10 جلسات',unlocked:true,pct:100,status:'✓ مفتوح',cls:'unlocked'},
+        {name:'مستمر',icon:'🔥',description:'7 أيام',unlocked:false,pct:71,status:'5/7 قريب',cls:'soon'},
+        {name:'متفوق',icon:'⭐',description:'دقة 80%+',unlocked:false,pct:81,status:'65/80 قريب',cls:'soon'},
+        {name:'لا يوقفك شيء',icon:'🏆',description:'30 يوم متتالي',unlocked:false,pct:16,status:'مقفل',cls:'locked'},
+        {name:'الخبير',icon:'👑',description:'5 اختبارات',unlocked:false,pct:0,status:'مقفل',cls:'locked'}
+    ];
+    document.getElementById('achGrid').innerHTML = achs.map(a => {
+        return '<div class="ach '+a.cls+'"><div class="ach-ic">'+a.icon+'</div><div class="ach-nm">'+a.name+'</div><div class="ach-d">'+a.description+'</div>'+(!a.unlocked?'<div class="ach-pb"><div class="ach-pbf" style="width:'+a.pct+'%"></div></div>':'')+'<div class="ach-st">'+a.status+'</div></div>';
+    }).join('');
+
+    document.getElementById('refCode').textContent = 'MADAR-AB789';
+    document.getElementById('refShared').textContent = '3';
+    document.getElementById('refSub').textContent = '2';
+    document.getElementById('refDays').textContent = '+20';
+
+    document.getElementById('togNotif').classList.add('on');
+    document.getElementById('togSound').classList.add('on');
+}
+})();
+</script>
+</body>
+</html>

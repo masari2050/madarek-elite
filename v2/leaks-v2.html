@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — التسريبات</title>
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:80px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* HEADER */
+.ph{padding:14px 16px 10px;display:flex;align-items:center;gap:8px}
+.ph img{width:26px;height:26px;border-radius:7px}
+.ph .title{font-size:16px;font-weight:700;flex:1}
+
+/* BANNER */
+.lk-ban{margin:8px 16px 14px;padding:18px;border-radius:var(--r2);color:#fff;position:relative;overflow:hidden;display:none}
+.lk-ban::before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;border:1px solid rgba(255,255,255,.12);top:-40px;left:-30px}
+.lk-ban::after{content:"";position:absolute;width:80px;height:80px;border-radius:50%;border:1px solid rgba(255,255,255,.08);bottom:-20px;right:-10px}
+.lk-label{font-size:11px;font-weight:700;background:rgba(255,255,255,.18);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;position:relative;z-index:1}
+.lk-t{font-size:17px;font-weight:700;margin-bottom:4px;position:relative;z-index:1}
+.lk-d{font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;position:relative;z-index:1}
+
+/* SEARCH */
+.lk-search{margin:0 6px 12px;position:relative}
+.lk-search svg{position:absolute;right:12px;top:50%;translate:0 -50%;width:14px;height:14px;stroke:var(--i3);fill:none;stroke-width:2;pointer-events:none}
+.lk-search input{width:100%;padding:10px 36px 10px 14px;border:1.5px solid var(--ln2);border-radius:var(--r);font-size:14px;background:var(--sf);color:var(--ink);font-family:inherit;outline:none;transition:border-color .2s}
+.lk-search input:focus{border-color:var(--pri)}
+
+/* FILTER TABS */
+.lk-filters{display:flex;gap:8px;padding:0 16px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.lk-filters::-webkit-scrollbar{display:none}
+.lk-filter{padding:7px 14px;border-radius:20px;border:1.5px solid var(--ln2);font-size:12px;font-weight:600;color:var(--i3);white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .18s;background:var(--sf)}
+.lk-filter.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+
+/* SUMMARY */
+.lk-summary{margin:0 6px 12px;padding:12px 14px;background:var(--ps);border:1px solid var(--pm);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.lk-summary .l{color:var(--pt);font-weight:600}
+.lk-summary .v{color:var(--pri);font-weight:700;font-size:14px}
+
+/* LIST */
+.lk-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.lk-item{padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;animation:si .3s var(--ease) backwards}
+.lk-item:nth-child(1){animation-delay:.04s}.lk-item:nth-child(2){animation-delay:.08s}.lk-item:nth-child(3){animation-delay:.12s}.lk-item:nth-child(4){animation-delay:.16s}.lk-item:nth-child(5){animation-delay:.2s}
+.lk-item:active{transform:scale(.99)}
+.lk-item:hover{border-color:var(--pm)}
+.lk-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex-shrink:0}
+.lk-ic svg{width:20px;height:20px;fill:none;stroke-width:2;stroke-linecap:round}
+.lk-ic.nw{background:var(--as)}.lk-ic.nw svg{stroke:var(--acc)}
+.lk-ic.ip{background:var(--ps)}.lk-ic.ip svg{stroke:var(--pri)}
+.lk-ic.dn{background:var(--ss)}.lk-ic.dn svg{stroke:var(--suc)}
+.lk-info{flex:1;min-width:0}
+.lk-n{font-size:14px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lk-sec{font-size:10px;font-weight:600;color:var(--pt);background:var(--ps);padding:2px 7px;border-radius:8px}
+.lk-meta{font-size:11px;color:var(--i3);margin-bottom:6px}
+.lk-prog{display:flex;align-items:center;gap:6px}
+.lk-pb{flex:1;height:4px;border-radius:2px;background:var(--ln2);overflow:hidden}
+.lk-pbf{height:100%;border-radius:2px;transition:width .4s var(--ease)}
+.lk-pbf.new{background:linear-gradient(90deg,var(--acc),#FFD700);width:0}
+.lk-pbf.ip{background:linear-gradient(90deg,var(--pri),var(--acc))}
+.lk-pbf.dn{background:var(--suc)}
+.lk-pct{font-size:11px;font-weight:700;color:var(--i3);min-width:34px;text-align:left}
+.lk-b{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;align-self:flex-start;white-space:nowrap}
+.lk-b.new{color:var(--acc);background:var(--as);border:1px solid rgba(255,138,61,.15)}
+.lk-b.ip{color:var(--pri);background:var(--ps);border:1px solid var(--pm)}
+.lk-b.dn{color:var(--suc);background:var(--ss);border:1px solid rgba(34,197,94,.15)}
+
+/* EMPTY */
+.empty{padding:60px 24px;text-align:center}
+.empty-ic{font-size:48px;margin-bottom:12px}
+.empty-t{font-size:15px;font-weight:700;margin-bottom:6px}
+.empty-d{font-size:13px;color:var(--i3);line-height:1.7}
+
+/* LOADER */
+.loader{display:flex;align-items:center;justify-content:center;padding:60px;gap:8px}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--pri);animation:bounce .6s infinite alternate}
+.loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
+
+/* LOAD MORE */
+.lk-more{display:flex;justify-content:center;margin:16px 6px 4px}
+.lk-more-btn{padding:11px 28px;border-radius:var(--r);border:1.5px solid var(--pm);background:var(--sf);color:var(--pt);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px}
+.lk-more-btn:hover{background:var(--ps);border-color:var(--pri);color:var(--pri)}
+.lk-more-btn:active{transform:scale(.97)}
+.lk-more-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.lk-more-count{font-size:11px;color:var(--i3);margin-top:6px;text-align:center}
+
+/* SUB REQUIRED */
+.sub-required{margin:30px 16px;padding:28px 20px;background:linear-gradient(135deg,var(--ps),var(--pm));border:1.5px solid var(--pm);border-radius:var(--r2);text-align:center}
+.sub-required-ic{font-size:42px;margin-bottom:12px}
+.sub-required h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.sub-required p{font-size:13px;color:var(--i3);line-height:1.8;margin-bottom:16px}
+.sub-required .btn{display:inline-block;padding:11px 22px;background:var(--pri);color:#fff;border-radius:var(--r);font-size:14px;font-weight:700;text-decoration:none;transition:transform .15s}
+.sub-required .btn:active{transform:scale(.97)}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="ph">
+  <img src="../icons/icon-192.png" alt="">
+  <div class="title">التسريبات</div>
+</div>
+
+<!-- BANNER (من جدول banners نوع leaks) -->
+<div class="lk-ban" id="lkBanner"></div>
+
+<!-- SEARCH -->
+<div class="lk-search">
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  <input type="search" id="lkSearch" placeholder="ابحث عن تسريبات..." oninput="filterLeaks()">
+</div>
+
+<!-- FILTERS -->
+<div class="lk-filters">
+  <button class="lk-filter on" data-f="all" onclick="setFilter(this,'all')">الكل</button>
+  <button class="lk-filter" data-f="new" onclick="setFilter(this,'new')">جديد</button>
+  <button class="lk-filter" data-f="in_progress" onclick="setFilter(this,'in_progress')">جاري</button>
+  <button class="lk-filter" data-f="completed" onclick="setFilter(this,'completed')">مكتمل</button>
+</div>
+
+<!-- SUMMARY -->
+<div class="lk-summary" id="lkSummary" style="display:none">
+  <span class="l">إجمالي المجموعات</span>
+  <span><span class="v" id="lkTotal">0</span> مجموعة · <span class="v" id="lkQTotal">0</span> سؤال</span>
+</div>
+
+<!-- LIST -->
+<div id="lkArea">
+  <div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni on" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+let profile = null;
+let allLeaks = [];
+let currentFilter = 'all';
+const PAGE_SIZE = 20;
+let shownCount = PAGE_SIZE;
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+
+    const qs = new URLSearchParams(window.location.search);
+    const isPreview = qs.has('preview');
+    const forceSubscriber = qs.get('force_subscriber') === 'true';
+
+    if (forceSubscriber) {
+        // وضع هجين: Supabase حقيقي + profile وهمي كمشترك (بدون تسجيل دخول)
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000', // UUID placeholder
+            full_name: 'مشترك تجريبي',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            role: 'user'
+        };
+    } else if (isPreview) {
+        // Preview mode كامل (mock DB)
+        const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
+        profile = p || { id:'mock-user-00000000', subscription_type:'monthly' };
+    } else {
+        const user = await M.requireAuth('../login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+    }
+
+    // Check subscription (مُتخطى في force_subscriber)
+    if (!forceSubscriber && !M.isSubscribed(profile)) {
+        renderSubscriptionRequired();
+        return;
+    }
+
+    M.injectGlobalTicker('leaks');
+    loadBanner();
+    loadLeaks();
+}
+
+// ── Banner (من جدول banners) ──
+async function loadBanner() {
+    try {
+        const { data } = await sb.from('banners').select('*').eq('banner_type','leaks').eq('is_active',true).limit(1);
+        const b = (data && data[0]);
+        if (b && b.config) {
+            const cfg = b.config;
+            const ban = document.getElementById('lkBanner');
+            ban.style.background = 'linear-gradient(135deg,' + (cfg.bg_left||'#6D5DF6') + ',' + (cfg.bg_right||'#4838C7') + ')';
+            ban.innerHTML = (cfg.label ? '<div class="lk-label">' + esc(cfg.label) + '</div>' : '')
+                + '<div class="lk-t">' + esc(cfg.title||'') + '</div>'
+                + '<div class="lk-d">' + esc(cfg.subtitle||'') + '</div>';
+            ban.style.display = 'block';
+        }
+    } catch(e) {}
+}
+
+// ── Leaks List ──
+async function loadLeaks() {
+    const area = document.getElementById('lkArea');
+    try {
+        // Fetch active leak groups
+        const { data: groups } = await sb.from('leak_groups')
+            .select('*').eq('is_active', true)
+            .order('leak_date', { ascending: false });
+
+        if (!groups || groups.length === 0) {
+            area.innerHTML = '<div class="empty"><div class="empty-ic">🔒</div><div class="empty-t">لا تسريبات حالياً</div><div class="empty-d">التسريبات تُضاف دورياً — تابعنا للحصول على آخر الأسئلة الحقيقية</div></div>';
+            return;
+        }
+
+        // Fetch user progress for all groups
+        const { data: progress } = await sb.from('user_leak_progress')
+            .select('*').eq('user_id', profile.id);
+        const progressMap = {};
+        (progress || []).forEach(p => progressMap[p.leak_group_id] = p);
+
+        // Enrich groups with progress
+        allLeaks = groups.map(g => {
+            const p = progressMap[g.id];
+            let status = 'new';
+            let percentage = 0;
+            let completed = 0;
+            if (p) {
+                status = p.status || 'new';
+                percentage = Number(p.percentage || 0);
+                completed = p.completed_count || 0;
+                if (status === 'new' && percentage > 0 && percentage < 100) status = 'in_progress';
+                if (percentage >= 100) status = 'completed';
+            }
+            return { ...g, _status: status, _percentage: percentage, _completed: completed };
+        });
+
+        renderLeaks();
+    } catch(e) {
+        console.error(e);
+        area.innerHTML = '<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">حدث خطأ</div><div class="empty-d">' + esc(e.message||'') + '</div></div>';
+    }
+}
+
+function renderLeaks() {
+    const search = (document.getElementById('lkSearch')?.value || '').trim().toLowerCase();
+    const area = document.getElementById('lkArea');
+
+    let filtered = allLeaks;
+    if (currentFilter !== 'all') filtered = filtered.filter(g => g._status === currentFilter);
+    if (search) filtered = filtered.filter(g =>
+        (g.title||'').toLowerCase().includes(search) ||
+        (g.section||'').toLowerCase().includes(search) ||
+        (g.description||'').toLowerCase().includes(search)
+    );
+
+    // Summary
+    const sum = document.getElementById('lkSummary');
+    sum.style.display = 'flex';
+    document.getElementById('lkTotal').textContent = filtered.length;
+    document.getElementById('lkQTotal').textContent = filtered.reduce((s,g) => s + (g.question_count||0), 0);
+
+    if (filtered.length === 0) {
+        area.innerHTML = '<div class="empty"><div class="empty-ic">🔍</div><div class="empty-t">لا نتائج</div><div class="empty-d">جرّب فلتر مختلف أو امسح البحث</div></div>';
+        return;
+    }
+
+    const visible = filtered.slice(0, shownCount);
+    const remaining = Math.max(0, filtered.length - visible.length);
+
+    area.innerHTML = '<div class="lk-list">' + visible.map(g => {
+        const st = g._status;
+        const iconSet = {
+            new: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+            in_progress: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            completed: '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+        };
+        const icClass = st === 'completed' ? 'dn' : (st === 'in_progress' ? 'ip' : 'nw');
+        const badgeClass = icClass;
+        const badgeText = st === 'completed' ? '✓ مكتمل' : st === 'in_progress' ? 'جاري' : 'جديد';
+        const pbClass = icClass;
+        const dateStr = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
+        const pctDisplay = st === 'new' && g._percentage === 0 ? '—' : Math.round(g._percentage) + '%';
+
+        return '<div class="lk-item card" onclick="openLeak(\'' + g.id + '\',\'' + esc(g.section||'') + '\',' + (g.question_count||20) + ')">'
+            + '<div class="lk-ic ' + icClass + '">' + iconSet[st] + '</div>'
+            + '<div class="lk-info">'
+            +   '<div class="lk-n">' + esc(g.title) + ' <span class="lk-sec">' + esc(g.section||'عام') + '</span></div>'
+            +   '<div class="lk-meta">' + dateStr + ' · ' + (g.question_count||0) + ' سؤال</div>'
+            +   '<div class="lk-prog">'
+            +     '<div class="lk-pb"><div class="lk-pbf ' + pbClass + '" style="width:' + Math.max(5, g._percentage) + '%"></div></div>'
+            +     '<div class="lk-pct">' + pctDisplay + '</div>'
+            +   '</div>'
+            + '</div>'
+            + '<span class="lk-b ' + badgeClass + '">' + badgeText + '</span>'
+        + '</div>';
+    }).join('') + '</div>'
+    + (remaining > 0
+        ? '<div class="lk-more"><button class="lk-more-btn" onclick="loadMoreLeaks()">'
+          + '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
+          + 'اعرض ' + Math.min(PAGE_SIZE, remaining) + ' مجموعات إضافية</button></div>'
+          + '<div class="lk-more-count">عرض ' + visible.length + ' من أصل ' + filtered.length + '</div>'
+        : '');
+}
+
+window.loadMoreLeaks = function() {
+    shownCount += PAGE_SIZE;
+    renderLeaks();
+};
+
+window.setFilter = function(el, f) {
+    currentFilter = f;
+    shownCount = PAGE_SIZE;
+    document.querySelectorAll('.lk-filter').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    renderLeaks();
+};
+
+window.filterLeaks = function() {
+    shownCount = PAGE_SIZE;
+    renderLeaks();
+};
+
+window.openLeak = function(leakId, section, count) {
+    // Pass leak_group_id to practice-v2 to filter questions
+    const sectionMap = { 'قدرات كمي':'quant', 'قدرات لفظي':'verbal', 'تحصيلي':'tahsili', 'مختلط':'mixed' };
+    const secSlug = sectionMap[section] || 'mixed';
+    const params = new URLSearchParams({
+        leak: leakId,
+        name: 'تسريبات: ' + section,
+        section: secSlug,
+        count: Math.min(count || 20, 50),
+        mode: 'instant'
+    });
+    // Preserve preview + force_subscriber flags
+    const curQs = new URLSearchParams(window.location.search);
+    if (curQs.has('preview')) params.set('preview','1');
+    if (curQs.get('force_subscriber') === 'true') params.set('force_subscriber','true');
+    window.location.href = 'practice-v2.html?' + params.toString();
+};
+
+function renderSubscriptionRequired() {
+    document.getElementById('lkArea').innerHTML = `
+    <div class="sub-required">
+        <div class="sub-required-ic">🔐</div>
+        <h3>التسريبات حصرية للمشتركين</h3>
+        <p>احصل على أحدث الأسئلة الحقيقية من اختبارات هذا الشهر مع شروحات مفصّلة — متاحة فقط مع الاشتراك الشهري أو السنوي</p>
+        <a class="btn" href="../pricing.html">اشترك الآن</a>
+    </div>`;
+    // Hide search + filters for non-subscribers
+    document.querySelector('.lk-search').style.display = 'none';
+    document.querySelector('.lk-filters').style.display = 'none';
+    // Still try to show banner
+    loadBanner();
+}
+
+function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+})();
+</script>
+</body>
+</html>
