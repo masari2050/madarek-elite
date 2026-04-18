@@ -67,6 +67,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .opt.ok{border-color:var(--suc);background:rgba(34,197,94,.12);border-width:2px}.opt.ok .opt-l{background:var(--suc);color:#fff}
 .opt.no{border-color:var(--dng);background:rgba(239,68,68,.12);border-width:2px}.opt.no .opt-l{background:var(--dng);color:#fff}
 .opt.dim{opacity:.5;pointer-events:none}
+.opt.sel-end{border-color:#6D5DF6;background:rgba(109,93,246,.1);border-width:2px;opacity:1;pointer-events:none}.opt.sel-end .opt-l{background:#6D5DF6;color:#fff;border-color:#6D5DF6}
 .opt.correct-highlight{border-color:var(--suc);background:var(--ss)}.opt.correct-highlight .opt-l{background:var(--suc);color:#fff}
 .opt-l{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--i3);flex-shrink:0;transition:all .18s}
 .opt-v{font-size:14px;font-weight:600;flex:1}
@@ -623,11 +624,12 @@ window.answer = async function(btn, idx) {
     if (MODE === 'instant') {
         showInstantFeedback(idx, isCorrect, q);
     } else {
-        // End mode: just dim options, show next
+        // End mode: selected option stays neutral purple; no correct/wrong
+        // colors are revealed until the whole session ends (see showResults).
         const opts = document.querySelectorAll('#opts .opt');
         opts.forEach(o => o.classList.add('dim'));
         btn.classList.remove('dim');
-        btn.classList.add(isCorrect ? 'ok' : 'no');
+        btn.classList.add('sel-end');
         document.getElementById('nextBtn').style.display = 'block';
     }
 };
