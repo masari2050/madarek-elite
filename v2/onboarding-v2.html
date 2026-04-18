@@ -391,7 +391,7 @@ async function finishQuiz() {
     document.getElementById('resVerbal').textContent = byS.verbal.correct + '/' + byS.verbal.total;
 
     if (weakest) {
-        const name = weakest === 'quant' ? 'القدرات الكمي' : 'القدرات اللفظي';
+        const name = weakest === 'quant' ? 'قدرات كمي' : 'قدرات لفظي';
         let acc, prefix;
         if (weaknessSource === 'history') {
             const hist = byS[weakest + '_history'];

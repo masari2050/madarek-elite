@@ -616,11 +616,11 @@ async function loadSectionBreakdown() {
             counts[s] = count || 0;
         }
         const total = counts.quant + counts.verbal + counts.tahsili;
-        const sMap = {quant:'كمي',verbal:'لفظي',tahsili:'تحصيلي'};
+        const sMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي'};
         const colors = {quant:'var(--pri)',verbal:'var(--suc)',tahsili:'var(--acc)'};
         el.innerHTML = sections.map(s => {
             const w = total > 0 ? (counts[s]/total*100) : 0;
-            return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:11px;width:50px">'+sMap[s]+'</span><div style="flex:1;height:8px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:'+w+'%;height:100%;background:'+colors[s]+'"></div></div><span style="font-size:11px;font-weight:700;width:48px;text-align:left">'+counts[s].toLocaleString()+'</span></div>';
+            return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:11px;width:80px">'+sMap[s]+'</span><div style="flex:1;height:8px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:'+w+'%;height:100%;background:'+colors[s]+'"></div></div><span style="font-size:11px;font-weight:700;width:48px;text-align:left">'+counts[s].toLocaleString()+'</span></div>';
         }).join('');
     } catch(e){}
 }

@@ -266,8 +266,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="err-total" id="errTotal">—</div>
   <div class="filter-row">
     <button class="filt on" data-f="all" onclick="setErrFilter(this,'all')">الكل</button>
-    <button class="filt" data-f="quant" onclick="setErrFilter(this,'quant')">كمي</button>
-    <button class="filt" data-f="verbal" onclick="setErrFilter(this,'verbal')">لفظي</button>
+    <button class="filt" data-f="quant" onclick="setErrFilter(this,'quant')">قدرات كمي</button>
+    <button class="filt" data-f="verbal" onclick="setErrFilter(this,'verbal')">قدرات لفظي</button>
     <button class="filt" data-f="tahsili" onclick="setErrFilter(this,'tahsili')">تحصيلي</button>
   </div>
   <div class="err-list" id="errList"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
@@ -735,13 +735,9 @@ async function loadAITab() {
         let predictText = '';
         if (weakTopics.length > 0) {
             const w = weakTopics[0];
-            // نموذج تقديري: بحل 5 أسئلة يومياً لأسبوع، الدقة ترفع ~20-25 نقطة في الموضوع الضعيف
-            const boost = Math.min(30, Math.round((75 - w.acc) * 0.55));
-            const expected = Math.min(85, w.acc + boost);
-            predictText = 'دقتك في <b>'+esc(w.name)+'</b> الآن <b>'+w.acc+'%</b> — لو حللت <b>5 أسئلة يومياً</b> لأسبوع، نتوقع أن ترتفع إلى <b>'+expected+'%</b> تقريباً.';
+            predictText = 'دقتك في <b>'+esc(w.name)+'</b> الآن <b>'+w.acc+'%</b> — كلما تدربت يومياً على نقاط ضعفك كلما ارتفعت دقتك بشكل ملحوظ.';
         } else if (overallAcc < 75) {
-            const expected = Math.min(90, overallAcc + 10);
-            predictText = 'باستمرارك على نفس الوتيرة، دقتك الإجمالية متوقع أن تصل إلى <b>'+expected+'%</b> خلال الأسبوعين القادمين.';
+            predictText = 'استمرارك على نفس الوتيرة يبني أساساً قوياً — كل جلسة تدريب ترفع دقتك الإجمالية تدريجياً.';
         } else {
             predictText = 'أنت قريب من السقف — الأسئلة الصعبة والاختبارات المحاكية ستحافظ على مستواك وتطوّره أكثر.';
         }
