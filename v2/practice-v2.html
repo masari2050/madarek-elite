@@ -376,6 +376,47 @@ let savedSet = new Set();
 let answers = []; // {qIdx, selectedIdx, isCorrect, questionData}
 let reportReason = '';
 
+// ── Sound feedback (WebAudio — no external files, works on iOS + Android) ──
+let _audioCtx = null;
+function playAnswerSound(isCorrect) {
+    // Respect user preference (sound_enabled defaults to true if undefined)
+    if (profile && profile.sound_enabled === false) return;
+    try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        // Lazy-init inside user gesture (required by iOS Safari)
+        if (!_audioCtx) _audioCtx = new AC();
+        // iOS may leave it suspended until an explicit resume()
+        if (_audioCtx.state === 'suspended') _audioCtx.resume().catch(function(){});
+
+        const ctx = _audioCtx;
+        const now = ctx.currentTime;
+
+        function tone(freqStart, freqEnd, vol, dur, type) {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freqStart, now);
+            if (freqEnd && freqEnd !== freqStart) osc.frequency.exponentialRampToValueAtTime(freqEnd, now + dur);
+            g.gain.setValueAtTime(0, now);
+            g.gain.linearRampToValueAtTime(vol, now + 0.015);
+            g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+            osc.connect(g); g.connect(ctx.destination);
+            osc.start(now); osc.stop(now + dur + 0.02);
+        }
+
+        if (isCorrect) {
+            // Happy triad (C5 + E5 + G5) — short & pleasant
+            tone(523.25, 523.25, 0.12, 0.28);
+            tone(659.25, 659.25, 0.10, 0.32);
+            tone(783.99, 783.99, 0.08, 0.36);
+        } else {
+            // Falling low tone for wrong
+            tone(320, 160, 0.15, 0.35);
+        }
+    } catch(e) {}
+}
+
 init();
 
 async function init() {
@@ -562,6 +603,7 @@ window.answer = async function(btn, idx) {
     }
 
     if (isCorrect) correctCount++; else wrongCount++;
+    playAnswerSound(isCorrect);
     answers.push({ qIdx: currentIdx, selectedIdx: idx, isCorrect, questionData: q });
 
     // Save attempt
