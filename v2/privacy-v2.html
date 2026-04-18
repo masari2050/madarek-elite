@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سياسة الخصوصية — مدارك النخبة</title>
+<meta name="description" content="سياسة الخصوصية لمنصة مدارك النخبة — كيف نحمي بياناتك ونحترم خصوصيتك.">
+<link rel="canonical" href="https://madarekelite.com/v2/privacy-v2.html">
+<script>(function(){try{var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);var t=localStorage.getItem("madarek_theme");if(t==="dark")document.documentElement.setAttribute("data-t","d");}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--warn:#F59E0B;--ws:rgba(245,158,11,.08);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);--ws:rgba(245,158,11,.12);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:640px;margin:0 auto;min-height:100dvh;background:var(--bg)}
+
+/* ── HEADER ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--ln);background:var(--sf);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:34px;height:34px;border-radius:10px;overflow:hidden;box-shadow:0 4px 12px rgba(109,93,246,.22)}
+.brand-icon img{width:100%;height:100%}
+.brand-txt{display:flex;flex-direction:column}
+.brand-name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.1}
+.brand-tag{font-size:9px;font-weight:500;color:var(--i3);margin-top:2px}
+.back-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri);padding:6px 10px;border-radius:10px;transition:background .2s}
+.back-link:hover{background:var(--ps)}
+
+/* ── HERO ── */
+.hero{padding:32px 20px 20px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 70%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--ss);color:var(--suc);font-size:11px;font-weight:700;border-radius:20px;margin-bottom:12px}
+.hero-badge svg{width:12px;height:12px;stroke:var(--suc);fill:none;stroke-width:2}
+.hero-h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.hero-sub{font-size:12px;color:var(--i3)}
+
+/* ── CONTENT ── */
+.content{padding:10px 16px 40px}
+.intro{padding:16px 18px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2);font-size:14px;color:var(--i2);line-height:1.9;margin-bottom:18px}
+.intro b{color:var(--pri);font-weight:700}
+
+section{margin-bottom:20px}
+.sec-h{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;color:var(--ink)}
+.sec-h .ic{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-size:14px;background:var(--ps)}
+
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2);padding:16px 18px}
+.box p{font-size:13px;color:var(--i2);line-height:1.9;margin-bottom:6px}
+.box p:last-child{margin-bottom:0}
+.box p strong{color:var(--ink);font-weight:700}
+
+.box-suc{background:var(--ss);border-color:rgba(34,197,94,.2)}
+.box-suc p{color:var(--i2)}
+.box-suc .ok{color:var(--suc);font-weight:700;margin-left:4px}
+
+.box-warn{background:var(--ws);border-color:rgba(245,158,11,.22)}
+.box-warn p{color:var(--i2)}
+.box-warn .hi{color:var(--warn);font-weight:700;display:block;margin-bottom:6px}
+
+.box-pri{background:var(--ps);border-color:rgba(109,93,246,.18)}
+.box-pri p.lead{color:var(--pt);font-weight:700;margin-bottom:8px}
+.box-pri p{color:var(--i2)}
+
+.contact{margin:28px 0 0;padding:20px 18px;text-align:center;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2)}
+.contact h3{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+.contact a{font-size:14px;font-weight:700;color:var(--pri);direction:ltr;display:inline-block;padding:6px 14px;background:var(--ps);border-radius:10px;margin-top:4px}
+.contact a:hover{background:var(--pm)}
+
+/* ── FOOTER ── */
+footer{padding:20px 16px;text-align:center;border-top:1px solid var(--ln);margin-top:18px}
+footer p{font-size:11px;color:var(--i4)}
+
+/* ── RESPONSIVE ── */
+@media (min-width:560px){
+  .hero{padding:48px 28px 24px}
+  .hero-h1{font-size:32px}
+  .content{padding:14px 28px 48px}
+  .intro{padding:20px 24px;font-size:15px}
+  .box{padding:20px 22px}
+}
+
+html[data-fs="small"] body{font-size:14px}
+html[data-fs="large"] body{font-size:16.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="topbar">
+  <a href="welcome-v2.html" class="brand">
+    <div class="brand-icon"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
+    <div class="brand-txt"><span class="brand-name">مدارك النخبة</span><span class="brand-tag">حيث يُصنع التميّز</span></div>
+  </a>
+  <a href="javascript:if(history.length>1){history.back()}else{location.href='welcome-v2.html'}" class="back-link">
+    <span>رجوع</span>
+    <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="m9 18 6-6-6-6"/></svg>
+  </a>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    خصوصيتك أولوية
+  </div>
+  <h1 class="hero-h1">سياسة الخصوصية</h1>
+  <p class="hero-sub">آخر تحديث: مارس 2026</p>
+</div>
+
+<div class="content">
+
+  <div class="intro">
+    في <b>مدارك النخبة</b>، خصوصيتك أولوية. نلتزم بحماية بياناتك الشخصية وفقاً لأنظمة المملكة العربية السعودية.
+  </div>
+
+  <section>
+    <div class="sec-h"><span class="ic">📋</span>البيانات المجمّعة</div>
+    <div class="box">
+      <p><strong>• بيانات الحساب:</strong> الاسم، البريد الإلكتروني، الجنس</p>
+      <p><strong>• بيانات الأداء:</strong> إجابات الأسئلة، الإحصائيات، التقدم</p>
+      <p><strong>• بيانات الاشتراك:</strong> الباقة، طريقة الدفع، تاريخ الاشتراك</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="ic">🔒</span>استخدام البيانات</div>
+    <div class="box">
+      <p>✓ تقديم الخدمة وتحليل أدائك</p>
+      <p>✓ تحسين المحتوى والتجربة</p>
+      <p>✓ إرسال إشعارات الحساب</p>
+      <p>✓ معالجة المدفوعات</p>
+      <p>✓ الامتثال القانوني</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="ic">🛡️</span>حماية البيانات</div>
+    <div class="box box-suc">
+      <p><span class="ok">✓</span>تشفير SSL/TLS</p>
+      <p><span class="ok">✓</span>خوادم آمنة</p>
+      <p><span class="ok">✓</span>نسخ احتياطية</p>
+      <p><span class="ok">✓</span>صلاحيات محدودة</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="ic">📝</span>طبيعة محتوى التجميعات (التسريبات)</div>
+    <div class="box box-pri">
+      <p class="lead">ما نقصده بـ «التسريبات» هو تجميعات لأسئلة من اختبارات سابقة انتهت بالفعل.</p>
+      <p>• جميع الأسئلة مأخوذة من اختبارات <strong>سبق إجراؤها وانتهت</strong> — ولا علاقة لها بأي اختبار حالي أو مستقبلي.</p>
+      <p>• الهدف هو التدريب والمراجعة فقط، تماماً مثل كتب التجميعات المتوفرة في السوق.</p>
+      <p>• لا تمتلك مدارك النخبة أي وصول لاختبارات لم تُعقد بعد، ولا تدّعي ذلك.</p>
+      <p>• كلمة «تسريبات» تُستخدم كمصطلح شائع بين الطلاب للإشارة إلى أسئلة الاختبارات السابقة المتداولة.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="ic">🤝</span>مشاركة البيانات</div>
+    <div class="box box-warn">
+      <p><span class="hi">لا نبيع بياناتك. نشاركها فقط في:</span></p>
+      <p>• مزودي الخدمة (استضافة، دفع)</p>
+      <p>• الامتثال القانوني</p>
+      <p>• حماية الحقوق</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><span class="ic">⚙️</span>حقوقك</div>
+    <div class="box">
+      <p>• الوصول لبياناتك</p>
+      <p>• تصحيح المعلومات</p>
+      <p>• تصدير البيانات</p>
+      <p>• حذف حسابك (عبر الإعدادات أو التواصل معنا)</p>
+    </div>
+  </section>
+
+  <div class="contact">
+    <h3>تواصل معنا</h3>
+    <a href="mailto:madarekelite@gmail.com">madarekelite@gmail.com</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
+</footer>
+
+</div>
+</body>
+</html>
