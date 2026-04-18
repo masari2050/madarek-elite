@@ -335,6 +335,15 @@ document.getElementById('regForm').addEventListener('submit',async function(e){
     if(phone&&res.data&&res.data.user){
       try{await sb.from('profiles').update({phone:phone}).eq('id',res.data.user.id);}catch(_){}
     }
+    // Apply referral code if the user signed up via a ?ref= link
+    var storedRef=null;
+    try{storedRef=localStorage.getItem('madarek_referral');}catch(_){}
+    if(storedRef&&res.data&&res.data.user){
+      try{
+        await sb.rpc('apply_referral',{p_new_user_id:res.data.user.id,p_referral_code:storedRef});
+        try{localStorage.removeItem('madarek_referral');}catch(_){}
+      }catch(_){}
+    }
     try{
       if(window.gtag)gtag('event','sign_up',{method:'email'});
       if(window.ttq)ttq.track('CompleteRegistration',{content_name:'Madarek Elite Signup v2'});
