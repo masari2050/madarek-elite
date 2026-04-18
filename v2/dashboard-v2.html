@@ -124,11 +124,22 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cta:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
 .cta-full{width:100%;display:flex;justify-content:center;margin-top:8px;padding:10px}
 
-/* LEADERBOARD TEASER */
-.lead-t{margin:0 6px 8px;padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;width:calc(100% - 32px);text-align:right}
-.lead-t .info{flex:1}.lead-t .n{font-size:13px;font-weight:600}.lead-t .d{font-size:11px;color:var(--i3);margin-top:1px}
-.lead-t > svg{width:16px;height:16px;stroke:var(--i3);fill:none;stroke-width:2;flex-shrink:0}
-.lead-t .arr svg{width:14px;height:14px;stroke:var(--i4);fill:none;stroke-width:2;transform:scaleX(-1)}
+/* LEADERBOARD PODIUM */
+.lead-box{margin:0 6px 8px;padding:14px 14px 10px;background:#F4F3FF;border:.5px solid #9D95F5;border-radius:var(--r2);width:calc(100% - 16px)}
+.lead-title{font-size:14px;font-weight:700;color:#6D5DF6;text-align:center;margin-bottom:12px}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:6px;margin-bottom:10px}
+.pd-col{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
+.pd-medal{font-size:22px;margin-bottom:4px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+.pd-name{font-size:10.5px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3;min-height:28px;padding:0 2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;width:100%}
+.pd-xp{font-size:10px;font-weight:600;color:var(--i2);margin-bottom:5px}
+.pd-pillar{width:100%;border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-size:14px;font-weight:800;letter-spacing:.5px}
+.pd-1 .pd-pillar{background:#7C3AED;color:#fff;height:88px;box-shadow:0 -2px 8px rgba(124,58,237,.2)}
+.pd-2 .pd-pillar{background:#C4B5FD;color:#4C1D95;height:66px}
+.pd-3 .pd-pillar{background:#DDD6FE;color:#4C1D95;height:50px}
+.lead-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:.5px solid rgba(157,149,245,.35);font-size:11.5px;gap:10px}
+.lead-footer .my-rank{font-weight:600;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lead-footer .full-link{color:#6D5DF6;font-weight:700;text-decoration:none;flex-shrink:0;cursor:pointer;padding:4px 0}
+.lead-footer .full-link:hover{text-decoration:underline}
 
 /* SECTION HEADERS */
 .sh{display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:10px}
@@ -266,15 +277,19 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <button class="cta cta-full" id="aiCta" onclick="location.href='training-v2.html'" style="display:none">ابدأ تدريباً مخصصاً</button>
 </div>
 
-<!-- LEADERBOARD TEASER -->
-<button class="lead-t card" id="leadTeaser" onclick="location.href='reports-v2.html?tab=lead'">
-  <svg viewBox="0 0 24 24"><path d="M12 15l-2 5-3-1 1 4h8l1-4-3 1-2-5z"/><circle cx="12" cy="8" r="6"/></svg>
-  <div class="info">
-    <div class="n">أنت في المرتبة <b style="color:var(--pri)" id="rankNum">#—</b> هذا الأسبوع</div>
-    <div class="d" id="rankDesc">جاري التحميل...</div>
+<!-- LEADERBOARD PODIUM -->
+<div class="lead-box" id="leadBox">
+  <div class="lead-title">متصدرو هذا الأسبوع</div>
+  <div class="podium">
+    <div class="pd-col pd-2" id="pd2"><div class="pd-medal">🥈</div><div class="pd-name">—</div><div class="pd-xp">—</div><div class="pd-pillar">2</div></div>
+    <div class="pd-col pd-1" id="pd1"><div class="pd-medal">🥇</div><div class="pd-name">—</div><div class="pd-xp">—</div><div class="pd-pillar">1</div></div>
+    <div class="pd-col pd-3" id="pd3"><div class="pd-medal">🥉</div><div class="pd-name">—</div><div class="pd-xp">—</div><div class="pd-pillar">3</div></div>
   </div>
-  <div class="arr"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></div>
-</button>
+  <div class="lead-footer">
+    <span class="my-rank" id="myRank">أنت في المرتبة —</span>
+    <a class="full-link" href="reports-v2.html?tab=lead">القائمة الكاملة ←</a>
+  </div>
+</div>
 
 <!-- TIP — واحدة يومياً -->
 <div class="sh"><div class="t">نصيحة اليوم</div></div>
@@ -431,10 +446,15 @@ async function loadHomeStats() {
         document.getElementById('progXP').textContent = xp + ' / ' + xpForNext + ' XP للمستوى التالي';
         setTimeout(() => { document.getElementById('xFill').style.width = xpProgress + '%'; }, 400);
 
-        // Rank
-        const rank = homeStats.rank || '—';
-        document.getElementById('rankNum').textContent = '#' + rank;
-        document.getElementById('rankDesc').textContent = isNewUser ? 'ابدأ التدريب لتظهر في الترتيب' : 'واصل التدريب لترتقي في الترتيب';
+        // Rank + Weekly podium
+        const rank = homeStats.rank;
+        document.getElementById('myRank').textContent = isNewUser
+            ? 'ابدأ التدريب لتظهر في الترتيب'
+            : (rank ? 'أنت في المرتبة #' + rank : 'لم تدخل الترتيب بعد');
+        try {
+            const top = await M.getLeaderboard('week');
+            renderPodium(Array.isArray(top) ? top : []);
+        } catch(_){}
 
         // ابنِ خطة اليوم حسب حالة المستخدم
         await renderPlan(isNewUser, mistakeCount || 0);
@@ -828,6 +848,26 @@ function toArabicOrdinal(n) {
     return ordinals[n] || n;
 }
 
+function renderPodium(list) {
+    const slots = { pd1: list[0], pd2: list[1], pd3: list[2] };
+    Object.keys(slots).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const p = slots[id];
+        const nameEl = el.querySelector('.pd-name');
+        const xpEl = el.querySelector('.pd-xp');
+        if (!p) {
+            if (nameEl) nameEl.textContent = '—';
+            if (xpEl) xpEl.textContent = '—';
+            return;
+        }
+        const parts = (p.name || '').trim().split(/\s+/).filter(Boolean);
+        const disp = parts.slice(0, 2).join(' ') || '—';
+        if (nameEl) nameEl.textContent = disp;
+        if (xpEl) xpEl.textContent = (p.xp || 0) + ' نقطة';
+    });
+}
+
 // ── Preview Mode (demo data, no auth needed) ──
 function loadPreviewMode() {
     profile = { id: 'demo', full_name: 'عبدالله', avatar_emoji: 'ع', streak_days: 5, xp: 560, level: 3, level_name: 'متدرب' };
@@ -881,9 +921,13 @@ function loadPreviewMode() {
     if (t1) t1.textContent = 'تدريب على النسب والتناسب';
     if (d1) d1.textContent = 'مختارة حسب أخطاءك الفعلية';
 
-    // Rank
-    document.getElementById('rankNum').textContent = '#8';
-    document.getElementById('rankDesc').textContent = 'عبدالعزيز يتصدر بـ 523 XP — فرقك 89 نقطة';
+    // Rank + Podium (preview)
+    document.getElementById('myRank').textContent = 'أنت في المرتبة #8';
+    renderPodium([
+        { name: 'عبدالعزيز الزهراني', xp: 523 },
+        { name: 'محمد السبيعي', xp: 481 },
+        { name: 'فهد الحربي', xp: 412 }
+    ]);
 
     // Notif dot
     document.getElementById('notifDot').style.display = 'block';
