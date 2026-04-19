@@ -332,7 +332,9 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
   .sidebar{width:280px;right:-280px;z-index:200;transition:right .28s cubic-bezier(.16,1,.3,1);box-shadow:-16px 0 44px rgba(0,0,0,.3)}
   .sidebar.open{right:0}
   .main{margin-right:0;width:100%}
-  .sb-toggle{display:inline-flex}
+  .sb-toggle{display:inline-flex;order:-1}
+  .tb-page{order:2;text-align:left}
+  .tb-right{order:1}
   .sb-close{display:flex}
   body.sb-lock{overflow:hidden}
   .topbar{padding:0 14px;gap:10px;height:54px}
@@ -437,12 +439,12 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 <!-- MAIN -->
 <div class="main main-content">
   <div class="topbar">
+    <button class="sb-toggle" onclick="openSidebar()" aria-label="القائمة"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <div class="tb-page" id="pageTitle">نظرة عامة</div>
     <div class="tb-right">
       <div class="online-pill"><div class="online-dot"></div><span id="onlineCount">—</span> متصل الآن</div>
       <div class="tb-date" id="curDate"></div>
       <div class="tb-btn" onclick="loadOverview()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
-      <button class="sb-toggle" onclick="openSidebar()" aria-label="القائمة"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     </div>
   </div>
 
@@ -498,7 +500,7 @@ async function init() {
     }
 
     // Auth + admin check
-    const user = await M.requireAuth('../admin-login.html');
+    const user = await M.requireAuth('admin-login-v2.html');
     if (!user) return;
     profile = await M.getProfile();
     if (!profile || !['admin','staff'].includes(profile.role)) {
