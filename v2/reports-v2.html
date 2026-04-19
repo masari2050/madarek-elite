@@ -326,14 +326,52 @@ const M = window.MadarekV2;
 const sb = M.getSb();
 const sectionMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'مختلط'};
 const topicMap = {
+    // كمي
     algebra:'الجبر', geometry:'الهندسة', arithmetic:'الحساب', statistics:'الإحصاء',
-    percent:'النسب المئوية', percentage:'النسب المئوية', ratios:'النسب والتناسب', ratio:'النسب والتناسب',
-    fractions:'الكسور', word_problems:'المسائل اللفظية', equations:'المعادلات',
-    probability:'الاحتمالات', analogy:'التناظر', sentence_completion:'إكمال الجمل',
-    reading:'الاستيعاب', reading_comp:'الاستيعاب', antonyms:'المتضادات', synonyms:'المترادفات',
-    biology:'الأحياء', chemistry:'الكيمياء', physics:'الفيزياء', math:'الرياضيات', general:'عام'
+    percent:'النسب المئوية', percentage:'النسب المئوية', percentages:'النسب المئوية',
+    ratios:'النسب والتناسب', ratio:'النسب والتناسب', proportion:'النسب والتناسب',
+    fractions:'الكسور', fraction:'الكسور', decimals:'الأعداد العشرية',
+    word_problems:'المسائل اللفظية', word_problem:'المسائل اللفظية',
+    equations:'المعادلات', equation:'المعادلات', inequalities:'المتباينات',
+    probability:'الاحتمالات', combinations:'التوافيق', permutations:'التباديل',
+    sequences:'المتتابعات', sequence:'المتتابعات', series:'المتسلسلات',
+    functions:'الاقترانات', graphs:'الرسوم البيانية', coordinates:'الإحداثيات',
+    numbers:'الأعداد', integers:'الأعداد الصحيحة', primes:'الأعداد الأولية',
+    powers:'القوى والأسس', exponents:'الأسس', roots:'الجذور', radicals:'الجذور',
+    logarithms:'اللوغاريتمات', factorial:'المضروب',
+    area:'المساحة', perimeter:'المحيط', volume:'الحجم', angles:'الزوايا',
+    triangles:'المثلثات', circles:'الدوائر', polygons:'المضلعات',
+    rate:'المعدل', speed:'السرعة', distance:'المسافة', time:'الزمن', work:'الشغل',
+    mixture:'المخاليط', profit:'الربح والخسارة', loss:'الربح والخسارة',
+    interest:'الفائدة', discount:'الخصم',
+    mean:'المتوسط', median:'الوسيط', mode:'المنوال', range:'المدى',
+    // لفظي
+    analogy:'التناظر اللفظي', analogies:'التناظر اللفظي',
+    sentence_completion:'إكمال الجمل', completion:'إكمال الجمل',
+    reading:'الاستيعاب المقروء', reading_comp:'الاستيعاب المقروء', reading_comprehension:'الاستيعاب المقروء', comprehension:'الاستيعاب المقروء',
+    antonyms:'المتضادات', antonym:'المتضادات',
+    synonyms:'المترادفات', synonym:'المترادفات',
+    contextual:'سياق الجمل', context:'سياق الجمل',
+    grammar:'القواعد', vocabulary:'المفردات', error:'الخطأ السياقي',
+    // تحصيلي
+    biology:'الأحياء', chemistry:'الكيمياء', physics:'الفيزياء',
+    math:'الرياضيات', mathematics:'الرياضيات',
+    history:'التاريخ', geography:'الجغرافيا',
+    islamic:'الدراسات الإسلامية', arabic:'اللغة العربية', english:'اللغة الإنجليزية',
+    // عام
+    general:'عام', other:'أخرى', misc:'متنوع', mixed:'مختلط'
 };
-function arTopic(t){ if(!t) return 'عام'; return topicMap[t] || sectionMap[t] || t; }
+function arTopic(t){
+    if(!t) return 'عام';
+    // لو نص عربي مسبقاً رجّعه كما هو
+    if(/[\u0600-\u06FF]/.test(t)) return t;
+    // normalize: lowercase + trim + استبدال المسافات بـ _
+    const k = String(t).trim().toLowerCase().replace(/\s+/g,'_');
+    if(topicMap[k]) return topicMap[k];
+    if(sectionMap[k]) return sectionMap[k];
+    // لو نص إنجليزي غير مُعرَّف: اجعله "أخرى" بدل عرضه بالإنجليزية
+    return 'أخرى';
+}
 let profile = null;
 let period = 'week';
 let currentTab = 'stats';
