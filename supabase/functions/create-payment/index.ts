@@ -1,14 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+import { sendTikTokEvent } from "../_shared/tiktok-events.ts"
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://madarekelite.com',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || ''
+  const allowed = ['https://madarekelite.com', 'https://www.madarekelite.com']
+  const allowedOrigin = allowed.includes(origin) ? origin : allowed[0]
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  }
 }
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: getCorsHeaders(req) })
   }
 
   try {
@@ -22,7 +28,7 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
 
@@ -34,19 +40,23 @@ serve(async (req) => {
     const { data: { user }, error: authErr } = await supabaseUser.auth.getUser()
     if (authErr || !user) {
       return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
 
     // ── Request body ──
-    const { plan, coupon } = await req.json()
+    const body = await req.json()
+    const { plan, coupon } = body
+    // source='app' → رجوع للتطبيق عبر deep link بعد الدفع
+    //        'web' (الافتراضي) → صفحة callback القديمة للموقع
+    const source = body.source === 'app' ? 'app' : 'web'
     if (!plan || !['monthly', 'yearly'].includes(plan)) {
       return new Response(JSON.stringify({ error: 'خطة غير صحيحة' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
 
-    console.log(`[create-payment] user=${user.id}, plan=${plan}, coupon=${coupon || 'none'}`)
+    console.log(`[create-payment] user=${user.id}, plan=${plan}, coupon=${coupon || 'none'}, source=${source}`)
 
     // ── Fetch prices (current = ما يظهر في الموقع) ──
     const { data: settings } = await supabaseAdmin.from('site_settings')
@@ -72,21 +82,21 @@ serve(async (req) => {
 
       if (cpErr || !cp) {
         return new Response(JSON.stringify({ error: 'كوبون غير صحيح' }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
         })
       }
 
       // Validate expiry
       if (cp.expires_at && new Date(cp.expires_at) < new Date()) {
         return new Response(JSON.stringify({ error: 'كوبون منتهي الصلاحية' }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
         })
       }
 
       // Validate usage
       if (cp.max_uses && (cp.used_count || 0) >= cp.max_uses) {
         return new Response(JSON.stringify({ error: 'كوبون مستنفد' }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
         })
       }
 
@@ -94,7 +104,7 @@ serve(async (req) => {
       if (cp.plan_type !== 'all' && cp.plan_type !== plan) {
         const pn = cp.plan_type === 'monthly' ? 'الشهرية' : 'السنوية'
         return new Response(JSON.stringify({ error: `هذا الكوبون للباقة ${pn} فقط` }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
         })
       }
 
@@ -152,12 +162,39 @@ serve(async (req) => {
 
       console.log(`[create-payment] ✅ FREE activation: user=${user.id}, plan=${subType}, expires=${endDate.toISOString()}`)
 
+      // ── TikTok Events API — تتبع الاشتراك المجاني ──
+      const ttUser = {
+        email: user.email || '',
+        phone: '',
+        external_id: user.id,
+        ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('cf-connecting-ip') || '',
+        user_agent: req.headers.get('user-agent') || '',
+        ttp: '',
+        ttclid: '',
+      }
+      try {
+        const { data: prof } = await supabaseAdmin.from('profiles').select('phone').eq('id', user.id).single()
+        if (prof?.phone) ttUser.phone = prof.phone
+      } catch (_) {}
+      // ttp و ttclid يجون من الكلاينت (إذا أرسلهم)
+      try {
+        const body = await req.clone().json()
+        if (body.ttp) ttUser.ttp = body.ttp
+        if (body.ttclid) ttUser.ttclid = body.ttclid
+      } catch (_) {}
+      await sendTikTokEvent('Subscribe', ttUser, {
+        value: 0,
+        currency: 'SAR',
+        content_id: subType === 'yearly' ? 'yearly' : 'monthly',
+        description: subType === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
+      })
+
       return new Response(JSON.stringify({
         free: true,
         plan: subType,
         expires: endDate.toISOString().split('T')[0],
       }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
 
@@ -167,76 +204,113 @@ serve(async (req) => {
 
     if (!MF_API_KEY) {
       return new Response(JSON.stringify({ error: 'بوابة الدفع غير مُعدّة' }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
 
-    // Create payment record
+    // ⚡ تشغيل إدخال السجل + طلب MyFatoorah بالتوازي لتسريع الاستجابة
     const paymentId = 'PAY-' + Date.now()
-    await supabaseAdmin.from('payments').insert({
-      user_id: user.id,
-      amount: finalAmount,
-      status: 'pending',
-      plan_type: plan,
-      coupon_code: coupon?.toUpperCase() || null,
-      payment_id: paymentId,
-    })
 
-    // Create MyFatoorah invoice
-    const mfRes = await fetch(MF_BASE_URL + '/v2/SendPayment', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + MF_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        NotificationOption: 'LNK',
-        InvoiceValue: finalAmount,
-        CustomerName: user.email?.split('@')[0] || 'مشترك',
-        CustomerEmail: user.email,
-        DisplayCurrencyIso: 'SAR',
-        CallBackUrl: 'https://www.madarekelite.com/payment-callback.html',
-        ErrorUrl: 'https://www.madarekelite.com/payment-callback.html?error=true',
-        Language: 'AR',
-        CustomerReference: user.id + '|' + plan,
-        InvoiceItems: [{
-          ItemName: plan === 'yearly' ? 'اشتراك سنوي — مدارك النخبة' : 'اشتراك شهري — مدارك النخبة',
-          Quantity: 1,
-          UnitPrice: finalAmount,
-        }],
+    const [_, mfRes] = await Promise.all([
+      // 1) إدخال سجل الدفع (لا نحتاج نتيجته)
+      supabaseAdmin.from('payments').insert({
+        user_id: user.id,
+        amount: finalAmount,
+        status: 'pending',
+        plan_type: plan,
+        coupon_code: coupon?.toUpperCase() || null,
+        payment_id: paymentId,
+      }).then(r => { if (r.error) console.error('[create-payment] insert err:', r.error.message) }),
+
+      // 2) إنشاء فاتورة MyFatoorah (هذا اللي نحتاج نتيجته)
+      fetch(MF_BASE_URL + '/v2/SendPayment', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + MF_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          NotificationOption: 'LNK',
+          InvoiceValue: finalAmount,
+          CustomerName: user.email?.split('@')[0] || 'مشترك',
+          CustomerEmail: user.email,
+          DisplayCurrencyIso: 'SAR',
+          CallBackUrl: source === 'app'
+            ? 'https://www.madarekelite.com/v2/payment-return-v2.html?src=app'
+            : 'https://www.madarekelite.com/payment-callback.html',
+          ErrorUrl: source === 'app'
+            ? 'https://www.madarekelite.com/v2/payment-return-v2.html?src=app&error=true'
+            : 'https://www.madarekelite.com/payment-callback.html?error=true',
+          Language: 'AR',
+          CustomerReference: user.id + '|' + plan,
+          InvoiceItems: [{
+            ItemName: plan === 'yearly' ? 'اشتراك سنوي — مدارك النخبة' : 'اشتراك شهري — مدارك النخبة',
+            Quantity: 1,
+            UnitPrice: finalAmount,
+          }],
+        }),
       }),
-    })
+    ])
 
     const mfData = await mfRes.json()
 
     if (!mfData.IsSuccess) {
       console.error('[create-payment] MyFatoorah error:', JSON.stringify(mfData))
       return new Response(JSON.stringify({ error: 'خطأ في بوابة الدفع' }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
 
-    // Update payment with MyFatoorah invoice ID
+    // ⚡ تحديث الـ invoice ID بدون انتظار (fire-and-forget) — المستخدم ما يحتاج ينتظر
     const invoiceId = mfData.Data?.InvoiceId
     if (invoiceId) {
-      await supabaseAdmin.from('payments').update({ payment_id: String(invoiceId) })
+      supabaseAdmin.from('payments').update({ payment_id: String(invoiceId) })
         .eq('payment_id', paymentId)
+        .then(r => { if (r.error) console.error('[create-payment] update err:', r.error.message) })
     }
 
     console.log(`[create-payment] ✅ Invoice created: ${invoiceId}, amount=${finalAmount}`)
 
+    // ── TikTok Events API — تتبع بدء الاشتراك (مسار الدفع العادي) ──
+    const ttUser = {
+      email: user.email || '',
+      phone: '',
+      external_id: user.id,
+      ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('cf-connecting-ip') || '',
+      user_agent: req.headers.get('user-agent') || '',
+      ttp: '',
+      ttclid: '',
+    }
+    try {
+      const { data: prof } = await supabaseAdmin.from('profiles').select('phone').eq('id', user.id).single()
+      if (prof?.phone) ttUser.phone = prof.phone
+    } catch (_) {}
+    // ttp و ttclid يجون من الكلاينت
+    try {
+      const bodyClone = await req.clone().json()
+      if (bodyClone.ttp) ttUser.ttp = bodyClone.ttp
+      if (bodyClone.ttclid) ttUser.ttclid = bodyClone.ttclid
+    } catch (_) {}
+    await sendTikTokEvent('Subscribe', ttUser, {
+      value: finalAmount,
+      currency: 'SAR',
+      content_id: plan,
+      description: plan === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
+    })
+
+    // ⚡ إرجاع الرابط فوراً
     return new Response(JSON.stringify({
       paymentUrl: mfData.Data?.InvoiceURL,
       invoiceId: invoiceId,
       amount: finalAmount,
     }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
     })
 
   } catch (e) {
     console.error('[create-payment] Error:', e)
     return new Response(JSON.stringify({ error: 'خطأ في إنشاء الدفع: ' + (e as Error).message }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
     })
   }
 })

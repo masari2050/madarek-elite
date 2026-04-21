@@ -417,6 +417,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
     <div class="sb-item" data-page="banners" data-title="البنرات"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg><span>البنرات</span></div>
     <div class="sb-item" data-page="pages" data-title="الصفحات التعريفية"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>الصفحات التعريفية</span></div>
     <div class="sb-item" data-page="referrals" data-title="الإحالات"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>الإحالات</span></div>
+    <div class="sb-item" data-page="payouts" data-title="طلبات الصرف"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/><path d="M7 15h4"/></svg><span>طلبات الصرف</span><span class="badge" id="payoutsBadge" style="display:none">0</span></div>
     <div class="sb-item" data-page="tips" data-title="النصائح اليومية"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>النصائح اليومية</span></div>
     <div class="sb-item" data-page="seo" data-title="SEO والظهور"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>SEO والظهور</span></div>
 
@@ -513,6 +514,7 @@ async function init() {
     bindNav();
     loadOverview();
     loadReviewBadge();
+    loadPayoutsBadge();
     loadOnlineCount();
     setInterval(loadOnlineCount, 60000);
 }
@@ -568,6 +570,7 @@ function switchPage(page, title) {
         banners: window.loadBanners,
         pages: window.loadPages,
         referrals: window.loadReferrals,
+        payouts: window.loadPayouts,
         tips: window.loadTips,
         seo: window.loadSEO,
         staff: window.loadStaff,
@@ -749,6 +752,14 @@ async function loadReviewBadge() {
     try {
         const { count } = await sb.from('reports').select('*',{count:'exact',head:true}).eq('status','pending');
         const b = document.getElementById('reviewBadge');
+        if (count > 0) { b.textContent = count; b.style.display = ''; }
+    } catch(e){}
+}
+
+async function loadPayoutsBadge() {
+    try {
+        const { count } = await sb.from('referral_payouts').select('*',{count:'exact',head:true}).eq('status','pending');
+        const b = document.getElementById('payoutsBadge');
         if (count > 0) { b.textContent = count; b.style.display = ''; }
     } catch(e){}
 }

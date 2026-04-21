@@ -2740,4 +2740,322 @@ window.editSetting = function(key) {
     showToast('قريباً — تعديل الإعداد','');
 };
 
+// ═══════════════════════════════════════════════════════
+// 18. PAYOUTS — طلبات الصرف (STC Pay)
+// ═══════════════════════════════════════════════════════
+window._payoutsFilter = 'pending'; // all | pending | processing | completed | rejected
+
+window.loadPayouts = async function() {
+    const { sb } = window.A;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+
+    $c().innerHTML = `
+    <div id="payoutsArea">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px" id="payoutsKpis">
+            <div class="loader">...</div>
+        </div>
+
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-l">
+                    <div class="card-ic pur"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/><path d="M7 15h4"/></svg></div>
+                    <div><div class="card-title">طلبات الصرف</div><div class="card-sub">إدارة تحويلات STC Pay للمُحيلين</div></div>
+                </div>
+            </div>
+            <div class="q-filter-row" style="padding:0 16px 12px" id="payoutsFilters">
+                <button class="q-filter-btn on" data-status="pending"    onclick="payoutsFilter('pending')">قيد الانتظار</button>
+                <button class="q-filter-btn"    data-status="processing" onclick="payoutsFilter('processing')">قيد المعالجة</button>
+                <button class="q-filter-btn"    data-status="completed"  onclick="payoutsFilter('completed')">مكتملة</button>
+                <button class="q-filter-btn"    data-status="rejected"   onclick="payoutsFilter('rejected')">مرفوضة</button>
+                <button class="q-filter-btn"    data-status="all"        onclick="payoutsFilter('all')">الكل</button>
+            </div>
+            <div class="tbl-wrap" id="payoutsTable"><div class="loader">جاري التحميل...</div></div>
+        </div>
+    </div>`;
+
+    try {
+        // ── KPIs ──
+        if (isPreview) {
+            renderPayoutsKpis({ pending_count: 2, pending_amount: 310, processing_count: 1, processing_amount: 150, completed_count: 8, completed_amount: 1240, rejected_count: 1 });
+        } else {
+            const [pendR, procR, compR, rejR] = await Promise.all([
+                sb.from('referral_payouts').select('amount', { count:'exact' }).eq('status','pending'),
+                sb.from('referral_payouts').select('amount', { count:'exact' }).eq('status','processing'),
+                sb.from('referral_payouts').select('amount', { count:'exact' }).eq('status','completed'),
+                sb.from('referral_payouts').select('amount', { count:'exact' }).eq('status','rejected')
+            ]);
+            const sum = arr => (arr||[]).reduce((s,r)=>s+Number(r.amount||0),0);
+            renderPayoutsKpis({
+                pending_count: pendR.count || 0,
+                pending_amount: sum(pendR.data),
+                processing_count: procR.count || 0,
+                processing_amount: sum(procR.data),
+                completed_count: compR.count || 0,
+                completed_amount: sum(compR.data),
+                rejected_count: rejR.count || 0
+            });
+        }
+
+        // ── Table ──
+        await loadPayoutsTable();
+    } catch(e) {
+        console.error(e);
+        showToast('خطأ في التحميل: ' + (e.message || ''), 'err');
+    }
+};
+
+function renderPayoutsKpis(d) {
+    document.getElementById('payoutsKpis').innerHTML = `
+    <div class="kpi orange">
+        <div class="kpi-label">قيد الانتظار</div>
+        <div class="kpi-val">${fmt(d.pending_count)}</div>
+        <div class="kpi-sub">${fmt(d.pending_amount)} ر.س — يحتاج معالجة</div>
+    </div>
+    <div class="kpi blue">
+        <div class="kpi-label">قيد المعالجة</div>
+        <div class="kpi-val">${fmt(d.processing_count)}</div>
+        <div class="kpi-sub">${fmt(d.processing_amount)} ر.س</div>
+    </div>
+    <div class="kpi green">
+        <div class="kpi-label">مكتملة</div>
+        <div class="kpi-val">${fmt(d.completed_count)}</div>
+        <div class="kpi-sub">${fmt(d.completed_amount)} ر.س مُحوّلة</div>
+    </div>
+    <div class="kpi red">
+        <div class="kpi-label">مرفوضة</div>
+        <div class="kpi-val">${fmt(d.rejected_count)}</div>
+        <div class="kpi-sub">تم إرجاع الرصيد</div>
+    </div>`;
+}
+
+window.payoutsFilter = function(status) {
+    window._payoutsFilter = status;
+    document.querySelectorAll('#payoutsFilters .q-filter-btn').forEach(c => {
+        c.classList.toggle('on', c.dataset.status === status);
+    });
+    loadPayoutsTable();
+};
+
+async function loadPayoutsTable() {
+    const { sb } = window.A;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    const status = window._payoutsFilter;
+    const el = document.getElementById('payoutsTable');
+    if (!el) return;
+    el.innerHTML = '<div class="loader">جاري التحميل...</div>';
+
+    try {
+        let rows = [];
+        if (isPreview) {
+            rows = buildPreviewPayouts(status);
+        } else {
+            let q = sb.from('v_payouts_admin').select('*').order('requested_at', { ascending: false }).limit(200);
+            if (status !== 'all') q = q.eq('status', status);
+            const { data, error } = await q;
+            if (error) throw error;
+            rows = data || [];
+        }
+
+        if (!rows.length) {
+            el.innerHTML = `<div class="empty" style="padding:40px 20px">
+                <div class="empty-ic">💸</div>
+                <div class="empty-t">لا طلبات ${statusLabel(status)} حالياً</div>
+                <div class="empty-d">ستظهر الطلبات هنا عند وصولها</div>
+            </div>`;
+            return;
+        }
+
+        el.innerHTML = '<table><thead><tr>' +
+            '<th>المُحيل</th>' +
+            '<th>المبلغ</th>' +
+            '<th>STC Pay</th>' +
+            '<th>الإحالات</th>' +
+            '<th>تاريخ الطلب</th>' +
+            '<th>الحالة</th>' +
+            '<th>الإجراءات</th>' +
+            '</tr></thead><tbody>' +
+            rows.map(r => `<tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div class="tbl-avatar">${esc((r.user_name||'?').charAt(0))}</div>
+                        <div>
+                            <div class="td-name">${esc(r.user_name || '—')}</div>
+                            <div style="font-size:10px;color:var(--i3)">${esc(r.user_email||'')} ${r.user_referral_code ? '· <span style="color:var(--pri);font-family:monospace">'+esc(r.user_referral_code)+'</span>' : ''}</div>
+                        </div>
+                    </div>
+                </td>
+                <td><b style="color:var(--suc);font-size:14px">${fmt(Number(r.amount||0))}</b> <span style="font-size:11px;color:var(--i3)">ر.س</span></td>
+                <td>
+                    <div style="font-family:monospace;font-size:13px;font-weight:700">${esc(r.stc_pay_number||'—')}</div>
+                    <button class="q-act-btn" title="نسخ الرقم" onclick="copyPayoutStc('${esc(r.stc_pay_number||'')}')" style="margin-top:4px">
+                        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                </td>
+                <td style="text-align:center"><b>${r.referrals_count || 0}</b></td>
+                <td style="font-size:11px;color:var(--i3)">${fmtDate(r.requested_at)}</td>
+                <td>${payoutStatusPill(r.status)}</td>
+                <td>${payoutActions(r)}</td>
+            </tr>`).join('') +
+            '</tbody></table>';
+    } catch(e) {
+        console.error(e);
+        el.innerHTML = '<div class="empty-d" style="padding:20px">خطأ في التحميل: ' + esc(e.message||'') + '</div>';
+    }
+}
+
+function statusLabel(s) {
+    return ({ pending:'قيد الانتظار', processing:'قيد المعالجة', completed:'مكتملة', rejected:'مرفوضة' })[s] || '';
+}
+
+function payoutStatusPill(s) {
+    const map = {
+        pending:    '<span class="status-pill pending">⏳ قيد الانتظار</span>',
+        processing: '<span class="status-pill" style="background:rgba(139,127,255,.12);color:var(--pri)">🔄 قيد المعالجة</span>',
+        completed:  '<span class="status-pill active">✓ مكتملة</span>',
+        rejected:   '<span class="status-pill expired">✗ مرفوضة</span>'
+    };
+    return map[s] || s;
+}
+
+function payoutActions(r) {
+    if (r.status === 'pending') {
+        return `<div style="display:flex;gap:4px">
+            <button class="btn btn-pri" style="padding:5px 10px;font-size:11px" onclick="openPayoutClaim('${r.id}')" title="استلام المعالجة">🔄 استلم</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;color:var(--dng)" onclick="openPayoutReject('${r.id}','${fmt(Number(r.amount||0))}')" title="رفض">✗ ارفض</button>
+        </div>`;
+    }
+    if (r.status === 'processing') {
+        return `<div style="display:flex;gap:4px">
+            <button class="btn btn-pri" style="padding:5px 10px;font-size:11px;background:var(--suc);border-color:var(--suc)" onclick="openPayoutComplete('${r.id}','${fmt(Number(r.amount||0))}','${esc(r.stc_pay_number||'')}')" title="تأكيد الإتمام">✓ أتمم</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;color:var(--dng)" onclick="openPayoutReject('${r.id}','${fmt(Number(r.amount||0))}')" title="رفض">✗ ارفض</button>
+        </div>`;
+    }
+    if (r.status === 'completed' || r.status === 'rejected') {
+        const note = r.admin_note ? `<div style="font-size:10px;color:var(--i3);margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.admin_note)}">${esc(r.admin_note)}</div>` : '';
+        const processor = r.processor_name ? `<div style="font-size:10px;color:var(--i3)">بواسطة ${esc(r.processor_name)}</div>` : '';
+        return `<div>${note}${processor}</div>`;
+    }
+    return '—';
+}
+
+function fmtDate(s) {
+    if (!s) return '—';
+    try {
+        const d = new Date(s);
+        return d.toLocaleString('ar-SA', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    } catch { return s; }
+}
+
+// ── Preview mock rows ──
+function buildPreviewPayouts(filter) {
+    const all = [
+        { id:'pv-1', user_id:'u1', user_name:'عبدالله الزهراني', user_email:'abodi2040@gmail.com', user_referral_code:'MADAR-ZAHR1', amount:150, stc_pay_number:'+966553339885', status:'pending', requested_at:new Date(Date.now()-3*3600e3).toISOString(), referrals_count:15, admin_note:null, processor_name:null },
+        { id:'pv-2', user_id:'u2', user_name:'سارة العتيبي', user_email:'sara@example.com', user_referral_code:'MADAR-SARAH', amount:160, stc_pay_number:'+966501234567', status:'pending', requested_at:new Date(Date.now()-18*3600e3).toISOString(), referrals_count:16, admin_note:null, processor_name:null },
+        { id:'pv-3', user_id:'u3', user_name:'محمد الحربي', user_email:'moh@example.com', user_referral_code:'MADAR-MOHD7', amount:150, stc_pay_number:'+966555555555', status:'processing', requested_at:new Date(Date.now()-24*3600e3).toISOString(), referrals_count:15, admin_note:null, processor_name:'المدير العام' },
+        { id:'pv-4', user_id:'u4', user_name:'نورة القحطاني', user_email:'nora@example.com', user_referral_code:'MADAR-NURA9', amount:200, stc_pay_number:'+966533334444', status:'completed', requested_at:new Date(Date.now()-5*86400e3).toISOString(), processed_at:new Date(Date.now()-4*86400e3).toISOString(), referrals_count:20, admin_note:'STC-REF-99213', processor_name:'المدير العام' },
+        { id:'pv-5', user_id:'u5', user_name:'خالد السالم', user_email:'khalid@example.com', user_referral_code:'MADAR-KHLD3', amount:100, stc_pay_number:'+966500000000', status:'rejected', requested_at:new Date(Date.now()-7*86400e3).toISOString(), processed_at:new Date(Date.now()-6*86400e3).toISOString(), referrals_count:10, admin_note:'حسابات مكررة — نفس الـIP', processor_name:'المدير العام' }
+    ];
+    if (filter === 'all') return all;
+    return all.filter(r => r.status === filter);
+}
+
+// ════════════════════════════════════════
+// Actions: Claim / Complete / Reject
+// ════════════════════════════════════════
+window.copyPayoutStc = function(n) {
+    if (!n) return;
+    navigator.clipboard.writeText(n).then(
+        () => showToast('نُسخ الرقم: ' + n, 'suc'),
+        () => showToast('فشل النسخ', 'err')
+    );
+};
+
+window.openPayoutClaim = async function(id) {
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    if (!confirm('استلم هذا الطلب لمعالجته؟ (سيتغيّر إلى "قيد المعالجة")')) return;
+    try {
+        if (isPreview) { showToast('(معاينة) تم الاستلام', 'suc'); loadPayouts(); return; }
+        const { sb } = window.A;
+        const { data, error } = await sb.rpc('admin_claim_payout', { p_payout_id: id });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'فشلت العملية');
+        showToast('تم الاستلام — جاهز للمعالجة', 'suc');
+        loadPayouts();
+    } catch(e) { showToast('خطأ: ' + (e.message||''), 'err'); }
+};
+
+window.openPayoutComplete = function(id, amount, stcNumber) {
+    const body = `
+    <div style="padding:4px 0">
+        <div style="background:var(--suc-s);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:12px;margin-bottom:16px">
+            <div style="font-size:12px;color:var(--i2);margin-bottom:4px">سترسل مبلغ</div>
+            <div style="font-size:24px;font-weight:800;color:var(--suc)">${amount} ر.س</div>
+            <div style="font-size:12px;color:var(--i2);margin-top:6px">إلى STC Pay: <b style="font-family:monospace">${esc(stcNumber)}</b></div>
+        </div>
+        <div class="form-field">
+            <label class="form-label">مرجع التحويل من STC Pay <span style="color:var(--dng)">*</span></label>
+            <input class="form-input" id="payoutCompleteRef" placeholder="مثال: STC-REF-99213 أو TXN-12345" autocomplete="off" style="font-family:monospace">
+            <div style="font-size:11px;color:var(--i3);margin-top:4px">رقم المرجع من تطبيق STC Pay — لازم للمراجعة المالية</div>
+        </div>
+        <div style="background:var(--warn-s,#FEFCE8);border:1px solid #FDE68A;border-radius:8px;padding:10px;margin-top:12px;font-size:12px;color:#92400E">
+            ⚠️ تأكّد من إتمام التحويل في STC Pay <u>قبل</u> الضغط على تأكيد — بعد الحفظ لا يمكن التراجع بسهولة
+        </div>
+    </div>`;
+    const foot = `<button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+                  <button class="btn btn-pri" style="background:var(--suc);border-color:var(--suc)" onclick="confirmPayoutComplete('${id}')">تأكيد الإتمام</button>`;
+    openModal('إتمام صرف ' + amount + ' ر.س', body, foot);
+    setTimeout(()=>document.getElementById('payoutCompleteRef')?.focus(), 100);
+};
+
+window.confirmPayoutComplete = async function(id) {
+    const ref = (document.getElementById('payoutCompleteRef').value || '').trim();
+    if (ref.length < 3) return showToast('مرجع التحويل مطلوب (3 أحرف على الأقل)', 'err');
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    try {
+        if (isPreview) { closeModal(); showToast('(معاينة) تم الإتمام: ' + ref, 'suc'); loadPayouts(); return; }
+        const { sb } = window.A;
+        const { data, error } = await sb.rpc('admin_complete_payout', { p_payout_id: id, p_transfer_ref: ref });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'فشلت العملية');
+        closeModal();
+        showToast('✓ تم الإتمام — ' + data.amount + ' ر.س (' + ref + ')', 'suc');
+        loadPayouts();
+    } catch(e) { showToast('خطأ: ' + (e.message||''), 'err'); }
+};
+
+window.openPayoutReject = function(id, amount) {
+    const body = `
+    <div style="padding:4px 0">
+        <div style="background:var(--dng-s);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px;margin-bottom:16px">
+            <div style="font-size:13px;color:var(--dng);font-weight:700">سيتم رفض طلب بمبلغ ${amount} ر.س</div>
+            <div style="font-size:12px;color:var(--i2);margin-top:4px">الرصيد سيُرجَع تلقائياً لحساب المُحيل ويقدر يطلب صرف جديد</div>
+        </div>
+        <div class="form-field">
+            <label class="form-label">سبب الرفض <span style="color:var(--dng)">*</span></label>
+            <textarea class="form-textarea" id="payoutRejectReason" rows="3" placeholder="مثال: حسابات مكرّرة، IP واحد، معلومات مزيفة..."></textarea>
+            <div style="font-size:11px;color:var(--i3);margin-top:4px">سيظهر السبب في سجلّ النظام (لكن <b>لن</b> يُرسل للمستخدم تلقائياً — تواصل معه بالواتساب لو احتاج توضيح)</div>
+        </div>
+    </div>`;
+    const foot = `<button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+                  <button class="btn btn-pri" style="background:var(--dng);border-color:var(--dng)" onclick="confirmPayoutReject('${id}')">تأكيد الرفض</button>`;
+    openModal('رفض طلب صرف', body, foot);
+    setTimeout(()=>document.getElementById('payoutRejectReason')?.focus(), 100);
+};
+
+window.confirmPayoutReject = async function(id) {
+    const reason = (document.getElementById('payoutRejectReason').value || '').trim();
+    if (reason.length < 3) return showToast('سبب الرفض مطلوب (3 أحرف على الأقل)', 'err');
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    try {
+        if (isPreview) { closeModal(); showToast('(معاينة) تم الرفض', 'suc'); loadPayouts(); return; }
+        const { sb } = window.A;
+        const { data, error } = await sb.rpc('admin_reject_payout', { p_payout_id: id, p_reason: reason });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'فشلت العملية');
+        closeModal();
+        showToast('تم الرفض — أُرجع ' + (data.restored_referrals||0) + ' إحالة لرصيد المستخدم', 'suc');
+        loadPayouts();
+    } catch(e) { showToast('خطأ: ' + (e.message||''), 'err'); }
+};
+
 })();

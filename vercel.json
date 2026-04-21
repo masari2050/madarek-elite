@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/invite/:code", "destination": "/v2/invite-v2.html?code=:code" },
+    { "source": "/r/:code",       "destination": "/v2/invite-v2.html?code=:code" }
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [{ "key": "Content-Type", "value": "application/json" }]
+    }
+  ]
+}
