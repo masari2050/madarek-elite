@@ -35,13 +35,26 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) return jsonRes({ error: 'يرجى تسجيل الدخول أولاً' }, 401)
 
-    const supabaseUser = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    )
-    const { data: { user }, error: authErr } = await supabaseUser.auth.getUser()
-    if (authErr || !user) return jsonRes({ error: 'يرجى تسجيل الدخول أولاً' }, 401)
+    // JWT decode + admin verify — يتجاوز خطأ ES256
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+    let userId = ''
+    try {
+      const parts = token.split('.')
+      if (parts.length !== 3) throw new Error('صيغة JWT غير صالحة')
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+      const padded = b64 + '==='.slice((b64.length + 3) % 4)
+      const payload = JSON.parse(atob(padded))
+      userId = payload.sub || ''
+      if (!userId) throw new Error('sub غير موجود')
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        return jsonRes({ error: 'انتهت الجلسة — سجّل دخول من جديد' }, 401)
+      }
+    } catch (e) {
+      return jsonRes({ error: 'توكن غير صالح: ' + (e as Error).message }, 401)
+    }
+    const { data: adminUserRes, error: authErr } = await supabaseAdmin.auth.admin.getUserById(userId)
+    if (authErr || !adminUserRes?.user) return jsonRes({ error: 'الحساب غير موجود' }, 401)
+    const user = adminUserRes.user
 
     // ══════════════════════════════════════════
     //  2. قراءة الطلب

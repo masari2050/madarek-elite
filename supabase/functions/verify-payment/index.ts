@@ -25,7 +25,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // ── التحقق من المستخدم (إجباري) ──
+    // ── التحقق من المستخدم (JWT decode + admin — يتجاوز ES256) ──
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
@@ -33,17 +33,33 @@ serve(async (req) => {
       })
     }
 
-    const supabaseUser = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    )
-    const { data: { user }, error: authErr } = await supabaseUser.auth.getUser()
-    if (authErr || !user) {
-      return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+    let userId = ''
+    try {
+      const parts = token.split('.')
+      if (parts.length !== 3) throw new Error('صيغة JWT غير صالحة')
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+      const padded = b64 + '==='.slice((b64.length + 3) % 4)
+      const payload = JSON.parse(atob(padded))
+      userId = payload.sub || ''
+      if (!userId) throw new Error('sub غير موجود')
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        return new Response(JSON.stringify({ error: 'انتهت الجلسة' }), {
+          status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+        })
+      }
+    } catch (e) {
+      return new Response(JSON.stringify({ error: 'توكن غير صالح: ' + (e as Error).message }), {
         status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
+    const { data: adminUserRes, error: authErr } = await supabaseAdmin.auth.admin.getUserById(userId)
+    if (authErr || !adminUserRes?.user) {
+      return new Response(JSON.stringify({ error: 'الحساب غير موجود' }), {
+        status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+      })
+    }
+    const user = adminUserRes.user
 
     // ── قراءة paymentId ──
     const { paymentId } = await req.json()

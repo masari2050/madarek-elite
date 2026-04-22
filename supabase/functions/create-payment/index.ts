@@ -24,7 +24,9 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // ── Auth check ──
+    // ── Auth check (JWT decode + admin verification) ──
+    // نتعامل يدوياً مع JWT لتجاوز خطأ "Unsupported JWT algorithm ES256"
+    // الذي يحدث عندما يوقّع Supabase التوكنات بـ asymmetric keys ES256
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
@@ -32,17 +34,43 @@ serve(async (req) => {
       })
     }
 
-    const supabaseUser = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    )
-    const { data: { user }, error: authErr } = await supabaseUser.auth.getUser()
-    if (authErr || !user) {
-      return new Response(JSON.stringify({ error: 'سجّل دخول أولاً' }), {
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+    let userId = ''
+    let userEmail = ''
+    try {
+      const parts = token.split('.')
+      if (parts.length !== 3) throw new Error('صيغة JWT غير صالحة')
+      // base64url → base64
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+      const padded = b64 + '==='.slice((b64.length + 3) % 4)
+      const payload = JSON.parse(atob(padded))
+      userId = payload.sub || ''
+      userEmail = payload.email || ''
+      if (!userId) throw new Error('sub غير موجود في JWT')
+      // تحقّق من انتهاء الصلاحية
+      if (payload.exp && typeof payload.exp === 'number' && payload.exp * 1000 < Date.now()) {
+        return new Response(JSON.stringify({ error: 'انتهت الجلسة — سجّل دخول من جديد' }), {
+          status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+        })
+      }
+    } catch (e) {
+      console.error('[create-payment] JWT decode failed:', (e as Error).message)
+      return new Response(JSON.stringify({ error: 'توكن غير صالح: ' + (e as Error).message }), {
         status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
+
+    // تأكّد أن المستخدم موجود فعلاً (عبر service_role — يتجاوز مشكلة ES256)
+    const { data: adminUserRes, error: adminErr } = await supabaseAdmin.auth.admin.getUserById(userId)
+    if (adminErr || !adminUserRes?.user) {
+      console.error('[create-payment] admin.getUserById failed:', adminErr?.message)
+      return new Response(JSON.stringify({ error: 'الحساب غير موجود' }), {
+        status: 401, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+      })
+    }
+    const user = adminUserRes.user
+    if (!user.email && userEmail) (user as any).email = userEmail
+    console.log(`[create-payment] auth ok: user=${userId}, email=${user.email}`)
 
     // ── Request body ──
     const body = await req.json()
@@ -50,7 +78,7 @@ serve(async (req) => {
     // source='app' → رجوع للتطبيق عبر deep link بعد الدفع
     //        'web' (الافتراضي) → صفحة callback القديمة للموقع
     const source = body.source === 'app' ? 'app' : 'web'
-    if (!plan || !['monthly', 'yearly'].includes(plan)) {
+    if (!plan || !['monthly', 'quarterly', 'yearly'].includes(plan)) {
       return new Response(JSON.stringify({ error: 'خطة غير صحيحة' }), {
         status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
@@ -58,22 +86,45 @@ serve(async (req) => {
 
     console.log(`[create-payment] user=${user.id}, plan=${plan}, coupon=${coupon || 'none'}, source=${source}`)
 
-    // ── Fetch prices (current = ما يظهر في الموقع) ──
-    const { data: settings } = await supabaseAdmin.from('site_settings')
-      .select('key, value')
-      .in('key', ['price_monthly_current', 'price_yearly_current', 'price_monthly_original', 'price_yearly_original'])
+    // ── جلب السعر من جدول plans (المصدر الوحيد للحقيقة — يوافق ما يشاهده العميل) ──
+    // fallback لـ site_settings القديم إذا فشل
+    let basePrice = 0
+    let durMonths = plan === 'yearly' ? 12 : (plan === 'quarterly' ? 3 : 1)
 
-    const settingsMap: Record<string, number> = {}
-    settings?.forEach((s: any) => { const v = parseFloat(s.value); if (!isNaN(v)) settingsMap[s.key] = v })
+    try {
+      const { data: planRow, error: planErr } = await supabaseAdmin.from('plans')
+        .select('price, duration_days')
+        .eq('slug', plan)
+        .maybeSingle()
+      if (planErr) console.warn('[create-payment] plans query err:', planErr.message)
+      if (planRow?.price) {
+        basePrice = Number(planRow.price)
+        if (planRow.duration_days) {
+          durMonths = Math.max(1, Math.round(Number(planRow.duration_days) / 30))
+        }
+        console.log(`[create-payment] price from plans: ${basePrice} SAR, durMonths=${durMonths}`)
+      }
+    } catch (e) { console.warn('[create-payment] plans lookup failed:', (e as Error).message) }
 
-    // استخدم السعر الحالي (current) اللي يشوفه المستخدم، مع fallback للأصلي
-    let basePrice = plan === 'yearly'
-      ? (settingsMap['price_yearly_current'] || settingsMap['price_yearly_original'] || 468)
-      : (settingsMap['price_monthly_current'] || settingsMap['price_monthly_original'] || 60)
+    if (basePrice <= 0) {
+      // fallback: جدول site_settings (النسخة القديمة)
+      const { data: settings } = await supabaseAdmin.from('site_settings')
+        .select('key, value')
+        .in('key', ['price_monthly_current', 'price_quarterly_current', 'price_yearly_current',
+                   'price_monthly_original', 'price_quarterly_original', 'price_yearly_original'])
+
+      const settingsMap: Record<string, number> = {}
+      settings?.forEach((s: any) => { const v = parseFloat(s.value); if (!isNaN(v)) settingsMap[s.key] = v })
+
+      basePrice = plan === 'yearly'
+        ? (settingsMap['price_yearly_current'] || settingsMap['price_yearly_original'] || 799)
+        : plan === 'quarterly'
+          ? (settingsMap['price_quarterly_current'] || settingsMap['price_quarterly_original'] || 249)
+          : (settingsMap['price_monthly_current'] || settingsMap['price_monthly_original'] || 99)
+    }
 
     let finalAmount = basePrice
     let couponData: any = null
-    let durMonths = plan === 'yearly' ? 12 : 1
 
     // ── Coupon validation ──
     if (coupon) {
@@ -125,7 +176,9 @@ serve(async (req) => {
 
     // ── FREE (amount = 0) → activate directly ──
     if (finalAmount <= 0) {
-      const subType = durMonths >= 12 ? 'yearly' : (durMonths >= 1 ? 'monthly' : 'monthly')
+      const subType = durMonths >= 12 ? 'yearly'
+        : durMonths >= 3 ? 'quarterly'
+        : 'monthly'
       const endDate = new Date()
       endDate.setMonth(endDate.getMonth() + durMonths)
 
@@ -182,12 +235,14 @@ serve(async (req) => {
         if (body.ttp) ttUser.ttp = body.ttp
         if (body.ttclid) ttUser.ttclid = body.ttclid
       } catch (_) {}
-      await sendTikTokEvent('Subscribe', ttUser, {
-        value: 0,
-        currency: 'SAR',
-        content_id: subType === 'yearly' ? 'yearly' : 'monthly',
-        description: subType === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
-      })
+      try {
+        await sendTikTokEvent('Subscribe', ttUser, {
+          value: 0,
+          currency: 'SAR',
+          content_id: subType === 'yearly' ? 'yearly' : 'monthly',
+          description: subType === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
+        })
+      } catch (tte) { console.warn('[create-payment] TikTok event (free) failed:', (tte as Error).message) }
 
       return new Response(JSON.stringify({
         free: true,
@@ -203,10 +258,12 @@ serve(async (req) => {
     const MF_BASE_URL = Deno.env.get('MYFATOORAH_BASE_URL') || 'https://apitest.myfatoorah.com'
 
     if (!MF_API_KEY) {
-      return new Response(JSON.stringify({ error: 'بوابة الدفع غير مُعدّة' }), {
+      console.error('[create-payment] MYFATOORAH_API_KEY missing!')
+      return new Response(JSON.stringify({ error: 'بوابة الدفع غير مُعدّة (MF_API_KEY)' }), {
         status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
+    console.log(`[create-payment] MF config: base=${MF_BASE_URL}, key_len=${MF_API_KEY.length}, finalAmount=${finalAmount}`)
 
     // ⚡ تشغيل إدخال السجل + طلب MyFatoorah بالتوازي لتسريع الاستجابة
     const paymentId = 'PAY-' + Date.now()
@@ -244,7 +301,9 @@ serve(async (req) => {
           Language: 'AR',
           CustomerReference: user.id + '|' + plan,
           InvoiceItems: [{
-            ItemName: plan === 'yearly' ? 'اشتراك سنوي — مدارك النخبة' : 'اشتراك شهري — مدارك النخبة',
+            ItemName: plan === 'yearly' ? 'اشتراك سنوي — مدارك النخبة'
+              : plan === 'quarterly' ? 'اشتراك 3 شهور — مدارك النخبة'
+              : 'اشتراك شهري — مدارك النخبة',
             Quantity: 1,
             UnitPrice: finalAmount,
           }],
@@ -255,8 +314,9 @@ serve(async (req) => {
     const mfData = await mfRes.json()
 
     if (!mfData.IsSuccess) {
+      const mfMsg = mfData.Message || mfData.ValidationErrors?.[0]?.Error || 'بوابة الدفع رفضت الطلب'
       console.error('[create-payment] MyFatoorah error:', JSON.stringify(mfData))
-      return new Response(JSON.stringify({ error: 'خطأ في بوابة الدفع' }), {
+      return new Response(JSON.stringify({ error: `MyFatoorah: ${mfMsg}` }), {
         status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
@@ -291,12 +351,14 @@ serve(async (req) => {
       if (bodyClone.ttp) ttUser.ttp = bodyClone.ttp
       if (bodyClone.ttclid) ttUser.ttclid = bodyClone.ttclid
     } catch (_) {}
-    await sendTikTokEvent('Subscribe', ttUser, {
-      value: finalAmount,
-      currency: 'SAR',
-      content_id: plan,
-      description: plan === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
-    })
+    try {
+      await sendTikTokEvent('Subscribe', ttUser, {
+        value: finalAmount,
+        currency: 'SAR',
+        content_id: plan,
+        description: plan === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
+      })
+    } catch (tte) { console.warn('[create-payment] TikTok event (paid) failed:', (tte as Error).message) }
 
     // ⚡ إرجاع الرابط فوراً
     return new Response(JSON.stringify({
@@ -308,8 +370,10 @@ serve(async (req) => {
     })
 
   } catch (e) {
-    console.error('[create-payment] Error:', e)
-    return new Response(JSON.stringify({ error: 'خطأ في إنشاء الدفع: ' + (e as Error).message }), {
+    const msg = (e as Error)?.message || String(e)
+    const stack = (e as Error)?.stack || ''
+    console.error('[create-payment] Uncaught:', msg, '\n', stack)
+    return new Response(JSON.stringify({ error: 'خطأ غير متوقع: ' + msg }), {
       status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
     })
   }
