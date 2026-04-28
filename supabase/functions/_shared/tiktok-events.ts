@@ -161,11 +161,12 @@ export async function sendTikTokEvent(
       data: [eventData],
     }
 
-    // Test Event Code — للاختبار من Events Manager
-    const testCode = options?.test_event_code || Deno.env.get('TIKTOK_TEST_EVENT_CODE')
-    if (testCode) {
-      payload.test_event_code = testCode
-      console.log(`[TikTok] 🧪 Using test_event_code: ${testCode}`)
+    // Test Event Code — للاختبار من Events Manager (production-safe)
+    // ❌ لا يقرأ env var أبداً — يجب تمرير test_event_code صراحة في options
+    //    (حماية: لو نسي المطور env var مفعّلة في production، الأحداث تبقى حقيقية)
+    if (options?.test_event_code) {
+      payload.test_event_code = options.test_event_code
+      console.log(`[TikTok] 🧪 Using test_event_code (debug mode): ${options.test_event_code}`)
     }
 
     console.log(`[TikTok] Sending ${eventName}: identifiers=${identifiers}, ttp=${!!userData.ttp}, ttclid=${!!userData.ttclid}, ip=${!!userData.ip}`)
