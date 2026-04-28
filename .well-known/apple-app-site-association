@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["__APPLE_TEAM_ID__.com.madarekelite.app"],
+        "components": [
+          {
+            "/": "/r/*",
+            "comment": "روابط الإحالة — تفتح في التطبيق إن كان مثبّتاً، وإلا تتحوّل لـ invite-v2.html"
+          },
+          {
+            "/": "/invite/*",
+            "comment": "روابط الدعوة — نفس السلوك"
+          }
+        ]
+      }
+    ]
+  }
+}

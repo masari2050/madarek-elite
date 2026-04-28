@@ -127,10 +127,13 @@ BEGIN
         SET cash_status = 'cancelled'
         WHERE referred_user_id = p_user_id
           AND cash_status IN ('awaiting_payment', 'pending');
-    EXCEPTION WHEN undefined_table THEN
-        NULL;  -- الجدول غير موجود — تخطّي
-    EXCEPTION WHEN invalid_text_representation THEN
-        NULL;  -- enum لا يحوي 'cancelled' — تخطّي بدون خطأ
+    EXCEPTION
+        WHEN undefined_table THEN
+            NULL;  -- الجدول غير موجود — تخطّي
+        WHEN invalid_text_representation THEN
+            NULL;  -- enum لا يحوي 'cancelled' — تخطّي بدون خطأ
+        WHEN undefined_column THEN
+            NULL;  -- عمود cash_status غير موجود — تخطّي
     END;
 
     RETURN jsonb_build_object('success', true, 'scrubbed_at', now());
