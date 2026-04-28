@@ -36,10 +36,30 @@ type ResultSummary = {
 }
 
 serve(async (req) => {
-  // الـ cron يستدعيها عبر pg_net (POST مع Authorization)
-  // لا نحتاج CORS لأن هذا endpoint داخلي فقط
+  // ── الـ cron يستدعيها عبر pg_net (POST مع Authorization) ──
+  // أمان: يجب أن تأتي مع Bearer SERVICE_ROLE_KEY (يضعها pg_net تلقائياً)
+  //       أو CRON_SECRET اختياري (إن أُعدّ في Function Secrets)
+  // لا نحتاج CORS — endpoint داخلي للـ cron فقط
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'POST only' }), { status: 405 })
+  }
+
+  // ── تحقّق من المصدر ──
+  const auth = req.headers.get('Authorization') ?? ''
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  const cronSecret = Deno.env.get('CRON_SECRET') ?? ''
+
+  const expectedTokens = [
+    serviceRoleKey ? `Bearer ${serviceRoleKey}` : null,
+    cronSecret ? `Bearer ${cronSecret}` : null,
+  ].filter(Boolean) as string[]
+
+  if (expectedTokens.length === 0 || !expectedTokens.includes(auth)) {
+    console.warn('[autorenew-charge] unauthorized call attempt')
+    return new Response(JSON.stringify({ error: 'unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const summary: ResultSummary = {
@@ -49,7 +69,7 @@ serve(async (req) => {
   try {
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      serviceRoleKey
     )
 
     // ── 1) جلب الطابور ──
