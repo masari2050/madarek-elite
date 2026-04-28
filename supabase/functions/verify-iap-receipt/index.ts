@@ -39,10 +39,18 @@ const PRODUCT_TO_PLAN: Record<string, 'monthly' | 'quarterly' | 'yearly'> = {
 const APPLE_PROD_URL = 'https://buy.itunes.apple.com/verifyReceipt'
 const APPLE_SANDBOX_URL = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// CORS — مطابق لباقي Edge Functions (whitelist بدل *)
+// التطبيق الـ native يرسل بدون Origin → نُرجع allowed[0] (لا يُؤثّر — native لا يفحص CORS).
+// لو طلب جاء من متصفّح بأصل غير مدرج → CORS browser يرفضه.
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || ''
+  const allowed = ['https://madarekelite.com', 'https://www.madarekelite.com']
+  const allowedOrigin = allowed.includes(origin) ? origin : allowed[0]
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  }
 }
 
 type AppleVerifyResponse = {
@@ -70,15 +78,20 @@ type AppleRenewalInfo = {
 }
 
 serve(async (req) => {
-  // ── CORS ──
+  // ── CORS — closure scope ──
+  const corsHeaders = getCorsHeaders(req)
+
+  // helper: JSON response مع CORS (closure ليحصل على corsHeaders بدون race بين requests)
+  const jsonRes = (payload: any, status = 200) => new Response(JSON.stringify(payload), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'POST only' }), {
-      status: 405,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    return jsonRes({ error: 'POST only' }, 405)
   }
 
   try {
@@ -254,12 +267,4 @@ async function verifyAppleReceipt(receipt: string, sharedSecret: string): Promis
   }
 
   return resp
-}
-
-// ── helper: JSON response مع CORS ──
-function jsonRes(payload: any, status = 200) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  })
 }
