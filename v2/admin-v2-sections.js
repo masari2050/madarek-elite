@@ -471,7 +471,7 @@ window.loadUsers = async function(page=1) {
         const search = (document.getElementById('uSearch')?.value || '').trim();
         const filter = document.getElementById('uFilter').value;
 
-        let q = sb.from('profiles').select('id,full_name,phone,subscription_type,subscription_end,created_at,last_seen_at,used_coupon', { count:'exact' });
+        let q = sb.from('profiles').select('id,full_name,phone,subscription_type,subscription_end,avatar_emoji,created_at,last_seen_at,used_coupon', { count:'exact' });
         if (search) q = q.or('full_name.ilike.%'+search+'%,phone.ilike.%'+search+'%');
         const nowISO = new Date().toISOString();
         if (filter === 'subscribed') q = q.in('subscription_type',['monthly','yearly','quarterly']).gt('subscription_end', nowISO);
@@ -508,7 +508,7 @@ window.loadUsers = async function(page=1) {
                 const joined = new Date(u.created_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
                 const name = u.full_name || '—';
                 return `<tr>
-                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${esc(name.charAt(0))}</div><div class="td-name">${esc(name)}</div></div></td>
+                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, name, 36) : esc(name.charAt(0)))}</div><div class="td-name">${esc(name)}</div></div></td>
                     <td class="td-muted">${esc(u.phone||'—')}</td>
                     <td>${sub}</td>
                     <td class="td-muted">${joined}</td>
@@ -1948,7 +1948,7 @@ window.loadReferrals = async function() {
         <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="card-title">الإحالات حسب المستخدم</div></div></div></div>
             <div class="tbl-wrap" id="refTable"><div class="loader">...</div></div></div>`;
 
-        const { data: refs } = await sb.from('referrals').select('referrer_id, bonus_days, referred_status, profiles!referrals_referrer_id_fkey(full_name,referral_code)').limit(200);
+        const { data: refs } = await sb.from('referrals').select('referrer_id, bonus_days, referred_status, profiles!referrals_referrer_id_fkey(full_name,referral_code,avatar_emoji)').limit(200);
         const byUser = {};
         (refs||[]).forEach(r => {
             const k = r.referrer_id;
@@ -1963,7 +1963,7 @@ window.loadReferrals = async function() {
         tbl.innerHTML = '<table><thead><tr><th>الكود</th><th>المُحيل</th><th>سجلوا</th><th>اشتركوا</th><th>الأيام</th></tr></thead><tbody>' +
             rows.map(r => `<tr>
                 <td><b style="color:var(--pri);letter-spacing:1px;font-family:monospace">${esc(r.referrer?.referral_code||'—')}</b></td>
-                <td><div style="display:flex;align-items:center;gap:8px"><div class="tbl-avatar">${esc((r.referrer?.full_name||'?').charAt(0))}</div><div class="td-name">${esc(r.referrer?.full_name||'—')}</div></div></td>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(r.referrer?.avatar_emoji, r.referrer?.full_name, 32) : esc((r.referrer?.full_name||'?').charAt(0)))}</div><div class="td-name">${esc(r.referrer?.full_name||'—')}</div></div></td>
                 <td>${r.total}</td>
                 <td><b style="color:var(--suc)">${r.subscribed}</b></td>
                 <td><b style="color:var(--acc)">+${r.days}</b></td>
@@ -2127,7 +2127,7 @@ window.loadUsersAnalytics = async function(page=1) {
 
     try {
         const sort = document.getElementById('uaSort').value;
-        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,used_coupon,xp,created_at,last_seen_at', { count:'exact' });
+        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
 
         if (sort === 'new') q = q.order('created_at',{ascending:false});
         else q = q.order('xp',{ascending:false,nullsFirst:false});
@@ -2175,7 +2175,7 @@ window.loadUsersAnalytics = async function(page=1) {
                     ? '<span style="font-size:10px;color:var(--acc);background:var(--as);padding:2px 8px;border-radius:8px;font-weight:600">'+esc(u.used_coupon)+'</span>'
                     : '<span class="td-muted">—</span>';
                 return `<tr>
-                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${esc((u.full_name||'?').charAt(0))}</div><div><div class="td-name">${esc(u.full_name||'—')}</div><div style="font-size:9px;color:var(--i4)">${esc(u.email||'')}</div></div></div></td>
+                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, u.full_name, 36) : esc((u.full_name||'?').charAt(0)))}</div><div><div class="td-name">${esc(u.full_name||'—')}</div><div style="font-size:9px;color:var(--i4)">${esc(u.email||'')}</div></div></div></td>
                     <td>${sub}</td>
                     <td>${coupon}</td>
                     <td><b>${fmt(st.t)}</b></td>
@@ -2294,7 +2294,7 @@ window.loadStaff = async function() {
             const roleLabel = s.role === 'admin' ? 'المدير العام' : 'موظف';
             return `
             <div class="staff-card" data-role="${esc(s.role)}">
-                <div class="staff-av" style="background:${colors[i%colors.length]}">${esc(s.avatar_emoji || (s.full_name||'?').charAt(0))}</div>
+                <div class="staff-av" style="background:${colors[i%colors.length]}">${(window.buildAvatarHTML ? window.buildAvatarHTML(s.avatar_emoji, s.full_name, 48) : esc((s.full_name||'?').charAt(0)))}</div>
                 <div class="staff-name">${esc(s.full_name || '—')}</div>
                 <span class="staff-role ${s.role}">${roleLabel}</span>
                 <div class="staff-email">${esc(s.email || '')}</div>
@@ -2689,7 +2689,7 @@ window.loadVisitors = async function() {
             <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="card-title">أنشط المستخدمين اليوم</div></div></div></div>
             <div class="card-body">${
                 topTraineesData.length === 0 ? '<div class="empty-d" style="padding:20px">لا تدريب اليوم بعد</div>' :
-                topTraineesData.map((u,i) => '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+esc(u.avatar||(u.name||'?').charAt(0))+'</div><div style="flex:1;font-size:12px;font-weight:600">'+esc(u.name)+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+u.count+' سؤال</div></div>').join('')
+                topTraineesData.map((u,i) => '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar, u.name, 36) : esc((u.name||'?').charAt(0)))+'</div><div style="flex:1;font-size:12px;font-weight:600">'+esc(u.name)+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+u.count+' سؤال</div></div>').join('')
             }</div></div>
         </div>`;
     } catch(e) { console.error(e); showToast('خطأ: '+e.message,'err'); }

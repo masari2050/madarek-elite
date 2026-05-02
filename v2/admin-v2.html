@@ -519,8 +519,34 @@ async function init() {
     setInterval(loadOnlineCount, 60000);
 }
 
+/**
+ * يبني HTML لـ avatar متوافق مع الصيغ الجديدة من تطبيق Expo:
+ *   - "dice:<style>:<seed>" → صورة كرتون من Dicebear API
+ *   - "photo:<url>"          → صورة المستخدم المرفوعة من المعرض
+ *   - "م" أو غيره            → الحرف الأول كنصّ
+ * size: حجم الصورة بالبكسل (التطبيقات الافتراضية: 40 لقائمة، 56 لـheader)
+ */
+function buildAvatarHTML(stored, fallbackName, size = 40) {
+    const fallback = (fallbackName || '?').charAt(0);
+    if (typeof stored !== 'string' || !stored) return fallback;
+    if (stored.startsWith('dice:')) {
+        const parts = stored.split(':');
+        const style = parts[1] || 'avataaars';
+        const seed = parts.slice(2).join(':');
+        const url = `https://api.dicebear.com/9.x/${encodeURIComponent(style)}/png?seed=${encodeURIComponent(seed)}&size=${size * 2}`;
+        return `<img src="${url}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover" loading="lazy">`;
+    }
+    if (stored.startsWith('photo:')) {
+        const url = stored.slice(6);
+        return `<img src="${url}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover" loading="lazy">`;
+    }
+    // legacy: emoji أو حرف واحد
+    return stored;
+}
+window.buildAvatarHTML = buildAvatarHTML;
+
 function renderAdminInfo() {
-    document.getElementById('adminAv').textContent = profile.avatar_emoji || (profile.full_name || 'م').charAt(0);
+    document.getElementById('adminAv').innerHTML = buildAvatarHTML(profile.avatar_emoji, profile.full_name || 'م', 40);
     document.getElementById('adminName').textContent = profile.full_name || 'المدير';
     document.getElementById('adminRole').textContent = profile.role === 'admin' ? 'Admin' : 'Staff';
 }
@@ -733,7 +759,7 @@ async function loadTopUsers() {
         const renderList = (items, unit) => items.map((it,i) => {
             const p = profMap[it[0]] || {};
             const name = p.full_name || 'مستخدم';
-            return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+(p.avatar_emoji||name.charAt(0))+'</div><div style="flex:1;font-size:12px;font-weight:600">'+name+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+it[1]+' '+unit+'</div></div>';
+            return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+buildAvatarHTML(p.avatar_emoji, name, 36)+'</div><div style="flex:1;font-size:12px;font-weight:600">'+name+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+it[1]+' '+unit+'</div></div>';
         }).join('');
 
         document.getElementById('topSolvers').innerHTML = renderList(topUserIds, 'إجابة');
@@ -741,7 +767,7 @@ async function loadTopUsers() {
         // For accuracy — simplified
         const { data: topByXP } = await sb.from('profiles').select('id,full_name,avatar_emoji,xp').eq('role','user').order('xp',{ascending:false,nullsFirst:false}).limit(3);
         document.getElementById('topAccuracy').innerHTML = (topByXP||[]).map((p,i) => {
-            return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+(p.avatar_emoji||(p.full_name||'?').charAt(0))+'</div><div style="flex:1;font-size:12px;font-weight:600">'+(p.full_name||'—')+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+(p.xp||0)+' XP</div></div>';
+            return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+buildAvatarHTML(p.avatar_emoji, p.full_name, 36)+'</div><div style="flex:1;font-size:12px;font-weight:600">'+(p.full_name||'—')+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+(p.xp||0)+' XP</div></div>';
         }).join('') || '<div class="empty-d">لا بيانات</div>';
 
         document.getElementById('topActive').innerHTML = renderList(topUserIds, 'نشاط');
