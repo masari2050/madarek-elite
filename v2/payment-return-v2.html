@@ -7,6 +7,7 @@
 <script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");}}catch(e){}})();</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
     --pri:#6D5DF6; --pri-d:#5B4DD4; --pri-l:#8B7FFF;
@@ -68,6 +69,30 @@ body{
 .amount-lbl{font-size:12px;color:var(--i2);margin-bottom:4px}
 .amount-val{font-size:28px;font-weight:800;color:var(--suc)}
 .amount-plan{font-size:13px;color:var(--i2);margin-top:4px}
+
+/* ── جملة تحفيزية بعد الدفع ── */
+.motiv-box{
+  background:linear-gradient(135deg,rgba(255,138,61,.08),rgba(245,158,11,.08));
+  border:1px solid rgba(255,138,61,.22);
+  border-radius:14px;padding:14px;margin:6px 0 16px;
+  display:flex;align-items:center;gap:11px;text-align:right;
+}
+.motiv-ic{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,138,61,.18),rgba(245,158,11,.2));
+  display:grid;place-items:center;flex-shrink:0;
+}
+.motiv-ic svg{width:19px;height:19px;fill:#D97706;stroke:none}
+.motiv-tx{
+  font-size:12.5px;font-weight:600;color:var(--ink);
+  line-height:1.7;flex:1;
+}
+.motiv-tx b{color:#92400E;font-weight:700}
+[data-t="d"] .motiv-box{
+  background:linear-gradient(135deg,rgba(255,138,61,.12),rgba(245,158,11,.12));
+  border-color:rgba(255,138,61,.28);
+}
+[data-t="d"] .motiv-tx b{color:#FCD34D}
 
 /* ── Buttons ── */
 .btn{
@@ -144,13 +169,23 @@ body.no-app .web-only{display:block}
                 <path class="check" d="M5 13l4 4L19 7"/>
             </svg>
         </div>
-        <h1 class="title" style="color:var(--suc)">تم الدفع بنجاح! 🎉</h1>
+        <h1 class="title" style="color:var(--suc)">تم الدفع بنجاح</h1>
         <p class="sub">اشتراكك مفعّل في مدارك النخبة</p>
 
         <div class="amount-box">
             <div class="amount-lbl">المبلغ المدفوع</div>
             <div class="amount-val" id="suc-amount">—</div>
             <div class="amount-plan" id="suc-plan">—</div>
+        </div>
+
+        <!-- جملة تحفيزية -->
+        <div class="motiv-box">
+            <div class="motiv-ic">
+                <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>
+            </div>
+            <div class="motiv-tx">
+                <b>كل سؤال تحلّه</b> يقرّبك من النتيجة اللي تستحقها — والانضباط اليومي هو السرّ
+            </div>
         </div>
 
         <!-- زائر من تطبيق: deep link -->
@@ -172,14 +207,11 @@ body.no-app .web-only{display:block}
 
         <!-- زائر من ويب: داش بورد بدل deep link -->
         <button class="btn btn-pri web-only" onclick="window.location.href='/v2/dashboard-v2.html'">
+            <span>ابدأ التدريب الآن</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 12l9-9 9 9"/>
-                <path d="M5 10v10h14V10"/>
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
             </svg>
-            <span>اذهب لحسابك</span>
-        </button>
-        <button class="btn btn-ghost web-only" onclick="window.location.href='/v2/login-v2.html'">
-            أو سجّل دخول ←
         </button>
     </div>
 
@@ -213,20 +245,19 @@ body.no-app .web-only{display:block}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
- * payment-return-v2.html — صفحة رجوع الدفع للتطبيق
+ * payment-return-v2.html — صفحة رجوع الدفع
  *
- * المسار:
- *  1) MyFatoorah يعيد التوجيه هنا مع paymentId
- *  2) نستدعي verify-payment مباشرة عبر anon key (التوكن غير متاح في الـWebBrowser عادةً)
- *     → حل بديل: نعتمد على أن verify-payment يستخرج user من auth header إذا أُرسل،
- *       لكن في الـWebBrowser الجلسة ما تُمرَّر دائماً. لذا نعرض الـUI ونترك verify للتطبيق
- *       بعد deep link (هذا أكثر موثوقية — التطبيق عنده الجلسة).
- *  3) نعرض شاشة نجاح/فشل + زر "العودة للتطبيق" → deep link
- *  4) نحاول فتح الـdeep link تلقائياً بعد ثانيتين
+ * مسارات:
+ *  أ) ?src=app  → الزائر من تطبيق Expo
+ *     - عرض UI نجاح/فشل
+ *     - فتح deep link تلقائياً → التطبيق نفسه يستدعي verify-payment
  *
- * الـdeep link:
- *   madarekelite://payment?paymentId=XXX&status=paid  (نجاح)
- *   madarekelite://payment?paymentId=XXX&status=failed (فشل)
+ *  ب) بدون src=app → الزائر من ويب (دفع من /v2/pricing-v2.html)
+ *     - استدعاء verify-payment من المتصفح بـAuthorization من Supabase session
+ *     - الاشتراك يتفعّل في DB → عرض UI نجاح + زر "اذهب لحسابك"
+ *
+ * Deep link (للتطبيق فقط):
+ *   madarekelite://payment?paymentId=XXX&status=paid|failed
  * ═══════════════════════════════════════════════════════════ */
 
 const params = new URLSearchParams(window.location.search);
@@ -244,6 +275,10 @@ if (!fromApp) document.body.classList.add('no-app');
 
 const SUPABASE_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+
+const sb = (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function')
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { persistSession: true, autoRefreshToken: true } })
+  : null;
 
 let paymentInfo = { amount: null, plan: null };
 
@@ -302,33 +337,60 @@ function showError(msg) {
     if (msg) document.getElementById('err-msg').textContent = msg;
 }
 
+// ── verify-payment للزائر من ويب: يفعّل الاشتراك في DB ──
+// المستخدم بالضرورة مسجّل دخول (create-payment تشترط ذلك قبل ما يصل MyFatoorah)
+async function verifyForWebUser() {
+    if (!sb || !paymentId) {
+        showSuccess(null);
+        return;
+    }
+    try {
+        const { data, error } = await sb.functions.invoke('verify-payment', {
+            body: { paymentId }
+        });
+        if (error) throw new Error(error.message || 'فشل التحقق');
+        if (data?.error) throw new Error(data.error);
+
+        // نجح → الاشتراك مفعّل في DB، اعرض المبلغ والخطة
+        paymentInfo.amount = data?.amount || data?.invoice_value;
+        paymentInfo.plan = data?.plan || data?.plan_type;
+        showSuccess(paymentInfo);
+    } catch (e) {
+        console.error('verify-payment failed:', e);
+        // الدفعة في MyFatoorah نجحت، لكن التفعيل التلقائي فشل
+        // نعرض success بسيط + نوجّه للداش بورد (الـsystem يحاول مرة ثانية عند الدخول)
+        showSuccess(null);
+    }
+}
+
 // ── Main ──
 (async function() {
     if (isError) {
         setTimeout(() => showError(), 300);
-        // فقط زائر من تطبيق نحاول نرجّعه عبر deep link؛ زائر من ويب يبقى في الصفحة
+        // الزائر من تطبيق نرجّعه عبر deep link؛ الزائر من ويب يبقى في الصفحة
         if (fromApp) setTimeout(() => returnToApp(), 2500);
         return;
     }
 
-    // حاول جلب معلومات الدفع (اختياري — فقط للعرض)
-    const info = await fetchPaymentInfo();
-
-    setTimeout(() => {
-        showSuccess(info);
-
-        // محاولة deep link فقط لو الزائر فعلاً من تطبيق
-        if (!fromApp) return;
-
+    // مسار التطبيق: ما نستدعي verify (التطبيق نفسه يفعله بعد الـdeep link)
+    if (fromApp) {
+        const info = await fetchPaymentInfo();
         setTimeout(() => {
-            const dl = buildDeepLink('paid');
-            const ifr = document.createElement('iframe');
-            ifr.style.display = 'none';
-            ifr.src = dl;
-            document.body.appendChild(ifr);
-            setTimeout(() => { try { ifr.remove(); } catch(_){} }, 500);
-        }, 1800);
-    }, 900);
+            showSuccess(info);
+            setTimeout(() => {
+                const dl = buildDeepLink('paid');
+                const ifr = document.createElement('iframe');
+                ifr.style.display = 'none';
+                ifr.src = dl;
+                document.body.appendChild(ifr);
+                setTimeout(() => { try { ifr.remove(); } catch(_){} }, 500);
+            }, 1800);
+        }, 900);
+        return;
+    }
+
+    // مسار الويب: نفعّل الاشتراك عبر verify-payment باستخدام Supabase session
+    await verifyForWebUser();
 })();
 </script>
 </body>

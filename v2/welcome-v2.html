@@ -627,13 +627,13 @@ async function init() {
 }
 
 async function loadWelcomeStats() {
-    // Floor "تسويقي" — لو الأرقام الحقيقية أقل، نعرض الـfloor.
-    // لمّا تتجاوز الأعداد الحقيقية الـfloor، تبدأ تتحدّث وتكبر تلقائياً.
-    const FLOOR_QUESTIONS = 3500;
-    const FLOOR_USERS = 400;
+    // قاعدة: نعرض الأرقام الحقيقية فقط من DB. ممنوع floor تسويقي يضخّم الأرقام.
+    // لو الأرقام صفر أو فشل الـRPC → نخفي العنصر تماماً (لا نزيّف).
+    const statQ = document.getElementById('statQ');
+    const statU = document.getElementById('statU');
+    const statsCard = document.querySelector('.w-stats');
 
     try {
-        // RPC SECURITY DEFINER يتجاوز RLS لقراءة count() فقط (لا PII)
         const { data: stats, error } = await sb.rpc('get_public_stats');
         if (error) throw error;
 
@@ -642,27 +642,32 @@ async function loadWelcomeStats() {
 
         totalQuestions = realQ;
 
-        // الأسئلة: max(real, floor) → تقريب أنعم لأقرب 50 (يتحدّث كل 50 سؤال جديد)
-        const qFinal = Math.max(realQ, FLOOR_QUESTIONS);
-        const qRounded = Math.floor(qFinal / 50) * 50;
-        document.getElementById('statQ').textContent = numberFmt(qRounded) + '+';
+        if (realQ <= 0 && realU <= 0) {
+            // ما عندنا شي حقيقي → نخفي البطاقة كاملة
+            if (statsCard) statsCard.style.display = 'none';
+            return;
+        }
 
-        // للشاشات الداخلية (subscribe): نفس تقريب welcome (/50) — توحيد الرقم
-        const innerLabel = numberFmt(qRounded) + '+';
-        const totalQEl = document.getElementById('totalQCount');
-        const featQEl = document.getElementById('featQ');
-        if (totalQEl) totalQEl.textContent = innerLabel;
-        if (featQEl) featQEl.textContent = innerLabel;
+        if (realQ > 0) {
+            const lbl = numberFmt(realQ) + '+';
+            statQ.textContent = lbl;
+            const totalQEl = document.getElementById('totalQCount');
+            const featQEl = document.getElementById('featQ');
+            if (totalQEl) totalQEl.textContent = lbl;
+            if (featQEl) featQEl.textContent = lbl;
+        } else {
+            statQ.textContent = '—';
+        }
 
-        // الطلاب: max(real, floor) → تقريب أنعم لأقرب 5 (يتحدّث كل 5 طلاب)
-        const uFinal = Math.max(realU, FLOOR_USERS);
-        const uRounded = Math.floor(uFinal / 5) * 5;
-        document.getElementById('statU').textContent = numberFmt(uRounded) + '+';
+        if (realU > 0) {
+            statU.textContent = numberFmt(realU) + '+';
+        } else {
+            statU.textContent = '—';
+        }
     } catch(e) {
-        // لو الـRPC مش deployed بعد → fallback آمن
         console.warn('get_public_stats failed:', e);
-        document.getElementById('statQ').textContent = numberFmt(FLOOR_QUESTIONS) + '+';
-        document.getElementById('statU').textContent = numberFmt(FLOOR_USERS) + '+';
+        // فشل DB → نخفي البطاقة (لا نعرض أرقام مزيّفة)
+        if (statsCard) statsCard.style.display = 'none';
     }
 }
 

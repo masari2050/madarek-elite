@@ -75,9 +75,13 @@ serve(async (req) => {
     // ── Request body ──
     const body = await req.json()
     const { plan, coupon } = body
-    // source='app' → رجوع للتطبيق عبر deep link بعد الدفع
-    //        'web' (الافتراضي) → صفحة callback القديمة للموقع
-    const source = body.source === 'app' ? 'app' : 'web'
+    // source:
+    //   'app'    → رجوع للتطبيق عبر deep link (v2/payment-return-v2.html?src=app)
+    //   'web-v2' → الموقع الجديد /v2/ (v2/payment-return-v2.html بدون src)
+    //   'web'    → الموقع القديم في الجذر (payment-callback.html) — backward compat
+    const source = body.source === 'app' ? 'app'
+      : body.source === 'web-v2' ? 'web-v2'
+      : 'web'
     if (!plan || !['monthly', 'quarterly', 'yearly'].includes(plan)) {
       return new Response(JSON.stringify({ error: 'خطة غير صحيحة' }), {
         status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
@@ -294,10 +298,14 @@ serve(async (req) => {
           DisplayCurrencyIso: 'SAR',
           CallBackUrl: source === 'app'
             ? 'https://www.madarekelite.com/v2/payment-return-v2.html?src=app'
-            : 'https://www.madarekelite.com/payment-callback.html',
+            : source === 'web-v2'
+              ? 'https://www.madarekelite.com/v2/payment-return-v2.html'
+              : 'https://www.madarekelite.com/payment-callback.html',
           ErrorUrl: source === 'app'
             ? 'https://www.madarekelite.com/v2/payment-return-v2.html?src=app&error=true'
-            : 'https://www.madarekelite.com/payment-callback.html?error=true',
+            : source === 'web-v2'
+              ? 'https://www.madarekelite.com/v2/payment-return-v2.html?error=true'
+              : 'https://www.madarekelite.com/payment-callback.html?error=true',
           Language: 'AR',
           CustomerReference: user.id + '|' + plan,
           InvoiceItems: [{
