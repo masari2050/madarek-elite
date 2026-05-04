@@ -39,22 +39,35 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ── WELCOME ── */
 .w-wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 28px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 55%)}
-.w-logo{width:84px;height:84px;border-radius:24px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(109,93,246,.3)}
-.w-logo img{width:100%;height:100%}
+.w-logo{width:84px;height:84px;border-radius:24px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(109,93,246,.3);background:linear-gradient(135deg,var(--pri),#8B5CF6)}
+.w-logo img{width:100%;height:100%;display:block;object-fit:cover}
 .w-brand{font-size:22px;font-weight:700;margin-bottom:4px}
 .w-tag{font-size:12px;color:var(--i3);margin-bottom:24px}
 .w-trial-b{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:20px;font-size:11px;font-weight:700;color:var(--suc);margin-bottom:18px}
 .w-trial-b svg{width:13px;height:13px;stroke:var(--suc);fill:none;stroke-width:2}
 .w-h{font-size:24px;font-weight:700;line-height:1.4;letter-spacing:-.02em;margin-bottom:10px}
 .w-p{font-size:12px;color:var(--i3);line-height:1.75;margin-bottom:24px}
-.w-btn{width:100%;max-width:300px;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;font-family:inherit;cursor:pointer;transition:transform .15s}
+.w-btn{width:100%;max-width:340px;padding:15px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),#8B7AFF);color:#fff;font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .2s;box-shadow:0 6px 18px rgba(109,93,246,.32)}
 .w-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
 .w-btn:active{transform:scale(.97)}
-.w-ln{width:100%;max-width:300px;padding:12px;border-radius:var(--r);border:1.5px solid var(--ln2);color:var(--i2);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;background:none;transition:all .2s}
-.w-ln:hover{border-color:var(--pri);color:var(--pri)}
-.w-stats{display:flex;gap:10px;margin-top:24px;width:100%;max-width:300px}
-.ws{flex:1;background:var(--s2);border-radius:12px;padding:10px 6px;text-align:center;border:1px solid var(--ln)}
-.ws .n{font-size:16px;font-weight:700;color:var(--pri)}.ws .l{font-size:9px;color:var(--i3);margin-top:2px}
+.w-btn:hover{box-shadow:0 8px 22px rgba(109,93,246,.42)}
+.w-btn-out{width:100%;max-width:340px;padding:14px;border-radius:var(--r);background:var(--ps);color:var(--pri);font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid rgba(109,93,246,.3);font-family:inherit;cursor:pointer;transition:all .2s}
+.w-btn-out svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.w-btn-out:hover{background:var(--pm);border-color:var(--pri)}
+.w-btn-out:active{transform:scale(.98)}
+.w-login-link{margin-top:14px;font-size:12px;color:var(--i3);text-align:center}
+.w-login-link a{color:var(--pri);font-weight:700;text-decoration:none}
+.w-login-link a:hover{text-decoration:underline}
+.w-feats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:340px;margin:6px 0 16px}
+.w-feat{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.w-feat-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center}
+.w-feat-icon svg{width:20px;height:20px;stroke-width:2;fill:none;stroke:currentColor}
+.w-feat-txt{font-size:11px;font-weight:600;color:var(--i2);line-height:1.45}
+.w-stats{display:flex;gap:0;margin:0 0 18px;width:100%;max-width:340px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px 6px;justify-content:space-around}
+.ws{flex:1;text-align:center;position:relative}
+.ws+.ws::before{content:"";position:absolute;right:0;top:14%;height:72%;width:1px;background:var(--ln2)}
+.ws .n{font-size:18px;font-weight:700;color:var(--pri);letter-spacing:-.02em}
+.ws .l{font-size:10px;color:var(--i3);margin-top:3px}
 
 /* ── TRIAL ── */
 .trial-hdr{padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
@@ -157,16 +170,31 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="w-logo"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
   <div class="w-brand">مدارك النخبة</div>
   <div class="w-tag">حيث يُصنع التميّز</div>
-  <div class="w-trial-b"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>جرّب 5 أسئلة مجاناً</div>
+  <div class="w-trial-b"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>جرّب 5 أسئلة مجاناً — بدون تسجيل</div>
   <div class="w-h">تدرّب بذكاء،<br>حقّق أعلى النتائج</div>
-  <div class="w-p">أسئلة حقيقية من اختبارات سابقة · تحليل دقيق · نتائج مضمونة</div>
-  <button class="w-btn" onclick="startTrial()"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التجربة المجانية</button>
-  <button class="w-ln" onclick="goLogin()">لدي حساب — تسجيل الدخول</button>
-  <div class="w-stats">
-    <div class="ws"><div class="n" id="statQ">—</div><div class="l">سؤال</div></div>
-    <div class="ws"><div class="n" id="statU">—</div><div class="l">مشترك</div></div>
-    <div class="ws"><div class="n">98%</div><div class="l">رضى</div></div>
+  <div class="w-p">منصة قياس السعودية — أسئلة حقيقية من اختبارات سابقة، تحليل ذكي، ونتائج ملموسة</div>
+  <div class="w-feats">
+    <div class="w-feat">
+      <div class="w-feat-icon" style="background:rgba(34,197,94,.12);color:var(--suc)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+      <div class="w-feat-txt">تقدّم ملموس<br>كل يوم</div>
+    </div>
+    <div class="w-feat">
+      <div class="w-feat-icon" style="background:rgba(255,138,61,.12);color:var(--acc)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="14" x2="22" y2="14"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="14" x2="4" y2="14"/></svg></div>
+      <div class="w-feat-txt">تحليل ذكي<br>لنقاط ضعفك</div>
+    </div>
+    <div class="w-feat">
+      <div class="w-feat-icon" style="background:rgba(109,93,246,.12);color:var(--pri)"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="w-feat-txt">آلاف الأسئلة<br>الحقيقية</div>
+    </div>
   </div>
+  <div class="w-stats">
+    <div class="ws"><div class="n">98%</div><div class="l">رضى</div></div>
+    <div class="ws"><div class="n" id="statU">—</div><div class="l">طالب</div></div>
+    <div class="ws"><div class="n" id="statQ">—</div><div class="l">سؤال</div></div>
+  </div>
+  <button class="w-btn" onclick="startTrial()"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التجربة المجانية</button>
+  <button class="w-btn-out" onclick="window.location.href='register-v2.html'"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>إنشاء حساب جديد</button>
+  <div class="w-login-link">لديك حساب؟ <a href="login-v2.html">سجّل الدخول</a></div>
 </div>
 </div>
 
@@ -289,11 +317,15 @@ if (params.get('ref')) {
 init();
 
 async function init() {
-    // Check if already logged in
-    const { data: { user } } = await sb.auth.getUser();
-    if (user) {
-        window.location.href = 'dashboard-v2.html';
-        return;
+    // Check if already logged in (مع حماية من فشل الشبكة)
+    try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (user) {
+            window.location.href = 'dashboard-v2.html';
+            return;
+        }
+    } catch(e) {
+        console.warn('Auth check failed, continuing as guest', e);
     }
 
     // Load stats for welcome screen
@@ -306,18 +338,22 @@ async function loadWelcomeStats() {
     try {
         const { count } = await sb.from('questions').select('*', { count: 'exact', head: true }).eq('disabled', false);
         totalQuestions = count || 0;
-        document.getElementById('statQ').textContent = numberFmt(totalQuestions);
-        // تقريب لأقرب ألف للعرض المسوّق (مثلاً 3,590 → 3,000+)
+        // الأسئلة: تقريب لأقرب 500 + علامة "+" قبل الرقم (مثلاً 3,590 → +3,500)
+        const qRounded = Math.max(500, Math.floor(totalQuestions / 500) * 500);
+        document.getElementById('statQ').textContent = '+' + numberFmt(qRounded);
+        // للشاشات الداخلية (subscribe): تقريب لأقرب ألف
         const roundedK = Math.floor(totalQuestions / 1000) * 1000;
         const roundedLabel = roundedK >= 1000 ? numberFmt(roundedK) + '+' : numberFmt(totalQuestions);
         document.getElementById('totalQCount').textContent = roundedLabel;
         document.getElementById('featQ').textContent = roundedLabel;
 
         const { count: userCount } = await sb.from('profiles').select('*', { count: 'exact', head: true });
-        document.getElementById('statU').textContent = '+' + numberFmt(userCount || 0);
+        // الطلاب: تقريب لأقرب 50 + علامة "+" بعد الرقم، بحدّ أدنى 50 (مثلاً 423 → 400+)
+        const uRounded = Math.max(50, Math.floor((userCount || 0) / 50) * 50);
+        document.getElementById('statU').textContent = numberFmt(uRounded) + '+';
     } catch(e) {
-        document.getElementById('statQ').textContent = '3,000+';
-        document.getElementById('statU').textContent = '+900';
+        document.getElementById('statQ').textContent = '+3,500';
+        document.getElementById('statU').textContent = '400+';
     }
 }
 
