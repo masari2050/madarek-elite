@@ -110,6 +110,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 /* ─────────────────────────────────────────
    RESPONSIVE: Tablet + Desktop (phone-frame)
+   ـ ارتفاع ثابت = لا تذبذب
+   ـ 520px أوسع من 440px القديم
    ───────────────────────────────────────── */
 @media (min-width:768px){
   body{
@@ -128,9 +130,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
       var(--bg);
   }
   .wrap{
-    max-width:440px;
-    min-height:auto;
-    max-height:calc(100vh - 48px);
+    max-width:520px;
+    height:min(840px,calc(100vh - 48px));
+    min-height:640px;
     overflow-y:auto;
     border-radius:30px;
     box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
@@ -142,9 +144,6 @@ html[data-fs="large"] .wrap{zoom:1.1}
   .wrap::-webkit-scrollbar{width:5px}
   .wrap::-webkit-scrollbar-track{background:transparent}
   .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
-}
-@media (min-width:1280px){
-  .wrap{max-width:460px}
 }
 </style>
 </head>

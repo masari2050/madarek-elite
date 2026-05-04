@@ -157,6 +157,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 /* ─────────────────────────────────────────
    RESPONSIVE: Tablet + Desktop (phone-frame)
+   ـ ارتفاع ثابت = لا تذبذب بين الأسئلة
+   ـ 520px = أوسع من 440px القديم
    ───────────────────────────────────────── */
 @media (min-width:768px){
   body{
@@ -175,9 +177,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
       var(--bg);
   }
   .wrap{
-    max-width:440px;
-    min-height:auto;
-    max-height:calc(100vh - 48px);
+    max-width:520px;
+    height:min(840px,calc(100vh - 48px));
+    min-height:640px;
     overflow-y:auto;
     border-radius:30px;
     box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
@@ -189,10 +191,10 @@ html[data-fs="large"] .wrap{zoom:1.1}
   .wrap::-webkit-scrollbar{width:5px}
   .wrap::-webkit-scrollbar-track{background:transparent}
   .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
-  .intro,.result{min-height:auto}
-}
-@media (min-width:1280px){
-  .wrap{max-width:460px}
+  /* الحاويات الداخلية تتمدّد لتغطي الـwrap الثابت → لا تذبذب */
+  .intro,.result{min-height:100%}
+  .quiz.on{min-height:100%;display:flex;flex-direction:column}
+  .quiz.on #qArea{flex:1}
 }
 </style>
 </head>
@@ -428,7 +430,7 @@ window.nextQuestion = function() {
     else renderQuestion();
 };
 
-async function finishQuiz() {
+function finishQuiz() {
     // احسب نتيجة الاختبار التشخيصي
     const byS = { quant: {correct:0, total:0}, verbal: {correct:0, total:0} };
     answers.forEach(a => {
@@ -445,9 +447,71 @@ async function finishQuiz() {
     else if (byS.quant.total > 0) weakest = 'quant';
     else if (byS.verbal.total > 0) weakest = 'verbal';
 
-    let weaknessSource = 'diagnostic'; // من الاختبار التشخيصي افتراضياً
+    // اعرض الشاشة فوراً (لا ننتظر DB) — تجربة سريعة
+    renderResultScreen(byS, qAcc, vAcc, weakest, 'diagnostic');
 
-    // إذا كان للمستخدم محاولات سابقة فعلية → تجاهل التشخيص واستند للتاريخ
+    // في الخلفية: اقرأ history الفعلي + احفظ النتيجة في profiles
+    enrichAndSave(byS, qAcc, vAcc, weakest);
+}
+
+function renderResultScreen(byS, qAcc, vAcc, weakest, weaknessSource) {
+    document.getElementById('quiz').classList.remove('on');
+    const res = document.getElementById('result');
+    document.getElementById('resQuant').textContent = byS.quant.correct + '/' + byS.quant.total;
+    document.getElementById('resVerbal').textContent = byS.verbal.correct + '/' + byS.verbal.total;
+
+    const totalCorrect = byS.quant.correct + byS.verbal.correct;
+    const totalQuestions = byS.quant.total + byS.verbal.total;
+    const overallPct = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
+    const lvl = computeLevel(overallPct);
+    const lvlEl = document.getElementById('resLvl');
+    lvlEl.className = 'res-lvl ' + lvl.cls;
+    document.getElementById('resLvlTxt').textContent = lvl.label;
+    document.getElementById('resH').textContent = lvl.heading;
+    document.getElementById('resP').innerHTML = lvl.message;
+
+    updateWeakBox(byS, qAcc, vAcc, weakest, weaknessSource);
+
+    res.classList.add('on');
+
+    // Animate ring + counter
+    requestAnimationFrame(() => {
+        const ring = document.getElementById('resRingFg');
+        const C = 2 * Math.PI * 78;
+        ring.setAttribute('stroke-dasharray', String(C));
+        setTimeout(() => {
+            ring.style.strokeDashoffset = String(C * (1 - overallPct / 100));
+        }, 150);
+        animateCounter('resPct', 0, overallPct, 1400);
+    });
+}
+
+function updateWeakBox(byS, qAcc, vAcc, weakest, weaknessSource) {
+    if (!weakest) {
+        document.getElementById('resWeakBox').style.display = 'none';
+        return;
+    }
+    const name = weakest === 'quant' ? 'قدرات كمي' : 'قدرات لفظي';
+    let acc, prefix;
+    if (weaknessSource === 'history') {
+        const hist = byS[weakest + '_history'];
+        acc = hist && hist.total > 0 ? Math.round((hist.correct / hist.total) * 100) : 0;
+        prefix = 'حسب تاريخك الفعلي (' + (hist?.total || 0) + ' سؤال سابق)';
+    } else {
+        acc = weakest === 'quant' ? Math.round(qAcc*100) : Math.round(vAcc*100);
+        prefix = 'حسب نتيجة التشخيص';
+    }
+    document.getElementById('resWeakBox').style.display = '';
+    document.getElementById('resWeakTxt').textContent =
+        prefix + '، يُنصح بالتركيز على ' + name + ' (' + acc + '%). سنبني خطة يومية تبدأ من هنا.';
+}
+
+async function enrichAndSave(byS, qAcc, vAcc, weakest) {
+    let weaknessSource = 'diagnostic';
+    let updatedWeakest = weakest;
+
+    // اقرأ history الفعلي (لو فيه)
     try {
         const { data: atts } = await sb
             .from('attempts')
@@ -474,80 +538,33 @@ async function finishQuiz() {
             else if (vReal !== null) realWeakest = 'verbal';
 
             if (realWeakest) {
-                weakest = realWeakest;
+                updatedWeakest = realWeakest;
                 weaknessSource = 'history';
                 byS.quant_history = realStats.quant;
                 byS.verbal_history = realStats.verbal;
+                // حدّث صندوق نقطة التركيز برسالة تستند للتاريخ الفعلي
+                updateWeakBox(byS, qAcc, vAcc, updatedWeakest, weaknessSource);
             }
         }
     } catch(e) { console.warn('history check failed:', e); }
 
+    // احفظ في profiles
     const result = {
         quant: byS.quant,
         verbal: byS.verbal,
-        weakest,
+        weakest: updatedWeakest,
         weakness_source: weaknessSource,
         quant_history: byS.quant_history || null,
         verbal_history: byS.verbal_history || null,
         completed_at: new Date().toISOString()
     };
 
-    // احفظ في profiles
     try {
         await sb.from('profiles').update({
             onboarding_completed: true,
             onboarding_result: result
         }).eq('id', profile.id);
     } catch(e) { console.warn('save onboarding failed:', e); }
-
-    // اعرض النتيجة
-    document.getElementById('quiz').classList.remove('on');
-    const res = document.getElementById('result');
-    document.getElementById('resQuant').textContent = byS.quant.correct + '/' + byS.quant.total;
-    document.getElementById('resVerbal').textContent = byS.verbal.correct + '/' + byS.verbal.total;
-
-    // النسبة الإجمالية + animate
-    const totalCorrect = byS.quant.correct + byS.verbal.correct;
-    const totalQuestions = byS.quant.total + byS.verbal.total;
-    const overallPct = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
-
-    // مستوى تحفيزي + رسالة شخصية
-    const lvl = computeLevel(overallPct);
-    const lvlEl = document.getElementById('resLvl');
-    lvlEl.classList.add(lvl.cls);
-    document.getElementById('resLvlTxt').textContent = lvl.label;
-    document.getElementById('resH').textContent = lvl.heading;
-    document.getElementById('resP').innerHTML = lvl.message;
-
-    if (weakest) {
-        const name = weakest === 'quant' ? 'قدرات كمي' : 'قدرات لفظي';
-        let acc, prefix;
-        if (weaknessSource === 'history') {
-            const hist = byS[weakest + '_history'];
-            acc = hist && hist.total > 0 ? Math.round((hist.correct / hist.total) * 100) : 0;
-            prefix = 'حسب تاريخك الفعلي (' + (hist?.total || 0) + ' سؤال سابق)';
-        } else {
-            acc = weakest === 'quant' ? Math.round(qAcc*100) : Math.round(vAcc*100);
-            prefix = 'حسب نتيجة التشخيص';
-        }
-        document.getElementById('resWeakBox').style.display = '';
-        document.getElementById('resWeakTxt').textContent =
-            prefix + '، يُنصح بالتركيز على ' + name + ' (' + acc + '%). سنبني خطة يومية تبدأ من هنا.';
-    }
-
-    res.classList.add('on');
-
-    // Animate ring + counter بعد ما تظهر الشاشة
-    requestAnimationFrame(() => {
-        const ring = document.getElementById('resRingFg');
-        const C = 2 * Math.PI * 78; // محيط الدائرة (≈490)
-        ring.setAttribute('stroke-dasharray', String(C));
-        // تأخير صغير ليلتقط المتصفح القيمة الابتدائية ثم يُحرّك
-        setTimeout(() => {
-            ring.style.strokeDashoffset = String(C * (1 - overallPct / 100));
-        }, 150);
-        animateCounter('resPct', 0, overallPct, 1400);
-    });
 }
 
 function computeLevel(pct) {
