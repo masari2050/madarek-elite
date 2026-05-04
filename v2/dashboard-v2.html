@@ -57,10 +57,57 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* AD BANNER */
 .ad-ban{margin:0 6px 14px;border-radius:var(--r2);overflow:hidden;color:#fff;padding:14px 16px;display:none}
+/* mainBanner مُستبدل بـmockBan الجديد (mock-ban) — نخفيه دائماً عشان لا يتكرر مع DB content القديم */
+#mainBanner{display:none !important}
 .ad-tag{font-size:10px;font-weight:700;background:rgba(255,215,0,.2);color:#FFD700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px}
 .ad-title{font-size:14px;font-weight:700;margin-bottom:3px}
 .ad-sub{font-size:11px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:10px}
 .ad-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-size:11px;font-weight:700;border-radius:7px;font-family:inherit;cursor:pointer;border:none}
+
+/* MOCK EXAM BANNER (للجميع) */
+.mock-ban{margin:0 6px 14px;padding:18px 18px 16px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 55%,#8B7FFF 100%);
+  color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 8px 24px rgba(109,93,246,.3);
+}
+.mock-ban::before{content:"";position:absolute;top:-60px;right:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
+.mock-ban::after{content:"";position:absolute;bottom:-70px;left:-60px;width:160px;height:160px;border-radius:50%;background:rgba(255,215,0,.06);pointer-events:none}
+.mock-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+  background:rgba(255,215,0,.18);color:#FFD700;
+  padding:4px 11px;border-radius:14px;margin-bottom:10px;
+  border:1px solid rgba(255,215,0,.32);position:relative;z-index:1;
+}
+.mock-tag svg{width:12px;height:12px;fill:#FFD700;stroke:none}
+.mock-ttl{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:5px;position:relative;z-index:1;letter-spacing:-.01em}
+.mock-meta{font-size:12px;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:14px;position:relative;z-index:1;font-weight:500}
+.mock-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;
+  background:#FF8A3D;color:#fff;font-size:13px;font-weight:700;
+  border-radius:11px;border:none;font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 14px rgba(255,138,61,.4);position:relative;z-index:1;
+  transition:transform .15s;
+}
+.mock-cta:hover{transform:translateY(-1px)}
+.mock-cta:active{transform:scale(.97)}
+
+/* REFERRAL CASH BANNER (للجميع) */
+.ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 100%);
+  color:#fff;display:flex;align-items:center;gap:12px;cursor:pointer;
+  position:relative;overflow:hidden;
+  box-shadow:0 6px 20px rgba(109,93,246,.25);transition:transform .15s;
+}
+.ref-cash-ban:hover{transform:translateY(-1px)}
+.ref-cash-ban:active{transform:scale(.98)}
+.ref-cash-ic{width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,215,0,.25),rgba(245,158,11,.2));
+  border:1px solid rgba(255,215,0,.35);
+  display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1;
+}
+.ref-cash-ic svg{width:22px;height:22px;fill:#FFD700;stroke:none}
+.ref-cash-body{flex:1;min-width:0;position:relative;z-index:1}
+.ref-cash-ttl{font-size:13.5px;font-weight:800;line-height:1.4;margin-bottom:2px;letter-spacing:-.01em}
+.ref-cash-sub{font-size:11px;color:rgba(255,255,255,.85);line-height:1.55;font-weight:500}
+.ref-cash-arr{font-size:18px;color:#FFD700;font-weight:600;flex-shrink:0;position:relative;z-index:1}
 
 /* STREAK */
 .streak{margin:0 6px 14px;padding:14px 16px}
@@ -217,11 +264,34 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <!-- IMAGE BANNER (from banners table) -->
 <div class="ad-ban" id="imageBanner"></div>
 
+<!-- MOCK EXAM BANNER (للجميع — يقرأ من mock_exams لو موجود) -->
+<div class="mock-ban" id="mockBan">
+  <div class="mock-tag">
+    <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+    <span>اختبار محاكي</span>
+  </div>
+  <div class="mock-ttl" id="mockTitle">محاكي التحصيلي — الفترة الأولى</div>
+  <div class="mock-meta" id="mockMeta">يبدأ 13 مايو — 160 سؤال في 125 دقيقة</div>
+  <button class="mock-cta" onclick="alert('التسجيل يفتح قبل الموعد بـ48 ساعة')">سجّل الآن</button>
+</div>
+
+<!-- REFERRAL CASH BANNER (للجميع — يحوّل لـreferrals dashboard) -->
+<div class="ref-cash-ban" id="refCashBan" onclick="location.href='profile-v2.html#referrals'">
+  <div class="ref-cash-ic">
+    <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9 M22 7H2v5h20V7 M12 22V7 M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+  </div>
+  <div class="ref-cash-body">
+    <div class="ref-cash-ttl">كلاكما رابح — فلوس حقيقية لك</div>
+    <div class="ref-cash-sub">اربح 10 ر.س كاش لكل صديق يشترك عبرك</div>
+  </div>
+  <div class="ref-cash-arr">←</div>
+</div>
+
 <!-- SUBSCRIPTION WARNING (if about to expire) -->
 <div class="sub-banner" id="subBanner">
   <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
   <div class="t" id="subBannerText"></div>
-  <a class="btn" href="../pricing.html">جدّد الآن</a>
+  <a class="btn" href="pricing-v2.html">جدّد الآن</a>
 </div>
 
 <!-- STREAK -->
