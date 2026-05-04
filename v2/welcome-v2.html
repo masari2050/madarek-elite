@@ -39,8 +39,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ── WELCOME ── */
 .w-wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 28px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 55%)}
-.w-logo{width:84px;height:84px;border-radius:24px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(109,93,246,.3);background:linear-gradient(135deg,var(--pri),#8B5CF6)}
+/* Mobile wrappers: flex column centered (يحاكي السلوك السابق قبل DOM wrapping) */
+.w-intro,.w-visual,.w-cta{display:flex;flex-direction:column;align-items:center;width:100%}
+.w-cta{margin-top:6px}
+.w-logo{width:84px;height:84px;border-radius:24px;overflow:hidden;margin:0 auto 16px;box-shadow:0 8px 32px rgba(109,93,246,.32),0 0 0 1px rgba(109,93,246,.1);background:linear-gradient(135deg,var(--pri),#8B5CF6);position:relative;animation:logoGlow 3.6s ease-in-out infinite}
 .w-logo img{width:100%;height:100%;display:block;object-fit:cover}
+@keyframes logoGlow{0%,100%{box-shadow:0 8px 32px rgba(109,93,246,.32),0 0 0 1px rgba(109,93,246,.1)}50%{box-shadow:0 12px 44px rgba(109,93,246,.48),0 0 0 4px rgba(109,93,246,.08)}}
 .w-brand{font-size:22px;font-weight:700;margin-bottom:4px}
 .w-tag{font-size:12px;color:var(--i3);margin-bottom:24px}
 .w-trial-b{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:20px;font-size:11px;font-weight:700;color:var(--suc);margin-bottom:18px}
@@ -58,11 +62,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .w-login-link{margin-top:14px;font-size:12px;color:var(--i3);text-align:center}
 .w-login-link a{color:var(--pri);font-weight:700;text-decoration:none}
 .w-login-link a:hover{text-decoration:underline}
-.w-feats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:340px;margin:6px 0 16px}
-.w-feat{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
-.w-feat-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center}
-.w-feat-icon svg{width:20px;height:20px;stroke-width:2;fill:none;stroke:currentColor}
-.w-feat-txt{font-size:11px;font-weight:600;color:var(--i2);line-height:1.45}
+.w-feats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:340px;margin:8px 0 18px}
+.w-feat{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;transition:transform .2s,box-shadow .2s,border-color .2s}
+.w-feat:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,17,52,.06)}
+.w-feat-icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center}
+.w-feat-icon svg{width:22px;height:22px;stroke-width:2;fill:none;stroke:currentColor}
+.w-feat-txt{font-size:12px;font-weight:600;color:var(--i2);line-height:1.5}
 .w-stats{display:flex;gap:0;margin:0 0 18px;width:100%;max-width:340px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px 6px;justify-content:space-around}
 .ws{flex:1;text-align:center;position:relative}
 .ws+.ws::before{content:"";position:absolute;right:0;top:14%;height:72%;width:1px;background:var(--ln2)}
@@ -202,12 +207,14 @@ html[data-fs="large"] .wrap{zoom:1.1}
   .w-wrap{min-height:100%;padding:48px 32px}
 }
 
-/* Desktop ≥ 1024px: 2-column hero احترافي */
+/* Desktop ≥ 1024px: 2-column hero احترافي مع توهّج موجي */
 @media (min-width:1024px){
   body{
     background:
-      radial-gradient(circle at top right,rgba(109,93,246,.18),transparent 55%),
-      radial-gradient(circle at bottom left,rgba(255,138,61,.14),transparent 55%),
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.32),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.26),transparent 60%),
+      radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.12),transparent 70%),
+      radial-gradient(ellipse 600px 400px at 80% 95%,rgba(109,93,246,.18),transparent 65%),
       var(--bg);
     min-height:100vh;
     display:flex;align-items:center;justify-content:center;
@@ -215,8 +222,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
   }
   [data-t="d"] body,html.dark body{
     background:
-      radial-gradient(circle at top right,rgba(155,140,255,.22),transparent 55%),
-      radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(155,140,255,.32),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.18),transparent 60%),
+      radial-gradient(circle 500px at 50% 50%,rgba(155,140,255,.14),transparent 70%),
       var(--bg);
   }
   .wrap{
@@ -225,11 +233,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
     height:auto;
     overflow:visible;
     border-radius:32px;
-    box-shadow:0 30px 80px rgba(20,17,52,.18),0 8px 24px rgba(20,17,52,.08);
+    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(109,93,246,.12);
     border:1px solid var(--ln);
   }
   [data-t="d"] .wrap,html.dark .wrap{
-    box-shadow:0 30px 80px rgba(0,0,0,.55),0 8px 24px rgba(0,0,0,.3);
+    box-shadow:0 30px 90px rgba(0,0,0,.6),0 12px 32px rgba(109,93,246,.18);
   }
   /* الـwelcome screen يصبح grid 2-column */
   .w-wrap{
@@ -238,37 +246,70 @@ html[data-fs="large"] .wrap{zoom:1.1}
     grid-template-areas:
       "intro visual"
       "cta visual";
-    column-gap:56px;
-    row-gap:28px;
+    column-gap:64px;
+    row-gap:24px;
     padding:64px 56px;
     text-align:right;
     align-items:start;
     min-height:auto;
-    background:linear-gradient(135deg,var(--sf) 0%,var(--bg) 60%);
+    background:linear-gradient(135deg,var(--sf) 0%,var(--bg) 65%);
   }
   .w-intro{grid-area:intro;display:flex;flex-direction:column;align-items:flex-start;gap:0}
-  .w-visual{grid-area:visual;align-self:center;display:flex;flex-direction:column;gap:14px}
-  .w-cta{grid-area:cta;display:flex;flex-direction:column;align-items:flex-start;gap:10px;align-self:end}
+  .w-visual{grid-area:visual;align-self:center;display:flex;flex-direction:column;gap:14px;width:100%}
+  .w-cta{grid-area:cta;display:flex;flex-direction:column;align-items:flex-start;gap:10px;align-self:end;width:100%}
   /* Intro elements - أكبر وأجمل */
-  .w-logo{width:72px;height:72px;border-radius:22px;margin:0 0 14px}
+  .w-logo{width:76px;height:76px;border-radius:22px;margin:0 0 16px}
   .w-brand{font-size:30px;margin-bottom:4px}
-  .w-tag{font-size:14px;margin-bottom:18px}
-  .w-trial-b{font-size:12px;padding:7px 16px;margin-bottom:22px;align-self:flex-start}
-  .w-h{font-size:38px;line-height:1.3;margin-bottom:14px;text-align:right}
-  .w-p{font-size:14px;line-height:1.85;margin-bottom:0;max-width:480px;text-align:right}
-  /* CTA buttons - أنحف */
-  .w-btn,.w-btn-out{max-width:340px;width:100%;padding:16px 18px;font-size:14.5px}
-  .w-login-link{margin-top:6px;text-align:right;align-self:flex-start;font-size:13px}
+  .w-tag{font-size:14px;margin-bottom:20px}
+  .w-trial-b{font-size:12px;padding:8px 18px;margin-bottom:24px;align-self:flex-start}
+  /* Heading: gradient text إبداعي */
+  .w-h{
+    font-size:42px;line-height:1.25;margin-bottom:16px;text-align:right;
+    background:linear-gradient(135deg,var(--ink) 30%,var(--pri) 70%,var(--acc));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    letter-spacing:-.025em;
+  }
+  [data-t="d"] .w-h,html.dark .w-h{
+    background:linear-gradient(135deg,var(--ink) 30%,#9B8CFF 70%,#FFB07A);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .w-p{font-size:15px;line-height:1.85;margin-bottom:0;max-width:480px;text-align:right;color:var(--i2)}
+  /* CTA buttons - أكبر وأبرز */
+  .w-btn,.w-btn-out{max-width:360px;width:100%;padding:17px 18px;font-size:15px}
+  .w-login-link{margin-top:8px;text-align:right;align-self:flex-start;font-size:13px}
   /* Visual: features stack vertical + stats أكبر */
-  .w-feats{grid-template-columns:1fr;gap:12px;max-width:none;width:100%;margin:0}
-  .w-feat{flex-direction:row-reverse;gap:18px;padding:22px;text-align:right;align-items:center;border-radius:18px}
-  .w-feat-icon{width:54px;height:54px;border-radius:14px;flex-shrink:0}
-  .w-feat-icon svg{width:26px;height:26px}
-  .w-feat-txt{font-size:14px;line-height:1.5;text-align:right;flex:1}
+  .w-feats{grid-template-columns:1fr;gap:14px;max-width:none;width:100%;margin:0}
+  .w-feat{
+    flex-direction:row-reverse;gap:20px;padding:22px 24px;text-align:right;
+    align-items:center;border-radius:20px;
+    transition:transform .25s var(--ease),box-shadow .25s,border-color .25s;
+    background:linear-gradient(135deg,var(--sf) 0%,var(--s2) 100%);
+  }
+  .w-feat:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 36px rgba(20,17,52,.1);
+    border-color:rgba(109,93,246,.2);
+  }
+  .w-feat-icon{width:56px;height:56px;border-radius:15px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+  .w-feat-icon svg{width:28px;height:28px;stroke-width:2}
+  .w-feat-txt{font-size:16px;line-height:1.55;text-align:right;flex:1;font-weight:600}
   .w-feat-txt br{display:none}
-  .w-stats{max-width:none;width:100%;padding:22px 12px;margin:0}
-  .ws .n{font-size:26px}
-  .ws .l{font-size:12px;margin-top:5px}
+  /* Stats card - أنيق وموزّن */
+  .w-stats{
+    max-width:none;width:100%;padding:24px 18px;margin:0;
+    background:linear-gradient(135deg,var(--sf) 0%,var(--ps) 200%);
+    border:1px solid var(--ln);
+    box-shadow:0 4px 16px rgba(109,93,246,.06);
+  }
+  .ws .n{
+    font-size:30px;font-weight:800;
+    background:linear-gradient(135deg,var(--pri),var(--acc));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+  .ws .l{font-size:13px;margin-top:6px;font-weight:600}
 
   /* Trial + Subscribe screens: تبقى single-column مركّزة (ليست هي الـlanding) */
   .scr#s-trial,.scr#s-sub{
@@ -280,8 +321,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
 /* Desktop X-large */
 @media (min-width:1440px){
   .wrap{max-width:1180px}
-  .w-wrap{padding:80px 72px;column-gap:72px}
-  .w-h{font-size:42px}
+  .w-wrap{padding:80px 72px;column-gap:80px}
+  .w-h{font-size:46px}
 }
 </style>
 </head>
@@ -483,27 +524,27 @@ async function loadWelcomeStats() {
 
         totalQuestions = realQ;
 
-        // الأسئلة: max(real, floor) → تقريب لأقرب 500
+        // الأسئلة: max(real, floor) → تقريب أنعم لأقرب 50 (يتحدّث كل 50 سؤال جديد)
         const qFinal = Math.max(realQ, FLOOR_QUESTIONS);
-        const qRounded = Math.floor(qFinal / 500) * 500;
-        document.getElementById('statQ').textContent = '+' + numberFmt(qRounded);
+        const qRounded = Math.floor(qFinal / 50) * 50;
+        document.getElementById('statQ').textContent = numberFmt(qRounded) + '+';
 
-        // للشاشات الداخلية (subscribe): نفس قيمة الأسئلة
-        const roundedK = Math.floor(qFinal / 1000) * 1000;
-        const roundedLabel = roundedK >= 1000 ? numberFmt(roundedK) + '+' : numberFmt(qFinal);
+        // للشاشات الداخلية (subscribe): تقريب لأقرب 100
+        const innerQ = Math.floor(qFinal / 100) * 100;
+        const innerLabel = numberFmt(innerQ) + '+';
         const totalQEl = document.getElementById('totalQCount');
         const featQEl = document.getElementById('featQ');
-        if (totalQEl) totalQEl.textContent = roundedLabel;
-        if (featQEl) featQEl.textContent = roundedLabel;
+        if (totalQEl) totalQEl.textContent = innerLabel;
+        if (featQEl) featQEl.textContent = innerLabel;
 
-        // الطلاب: max(real, floor) → تقريب لأقرب 50
+        // الطلاب: max(real, floor) → تقريب أنعم لأقرب 5 (يتحدّث كل 5 طلاب)
         const uFinal = Math.max(realU, FLOOR_USERS);
-        const uRounded = Math.floor(uFinal / 50) * 50;
+        const uRounded = Math.floor(uFinal / 5) * 5;
         document.getElementById('statU').textContent = numberFmt(uRounded) + '+';
     } catch(e) {
         // لو الـRPC مش deployed بعد → fallback آمن
         console.warn('get_public_stats failed:', e);
-        document.getElementById('statQ').textContent = '+' + numberFmt(FLOOR_QUESTIONS);
+        document.getElementById('statQ').textContent = numberFmt(FLOOR_QUESTIONS) + '+';
         document.getElementById('statU').textContent = numberFmt(FLOOR_USERS) + '+';
     }
 }
