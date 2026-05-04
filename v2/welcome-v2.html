@@ -455,22 +455,22 @@ html[data-fs="large"] .wrap{zoom:1.1}
       </div>
     </div>
     <div style="font-size:11px;color:var(--i3);background:var(--s2);padding:10px 12px;border-radius:9px" id="scoreFooter">
-      اشترك وصل لـ <span id="totalQCount">3,000+</span> سؤال حقيقي مع شرح مفصّل لكل إجابة
+      اشترك وصل لـ <span id="totalQCount">3,500+</span> سؤال حقيقي — يتجدّد كل أسبوع، مع شرح مفصّل لكل إجابة
     </div>
   </div>
 
-  <!-- ميزات الاشتراك -->
-  <div style="padding:0 16px;margin:0 0 12px"><div style="font-size:13px;font-weight:700;margin-bottom:10px">ميزات الاشتراك</div></div>
+  <!-- اختيار الخطة (مرفوع للأعلى ليكون مرئياً قبل scroll) -->
+  <div style="padding:0 16px;margin-bottom:4px"><div style="font-size:13px;font-weight:700;margin-bottom:12px">اختر خطتك</div></div>
+  <div id="plansArea"></div>
+
+  <!-- ميزات الاشتراك (تذكير بما ستحصل عليه) -->
+  <div style="padding:0 16px;margin:14px 0 12px"><div style="font-size:13px;font-weight:700;margin-bottom:10px">ما تحصل عليه</div></div>
   <div class="sub-feats">
-    <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="featQ">3,000+</span> سؤال من اختبارات حقيقية</div>
+    <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="featQ">3,500+</span> سؤال من اختبارات حقيقية — يتجدّد كل أسبوع</div>
     <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>شرح مفصّل لكل سؤال</div>
     <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تقارير ذكية وتتبّع تقدّمك</div>
     <div class="sub-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تسريبات فورية أسبوعياً</div>
   </div>
-
-  <!-- اختيار الخطة -->
-  <div style="padding:0 16px;margin-bottom:4px"><div style="font-size:13px;font-weight:700;margin-bottom:12px">اختر خطتك</div></div>
-  <div id="plansArea"></div>
 
   <!-- بنر الإحالة -->
   <div class="ref-banner" id="refBanner">
@@ -489,7 +489,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     اشترك الآن وابدأ فوراً
   </button>
-  <button class="sub-skip" onclick="skipToApp()">تصفّح بدون اشتراك</button>
+  <button class="sub-skip" onclick="skipToApp()">تسجيل بدون اشتراك</button>
 </div>
 </div>
 
@@ -575,9 +575,8 @@ async function loadWelcomeStats() {
         const qRounded = Math.floor(qFinal / 50) * 50;
         document.getElementById('statQ').textContent = numberFmt(qRounded) + '+';
 
-        // للشاشات الداخلية (subscribe): تقريب لأقرب 100
-        const innerQ = Math.floor(qFinal / 100) * 100;
-        const innerLabel = numberFmt(innerQ) + '+';
+        // للشاشات الداخلية (subscribe): نفس تقريب welcome (/50) — توحيد الرقم
+        const innerLabel = numberFmt(qRounded) + '+';
         const totalQEl = document.getElementById('totalQCount');
         const featQEl = document.getElementById('featQ');
         if (totalQEl) totalQEl.textContent = innerLabel;
