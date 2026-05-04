@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — اربح كاش من إحالاتك</title>
+<meta name="description" content="شارك كودك مع أصدقائك واربح 10 ر.س كاش لكل صديق يشترك. حوّل مهارتك في النصيحة لدخل حقيقي.">
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;--gold-d:#D97706;--gold-dd:#92400E;--gold-ddd:#78350F;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg);padding-bottom:30px}
+
+/* ── HEADER ── */
+.h-wrap{padding:24px 16px 8px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 70%)}
+/* بانر "كود صديقك جاهز" يظهر فقط لو دخل المستخدم بـ?ref= */
+.ref-banner{display:none;margin:0 16px 12px;padding:11px 14px;
+  background:linear-gradient(135deg,var(--ss),rgba(34,197,94,.15));
+  border:1px solid rgba(34,197,94,.35);border-radius:var(--r);
+  align-items:center;gap:10px;
+}
+.ref-banner.on{display:flex}
+.ref-banner-ic{width:28px;height:28px;border-radius:50%;background:var(--suc);display:grid;place-items:center;flex-shrink:0}
+.ref-banner-ic svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:3}
+.ref-banner-body{flex:1;min-width:0}
+.ref-banner-t{font-size:12px;font-weight:700;color:var(--suc);line-height:1.4}
+.ref-banner-c{font-size:11.5px;color:var(--i2);margin-top:1px;direction:ltr;text-align:right;font-family:monospace}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.logo{width:42px;height:42px;border-radius:13px;overflow:hidden;box-shadow:0 4px 14px rgba(109,93,246,.22)}
+.logo img{width:100%;height:100%;display:block}
+.brand{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.brand-sub{font-size:10px;color:var(--i3);font-weight:500}
+
+/* ── HOOK CARD (ذهبي ثلاثي الطبقات — مطابق ReferralScreen) ── */
+.hook{margin:14px 16px 16px;padding:18px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#FEF3C7 0%,#FDE68A 50%,#FEF3C7 100%);
+  border:1px solid rgba(245,158,11,.35);
+  box-shadow:0 6px 18px rgba(217,119,6,.18);
+  position:relative;overflow:hidden;
+}
+.hook-ring{position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.5);top:-70px;left:-50px;pointer-events:none}
+.hook-spark{position:absolute;top:14px;right:16px;opacity:.55;pointer-events:none}
+.hook-spark svg{width:14px;height:14px;fill:var(--gold-d)}
+.hook-head{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.hook-ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--gold-d));box-shadow:0 3px 8px rgba(217,119,6,.35);flex-shrink:0}
+.hook-ico svg{width:22px;height:22px;fill:#fff;stroke:none}
+.hook-title{font-size:19px;font-weight:700;color:var(--gold-ddd);line-height:1.4;flex:1}
+.hook-action{margin-top:10px;font-size:14px;font-weight:600;color:var(--gold-dd);line-height:1.6}
+.hook-accent{color:var(--gold-d);font-weight:700}
+.hook-divider{margin:12px 0 10px;height:1px;background:rgba(180,83,9,.22)}
+.hook-proof{font-size:12.5px;font-weight:500;color:var(--gold-dd);line-height:1.65}
+.hook-num{color:var(--gold-ddd);font-weight:700}
+
+/* ── HERO (مبسّط للزائر — بدون أرقام شخصية) ── */
+.hero{margin:0 16px 16px;padding:24px 22px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 50%,#8B7FFF 100%);
+  color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 10px 28px rgba(109,93,246,.28);
+}
+.hero-ringA{position:absolute;top:-70px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none}
+.hero-ringB{position:absolute;bottom:-90px;left:-70px;width:220px;height:220px;border-radius:50%;background:rgba(255,215,0,.07);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:14px;
+  background:rgba(255,255,255,.22);border:1px solid rgba(255,215,0,.4);
+  font-size:11.5px;font-weight:700;margin-bottom:14px;position:relative;z-index:1;
+}
+.hero-badge svg{width:13px;height:13px;fill:#FFD700;stroke:none}
+.hero-h{font-size:22px;font-weight:800;line-height:1.4;letter-spacing:-.02em;margin-bottom:8px;position:relative;z-index:1}
+.hero-h .hi{color:#FFD700}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.92);line-height:1.7;margin-bottom:18px;position:relative;z-index:1}
+
+/* مثال بصري: 10 أصدقاء = 100 ر.س */
+.hero-eq{display:flex;align-items:center;justify-content:center;gap:10px;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;padding:14px;position:relative;z-index:1;
+}
+.eq-side{flex:1;text-align:center}
+.eq-num{font-size:22px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.01em}
+.eq-num small{font-size:13px;font-weight:700;color:#FFD700;margin-right:4px}
+.eq-lbl{font-size:11px;color:rgba(255,255,255,.85);margin-top:5px;font-weight:500}
+.eq-arrow{font-size:18px;color:#FFD700;font-weight:800;flex-shrink:0}
+
+/* ── SECTION HEADER ── */
+.sec-h{font-size:12px;font-weight:700;color:var(--i3);margin:18px 20px 10px;letter-spacing:.02em}
+
+/* ── HOW IT WORKS ── */
+.how-card{margin:0 16px 16px;padding:16px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2)}
+.how-step{display:flex;align-items:flex-start;gap:12px}
+.how-num{width:32px;height:32px;border-radius:50%;background:var(--ps);border:1.5px solid rgba(109,93,246,.3);
+  display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--pri);flex-shrink:0}
+.how-body{flex:1;min-width:0;padding-top:3px}
+.how-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.4}
+.how-d{font-size:12px;color:var(--i3);line-height:1.7}
+.how-line{height:1px;background:var(--ln);margin:14px 0 14px 44px}
+
+/* ── TERMS BOX (شروط الصرف) ── */
+.terms-box{margin:0 16px 16px;padding:14px 16px;background:var(--ps);border:1px solid var(--pm);border-radius:var(--r);
+  display:flex;align-items:flex-start;gap:10px;
+}
+.terms-ico{width:28px;height:28px;border-radius:8px;background:var(--pri);display:grid;place-items:center;flex-shrink:0}
+.terms-ico svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5}
+.terms-body{flex:1;min-width:0}
+.terms-t{font-size:12px;font-weight:700;color:var(--pt);margin-bottom:6px}
+.terms-list{display:flex;flex-direction:column;gap:5px}
+.terms-item{font-size:11.5px;color:var(--i2);line-height:1.6;display:flex;align-items:center;gap:6px}
+.terms-item::before{content:"•";color:var(--pri);font-weight:700;flex-shrink:0}
+
+/* ── TIP CARD (ذهبي ناعم) ── */
+.tip-card{margin:0 16px 22px;padding:14px;background:rgba(245,158,11,.08);
+  border:1px solid rgba(245,158,11,.25);border-radius:var(--r);
+  display:flex;align-items:flex-start;gap:12px;
+}
+.tip-ico{width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,.18);display:grid;place-items:center;flex-shrink:0;margin-top:2px}
+.tip-ico svg{width:16px;height:16px;fill:var(--gold);stroke:none}
+.tip-body{flex:1;min-width:0}
+.tip-t{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:3px}
+.tip-d{font-size:11.5px;color:var(--i2);line-height:1.7}
+
+/* ── CTA الكبير ── */
+.cta-wrap{margin:8px 16px 0;display:flex;flex-direction:column;gap:10px}
+.cta-primary{width:100%;padding:16px;border-radius:var(--r);
+  background:linear-gradient(135deg,var(--pri),#8B7AFF);color:#fff;
+  font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;
+  border:none;font-family:inherit;cursor:pointer;
+  box-shadow:0 8px 24px rgba(109,93,246,.32);
+  transition:transform .15s,box-shadow .25s;animation:ctaGlow 3.6s ease-in-out infinite;
+}
+@keyframes ctaGlow{0%,100%{box-shadow:0 8px 24px rgba(109,93,246,.32)}50%{box-shadow:0 12px 36px rgba(109,93,246,.5)}}
+.cta-primary:hover{transform:translateY(-1px)}
+.cta-primary:active{transform:scale(.98)}
+.cta-primary svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2}
+.cta-bottom{text-align:center;font-size:12px;color:var(--i3);margin-top:6px}
+.cta-bottom a{color:var(--pri);font-weight:700;margin-right:4px}
+.cta-bottom a:hover{text-decoration:underline}
+
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+
+/* ─────────────────────────────────────────
+   RESPONSIVE: Tablet + Desktop (phone-frame 520px)
+   نفس نمط register-v2/login-v2
+   ───────────────────────────────────────── */
+@media (min-width:768px){
+  body{
+    background:
+      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(245,158,11,.14),transparent 55%),
+      var(--bg);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(circle at top right,rgba(155,140,255,.18),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(245,158,11,.12),transparent 55%),
+      var(--bg);
+  }
+  .wrap{
+    max-width:520px;
+    height:min(900px,calc(100vh - 48px));
+    min-height:680px;
+    overflow-y:auto;
+    border-radius:30px;
+    box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
+    border:1px solid var(--ln);
+    padding-bottom:30px;
+  }
+  [data-t="d"] .wrap,html.dark .wrap{
+    box-shadow:0 24px 64px rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.35);
+  }
+  .wrap::-webkit-scrollbar{width:5px}
+  .wrap::-webkit-scrollbar-track{background:transparent}
+  .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
+}
+
+/* Desktop ≥1024: توهّج أكثف (مطابق welcome-v2) */
+@media (min-width:1024px){
+  body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.28),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(245,158,11,.22),transparent 60%),
+      radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.1),transparent 70%),
+      var(--bg);
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(155,140,255,.28),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(245,158,11,.18),transparent 60%),
+      var(--bg);
+  }
+  .wrap{
+    box-shadow:0 30px 90px rgba(20,17,52,.18),0 12px 32px rgba(109,93,246,.1);
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="h-wrap">
+    <div class="logo-row">
+      <div class="logo"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
+      <div>
+        <div class="brand">مدارك النخبة</div>
+        <div class="brand-sub">برنامج الإحالة والأرباح</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- بانر "كود صديقك جاهز" — يظهر فقط لو دخل المستخدم بـ?ref= -->
+  <div class="ref-banner" id="refBanner">
+    <div class="ref-banner-ic">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="ref-banner-body">
+      <div class="ref-banner-t">كود صديقك جاهز — خصم 10٪ ينطبق عند التسجيل</div>
+      <div class="ref-banner-c" id="refBannerCode">—</div>
+    </div>
+  </div>
+
+  <!-- HOOK ذهبي -->
+  <div class="hook">
+    <div class="hook-ring"></div>
+    <div class="hook-spark">
+      <svg viewBox="0 0 24 24"><path d="M12 1l2.5 6.5L21 10l-6.5 2.5L12 19l-2.5-6.5L3 10l6.5-2.5L12 1z"/></svg>
+    </div>
+    <div class="hook-head">
+      <div class="hook-ico">
+        <!-- treasure-chest -->
+        <svg viewBox="0 0 24 24"><path d="M3 9h18v2H3zM4 11h16v9H4zm6 1v3h4v-3z"/><path d="M5 7c0-1.5 1-3 3-3h8c2 0 3 1.5 3 3v2H5V7z" opacity=".85"/></svg>
+      </div>
+      <div class="hook-title">خلّك تاجر نخبة</div>
+    </div>
+    <div class="hook-action">
+      اربح <span class="hook-accent">كاش</span> من كل اشتراك يجي عن طريقك
+    </div>
+    <div class="hook-divider"></div>
+    <div class="hook-proof">
+      صديقك يوفّر 10٪  ·  وأنت تكسب <span class="hook-num">10 ر.س نقداً</span> في محفظتك
+    </div>
+  </div>
+
+  <!-- HERO بنفسجي مبسّط للزائر -->
+  <div class="hero">
+    <div class="hero-ringA"></div>
+    <div class="hero-ringB"></div>
+
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+      أكسب لين 100 ر.س بسهولة
+    </div>
+
+    <div class="hero-h">
+      شارك <span class="hi">كودك</span> مع أصدقائك<br>
+      وحوّل كلامك لــ كاش حقيقي
+    </div>
+    <div class="hero-sub">
+      كل صديق يشترك بكودك = 10 ر.س تنزل في محفظتك مباشرة. لا حدود ولا مخاطرة.
+    </div>
+
+    <!-- مثال بصري: 10 أصدقاء = 100 ر.س -->
+    <div class="hero-eq">
+      <div class="eq-side">
+        <div class="eq-num">10</div>
+        <div class="eq-lbl">أصدقاء يشتركون</div>
+      </div>
+      <div class="eq-arrow">←</div>
+      <div class="eq-side">
+        <div class="eq-num">100<small>ر.س</small></div>
+        <div class="eq-lbl">في محفظتك</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="sec-h">كيف تبدأ تربح كاش؟</div>
+  <div class="how-card">
+    <div class="how-step">
+      <div class="how-num">1</div>
+      <div class="how-body">
+        <div class="how-t">سجّل حسابك في مدارك النخبة</div>
+        <div class="how-d">تسجيل سريع — وكودك جاهز خلال ثواني</div>
+      </div>
+    </div>
+    <div class="how-line"></div>
+    <div class="how-step">
+      <div class="how-num">2</div>
+      <div class="how-body">
+        <div class="how-t">شارك كودك مع أصدقائك</div>
+        <div class="how-d">كودك يعطيهم خصم 10٪ على أول اشتراك — كلكم رابحين</div>
+      </div>
+    </div>
+    <div class="how-line"></div>
+    <div class="how-step">
+      <div class="how-num">3</div>
+      <div class="how-body">
+        <div class="how-t">استلم كاش لمّا توصل 100 ر.س</div>
+        <div class="how-d">حوالة بنكية على آيبانك خلال 1-3 أيام عمل</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div class="sec-h">شروط الصرف باختصار</div>
+  <div class="terms-box">
+    <div class="terms-ico">
+      <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+    </div>
+    <div class="terms-body">
+      <div class="terms-t">معلومات مهمّة قبل ما تبدأ</div>
+      <div class="terms-list">
+        <div class="terms-item">الحد الأدنى للسحب: 100 ر.س</div>
+        <div class="terms-item">يُحتسب المبلغ مباشرة بعد اشتراك صديقك</div>
+        <div class="terms-item">الرصيد صالح لمدة 6 أشهر من تاريخ الكسب</div>
+        <div class="terms-item">التحويل عبر آيبان سعودي خلال 1-3 أيام عمل</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIP -->
+  <div class="tip-card">
+    <div class="tip-ico">
+      <!-- lightbulb -->
+      <svg viewBox="0 0 24 24"><path d="M9 21h6v-1H9v1zm3-19a7 7 0 00-4 12.74V18h8v-3.26A7 7 0 0012 2z"/></svg>
+    </div>
+    <div class="tip-body">
+      <div class="tip-t">فكرة ذكية تضاعف أرباحك</div>
+      <div class="tip-d">شارك كودك في قروبات الواتساب لطلاب قياس قبل الاختبارات بأسبوع — وقت الإقبال يكون أعلى شي.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="cta-primary" onclick="goRegister()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      أنشئ حسابي وابدأ أربح
+    </button>
+    <div class="cta-bottom">
+      عندك حساب؟ <a href="login-v2.html">سجّل دخول</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══ قراءة الكود من URL أو من localStorage (لو سبق دخل بكود) ═══
+function getReferralCode(){
+  try {
+    var qs = new URLSearchParams(window.location.search);
+    var c = (qs.get('ref') || qs.get('code') || qs.get('r') || '').trim().toUpperCase();
+    if (c && /^[A-Z0-9-]{3,20}$/.test(c)) {
+      try { localStorage.setItem('madarek_referral', c); } catch(e){}
+      return c;
+    }
+    var stored = localStorage.getItem('madarek_referral') || '';
+    return stored.trim().toUpperCase() || null;
+  } catch(e){ return null; }
+}
+
+// ═══ عرض بانر "كود صديقك جاهز" لو فيه كود ═══
+(function initReferralBanner(){
+  var code = getReferralCode();
+  if (!code) return;
+  var b = document.getElementById('refBanner');
+  var c = document.getElementById('refBannerCode');
+  if (b && c) {
+    c.textContent = code;
+    b.classList.add('on');
+  }
+})();
+
+// ═══ الانتقال للتسجيل مع تمرير الكود ═══
+function goRegister(){
+  var code = getReferralCode();
+  var dest = 'register-v2.html';
+  if (code) dest += '?ref=' + encodeURIComponent(code);
+  window.location.href = dest;
+}
+</script>
+</body>
+</html>
