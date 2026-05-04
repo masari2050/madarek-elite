@@ -102,6 +102,39 @@ footer p{font-size:11px;color:var(--i4)}
   .box{padding:20px 22px}
 }
 
+/* ── DESKTOP: container أنيق + توهّج خفيف للقراءة ── */
+@media (min-width:1024px){
+  body{
+    background:
+      radial-gradient(ellipse 800px 500px at 92% 8%,rgba(109,93,246,.16),transparent 60%),
+      radial-gradient(ellipse 700px 400px at 8% 92%,rgba(255,138,61,.1),transparent 60%),
+      var(--bg);
+    padding:36px 16px;
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(ellipse 800px 500px at 92% 8%,rgba(155,140,255,.18),transparent 60%),
+      radial-gradient(ellipse 700px 400px at 8% 92%,rgba(255,138,61,.08),transparent 60%),
+      var(--bg);
+  }
+  .wrap{
+    max-width:760px;
+    min-height:auto;
+    background:var(--sf);
+    border:1px solid var(--ln);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(20,17,52,.12),0 6px 20px rgba(20,17,52,.05);
+  }
+  [data-t="d"] .wrap,html.dark .wrap{
+    box-shadow:0 24px 64px rgba(0,0,0,.5),0 6px 20px rgba(0,0,0,.35);
+  }
+  .topbar{position:relative}
+  .hero{padding:52px 32px 32px}
+  .hero-h1{font-size:34px}
+  .content{padding:14px 32px 56px}
+}
+
 /* FONT-SIZE PREF */
 html[data-fs="small"] body{font-size:14px}
 html[data-fs="large"] body{font-size:16.5px}
