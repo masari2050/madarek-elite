@@ -264,7 +264,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <!-- IMAGE BANNER (from banners table) -->
 <div class="ad-ban" id="imageBanner"></div>
 
-<!-- MOCK EXAM BANNER (للجميع — يقرأ من mock_exams لو موجود) -->
+<!-- MOCK EXAM BANNER (يقرأ من mock_exams + RPC) -->
 <div class="mock-ban" id="mockBan">
   <div class="mock-tag">
     <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
@@ -272,6 +272,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <div class="mock-ttl" id="mockTitle">محاكي التحصيلي — الفترة الأولى</div>
   <div class="mock-meta" id="mockMeta">يبدأ 13 مايو — 160 سؤال في 125 دقيقة</div>
+  <div class="mock-count" id="mockCount" style="display:none;font-size:11px;opacity:.85;margin-top:6px"></div>
   <button class="mock-cta" id="mockCta" onclick="mockExamRegister()">سجّل الآن</button>
 </div>
 
@@ -442,7 +443,6 @@ async function init() {
     // Render header immediately
     renderHeader();
     showSubBadge();
-    if (localStorage.getItem('madarek_mock_registered')) applyMockExamRegistered();
 
     // Load everything in parallel
     Promise.all([
@@ -474,7 +474,7 @@ function showSubBadge() {
 }
 
 // ── Mock Exam Registration ──
-const MOCK_REG_KEY = 'madarek_mock_registered';
+let _mockExamId = null;
 function applyMockExamRegistered() {
     const btn = document.getElementById('mockCta');
     if (!btn) return;
@@ -484,14 +484,23 @@ function applyMockExamRegistered() {
     btn.style.cursor = 'default';
 }
 window.mockExamRegister = async function() {
-    if (localStorage.getItem(MOCK_REG_KEY)) { applyMockExamRegistered(); return; }
+    const btn = document.getElementById('mockCta');
+    if (btn && btn.disabled) return;
     const user = window.MadarekV2 ? await window.MadarekV2.getUser() : null;
     if (!user) {
         location.href = 'login-v2.html?redirect=' + encodeURIComponent(location.pathname);
         return;
     }
-    localStorage.setItem(MOCK_REG_KEY, '1');
-    applyMockExamRegistered();
+    if (btn) { btn.disabled = true; btn.textContent = 'جاري التسجيل...'; }
+    try {
+        const { error } = await sb.rpc('register_for_active_mock_exam');
+        if (error) throw error;
+        applyMockExamRegistered();
+        loadMockExamBanner(); // refresh count
+    } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = 'سجّل الآن'; }
+        alert('تعذّر التسجيل: ' + (e.message || 'حاول مرّة أخرى'));
+    }
 };
 
 // ── Home Stats ──
@@ -747,10 +756,29 @@ async function loadBanners() {
 }
 
 async function loadMockExamBanner() {
+    const m = document.getElementById('mockBan');
+    if (!m) return;
+    // أوّلاً: حاول قراءة الاختبار النشط من mock_exams (الأحدث المعتمد)
+    try {
+        const { data: exam } = await sb.rpc('get_active_mock_exam_status');
+        if (exam && exam.length) {
+            const e = exam[0];
+            _mockExamId = e.exam_id;
+            applyMockExamConfig({
+                title: e.title,
+                exam_date: e.starts_at,
+                questions: e.questions_count,
+                duration_min: e.duration_min,
+                total_registered: e.total_registered
+            });
+            if (e.user_registered) applyMockExamRegistered();
+            return;
+        }
+    } catch(e) {}
+    // fallback: قبل تشغيل SQL 36 — اقرأ من banners.mock_exam
     try {
         const { data } = await sb.from('banners').select('is_active,config').eq('banner_type','mock_exam').maybeSingle();
-        const m = document.getElementById('mockBan');
-        if (!m || !data) return; // قبل تشغيل SQL 35 — يبقى النص الثابت
+        if (!data) return; // النص الثابت يبقى
         if (!data.is_active) { m.style.display = 'none'; return; }
         applyMockExamConfig(data.config || {});
     } catch(e) {}
@@ -768,6 +796,7 @@ function applyMockExamConfig(cfg) {
     const ttl = document.getElementById('mockTitle');
     const meta = document.getElementById('mockMeta');
     const cta = document.getElementById('mockCta');
+    const cntEl = document.getElementById('mockCount');
     if (!ttl || !meta || !cta) return;
     if (cfg.title) ttl.textContent = cfg.title;
     const dateStr = formatExamDate(cfg.exam_date);
@@ -779,6 +808,15 @@ function applyMockExamConfig(cfg) {
     else if (q) parts.push(q + ' سؤال');
     if (parts.length) meta.textContent = parts.join(' — ');
     if (cfg.cta_text && !cta.disabled) cta.textContent = cfg.cta_text;
+    if (cntEl) {
+        const n = parseInt(cfg.total_registered, 10);
+        if (n > 0) {
+            cntEl.textContent = 'انضمّ ' + n + ' ' + (n === 1 ? 'طالب' : 'طالباً');
+            cntEl.style.display = 'block';
+        } else {
+            cntEl.style.display = 'none';
+        }
+    }
 }
 
 // ── Streak ──

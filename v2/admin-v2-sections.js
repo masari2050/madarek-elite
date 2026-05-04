@@ -1689,7 +1689,10 @@ window.loadBanners = async function() {
                     <input class="form-input" id="mx_cta_text" value="${esc(mx.config.cta_text||'سجّل الآن')}">
                 </div>
             </div>
-            <button class="btn btn-pri" style="margin-top:12px" onclick='saveBanner("mock_exam")'>حفظ</button>
+            <div style="display:flex;gap:8px;margin-top:12px">
+                <button class="btn btn-pri" onclick='saveBanner("mock_exam")'>حفظ</button>
+                <button class="btn btn-ghost" onclick='openMockExamRegList()'>قائمة المسجّلين</button>
+            </div>
         </div>
 
         <!-- IMAGE BANNER -->
@@ -1801,6 +1804,40 @@ window.uploadBannerImage = async function(input) {
     }
 };
 
+window.openMockExamRegList = async function() {
+    const { sb } = window.A;
+    try {
+        const { data: examData, error: examErr } = await sb.rpc('get_active_mock_exam_status');
+        if (examErr) throw examErr;
+        if (!examData || !examData.length) { showToast('لا يوجد اختبار نشط — احفظ البنر أوّلاً','err'); return; }
+        const exam = examData[0];
+        const { data: regs, error: regErr } = await sb.rpc('admin_list_mock_exam_registrations', { p_exam_id: exam.exam_id });
+        if (regErr) throw regErr;
+        const list = regs || [];
+        const rows = list.length ? list.map(r => `
+            <tr>
+                <td style="padding:8px 10px">${esc(r.full_name || '—')}</td>
+                <td style="padding:8px 10px;font-size:11px;color:var(--i3)">${esc(r.email)}</td>
+                <td style="padding:8px 10px;font-size:11px;color:var(--i3)">${new Date(r.registered_at).toLocaleString('ar-SA',{dateStyle:'short',timeStyle:'short'})}</td>
+            </tr>`).join('') : `<tr><td colspan="3" style="padding:20px;text-align:center;color:var(--i3)">لا مسجّلون بعد</td></tr>`;
+        const body = `
+            <div style="font-size:13px;margin-bottom:12px">${esc(exam.title)} · <strong>${list.length}</strong> مسجّل</div>
+            <div style="max-height:400px;overflow:auto;border:1px solid var(--bd);border-radius:8px">
+                <table style="width:100%;border-collapse:collapse;font-size:12px">
+                    <thead style="background:var(--s2);position:sticky;top:0">
+                        <tr>
+                            <th style="padding:8px 10px;text-align:start">الاسم</th>
+                            <th style="padding:8px 10px;text-align:start">الإيميل</th>
+                            <th style="padding:8px 10px;text-align:start">تاريخ التسجيل</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
+        openModal('قائمة المسجّلين في الاختبار', body, '<button class="btn btn-pri" onclick="closeModal()">إغلاق</button>');
+    } catch(e) { showToast('خطأ: ' + (e.message || 'فشل'),'err'); }
+};
+
 window.applyMockExamPreset = function() {
     const presets = {
         tahsili:          { questions: 160, duration_min: 125, title: 'محاكي التحصيلي' },
@@ -1896,6 +1933,18 @@ window.saveBanner = async function(type) {
             duration_min: isNaN(dur) ? null : dur,
             cta_text: document.getElementById('mx_cta_text').value.trim() || 'سجّل الآن'
         };
+        // مزامنة مع mock_exams (للحجز الحقيقي + التسجيلات)
+        if (config.exam_date && !isNaN(q) && !isNaN(dur) && config.title) {
+            try {
+                await sb.rpc('admin_upsert_active_mock_exam', {
+                    p_exam_type: config.exam_type,
+                    p_title: config.title,
+                    p_exam_date: config.exam_date,
+                    p_duration_min: dur,
+                    p_questions_count: q
+                });
+            } catch(e) { /* SQL 36 may not be applied yet */ }
+        }
     }
 
     // Build target_pages array from dropdown selection
