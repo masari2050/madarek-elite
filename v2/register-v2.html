@@ -189,7 +189,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="logo"><img src="../icons/icon-192.png" alt="مدارك النخبة"></div>
   <div class="badge">
     <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    ابدأ رحلتك مجاناً
+    خطوتك الأولى نحو نتيجة أفضل
   </div>
   <div class="h-title">أنشئ حسابك وانطلق</div>
   <div class="h-sub">تسجيل سريع — ودقائق وبتكون جاهز للتدريب</div>
@@ -254,6 +254,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
     </div>
     <input type="hidden" id="gender" value="male">
 
+    <label class="lbl">كود إحالة (اختياري)</label>
+    <div class="input-row">
+      <input class="input" type="text" id="referralCode" placeholder="MADAR-XXXX" maxlength="20" autocomplete="off" style="direction:ltr;text-align:right;letter-spacing:.5px">
+    </div>
+
     <div class="terms">
       <input type="checkbox" id="terms">
       <label for="terms">أوافق على <a href="terms-v2.html" target="_blank">شروط الاستخدام</a> و<a href="privacy-v2.html" target="_blank">سياسة الخصوصية</a></label>
@@ -312,7 +317,16 @@ var sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 var params=new URLSearchParams(window.location.search);
 var urlCoupon=params.get('coupon');
 var urlRef=params.get('ref');
-if(urlRef){try{localStorage.setItem('madarek_referral',urlRef);}catch(_){}}
+if(urlRef){try{localStorage.setItem('madarek_referral',urlRef.toUpperCase());}catch(_){}}
+
+// Auto-fill referral code field من URL أو localStorage + uppercase live
+(function initReferralField(){
+  var f=document.getElementById('referralCode');if(!f)return;
+  var stored='';try{stored=localStorage.getItem('madarek_referral')||'';}catch(_){}
+  var initial=(urlRef||stored||'').trim().toUpperCase();
+  if(initial)f.value=initial;
+  f.addEventListener('input',function(){this.value=this.value.toUpperCase();});
+})();
 
 // ── Gender select ──
 window.setGender=function(g){
@@ -393,12 +407,14 @@ document.getElementById('regForm').addEventListener('submit',async function(e){
     if(phone&&res.data&&res.data.user){
       try{await sb.from('profiles').update({phone:phone}).eq('id',res.data.user.id);}catch(_){}
     }
-    // Apply referral code if the user signed up via a ?ref= link
+    // Apply referral code — الأولوية للحقل اليدوي ثم localStorage ثم ?ref=
+    var manualRef=(document.getElementById('referralCode')&&document.getElementById('referralCode').value||'').trim().toUpperCase();
     var storedRef=null;
     try{storedRef=localStorage.getItem('madarek_referral');}catch(_){}
-    if(storedRef&&res.data&&res.data.user){
+    var finalRef=manualRef||storedRef||'';
+    if(finalRef&&res.data&&res.data.user){
       try{
-        await sb.rpc('apply_referral',{p_new_user_id:res.data.user.id,p_referral_code:storedRef});
+        await sb.rpc('apply_referral',{p_new_user_id:res.data.user.id,p_referral_code:finalRef});
         try{localStorage.removeItem('madarek_referral');}catch(_){}
       }catch(_){}
     }
