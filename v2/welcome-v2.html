@@ -94,6 +94,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .opt:active{transform:scale(.98)}
 .opt.ok{border-color:var(--suc);background:rgba(34,197,94,.12);border-width:2px}.opt.ok .opt-l{background:var(--suc);color:#fff}
 .opt.no{border-color:var(--dng);background:rgba(239,68,68,.12);border-width:2px}.opt.no .opt-l{background:var(--dng);color:#fff}
+.opt.picked{border-color:var(--pri);background:var(--ps);border-width:2px;transform:scale(.98)}.opt.picked .opt-l{background:var(--pri);color:#fff}
 .opt.dim{opacity:.5;pointer-events:none}
 .opt-l{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--i3);flex-shrink:0;transition:all .18s}
 .opt-v{font-size:13px;font-weight:600;flex:1}
@@ -262,19 +263,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
   .w-brand{font-size:30px;margin-bottom:4px}
   .w-tag{font-size:14px;margin-bottom:20px}
   .w-trial-b{font-size:12px;padding:8px 18px;margin-bottom:24px;align-self:flex-start}
-  /* Heading: gradient text إبداعي */
-  .w-h{
-    font-size:42px;line-height:1.25;margin-bottom:16px;text-align:right;
-    background:linear-gradient(135deg,var(--ink) 30%,var(--pri) 70%,var(--acc));
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-    letter-spacing:-.025em;
-  }
-  [data-t="d"] .w-h,html.dark .w-h{
-    background:linear-gradient(135deg,var(--ink) 30%,#9B8CFF 70%,#FFB07A);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;
-  }
+  /* Heading: لون موحّد بدون gradient */
+  .w-h{font-size:42px;line-height:1.25;margin-bottom:16px;text-align:right;color:var(--ink);letter-spacing:-.025em;font-weight:800}
   .w-p{font-size:15px;line-height:1.85;margin-bottom:0;max-width:480px;text-align:right;color:var(--i2)}
   /* CTA buttons - أكبر وأبرز */
   .w-btn,.w-btn-out{max-width:360px;width:100%;padding:17px 18px;font-size:15px}
@@ -303,18 +293,34 @@ html[data-fs="large"] .wrap{zoom:1.1}
     border:1px solid var(--ln);
     box-shadow:0 4px 16px rgba(109,93,246,.06);
   }
-  .ws .n{
-    font-size:30px;font-weight:800;
-    background:linear-gradient(135deg,var(--pri),var(--acc));
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-  }
-  .ws .l{font-size:13px;margin-top:6px;font-weight:600}
+  .ws .n{font-size:30px;font-weight:800;color:var(--pri)}
+  .ws .l{font-size:13px;margin-top:6px;font-weight:600;color:var(--i3)}
 
-  /* Trial + Subscribe screens: تبقى single-column مركّزة (ليست هي الـlanding) */
-  .scr#s-trial,.scr#s-sub{
+  /* Trial + Subscribe screens: phone-frame مركّز مع ارتفاع ثابت */
+  body[data-screen="s-trial"] .wrap,
+  body[data-screen="s-sub"] .wrap{
     max-width:560px;
-    margin:0 auto;
+    height:min(900px,calc(100vh - 64px));
+    min-height:680px;
+    overflow-y:auto;
+    background:var(--bg);
+  }
+  .scr#s-trial,.scr#s-sub{max-width:none;margin:0}
+  /* الـtrial header وprogress يتمددون لكامل العرض */
+  body[data-screen="s-trial"] .trial-hdr,
+  body[data-screen="s-trial"] .trial-prog{padding-left:24px;padding-right:24px}
+  /* أسئلة + خيارات: padding أكبر على ديسك توب */
+  body[data-screen="s-trial"] .q-card{margin:10px 24px;padding:22px;font-size:15px}
+  body[data-screen="s-trial"] .q-opts{padding:10px 24px}
+  body[data-screen="s-trial"] .opt{padding:16px 18px;font-size:14px}
+  body[data-screen="s-trial"] .q-fb{margin:10px 24px;padding:18px}
+  body[data-screen="s-trial"] .q-next{width:calc(100% - 48px);margin:10px 24px 24px;padding:15px}
+
+  /* Subscribe screen: card layout أنيق */
+  body[data-screen="s-sub"] .wrap{
+    height:auto;
+    min-height:auto;
+    max-height:none;
   }
 }
 
@@ -603,6 +609,8 @@ function renderDefaultPlans() {
 window.go = function(id) {
     document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
     document.getElementById(id).classList.add('on');
+    // Mark active screen on body for CSS responsive targeting
+    document.body.dataset.screen = id;
     window.scrollTo(0, 0);
 };
 
@@ -702,6 +710,13 @@ window.trialAnswer = async function(btn, idx) {
     if (answered) return;
     answered = true;
 
+    // Visual feedback فوري — لا ننتظر RPC
+    const opts = document.querySelectorAll('#trialOpts .opt');
+    opts.forEach((o, i) => {
+        if (i !== idx) o.classList.add('dim');
+        else o.classList.add('picked');
+    });
+
     const q = trialQuestions[currentQ];
 
     // Call check_answer RPC to verify
@@ -710,19 +725,14 @@ window.trialAnswer = async function(btn, idx) {
         const { data } = await sb.rpc('check_answer', { q_id: q.id, selected_answer: idx });
         isCorrect = data === true;
     } catch(e) {
-        // Fallback: can't check, assume wrong
         isCorrect = false;
     }
 
     if (isCorrect) trialCorrect++;
 
-    // Highlight buttons
-    const opts = document.querySelectorAll('#trialOpts .opt');
-    opts.forEach((o, i) => {
-        if (i === idx && isCorrect) o.classList.add('ok');
-        else if (i === idx && !isCorrect) o.classList.add('no');
-        if (i !== idx) o.classList.add('dim');
-    });
+    // الآن نطبّق اللون النهائي (ok/no) - بعد ما الـRPC رد
+    btn.classList.remove('picked');
+    btn.classList.add(isCorrect ? 'ok' : 'no');
 
     // Show feedback
     const fbDiv = document.getElementById('tFb');
