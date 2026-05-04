@@ -483,6 +483,15 @@ function applyMockExamRegistered() {
     btn.style.opacity = '.75';
     btn.style.cursor = 'default';
 }
+function showMockExamSuccess() {
+    const ban = document.getElementById('mockBan');
+    if (!ban || document.getElementById('mockSuccessNote')) return;
+    const note = document.createElement('div');
+    note.id = 'mockSuccessNote';
+    note.style.cssText = 'margin-top:10px;padding:10px 12px;background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.5);border-radius:10px;font-size:12px;color:#fff;display:flex;align-items:center;gap:8px';
+    note.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#86EFAC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>تم تسجيلك بنجاح. استعدّ — التحدّي قريب</span>';
+    ban.appendChild(note);
+}
 window.mockExamRegister = async function() {
     const btn = document.getElementById('mockCta');
     if (btn && btn.disabled) return;
@@ -496,7 +505,8 @@ window.mockExamRegister = async function() {
         const { error } = await sb.rpc('register_for_active_mock_exam');
         if (error) throw error;
         applyMockExamRegistered();
-        loadMockExamBanner(); // refresh count
+        showMockExamSuccess();
+        loadMockExamBanner();
     } catch (e) {
         if (btn) { btn.disabled = false; btn.textContent = 'سجّل الآن'; }
         alert('تعذّر التسجيل: ' + (e.message || 'حاول مرّة أخرى'));
