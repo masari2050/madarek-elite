@@ -215,7 +215,7 @@ async function init() {
         const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
         profile = p || { id:'mock-user-00000000' };
     } else {
-        const user = await M.requireAuth('../login.html');
+        const user = await M.requireAuth('login-v2.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;

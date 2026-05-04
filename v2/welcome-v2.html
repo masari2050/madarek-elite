@@ -348,9 +348,11 @@ async function loadWelcomeStats() {
         document.getElementById('featQ').textContent = roundedLabel;
 
         const { count: userCount } = await sb.from('profiles').select('*', { count: 'exact', head: true });
-        // الطلاب: تقريب لأقرب 50 + علامة "+" بعد الرقم، بحدّ أدنى 50 (مثلاً 423 → 400+)
-        const uRounded = Math.max(50, Math.floor((userCount || 0) / 50) * 50);
-        document.getElementById('statU').textContent = numberFmt(uRounded) + '+';
+        // الطلاب: لو القراءة محجوبة بـRLS أو العدد قليل → استخدم رقم مسوّقي 400+
+        // وإلا تقريب لأقرب 50 (مثلاً 423 → 400+)
+        const u = userCount || 0;
+        const uLabel = u >= 100 ? numberFmt(Math.floor(u / 50) * 50) + '+' : '400+';
+        document.getElementById('statU').textContent = uLabel;
     } catch(e) {
         document.getElementById('statQ').textContent = '+3,500';
         document.getElementById('statU').textContent = '400+';
