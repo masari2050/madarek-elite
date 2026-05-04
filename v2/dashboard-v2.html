@@ -272,7 +272,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <div class="mock-ttl" id="mockTitle">محاكي التحصيلي — الفترة الأولى</div>
   <div class="mock-meta" id="mockMeta">يبدأ 13 مايو — 160 سؤال في 125 دقيقة</div>
-  <button class="mock-cta" onclick="alert('التسجيل يفتح قبل الموعد بـ48 ساعة')">سجّل الآن</button>
+  <button class="mock-cta" id="mockCta" onclick="mockExamRegister()">سجّل الآن</button>
 </div>
 
 <!-- REFERRAL CASH BANNER (للجميع — يحوّل لـreferrals dashboard) -->
@@ -442,6 +442,7 @@ async function init() {
     // Render header immediately
     renderHeader();
     showSubBadge();
+    if (localStorage.getItem('madarek_mock_registered')) applyMockExamRegistered();
 
     // Load everything in parallel
     Promise.all([
@@ -471,6 +472,27 @@ function showSubBadge() {
     else if (t === 'yearly') { b.textContent = '✦ Elite'; b.className = 'sub-badge yearly'; b.style.display = ''; }
     else if (profile.used_coupon) { b.textContent = 'كوبون'; b.className = 'sub-badge coupon'; b.style.display = ''; }
 }
+
+// ── Mock Exam Registration ──
+const MOCK_REG_KEY = 'madarek_mock_registered';
+function applyMockExamRegistered() {
+    const btn = document.getElementById('mockCta');
+    if (!btn) return;
+    btn.textContent = 'أنت مسجّل';
+    btn.disabled = true;
+    btn.style.opacity = '.75';
+    btn.style.cursor = 'default';
+}
+window.mockExamRegister = async function() {
+    if (localStorage.getItem(MOCK_REG_KEY)) { applyMockExamRegistered(); return; }
+    const user = window.MadarekV2 ? await window.MadarekV2.getUser() : null;
+    if (!user) {
+        location.href = 'login-v2.html?redirect=' + encodeURIComponent(location.pathname);
+        return;
+    }
+    localStorage.setItem(MOCK_REG_KEY, '1');
+    applyMockExamRegistered();
+};
 
 // ── Home Stats ──
 async function loadHomeStats() {
@@ -721,6 +743,42 @@ async function loadBanners() {
             }
         });
     } catch(e) {}
+    loadMockExamBanner();
+}
+
+async function loadMockExamBanner() {
+    try {
+        const { data } = await sb.from('banners').select('is_active,config').eq('banner_type','mock_exam').maybeSingle();
+        const m = document.getElementById('mockBan');
+        if (!m || !data) return; // قبل تشغيل SQL 35 — يبقى النص الثابت
+        if (!data.is_active) { m.style.display = 'none'; return; }
+        applyMockExamConfig(data.config || {});
+    } catch(e) {}
+}
+
+// ── Mock Exam Banner Config ──
+const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function formatExamDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.getDate() + ' ' + AR_MONTHS[d.getMonth()];
+}
+function applyMockExamConfig(cfg) {
+    const ttl = document.getElementById('mockTitle');
+    const meta = document.getElementById('mockMeta');
+    const cta = document.getElementById('mockCta');
+    if (!ttl || !meta || !cta) return;
+    if (cfg.title) ttl.textContent = cfg.title;
+    const dateStr = formatExamDate(cfg.exam_date);
+    const q = parseInt(cfg.questions, 10);
+    const dur = parseInt(cfg.duration_min, 10);
+    const parts = [];
+    if (dateStr) parts.push('يبدأ ' + dateStr);
+    if (q && dur) parts.push(q + ' سؤال في ' + dur + ' دقيقة');
+    else if (q) parts.push(q + ' سؤال');
+    if (parts.length) meta.textContent = parts.join(' — ');
+    if (cfg.cta_text && !cta.disabled) cta.textContent = cfg.cta_text;
 }
 
 // ── Streak ──

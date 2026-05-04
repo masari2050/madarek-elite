@@ -1552,7 +1552,7 @@ window.loadBanners = async function() {
         const { data } = await sb.from('banners').select('*').order('sort_order');
         const banners = data || [];
         const getB = type => banners.find(b => b.banner_type === type) || { banner_type:type, is_active:false, config:{}, target_pages:['dashboard'] };
-        const tk = getB('ticker'), img = getB('image'), mn = getB('main');
+        const tk = getB('ticker'), img = getB('image'), mn = getB('main'), mx = getB('mock_exam');
 
         // target_pages helper → اختيار واحد من 4
         const tgtValue = b => {
@@ -1651,6 +1651,45 @@ window.loadBanners = async function() {
                 ${tgtSelect('mn_target', tgtValue(mn))}
             </div>
             <button class="btn btn-pri" style="margin-top:12px" onclick='saveBanner("main")'>حفظ</button>
+        </div>
+
+        <!-- MOCK EXAM BANNER -->
+        <div class="banner-form">
+            <div class="banner-form-top"><div class="banner-form-title">بنر الاختبار المحاكي <span class="banner-status ${mx.is_active?'live':'off'}">${mx.is_active?'مفعّل':'معطّل'}</span></div>
+                <label class="toggle2 ${mx.is_active?'on':''}" onclick="toggleBanner('mock_exam',this)"></label>
+            </div>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label class="form-label">نوع الاختبار</label>
+                    <select class="form-select" id="mx_exam_type" onchange="applyMockExamPreset()">
+                        <option value="tahsili" ${mx.config.exam_type==='tahsili'?'selected':''}>تحصيلي</option>
+                        <option value="qudurat_computer" ${mx.config.exam_type==='qudurat_computer'?'selected':''}>قدرات (محوسب)</option>
+                        <option value="qudurat_paper" ${mx.config.exam_type==='qudurat_paper'?'selected':''}>قدرات (ورقي)</option>
+                        <option value="custom" ${mx.config.exam_type==='custom'?'selected':''}>مخصّص</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="form-label">تاريخ الاختبار</label>
+                    <input class="form-input" id="mx_exam_date" type="date" value="${esc(mx.config.exam_date||'')}">
+                </div>
+                <div class="form-field full">
+                    <label class="form-label">عنوان البنر</label>
+                    <input class="form-input" id="mx_title" value="${esc(mx.config.title||'')}" placeholder="محاكي التحصيلي — الفترة الأولى">
+                </div>
+                <div class="form-field">
+                    <label class="form-label">عدد الأسئلة</label>
+                    <input class="form-input" id="mx_questions" type="number" min="1" value="${esc(mx.config.questions||'')}">
+                </div>
+                <div class="form-field">
+                    <label class="form-label">المدة (دقيقة)</label>
+                    <input class="form-input" id="mx_duration" type="number" min="1" value="${esc(mx.config.duration_min||'')}">
+                </div>
+                <div class="form-field full">
+                    <label class="form-label">نص الزر</label>
+                    <input class="form-input" id="mx_cta_text" value="${esc(mx.config.cta_text||'سجّل الآن')}">
+                </div>
+            </div>
+            <button class="btn btn-pri" style="margin-top:12px" onclick='saveBanner("mock_exam")'>حفظ</button>
         </div>
 
         <!-- IMAGE BANNER -->
@@ -1762,6 +1801,21 @@ window.uploadBannerImage = async function(input) {
     }
 };
 
+window.applyMockExamPreset = function() {
+    const presets = {
+        tahsili:          { questions: 160, duration_min: 125, title: 'محاكي التحصيلي' },
+        qudurat_computer: { questions: 96,  duration_min: 100, title: 'محاكي القدرات (محوسب)' },
+        qudurat_paper:    { questions: 120, duration_min: 125, title: 'محاكي القدرات (ورقي)' }
+    };
+    const t = document.getElementById('mx_exam_type').value;
+    const p = presets[t];
+    if (!p) return;
+    document.getElementById('mx_questions').value = p.questions;
+    document.getElementById('mx_duration').value = p.duration_min;
+    const titleEl = document.getElementById('mx_title');
+    if (!titleEl.value.trim()) titleEl.value = p.title;
+};
+
 window.toggleLinkFields = function() {
     const type = document.getElementById('img_link_type').value;
     const intWrap = document.getElementById('img_internal_wrap');
@@ -1831,6 +1885,17 @@ window.saveBanner = async function(type) {
             link: link || null
         };
         targetSelectId = 'img_target';
+    } else if (type === 'mock_exam') {
+        const q = parseInt(document.getElementById('mx_questions').value, 10);
+        const dur = parseInt(document.getElementById('mx_duration').value, 10);
+        config = {
+            exam_type: document.getElementById('mx_exam_type').value,
+            title: document.getElementById('mx_title').value.trim(),
+            exam_date: document.getElementById('mx_exam_date').value || null,
+            questions: isNaN(q) ? null : q,
+            duration_min: isNaN(dur) ? null : dur,
+            cta_text: document.getElementById('mx_cta_text').value.trim() || 'سجّل الآن'
+        };
     }
 
     // Build target_pages array from dropdown selection
