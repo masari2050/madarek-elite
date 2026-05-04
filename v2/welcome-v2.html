@@ -321,12 +321,44 @@ html[data-fs="large"] .wrap{zoom:1.1}
   body[data-screen="s-trial"] .q-fb{margin:10px 24px;padding:18px}
   body[data-screen="s-trial"] .q-next{width:calc(100% - 48px);margin:10px 24px 24px;padding:15px}
 
-  /* Subscribe screen: card layout أنيق */
+  /* Subscribe screen: card layout أنيق + typography ديسك توب */
   body[data-screen="s-sub"] .wrap{
     height:auto;
     min-height:auto;
     max-height:none;
   }
+  body[data-screen="s-sub"] .sub-hero{padding:40px 24px 24px}
+  body[data-screen="s-sub"] .sub-logo{width:76px;height:76px;border-radius:22px;margin-bottom:16px;box-shadow:0 8px 28px rgba(109,93,246,.28)}
+  body[data-screen="s-sub"] .sub-hero > div:nth-child(2){font-size:24px !important;margin-bottom:6px !important}
+  body[data-screen="s-sub"] .sub-hero > div:nth-child(3){font-size:13px !important}
+  body[data-screen="s-sub"] .sub-result{margin:0 24px 18px;padding:22px}
+  body[data-screen="s-sub"] .sub-rh{font-size:15px;margin-bottom:14px;gap:8px}
+  body[data-screen="s-sub"] .sub-rh svg{width:18px;height:18px}
+  body[data-screen="s-sub"] .sub-ring{width:64px;height:64px}
+  body[data-screen="s-sub"] .sub-ring svg{width:64px;height:64px}
+  body[data-screen="s-sub"] .sub-rv{font-size:15px}
+  body[data-screen="s-sub"] .sub-score > div:last-child > div:nth-child(1){font-size:11px !important}
+  body[data-screen="s-sub"] .sub-score > div:last-child > div:nth-child(2){font-size:14px !important}
+  body[data-screen="s-sub"] .sub-score > div:last-child > div:nth-child(3){font-size:11px !important}
+  body[data-screen="s-sub"] #scoreFooter{font-size:12.5px !important;padding:12px 14px !important;line-height:1.6}
+  body[data-screen="s-sub"] .sub-result + div{padding:0 24px !important}
+  body[data-screen="s-sub"] .sub-result + div > div{font-size:15px !important;margin-bottom:12px !important}
+  body[data-screen="s-sub"] .sub-feats{padding:0 24px;gap:10px;margin-bottom:18px}
+  body[data-screen="s-sub"] .sub-feat{font-size:13.5px;gap:10px}
+  body[data-screen="s-sub"] .sub-feat svg{width:16px;height:16px}
+  body[data-screen="s-sub"] #plansArea{padding:0 18px}
+  body[data-screen="s-sub"] .plan-opt{margin:0 0 12px;padding:18px 20px;border-radius:18px}
+  body[data-screen="s-sub"] .plan-nm{font-size:16px;margin-bottom:4px}
+  body[data-screen="s-sub"] .plan-price{font-size:26px}
+  body[data-screen="s-sub"] .plan-price small{font-size:12px}
+  body[data-screen="s-sub"] .plan-pop{font-size:10px;padding:4px 12px}
+  body[data-screen="s-sub"] .coupon-box{margin:14px 24px 0;padding:14px 16px}
+  body[data-screen="s-sub"] .coupon-box input{padding:11px 14px;font-size:13px}
+  body[data-screen="s-sub"] .coupon-box button{padding:11px 20px;font-size:12.5px}
+  body[data-screen="s-sub"] .sub-cta{margin:18px 24px 0;padding:17px;font-size:16px;width:calc(100% - 48px);border-radius:16px;box-shadow:0 8px 24px rgba(109,93,246,.25)}
+  body[data-screen="s-sub"] .sub-cta:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(109,93,246,.32)}
+  body[data-screen="s-sub"] .sub-cta svg{width:18px;height:18px}
+  body[data-screen="s-sub"] .sub-skip{margin:14px auto;font-size:13px;padding:6px 14px}
 }
 
 /* Desktop X-large */
@@ -805,9 +837,12 @@ function showSubscribe() {
 
 // ── Subscribe Actions ──
 window.subscribe = function() {
-    // Redirect to pricing page with selected plan
-    const url = '../pricing.html?plan=' + selectedPlan + (referralCode ? '&ref=' + referralCode : '');
-    window.location.href = url;
+    // App-first: نحفظ الخطة + الإحالة + ننقل لـregister-v2 (لا pricing-v2 في /v2/)
+    try {
+        if (selectedPlan) localStorage.setItem('madarek_plan', selectedPlan);
+        if (referralCode) localStorage.setItem('madarek_referral', referralCode);
+    } catch(_) {}
+    window.location.href = 'register-v2.html?intent=subscribe';
 };
 
 window.applyCoupon = async function() {
