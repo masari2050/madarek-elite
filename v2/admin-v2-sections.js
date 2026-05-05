@@ -3298,15 +3298,15 @@ window.openMockExamForm = function(exam) {
           <input class="form-input" id="mxTitle" value="${esc(title)}" placeholder="مثال: محاكي التحصيلي — جلسة الإثنين">
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div class="form-field">
-            <label class="form-label">تاريخ البداية</label>
-            <input class="form-input" type="datetime-local" id="mxStart" value="${dt}">
-          </div>
-          <div class="form-field">
-            <label class="form-label">المدة (دقيقة)</label>
-            <input class="form-input" type="number" id="mxDur" value="${dur}" min="5" max="300">
-          </div>
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">تاريخ البداية (ميلادي)</label>
+          <div id="mxDtWidget"></div>
+          <input type="hidden" id="mxStart" value="${dt}">
+        </div>
+
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">المدة (دقيقة)</label>
+          <input class="form-input" type="number" id="mxDur" value="${dur}" min="5" max="300">
         </div>
 
         <div class="form-field full" style="margin-bottom:12px">
@@ -3337,11 +3337,164 @@ window.openMockExamForm = function(exam) {
     </div>`;
 
     document.body.insertAdjacentHTML('beforeend', html);
+    mxInitDtWidget(starts);
     mxRefreshAvail();
 };
 
 window.closeMockExamForm = function() {
     document.getElementById('mxFormOverlay')?.remove();
+};
+
+// ════ تقويم ميلادي مخصّص (modern, RTL-friendly) ════
+const MX_MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const MX_DOW_AR = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+let _mxPickerDate = null;     // Date object الحالي للعرض
+let _mxPickerView = null;     // الشهر المعروض حالياً (Date)
+
+function mxInitDtWidget(initial) {
+    const host = document.getElementById('mxDtWidget');
+    if (!host) return;
+    _mxPickerDate = initial instanceof Date ? new Date(initial.getTime()) : new Date(initial);
+    _mxPickerView = new Date(_mxPickerDate.getFullYear(), _mxPickerDate.getMonth(), 1);
+
+    host.innerHTML = `
+      <button type="button" class="mxdt-trigger" id="mxDtTrigger" onclick="mxToggleDtPopup()" style="width:100%;padding:12px 14px;border:1.5px solid var(--ln2,#ccc);border-radius:10px;background:var(--sf,#fff);text-align:right;font-family:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--pri,#6D5DF6);fill:none;stroke-width:2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="mxDtLabel" style="flex:1"></span>
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#9EA2B8;fill:none;stroke-width:2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="mxDtPopup" style="display:none;position:relative;margin-top:8px;background:var(--sf,#fff);border:1px solid var(--ln,rgba(0,0,0,.08));border-radius:14px;padding:14px;box-shadow:0 12px 32px rgba(0,0,0,.12);z-index:10"></div>
+    `;
+    mxUpdateDtLabel();
+}
+
+function mxUpdateDtLabel() {
+    const lbl = document.getElementById('mxDtLabel');
+    if (!lbl || !_mxPickerDate) return;
+    const d = _mxPickerDate;
+    const day = d.getDate();
+    const mon = MX_MONTHS_AR[d.getMonth()];
+    const year = d.getFullYear();
+    let h = d.getHours();
+    const m = String(d.getMinutes()).padStart(2,'0');
+    const ampm = h >= 12 ? 'م' : 'ص';
+    h = h % 12 || 12;
+    lbl.textContent = `${day} ${mon} ${year} — ${h}:${m} ${ampm}`;
+    // ضع القيمة في الحقل المخفي بصيغة ISO local (لـsave)
+    const hidden = document.getElementById('mxStart');
+    if (hidden) {
+        const tz = d.getTimezoneOffset();
+        const local = new Date(d.getTime() - tz*60000).toISOString().slice(0,16);
+        hidden.value = local;
+    }
+}
+
+window.mxToggleDtPopup = function() {
+    const p = document.getElementById('mxDtPopup');
+    if (!p) return;
+    if (p.style.display === 'none') {
+        p.style.display = 'block';
+        mxRenderCalendar();
+    } else {
+        p.style.display = 'none';
+    }
+};
+
+function mxRenderCalendar() {
+    const p = document.getElementById('mxDtPopup');
+    if (!p) return;
+    const view = _mxPickerView;
+    const year = view.getFullYear();
+    const month = view.getMonth();
+    const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    const sel = _mxPickerDate;
+
+    // بناء صفوف الأيام (ابدأ من الأحد، 7 أعمدة، 6 صفوف)
+    const cells = [];
+    for (let i = 0; i < firstDay; i++) cells.push({ empty: true });
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dt = new Date(year, month, d);
+        const isToday = dt.toDateString() === today.toDateString();
+        const isSel = sel && dt.toDateString() === sel.toDateString();
+        const isPast = dt < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        cells.push({ d, isToday, isSel, isPast });
+    }
+    while (cells.length % 7 !== 0) cells.push({ empty: true });
+
+    const h = sel ? sel.getHours() : 9;
+    const m = sel ? sel.getMinutes() : 0;
+    const h12 = h % 12 || 12;
+    const ampm = h >= 12 ? 'pm' : 'am';
+
+    p.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <button type="button" onclick="mxNavMonth(-1)" style="width:32px;height:32px;border-radius:8px;background:var(--ps,#f0edf9);color:var(--pri,#6D5DF6);border:none;cursor:pointer;display:grid;place-items:center" aria-label="الشهر السابق">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div style="font-weight:800;font-size:14.5px">${MX_MONTHS_AR[month]} ${year}</div>
+        <button type="button" onclick="mxNavMonth(1)" style="width:32px;height:32px;border-radius:8px;background:var(--ps,#f0edf9);color:var(--pri,#6D5DF6);border:none;cursor:pointer;display:grid;place-items:center" aria-label="الشهر التالي">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
+        ${MX_DOW_AR.map(d => `<div style="text-align:center;font-size:10.5px;font-weight:700;color:#6B7094;padding:4px 0">${d}</div>`).join('')}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+        ${cells.map(c => {
+            if (c.empty) return '<div></div>';
+            const bg = c.isSel ? 'background:#6D5DF6;color:#fff;border-color:#6D5DF6' :
+                       c.isToday ? 'background:rgba(245,158,11,.15);color:#92400E;border-color:rgba(245,158,11,.4)' :
+                       c.isPast ? 'color:#9EA2B8' : '';
+            return `<button type="button" onclick="mxPickDay(${c.d})" style="aspect-ratio:1;border-radius:8px;background:transparent;border:1px solid var(--ln,rgba(0,0,0,.08));font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;${bg}">${c.d}</button>`;
+        }).join('')}
+      </div>
+
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--ln,rgba(0,0,0,.08))">
+        <div style="font-size:11.5px;font-weight:700;color:#3D4058;margin-bottom:8px">⏰ الوقت</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="mxHour" onchange="mxUpdateTime()" style="flex:1;padding:8px 10px;border:1.5px solid var(--ln2,#ccc);border-radius:8px;font-family:inherit;font-size:13px;font-weight:700">
+            ${[1,2,3,4,5,6,7,8,9,10,11,12].map(hh => `<option value="${hh}" ${hh===h12?'selected':''}>${hh}</option>`).join('')}
+          </select>
+          <span style="font-weight:800">:</span>
+          <select id="mxMin" onchange="mxUpdateTime()" style="flex:1;padding:8px 10px;border:1.5px solid var(--ln2,#ccc);border-radius:8px;font-family:inherit;font-size:13px;font-weight:700">
+            ${['00','05','10','15','20','25','30','35','40','45','50','55'].map(mm => `<option value="${mm}" ${parseInt(mm)===m?'selected':''}>${mm}</option>`).join('')}
+          </select>
+          <select id="mxAmPm" onchange="mxUpdateTime()" style="flex:1;padding:8px 10px;border:1.5px solid var(--ln2,#ccc);border-radius:8px;font-family:inherit;font-size:13px;font-weight:700">
+            <option value="am" ${ampm==='am'?'selected':''}>صباحاً</option>
+            <option value="pm" ${ampm==='pm'?'selected':''}>مساءً</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button type="button" onclick="mxToggleDtPopup()" style="flex:1;padding:10px;border-radius:8px;background:var(--s2,#f5f3ef);color:var(--ink,#1A1D2E);border:none;font-family:inherit;font-weight:700;cursor:pointer">تأكيد</button>
+      </div>
+    `;
+}
+
+window.mxNavMonth = function(delta) {
+    _mxPickerView = new Date(_mxPickerView.getFullYear(), _mxPickerView.getMonth() + delta, 1);
+    mxRenderCalendar();
+};
+
+window.mxPickDay = function(d) {
+    const v = _mxPickerView;
+    _mxPickerDate.setFullYear(v.getFullYear(), v.getMonth(), d);
+    mxUpdateDtLabel();
+    mxRenderCalendar();
+};
+
+window.mxUpdateTime = function() {
+    const h12 = parseInt(document.getElementById('mxHour').value) || 12;
+    const mm = parseInt(document.getElementById('mxMin').value) || 0;
+    const ampm = document.getElementById('mxAmPm').value;
+    let h24 = h12 % 12;
+    if (ampm === 'pm') h24 += 12;
+    _mxPickerDate.setHours(h24, mm, 0, 0);
+    mxUpdateDtLabel();
 };
 
 window.mxTypeChanged = function() {
