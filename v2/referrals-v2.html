@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — الإحالة والأرباح</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;
+--gold:#F59E0B;--gold-d:#D97706;--gold-dd:#92400E;--gold-ddd:#78350F;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark,[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+input{font-family:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:90px;background:var(--bg)}
+
+/* ── TOPBAR ── */
+.topbar{padding:14px 16px 10px;display:flex;align-items:center;gap:8px;background:var(--bg);position:sticky;top:0;z-index:50}
+.topbar .back{width:36px;height:36px;border-radius:50%;background:var(--sf);border:1px solid var(--ln);display:grid;place-items:center;cursor:pointer}
+.topbar .back svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:2.4;transform:scaleX(-1)}
+.topbar .ttl{flex:1;text-align:center;font-size:16px;font-weight:700}
+.topbar .spacer{width:36px;flex-shrink:0}
+
+/* ── HOOK CARD (ذهبي ثلاثي الطبقات) ── */
+.hook{margin:6px 16px 14px;padding:18px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#FEF3C7 0%,#FDE68A 50%,#FEF3C7 100%);
+  border:1px solid rgba(245,158,11,.35);
+  box-shadow:0 6px 18px rgba(217,119,6,.18);
+  position:relative;overflow:hidden;
+}
+.hook-ring{position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.5);top:-70px;left:-50px;pointer-events:none}
+.hook-spark{position:absolute;top:14px;right:16px;opacity:.55;pointer-events:none}
+.hook-spark svg{width:14px;height:14px;fill:var(--gold-d)}
+.hook-head{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.hook-ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--gold-d));box-shadow:0 3px 8px rgba(217,119,6,.35);flex-shrink:0}
+.hook-ico svg{width:22px;height:22px;fill:#fff;stroke:none}
+.hook-title{font-size:19px;font-weight:700;color:var(--gold-ddd);line-height:1.4;flex:1}
+.hook-action{margin-top:10px;font-size:14px;font-weight:600;color:var(--gold-dd);line-height:1.6}
+.hook-accent{color:var(--gold-d);font-weight:700}
+.hook-divider{margin:12px 0 10px;height:1px;background:rgba(180,83,9,.22)}
+.hook-proof{font-size:12.5px;font-weight:500;color:var(--gold-dd);line-height:1.65}
+.hook-num{color:var(--gold-ddd);font-weight:700}
+
+/* ── HERO (بنفسجي — كاش وإحصائيات) ── */
+.hero{margin:0 16px 14px;padding:22px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 50%,#8B7FFF 100%);
+  color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 10px 28px rgba(109,93,246,.28);
+}
+.hero-ringA{position:absolute;top:-70px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none}
+.hero-ringB{position:absolute;bottom:-90px;left:-70px;width:220px;height:220px;border-radius:50%;background:rgba(255,215,0,.07);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:14px;
+  background:rgba(255,255,255,.22);border:1px solid rgba(255,215,0,.4);
+  font-size:11.5px;font-weight:700;position:relative;z-index:1;
+}
+.hero-badge svg{width:13px;height:13px;fill:#FFD700;stroke:none}
+.hero-cashlbl{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:13px;color:rgba(255,255,255,.92);font-weight:600;position:relative;z-index:1}
+.hero-cashlbl svg{width:16px;height:16px;fill:#FFD700;stroke:none}
+.hero-cash{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.02em;margin-top:10px;position:relative;z-index:1;display:flex;align-items:flex-end;gap:8px}
+.hero-cash .unit{font-size:18px;font-weight:700;color:rgba(255,255,255,.8);padding-bottom:6px}
+.hero-stats{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);display:grid;grid-template-columns:1fr auto 1fr;gap:10px;position:relative;z-index:1}
+.hero-stat{text-align:center}
+.hero-sv{font-size:22px;font-weight:800;color:#fff}
+.hero-sl{font-size:11px;color:rgba(255,255,255,.78);margin-top:3px;font-weight:600}
+.hero-divider{width:1px;background:rgba(255,255,255,.18)}
+
+/* ── 2 STAT CARDS (معلّق + متاح للصرف) ── */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 16px 12px}
+.stat-card{padding:14px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);position:relative}
+.stat-card .stat-ic{position:absolute;top:12px;left:12px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center}
+.stat-card .stat-ic svg{width:13px;height:13px;fill:none;stroke-width:2.4}
+.stat-card.pending .stat-ic{background:rgba(245,158,11,.14)}
+.stat-card.pending .stat-ic svg{stroke:var(--gold)}
+.stat-card.available .stat-ic{background:var(--ss)}
+.stat-card.available .stat-ic svg{stroke:var(--suc)}
+.stat-card .stat-lbl{font-size:11.5px;color:var(--i3);font-weight:600;margin-bottom:8px;text-align:right}
+.stat-card .stat-val{font-size:18px;font-weight:800;display:flex;align-items:baseline;gap:4px}
+.stat-card.pending .stat-val{color:var(--gold-d)}
+.stat-card.available .stat-val{color:var(--suc)}
+.stat-card .stat-val small{font-size:11px;font-weight:700;color:var(--i3)}
+
+/* ── PROGRESS TO 100 ── */
+.prog-card{margin:0 16px 18px;padding:14px 16px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r)}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prog-t{font-size:13px;font-weight:700}
+.prog-num{font-size:12px;color:var(--i3);font-weight:600}
+.prog-bar{height:8px;border-radius:4px;background:var(--s2);overflow:hidden}
+.prog-bf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--pri),var(--gold));width:0;transition:width 1s var(--ease)}
+
+/* ── CODE SECTION ── */
+.sec-h{padding:0 20px 8px;font-size:12px;font-weight:700;color:var(--i3);letter-spacing:.02em;text-align:right}
+.code-card{margin:0 16px 12px;padding:16px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2)}
+.code-box{background:var(--ps);border:1px solid var(--pm);border-radius:var(--r);padding:14px}
+.code-share-cap{font-size:11.5px;color:var(--i3);font-weight:600;text-align:right;margin-bottom:8px}
+.code-row{display:flex;gap:8px;align-items:center}
+.code-val{font-size:24px;font-weight:800;color:var(--pri);letter-spacing:2px;font-family:'IBM Plex Sans Arabic',monospace;direction:ltr;flex:1;text-align:right;line-height:1.2}
+.code-copy{width:38px;height:38px;border-radius:9px;background:var(--sf);border:1px solid var(--ln);display:grid;place-items:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.code-copy svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.code-copy:active{transform:scale(.94)}
+
+.share-btn{margin-top:12px;width:100%;padding:13px;border-radius:var(--r);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:none;transition:transform .15s}
+.share-btn:active{transform:scale(.98)}
+.share-btn.wa{background:#25D366;color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.32)}
+.share-btn.wa svg{width:18px;height:18px;fill:#fff}
+.share-btn.alt{margin-top:8px;background:var(--ps);color:var(--pri);border:1px solid var(--pm)}
+.share-btn.alt svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+
+/* ── PAYOUT BUTTON (when available >= 100) ── */
+.payout-cta{margin:0 16px 16px;padding:16px;background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;border-radius:var(--r2);display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 6px 18px rgba(34,197,94,.25);transition:transform .15s}
+.payout-cta:active{transform:scale(.98)}
+.payout-cta-ic{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex-shrink:0}
+.payout-cta-ic svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.2}
+.payout-cta-body{flex:1;min-width:0;text-align:right}
+.payout-cta-t{font-size:14px;font-weight:800}
+.payout-cta-s{font-size:11.5px;opacity:.92;margin-top:2px}
+.payout-cta-arr{font-size:18px;font-weight:800}
+
+/* ── HOW (3 خطوات) ── */
+.how-card{margin:0 16px 12px;padding:16px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2)}
+.how-step{display:flex;align-items:flex-start;gap:12px}
+.how-num{width:30px;height:30px;border-radius:50%;background:var(--ps);border:1.5px solid rgba(109,93,246,.3);
+  display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--pri);flex-shrink:0}
+.how-body{flex:1;min-width:0;padding-top:2px}
+.how-t{font-size:13.5px;font-weight:700;margin-bottom:3px;line-height:1.4}
+.how-d{font-size:11.5px;color:var(--i3);line-height:1.7}
+.how-line{height:1px;background:var(--ln);margin:13px 0 13px 42px}
+
+/* ── TERMS (نص ملاحظات صغير) ── */
+.terms-line{margin:0 20px 16px;display:flex;align-items:flex-start;gap:6px;font-size:11.5px;color:var(--i3);line-height:1.7}
+.terms-line svg{width:14px;height:14px;fill:none;stroke:var(--i4);stroke-width:2;flex-shrink:0;margin-top:2px}
+.terms-line a{color:var(--pri);font-weight:700}
+
+/* ── EMPTY STATE ── */
+.empty{margin:0 16px 16px;padding:32px 16px;text-align:center;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2)}
+.empty-ic{width:54px;height:54px;border-radius:50%;background:var(--s2);display:grid;place-items:center;margin:0 auto 10px}
+.empty-ic svg{width:24px;height:24px;stroke:var(--i3);fill:none;stroke-width:1.7}
+.empty-t{font-size:14px;font-weight:700;margin-bottom:4px}
+.empty-s{font-size:12px;color:var(--i3);line-height:1.6}
+
+/* ── RECENT REFERRALS LIST ── */
+.recent-list{margin:0 16px 16px;border-radius:var(--r2);overflow:hidden;background:var(--sf);border:1px solid var(--ln)}
+.recent-item{padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--ln)}
+.recent-item:last-child{border-bottom:none}
+.recent-av{width:34px;height:34px;border-radius:50%;background:var(--ps);color:var(--pri);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recent-body{flex:1;min-width:0;text-align:right}
+.recent-nm{font-size:13px;font-weight:600}
+.recent-dt{font-size:10.5px;color:var(--i4);margin-top:2px}
+.recent-st{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;flex-shrink:0}
+.recent-st.confirmed{background:var(--ss);color:var(--suc)}
+.recent-st.pending{background:rgba(245,158,11,.14);color:var(--gold-d)}
+.recent-st.paid{background:var(--ps);color:var(--pri)}
+
+/* ── TIP (ذهبي ناعم) ── */
+.tip-card{margin:0 16px 22px;padding:14px;background:rgba(245,158,11,.08);
+  border:1px solid rgba(245,158,11,.25);border-radius:var(--r);
+  display:flex;align-items:flex-start;gap:12px;
+}
+.tip-ico{width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,.18);display:grid;place-items:center;flex-shrink:0;margin-top:2px}
+.tip-ico svg{width:16px;height:16px;fill:var(--gold);stroke:none}
+.tip-body{flex:1;min-width:0;text-align:right}
+.tip-t{font-size:12px;font-weight:700;color:var(--gold-d);margin-bottom:3px}
+.tip-d{font-size:11.5px;color:var(--i2);line-height:1.7}
+
+/* ── PAYOUT MODAL ── */
+.modal-back{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-back.on{display:flex}
+.modal{background:var(--sf);border-radius:18px;width:100%;max-width:380px;padding:20px;border:1px solid var(--ln);max-height:90vh;overflow:auto}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:6px;text-align:right}
+.modal .ms{font-size:12.5px;color:var(--i3);line-height:1.7;margin-bottom:14px;text-align:right}
+.modal label{display:block;font-size:12px;font-weight:600;color:var(--i2);margin-bottom:6px;text-align:right}
+.modal input{width:100%;padding:12px 14px;border:1px solid var(--ln2);border-radius:10px;font-size:14px;background:var(--sf);color:var(--ink);outline:none;direction:ltr;text-align:left;letter-spacing:.5px}
+.modal input:focus{border-color:var(--pri)}
+.modal-amount{padding:14px;background:var(--ps);border:1px solid var(--pm);border-radius:12px;margin-bottom:14px;text-align:center}
+.modal-amount .v{font-size:28px;font-weight:800;color:var(--pri)}
+.modal-amount .l{font-size:11px;color:var(--i3);margin-top:2px}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.modal-btn{flex:1;padding:12px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none}
+.modal-btn.cancel{background:var(--s2);color:var(--i2)}
+.modal-btn.confirm{background:linear-gradient(135deg,var(--suc),#16A34A);color:#fff}
+.modal-btn:disabled{opacity:.55;cursor:not-allowed}
+
+/* ── BOTTOM NAV (نفس profile) ── */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+
+/* DESKTOP (phone-frame 520px) */
+@media (min-width:768px){
+  body{
+    background:
+      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(245,158,11,.14),transparent 55%),
+      var(--bg);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;
+  }
+  .dark body,[data-t="d"] body{
+    background:
+      radial-gradient(circle at top right,rgba(155,140,255,.18),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(245,158,11,.12),transparent 55%),
+      var(--bg);
+  }
+  .wrap{
+    max-width:520px;
+    height:min(900px,calc(100vh - 48px));
+    min-height:680px;
+    overflow-y:auto;
+    border-radius:30px;
+    box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
+    border:1px solid var(--ln);
+  }
+  .wrap::-webkit-scrollbar{width:5px}
+  .wrap::-webkit-scrollbar-track{background:transparent}
+  .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
+  .nav{position:absolute;border-radius:0 0 30px 30px;border-top-left-radius:0;border-top-right-radius:0}
+  .topbar{position:relative}
+}
+@media (min-width:1024px){
+  body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.28),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(245,158,11,.22),transparent 60%),
+      var(--bg);
+  }
+  .wrap{box-shadow:0 30px 90px rgba(20,17,52,.18),0 12px 32px rgba(109,93,246,.1)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button class="back" onclick="history.length>1?history.back():location.href='profile-v2.html'" aria-label="رجوع">
+    <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+  <div class="ttl">الإحالة والأرباح</div>
+  <div class="spacer"></div>
+</div>
+
+<!-- HOOK ذهبي -->
+<div class="hook">
+  <div class="hook-ring"></div>
+  <div class="hook-spark"><svg viewBox="0 0 24 24"><path d="M12 1l2.5 6.5L21 10l-6.5 2.5L12 19l-2.5-6.5L3 10l6.5-2.5L12 1z"/></svg></div>
+  <div class="hook-head">
+    <div class="hook-ico">
+      <svg viewBox="0 0 24 24"><path d="M3 9h18v2H3zM4 11h16v9H4zm6 1v3h4v-3z"/><path d="M5 7c0-1.5 1-3 3-3h8c2 0 3 1.5 3 3v2H5V7z" opacity=".85"/></svg>
+    </div>
+    <div class="hook-title">خلّك تاجر نخبة</div>
+  </div>
+  <div class="hook-action">اكسب <span class="hook-accent">كاش</span> من كل اشتراك عن طريقك</div>
+  <div class="hook-divider"></div>
+  <div class="hook-proof">صديقك يوفّر 10٪  ·  وأنت تكسب <span class="hook-num">10 ر.س نقداً</span> في محفظتك</div>
+</div>
+
+<!-- HERO بنفسجي -->
+<div class="hero">
+  <div class="hero-ringA"></div>
+  <div class="hero-ringB"></div>
+  <div class="hero-badge">
+    <svg viewBox="0 0 24 24"><path d="M5 16l-3-9 5.5 4L12 4l4.5 7L22 7l-3 9H5z"/></svg>
+    سفير مدارك النخبة
+  </div>
+  <div class="hero-cashlbl">
+    <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3" fill="#5B4DD4"/></svg>
+    كاش ربحته من الإحالات
+  </div>
+  <div class="hero-cash"><span id="hCash">0</span><span class="unit">ر.س</span></div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-sv" id="hSubs">0</div>
+      <div class="hero-sl">صديق اشترك عبرك</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-sv" id="hTotal">0</div>
+      <div class="hero-sl">إجمالي الإحالات</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2 STAT CARDS -->
+<div class="stat-row">
+  <div class="stat-card pending">
+    <div class="stat-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <div class="stat-lbl">معلّق</div>
+    <div class="stat-val"><span id="sPending">0</span><small>ر.س</small></div>
+  </div>
+  <div class="stat-card available">
+    <div class="stat-ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="stat-lbl">متاح للصرف</div>
+    <div class="stat-val"><span id="sAvailable">0</span><small>ر.س</small></div>
+  </div>
+</div>
+
+<!-- PAYOUT CTA (يظهر فقط عند توفّر 100+) -->
+<div class="payout-cta" id="payoutCta" style="display:none" onclick="openPayoutModal()">
+  <div class="payout-cta-ic"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><circle cx="17" cy="14" r="2"/></svg></div>
+  <div class="payout-cta-body">
+    <div class="payout-cta-t">رصيدك جاهز للصرف</div>
+    <div class="payout-cta-s">اطلب التحويل على آيبانك الآن</div>
+  </div>
+  <div class="payout-cta-arr">←</div>
+</div>
+
+<!-- PROGRESS TO 100 -->
+<div class="prog-card" id="progCard">
+  <div class="prog-top">
+    <div class="prog-t" id="progTitle">باقي 100 ر.س للصرف</div>
+    <div class="prog-num" id="progNum">0 / 100 ر.س</div>
+  </div>
+  <div class="prog-bar"><div class="prog-bf" id="progBf"></div></div>
+</div>
+
+<!-- CODE -->
+<div class="sec-h">كودك الخاص</div>
+<div class="code-card">
+  <div class="code-box">
+    <div class="code-share-cap">شارك هذا الكود مع أصدقائك</div>
+    <div class="code-row">
+      <button class="code-copy" onclick="copyCode()" aria-label="نسخ">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <div class="code-val" id="codeVal">—</div>
+    </div>
+  </div>
+  <button class="share-btn wa" onclick="shareWhatsApp()">
+    <svg viewBox="0 0 24 24"><path d="M17.6 6.3A8 8 0 0 0 5.7 17.5L4.5 22l4.6-1.2a8 8 0 0 0 11-10.7c-.4-1.5-1.3-2.8-2.5-3.8zm-5.6 12.4c-1.4 0-2.7-.4-3.9-1.1l-.3-.2-2.7.7.7-2.7-.2-.3a6.6 6.6 0 1 1 6.4 3.6zm3.6-5c-.2-.1-1.2-.6-1.4-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.6-1-.6-.5-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3 0-.1 0-.2 0-.3 0-.1-.4-1-.5-1.4-.1-.4-.3-.3-.4-.3h-.4a.7.7 0 0 0-.5.2c-.2.2-.7.7-.7 1.7s.7 2 .8 2.1c.1.2 1.4 2.2 3.5 3 .5.2.9.4 1.2.5.5.2.9.1 1.3.1.4-.1 1.2-.5 1.4-1 .2-.5.2-.9.1-1z"/></svg>
+    شارك واتساب — ابدأ اربح الآن
+  </button>
+  <button class="share-btn alt" onclick="shareNative()">
+    <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    مشاركة عبر التطبيقات الأخرى
+  </button>
+</div>
+
+<!-- HOW -->
+<div class="sec-h">كيف تربح كاش؟</div>
+<div class="how-card">
+  <div class="how-step">
+    <div class="how-num">1</div>
+    <div class="how-body">
+      <div class="how-t">شارك كودك مع أصدقائك</div>
+      <div class="how-d">كودك يعطيهم خصم 10٪ على أول اشتراك — كلاكما رابح</div>
+    </div>
+  </div>
+  <div class="how-line"></div>
+  <div class="how-step">
+    <div class="how-num">2</div>
+    <div class="how-body">
+      <div class="how-t">لما صديقك يشترك ويدفع</div>
+      <div class="how-d">تُضاف 10 ر.س إلى رصيدك، وتُعتمَد بعد 7 أيام من اشتراك صديقك</div>
+    </div>
+  </div>
+  <div class="how-line"></div>
+  <div class="how-step">
+    <div class="how-num">3</div>
+    <div class="how-body">
+      <div class="how-t">اسحب فلوسك عند 100 ر.س</div>
+      <div class="how-d">نحوّل لك المبلغ كاملاً خلال 1-3 أيام عمل على آيبانك</div>
+    </div>
+  </div>
+</div>
+
+<!-- TERMS LINE -->
+<div class="terms-line">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  <div>الحد الأدنى للصرف 100 ر.س  ·  يُحتسب المبلغ بعد 7 أيام من اشتراك صديقك  ·  الرصيد صالح لمدة 6 أشهر  ·  مراجعة <a href="terms-v2.html">شروط الاستخدام</a></div>
+</div>
+
+<!-- RECENT (إحالات حديثة) أو EMPTY -->
+<div id="recentArea">
+  <div class="empty">
+    <div class="empty-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <div class="empty-t">لا توجد إحالات بعد</div>
+    <div class="empty-s">شارك كودك مع صديق وابدأ ربحك من أول اشتراك</div>
+  </div>
+</div>
+
+<!-- TIP -->
+<div class="tip-card">
+  <div class="tip-ico"><svg viewBox="0 0 24 24"><path d="M9 21h6v-1H9v1zm3-19a7 7 0 00-4 12.74V18h8v-3.26A7 7 0 0012 2z"/></svg></div>
+  <div class="tip-body">
+    <div class="tip-t">فكرة ذكية</div>
+    <div class="tip-d">شارك في قروبات الواتساب للطلاب قبل اختبارات قياس — الإقبال يكون في أعلى مستوياته.</div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- BOTTOM NAV -->
+<nav class="nav">
+  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>التقارير</span></a>
+  <a class="ni on" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H3z"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>التدريب</span></a>
+</nav>
+
+<!-- PAYOUT MODAL -->
+<div class="modal-back" id="payoutModal">
+  <div class="modal">
+    <h3>طلب صرف الكاش</h3>
+    <div class="ms">المبلغ يُحوَّل على آيبانك السعودي خلال 1-3 أيام عمل. تأكّد من صحّة الآيبان قبل الإرسال.</div>
+    <div class="modal-amount">
+      <div class="v"><span id="modalAmt">0</span> <span style="font-size:14px">ر.س</span></div>
+      <div class="l">المبلغ المتاح للصرف</div>
+    </div>
+    <label for="ibanInput">رقم الآيبان (يبدأ بـ SA)</label>
+    <input id="ibanInput" type="text" placeholder="SAxx xxxx xxxx xxxx xxxx xxxx" maxlength="34" autocomplete="off">
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closePayoutModal()">إلغاء</button>
+      <button class="modal-btn confirm" id="payoutSubmit" onclick="submitPayout()">تأكيد الطلب</button>
+    </div>
+  </div>
+</div>
+
+<!-- WhatsApp float بلا حاجة هنا (الصفحة فيها CTA واتساب صريح) -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script>
+(async function(){
+  const isPreview = new URLSearchParams(location.search).has('preview');
+  const M = window.MadarekHelpers;
+  let sb = null;
+  let userId = null;
+  let dashState = null;
+
+  // ── Preview mock ──
+  if (isPreview) {
+    document.getElementById('codeVal').textContent = 'MADAR-AB789';
+    renderDashboard({
+      referral_code: 'MADAR-AB789',
+      stc_pay_number: null,
+      pending_amount: 30,
+      available_amount: 0,
+      paid_out_amount: 0,
+      total_earned: 30,
+      total_referrals: 4,
+      confirmed_count: 0,
+      pending_count: 3,
+      recent: [
+        {id:'1',name:'محمد العتيبي',status:'pending',amount:10,created_at:'2026-04-22'},
+        {id:'2',name:'سعد الشهراني',status:'pending',amount:10,created_at:'2026-04-25'},
+        {id:'3',name:'فهد الزهراني',status:'awaiting_payment',amount:10,created_at:'2026-05-02'}
+      ],
+      min_payout: 100
+    });
+    return;
+  }
+
+  try {
+    sb = M.getSb();
+    const user = await M.getUser();
+    if (!user) { location.href = 'login-v2.html'; return; }
+    userId = user.id;
+    await loadDashboard();
+  } catch(e) {
+    console.error('referrals load error', e);
+  }
+
+  async function loadDashboard(){
+    try {
+      const { data, error } = await sb.rpc('get_referral_dashboard', { p_user_id: userId });
+      if (error) throw error;
+      renderDashboard(data || {});
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  function renderDashboard(d){
+    dashState = d;
+    const fmt = (n) => Number(n||0).toLocaleString('en-US', {maximumFractionDigits:2});
+    document.getElementById('codeVal').textContent = d.referral_code || '—';
+    document.getElementById('hCash').textContent = fmt(d.total_earned);
+    document.getElementById('hSubs').textContent = d.confirmed_count || 0;
+    document.getElementById('hTotal').textContent = d.total_referrals || 0;
+    document.getElementById('sPending').textContent = fmt(d.pending_amount);
+    document.getElementById('sAvailable').textContent = fmt(d.available_amount);
+
+    const min = d.min_payout || 100;
+    const av = Math.min(Number(d.available_amount||0), min);
+    const pct = Math.round((av / min) * 100);
+    document.getElementById('progNum').textContent = av + ' / ' + min + ' ر.س';
+    setTimeout(() => { document.getElementById('progBf').style.width = pct + '%'; }, 200);
+    if (av >= min) {
+      document.getElementById('progTitle').textContent = 'وصلت للحد الأدنى — اطلب الصرف';
+      document.getElementById('payoutCta').style.display = 'flex';
+    } else {
+      const remaining = min - av;
+      document.getElementById('progTitle').textContent = 'باقي ' + remaining + ' ر.س للصرف';
+      document.getElementById('payoutCta').style.display = 'none';
+    }
+
+    renderRecent(d.recent || []);
+  }
+
+  function renderRecent(list){
+    const area = document.getElementById('recentArea');
+    if (!list || list.length === 0) {
+      area.innerHTML = '<div class="empty"><div class="empty-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="empty-t">لا توجد إحالات بعد</div><div class="empty-s">شارك كودك مع صديق وابدأ ربحك من أول اشتراك</div></div>';
+      return;
+    }
+    const items = list.map(r => {
+      const initial = (r.name || 'م').trim().charAt(0);
+      let stCls = 'pending', stTxt = 'معلّق';
+      if (r.status === 'confirmed') { stCls = 'confirmed'; stTxt = 'مُعتمد'; }
+      else if (r.status === 'paid') { stCls = 'paid'; stTxt = 'مدفوع'; }
+      else if (r.status === 'awaiting_payment') { stCls = 'pending'; stTxt = 'بانتظار الدفع'; }
+      const dt = r.created_at ? new Date(r.created_at).toLocaleDateString('ar-SA',{day:'numeric',month:'short'}) : '';
+      return '<div class="recent-item"><div class="recent-av">'+esc(initial)+'</div><div class="recent-body"><div class="recent-nm">'+esc(r.name||'مستخدم')+'</div><div class="recent-dt">'+esc(dt)+' · '+(r.amount||10)+' ر.س</div></div><div class="recent-st '+stCls+'">'+stTxt+'</div></div>';
+    }).join('');
+    area.innerHTML = '<div class="sec-h">إحالاتك الأخيرة</div><div class="recent-list">'+items+'</div>';
+  }
+
+  function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+  // ── Actions ──
+  window.copyCode = async function(){
+    const code = document.getElementById('codeVal').textContent.trim();
+    if (!code || code === '—') return;
+    try { await navigator.clipboard.writeText(code); M.showToast('تم نسخ الكود', 'success'); }
+    catch(e) { M.showToast(code, 'info'); }
+  };
+
+  function buildShareText(){
+    const code = document.getElementById('codeVal').textContent.trim();
+    const url = location.origin + '/v2/welcome-v2.html?ref=' + encodeURIComponent(code);
+    return 'جرّب مدارك النخبة — تدريب احترافي لاختبار قياس. استخدم كودي وتحصل خصم 10٪ على أول اشتراك:\n' + code + '\n' + url;
+  }
+
+  window.shareWhatsApp = function(){
+    const text = buildShareText();
+    location.href = 'https://wa.me/?text=' + encodeURIComponent(text);
+  };
+
+  window.shareNative = async function(){
+    const text = buildShareText();
+    const code = document.getElementById('codeVal').textContent.trim();
+    const url = location.origin + '/v2/welcome-v2.html?ref=' + encodeURIComponent(code);
+    if (navigator.share) {
+      try { await navigator.share({ title: 'مدارك النخبة', text, url }); } catch(e){}
+    } else {
+      try { await navigator.clipboard.writeText(text); M.showToast('تم نسخ الرابط', 'success'); } catch(e){}
+    }
+  };
+
+  // ── Payout modal ──
+  window.openPayoutModal = function(){
+    if (!dashState) return;
+    document.getElementById('modalAmt').textContent = Number(dashState.available_amount||0).toLocaleString('en-US',{maximumFractionDigits:2});
+    const iban = document.getElementById('ibanInput');
+    iban.value = dashState.stc_pay_number || '';
+    iban.disabled = false;
+    document.getElementById('payoutSubmit').disabled = false;
+    document.getElementById('payoutModal').classList.add('on');
+    setTimeout(() => iban.focus(), 100);
+  };
+  window.closePayoutModal = function(){
+    document.getElementById('payoutModal').classList.remove('on');
+  };
+  document.getElementById('ibanInput').addEventListener('input', function(e){
+    e.target.value = e.target.value.toUpperCase();
+  });
+  window.submitPayout = async function(){
+    const ibanRaw = document.getElementById('ibanInput').value.trim().replace(/\s+/g,'');
+    if (!/^SA\d{22}$/.test(ibanRaw)) {
+      M.showToast('صيغة الآيبان غير صحيحة (SA + 22 رقماً)', 'error');
+      return;
+    }
+    const btn = document.getElementById('payoutSubmit');
+    btn.disabled = true; btn.textContent = 'جارٍ الإرسال...';
+    try {
+      const { data, error } = await sb.rpc('request_referral_payout', {
+        p_user_id: userId,
+        p_stc_pay_number: ibanRaw
+      });
+      if (error) throw error;
+      if (data && data.success) {
+        M.showToast('تم استلام طلبك. التحويل خلال 1-3 أيام عمل', 'success');
+        closePayoutModal();
+        await loadDashboard();
+      } else {
+        M.showToast((data && data.error) || 'تعذّر إرسال الطلب', 'error');
+      }
+    } catch(e) {
+      console.error(e);
+      M.showToast('تعذّر إرسال الطلب — حاول لاحقاً', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'تأكيد الطلب';
+    }
+  };
+
+  // close modal on backdrop click
+  document.getElementById('payoutModal').addEventListener('click', (e) => {
+    if (e.target.id === 'payoutModal') closePayoutModal();
+  });
+})();
+</script>
+</body>
+</html>
