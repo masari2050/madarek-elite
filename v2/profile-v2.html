@@ -82,7 +82,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ach.locked .ach-st{color:var(--i4)}
 
 /* REFERRAL */
-.ref-box{margin:0 6px 14px;padding:16px;border-radius:var(--r2);background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff}
+.ref-wrap{margin:0 6px 14px}
+.ref-hook{padding:14px 16px;border-radius:14px 14px 0 0;background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 50%,#FDE68A 100%);color:#1A1230;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(245,158,11,.3)}
+.ref-hook::before{content:"";position:absolute;top:-30px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.18);pointer-events:none}
+.ref-hook-ic{width:42px;height:42px;border-radius:12px;background:rgba(26,18,48,.18);border:1px solid rgba(26,18,48,.25);display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1}
+.ref-hook-ic svg{width:22px;height:22px;fill:#1A1230;stroke:none}
+.ref-hook-body{flex:1;min-width:0;position:relative;z-index:1}
+.ref-hook-ttl{font-size:14px;font-weight:800;line-height:1.3;letter-spacing:-.01em;color:#1A1230}
+.ref-hook-sub{font-size:11px;color:rgba(26,18,48,.78);line-height:1.5;font-weight:600;margin-top:2px}
+.ref-box{padding:16px;border-radius:0 0 14px 14px;background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff}
 .ref-t{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
 .ref-t svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
 .ref-desc{font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px}
@@ -178,21 +186,32 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <div class="ach-grid" id="achGrid"></div>
 
 <!-- REFERRAL -->
-<div class="ref-box" id="referrals">
-  <div class="ref-t"><svg viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M15 11h5"/></svg>ادعُ أصدقاءك واربح</div>
-  <div class="ref-desc" id="refDesc">10 أيام مجانية لكل إحالة ناجحة + صديقك يحصل على 7 أيام إضافية</div>
-  <div class="ref-code-row">
-    <div class="ref-code" id="refCode">—</div>
-    <button class="ref-copy" onclick="copyRef()">نسخ</button>
+<div class="ref-wrap" id="referrals">
+  <div class="ref-hook">
+    <div class="ref-hook-ic">
+      <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9 M22 7H2v5h20V7 M12 22V7 M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+    </div>
+    <div class="ref-hook-body">
+      <div class="ref-hook-ttl">خلّك تاجر نخبة</div>
+      <div class="ref-hook-sub">كاش 10 ر.س لكل صديق يشترك عبرك</div>
+    </div>
   </div>
-  <button class="ref-share" onclick="shareRef()">
-    <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-    شارك رابط الإحالة
-  </button>
-  <div class="ref-stats">
-    <div class="ref-stat"><div class="ref-sv" id="refShared">0</div><div class="ref-sl">شاركوا</div></div>
-    <div class="ref-stat"><div class="ref-sv" id="refSub">0</div><div class="ref-sl">اشتركوا</div></div>
-    <div class="ref-stat"><div class="ref-sv" id="refDays">0</div><div class="ref-sl">يوم ربحت</div></div>
+  <div class="ref-box">
+    <div class="ref-t"><svg viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M15 11h5"/></svg>كودك الخاص</div>
+    <div class="ref-desc" id="refDesc">شارك الكود مع أصدقائك — اربح 10 ر.س عند اشتراك كل واحد، والحدّ الأدنى للصرف 100 ر.س</div>
+    <div class="ref-code-row">
+      <div class="ref-code" id="refCode">—</div>
+      <button class="ref-copy" onclick="copyRef()">نسخ</button>
+    </div>
+    <button class="ref-share" onclick="shareRef()">
+      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      شارك رابط الإحالة
+    </button>
+    <div class="ref-stats">
+      <div class="ref-stat"><div class="ref-sv" id="refShared">0</div><div class="ref-sl">شاركوا</div></div>
+      <div class="ref-stat"><div class="ref-sv" id="refSub">0</div><div class="ref-sl">اشتركوا</div></div>
+      <div class="ref-stat"><div class="ref-sv" id="refDays">0</div><div class="ref-sl">ر.س ربحت</div></div>
+    </div>
   </div>
 </div>
 
@@ -423,7 +442,18 @@ async function loadReferral() {
         document.getElementById('refCode').textContent = stats.referral_code || '—';
         document.getElementById('refShared').textContent = stats.shared || 0;
         document.getElementById('refSub').textContent = stats.subscribed || 0;
-        document.getElementById('refDays').textContent = '+' + (stats.days_earned || 0);
+        // الرصيد النقدي من view referral_cash_balances (SQL 16)
+        try {
+            const user = await M.getUser();
+            if (user) {
+                const { data: cash } = await sb.from('referral_cash_balances')
+                    .select('total_earned').eq('user_id', user.id).maybeSingle();
+                const earned = cash?.total_earned || 0;
+                document.getElementById('refDays').textContent = earned;
+            }
+        } catch(e) {
+            document.getElementById('refDays').textContent = '0';
+        }
 
         // Update description from referral_settings
         const { data: settings } = await sb.from('referral_settings').select('*').limit(1).single();
