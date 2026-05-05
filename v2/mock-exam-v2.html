@@ -27,7 +27,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-.wrap{max-width:560px;margin:0 auto;min-height:100dvh;padding:14px 16px 30px}
+.wrap{width:100%;max-width:560px;margin:0 auto;min-height:100dvh;padding:14px 16px 30px}
+.q-card,.exam-bar,.nav-row,.det,.pre,.res-hero,.res-stats,.lb-card{width:100%;max-width:100%}
 
 /* PRE-EXAM (countdown) */
 .pre{padding:18px;background:linear-gradient(135deg,#5B4DD4,#6D5DF6);border-radius:18px;color:#fff;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
@@ -84,12 +85,27 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .nav-btn.next{background:var(--pri);color:#fff}
 .nav-btn.submit{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff}
 
-/* QUESTION GRID (overview) */
-.qgrid-toggle{margin-top:10px;text-align:center;font-size:12px;color:var(--pri);font-weight:700;cursor:pointer}
-.qgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:12px;padding:12px;background:var(--s2);border-radius:12px}
-.qgrid-cell{padding:8px 0;border-radius:8px;background:var(--sf);font-size:11px;font-weight:700;text-align:center;cursor:pointer;border:1px solid var(--ln)}
+/* QUESTION GRID (overlay modal) */
+.qgrid-toggle{margin-top:10px;text-align:center;font-size:12px;color:var(--pri);font-weight:700;cursor:pointer;padding:8px}
+.qg-back{position:fixed;inset:0;background:rgba(20,17,52,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end;justify-content:center;animation:fade .2s}
+.qg-back.show{display:flex}
+.qg-sheet{width:100%;max-width:560px;max-height:78vh;background:var(--sf);border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden;animation:sheetUp .25s cubic-bezier(.25,.8,.25,1)}
+@media (min-width:768px){.qg-back{align-items:center}.qg-sheet{border-radius:20px;max-height:80vh}}
+.qg-h{padding:14px 18px;border-bottom:1px solid var(--ln);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.qg-ttl{font-size:14.5px;font-weight:800}
+.qg-x{width:32px;height:32px;border-radius:50%;background:var(--s2);display:grid;place-items:center;cursor:pointer}
+.qg-x svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:2.4}
+.qg-legend{display:flex;gap:14px;padding:10px 18px;border-bottom:1px solid var(--ln);font-size:11px;color:var(--i3);flex-shrink:0;flex-wrap:wrap}
+.qg-leg{display:flex;align-items:center;gap:5px}
+.qg-leg .dot{width:10px;height:10px;border-radius:3px}
+.qg-body{padding:14px 18px 22px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.qgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.qgrid-cell{padding:0;aspect-ratio:1;display:grid;place-items:center;border-radius:8px;background:var(--s2);font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--ln);transition:transform .12s}
+.qgrid-cell:hover{transform:scale(1.05)}
 .qgrid-cell.answered{background:var(--ss);color:var(--suc);border-color:rgba(34,197,94,.3)}
-.qgrid-cell.current{background:var(--pri);color:#fff;border-color:var(--pri)}
+.qgrid-cell.current{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 4px 10px rgba(109,93,246,.35)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* RESULT */
 .res-hero{padding:24px;background:linear-gradient(135deg,#5B4DD4,#6D5DF6);border-radius:18px;color:#fff;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
@@ -325,54 +341,92 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       examState.remaining_min = data.remaining_min;
       examState.started_at = data.started_at;
       examState.duration_min = data.duration_min;
-      renderExam();
+      renderExamShell();
       startTimer();
     } catch(e) {
       $('root').innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--dng)"><h2>تعذّر بدء الاختبار</h2><p style="font-size:13px;margin-top:8px">'+esc(e.message||'')+'</p><a href="dashboard-v2.html" style="display:inline-block;margin-top:16px;color:var(--pri);font-weight:700">الرئيسية</a></div>';
     }
   }
 
-  // ════ عرض الاختبار ════
-  function renderExam(){
-    const q = questions[curIdx];
+  // ════ عرض الاختبار — هيكل ثابت مرّة وحدة، تحديث جزئي بعدها ════
+  function renderExamShell(){
     const total = questions.length;
-    const sectionTag = q.section === 'quant' ? 'قدرات كمي' : q.section === 'verbal' ? 'قدرات لفظي' : q.section === 'tahsili' ? 'تحصيلي' : '';
     $('root').innerHTML = `
       <div class="exam-bar">
         <div class="timer" id="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="timerVal">--:--</span></div>
-        <div class="progress">${curIdx+1} / ${total}</div>
+        <div class="progress" id="progressTxt">1 / ${total}</div>
       </div>
 
+      <div id="qcardSlot"></div>
+      <div id="navSlot"></div>
+
+      <div class="qgrid-toggle" onclick="window.toggleGrid()" id="gridToggle">عرض شبكة الأسئلة</div>
+
+      <div class="qg-back" id="qgBack" onclick="if(event.target===this)window.toggleGrid()">
+        <div class="qg-sheet">
+          <div class="qg-h">
+            <div class="qg-ttl">شبكة الأسئلة</div>
+            <div class="qg-x" onclick="window.toggleGrid()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+          </div>
+          <div class="qg-legend">
+            <div class="qg-leg"><div class="dot" style="background:var(--pri)"></div>الحالي</div>
+            <div class="qg-leg"><div class="dot" style="background:var(--ss);border:1px solid rgba(34,197,94,.4)"></div>مُجاب</div>
+            <div class="qg-leg"><div class="dot" style="background:var(--s2);border:1px solid var(--ln2)"></div>بدون إجابة</div>
+          </div>
+          <div class="qg-body"><div class="qgrid" id="qgridInner"></div></div>
+        </div>
+      </div>`;
+    renderQCard();
+    renderNav();
+  }
+
+  function renderQCard(){
+    const q = questions[curIdx];
+    const sectionTag = q.section === 'quant' ? 'قدرات كمي' : q.section === 'verbal' ? 'قدرات لفظي' : q.section === 'tahsili' ? 'تحصيلي' : '';
+    const slot = $('qcardSlot');
+    if (!slot) return;
+    slot.innerHTML = `
       <div class="q-card">
-        <div class="q-num">السؤال ${curIdx+1} من ${total}</div>
+        <div class="q-num">السؤال ${curIdx+1} من ${questions.length}</div>
         ${sectionTag ? '<div class="q-tag">'+esc(sectionTag)+'</div>' : ''}
         <div class="q-text">${safeHtml(q.text||'')}</div>
         ${q.image_url ? '<img src="'+esc(q.image_url)+'" class="q-img" alt="">' : ''}
         <div class="choices">
           ${(q.choices||[]).map((c, i) => `
-            <button class="choice ${answers[curIdx]===i?'sel':''}" onclick="window.pickChoice(${i})">
+            <button class="choice ${answers[curIdx]===i?'sel':''}" data-ci="${i}" onclick="window.pickChoice(${i})">
               <div class="ch-letter">${['أ','ب','ج','د','هـ'][i] || (i+1)}</div>
               <div class="ch-text">${safeHtml(c)}</div>
             </button>`).join('')}
         </div>
-      </div>
+      </div>`;
+    const pt = $('progressTxt');
+    if (pt) pt.textContent = (curIdx+1) + ' / ' + questions.length;
+  }
 
+  function renderNav(){
+    const total = questions.length;
+    const slot = $('navSlot');
+    if (!slot) return;
+    slot.innerHTML = `
       <div class="nav-row">
         <button class="nav-btn prev" id="prevBtn" ${curIdx===0?'disabled':''} onclick="window.prevQ()">السابق</button>
         ${curIdx===total-1
           ? '<button class="nav-btn submit" onclick="window.submitExam()">إنهاء وتسليم</button>'
-          : '<button class="nav-btn next" onclick="window.nextQ()">التالي</button>'
-        }
-      </div>
-
-      <div class="qgrid-toggle" onclick="window.toggleGrid()" id="gridToggle">عرض شبكة الأسئلة</div>
-      <div id="qgrid" style="display:none"></div>`;
+          : '<button class="nav-btn next" onclick="window.nextQ()">التالي</button>'}
+      </div>`;
   }
 
+  // اختيار: لا تعيد بناء كامل DOM — حدّث classes فقط (يحفظ المؤقّت بدون وميض)
   window.pickChoice = function(idx){
     const cur = curIdx;
     answers[cur] = idx;
-    renderExam();
+    const slot = $('qcardSlot');
+    if (slot) {
+      slot.querySelectorAll('.choice').forEach(btn => {
+        const ci = +btn.getAttribute('data-ci');
+        btn.classList.toggle('sel', ci === idx);
+      });
+    }
     saveAnswer(cur, idx);
   };
 
@@ -385,25 +439,31 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       .catch(() => {});
   }
 
-  window.prevQ = () => { if (curIdx>0) { curIdx--; renderExam(); } };
-  window.nextQ = () => { if (curIdx < questions.length-1) { curIdx++; renderExam(); } };
+  window.prevQ = () => { if (curIdx>0) { curIdx--; renderQCard(); renderNav(); window.scrollTo({top:0,behavior:'smooth'}); } };
+  window.nextQ = () => { if (curIdx < questions.length-1) { curIdx++; renderQCard(); renderNav(); window.scrollTo({top:0,behavior:'smooth'}); } };
 
   window.toggleGrid = function(){
-    const g = $('qgrid');
-    if (!g) return;
-    if (g.style.display === 'none') {
-      g.innerHTML = '<div class="qgrid">' + questions.map((q,i) => {
-        const cls = answers[i]!=null?'answered':'' + (i===curIdx?' current':'');
-        return `<div class="qgrid-cell ${i===curIdx?'current':answers[i]!=null?'answered':''}" onclick="window.gotoQ(${i})">${i+1}</div>`;
-      }).join('') + '</div>';
-      g.style.display = 'block';
-      $('gridToggle').textContent = 'إخفاء الشبكة';
-    } else {
-      g.style.display = 'none';
+    const back = $('qgBack');
+    if (!back) return;
+    const open = back.classList.contains('show');
+    if (open) {
+      back.classList.remove('show');
       $('gridToggle').textContent = 'عرض شبكة الأسئلة';
+      document.body.style.overflow = '';
+    } else {
+      const inner = $('qgridInner');
+      if (inner) {
+        inner.innerHTML = questions.map((_,i) => {
+          const cls = i===curIdx ? 'current' : (answers[i]!=null ? 'answered' : '');
+          return `<div class="qgrid-cell ${cls}" onclick="window.gotoQ(${i})">${i+1}</div>`;
+        }).join('');
+      }
+      back.classList.add('show');
+      $('gridToggle').textContent = 'إخفاء الشبكة';
+      document.body.style.overflow = 'hidden';
     }
   };
-  window.gotoQ = function(i){ curIdx = i; renderExam(); };
+  window.gotoQ = function(i){ curIdx = i; renderQCard(); renderNav(); window.toggleGrid(); };
 
   // ════ المؤقّت ════
   function startTimer(){
