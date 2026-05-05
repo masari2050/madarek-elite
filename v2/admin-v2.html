@@ -655,9 +655,9 @@ async function loadOverview() {
 
     const queries = [
         ['qCount',       sb.from('questions').select('*',{count:'estimated',head:true}).eq('disabled',false)],
-        ['usersCount',   sb.from('profiles').select('*',{count:'estimated',head:true})],
+        ['usersCount',   sb.from('profiles').select('*',{count:'exact',head:true})],
         ['activeSubs',   sb.from('profiles').select('subscription_type').gt('subscription_end', new Date().toISOString())],
-        ['attemptsT',    sb.from('attempts').select('*',{count:'estimated',head:true}).gte('created_at', today)],
+        ['attemptsT',    sb.from('attempts').select('*',{count:'exact',head:true}).gte('created_at', today)],
         ['reportsP',     sb.from('reports').select('*',{count:'exact',head:true}).eq('status','pending')],
         ['revenue',      sb.from('payments').select('amount').eq('status','paid').gte('paid_at', since30)]
     ];
