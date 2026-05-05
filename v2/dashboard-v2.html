@@ -47,7 +47,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .hdr-nm{font-size:15px;font-weight:700}.hdr-sub{font-size:11px;color:var(--i3);margin-top:1px}
 .sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;margin-right:6px;vertical-align:middle;letter-spacing:.3px}
 .sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
-.sub-badge.yearly{background:linear-gradient(135deg,#8B5CF6,#6D5DF6);color:#fff;border:1px solid rgba(139,92,246,.4)}
+.sub-badge.yearly{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#1A1230;border:1px solid rgba(245,158,11,.5);box-shadow:0 2px 8px rgba(245,158,11,.35)}
 .sub-badge.coupon{background:var(--as);color:var(--acc)}
 .sub-badge.free{background:var(--s2);color:var(--i4)}
 .hb{width:34px;height:34px;border-radius:10px;background:var(--sf);border:1px solid var(--ln2);display:grid;place-items:center;position:relative;cursor:pointer;transition:background .18s}
@@ -89,25 +89,26 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .mock-cta:hover{transform:translateY(-1px)}
 .mock-cta:active{transform:scale(.97)}
 
-/* REFERRAL CASH BANNER (للجميع) */
+/* REFERRAL CASH BANNER (مطابق Hook الذهبي بالتطبيق) */
 .ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
-  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 100%);
-  color:#fff;display:flex;align-items:center;gap:12px;cursor:pointer;
+  background:linear-gradient(135deg,#B8860B 0%,#F59E0B 50%,#FCD34D 100%);
+  color:#1A1230;display:flex;align-items:center;gap:12px;cursor:pointer;
   position:relative;overflow:hidden;
-  box-shadow:0 6px 20px rgba(109,93,246,.25);transition:transform .15s;
+  box-shadow:0 6px 22px rgba(245,158,11,.35);transition:transform .15s;
 }
+.ref-cash-ban::before{content:"";position:absolute;top:-30px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.18);pointer-events:none}
 .ref-cash-ban:hover{transform:translateY(-1px)}
 .ref-cash-ban:active{transform:scale(.98)}
 .ref-cash-ic{width:44px;height:44px;border-radius:14px;
-  background:linear-gradient(135deg,rgba(255,215,0,.25),rgba(245,158,11,.2));
-  border:1px solid rgba(255,215,0,.35);
+  background:rgba(26,18,48,.18);
+  border:1px solid rgba(26,18,48,.25);
   display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1;
 }
-.ref-cash-ic svg{width:22px;height:22px;fill:#FFD700;stroke:none}
+.ref-cash-ic svg{width:22px;height:22px;fill:#1A1230;stroke:none}
 .ref-cash-body{flex:1;min-width:0;position:relative;z-index:1}
-.ref-cash-ttl{font-size:13.5px;font-weight:800;line-height:1.4;margin-bottom:2px;letter-spacing:-.01em}
-.ref-cash-sub{font-size:11px;color:rgba(255,255,255,.85);line-height:1.55;font-weight:500}
-.ref-cash-arr{font-size:18px;color:#FFD700;font-weight:600;flex-shrink:0;position:relative;z-index:1}
+.ref-cash-ttl{font-size:13.5px;font-weight:800;line-height:1.4;margin-bottom:2px;letter-spacing:-.01em;color:#1A1230}
+.ref-cash-sub{font-size:11px;color:rgba(26,18,48,.78);line-height:1.55;font-weight:600}
+.ref-cash-arr{font-size:18px;color:#1A1230;font-weight:700;flex-shrink:0;position:relative;z-index:1}
 
 /* STREAK */
 .streak{margin:0 6px 14px;padding:14px 16px}
@@ -282,7 +283,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9 M22 7H2v5h20V7 M12 22V7 M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
   </div>
   <div class="ref-cash-body">
-    <div class="ref-cash-ttl">كلاكما رابح — فلوس حقيقية لك</div>
+    <div class="ref-cash-ttl">خلّك تاجر نخبة</div>
     <div class="ref-cash-sub">اربح 10 ر.س كاش لكل صديق يشترك عبرك</div>
   </div>
   <div class="ref-cash-arr">←</div>
