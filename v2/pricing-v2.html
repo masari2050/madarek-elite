@@ -695,7 +695,17 @@ window.applyCouponClick = async function(){
       body: { code, plan: selectedSlug }
     });
 
-    if (error) throw new Error(error.message || 'فشل التحقق');
+    // لو السيرفر رجّع 4xx — استخراج الرسالة الفعلية من context
+    if (error) {
+      let serverMsg = '';
+      try {
+        if (error.context && typeof error.context.json === 'function') {
+          const body = await error.context.json();
+          serverMsg = body?.error || '';
+        }
+      } catch(_) {}
+      throw new Error(serverMsg || error.message || 'فشل التحقق');
+    }
     if (!data || data.error) throw new Error((data && data.error) || 'كوبون غير صالح');
 
     // نجح — Edge Function يحسب السعر النهائي ويرجع discountType/discountValue (camelCase)
