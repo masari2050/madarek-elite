@@ -543,7 +543,10 @@ function _renderMockBadge(badge) {
     if (!document.getElementById('liveKf')) {
         const s = document.createElement('style');
         s.id = 'liveKf';
-        s.textContent = '@keyframes livePulse{0%,100%{box-shadow:0 6px 20px rgba(22,163,74,.55)}50%{box-shadow:0 10px 30px rgba(22,163,74,.9)}}';
+        s.textContent = '@keyframes liveBreath{'
+            + '0%,100%{box-shadow:0 4px 14px rgba(34,197,94,.32),0 0 0 0 rgba(34,197,94,.45)}'
+            + '50%{box-shadow:0 8px 24px rgba(34,197,94,.55),0 0 0 8px rgba(34,197,94,0)}'
+            + '}';
         document.head.appendChild(s);
     }
 
@@ -551,7 +554,7 @@ function _renderMockBadge(badge) {
         const start = new Date(_mockExamMeta.starts_at).getTime();
         const end = start + (parseInt(_mockExamMeta.duration_min,10) || 0) * 60000;
         const remaining = formatRemaining(end - Date.now());
-        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(22,163,74,.55);cursor:pointer;animation:livePulse 1.4s infinite';
+        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;animation:liveBreath 2.6s ease-in-out infinite';
         badge.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg><span id="mockBadgeTxt">ابدأ الاختبار المحاكي الآن — متبقّي ' + remaining + '</span>';
         badge.onclick = () => { if (_mockExamId) location.href = 'mock-exam-v2.html?exam_id=' + encodeURIComponent(_mockExamId); };
     } else if (phase === 'ended') {
