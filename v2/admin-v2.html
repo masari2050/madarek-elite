@@ -492,31 +492,19 @@ async function init() {
     const now = new Date();
     document.getElementById('curDate').textContent = now.toLocaleDateString('ar-SA-u-ca-islamic', {day:'numeric',month:'long',year:'numeric'});
 
-    // ⚡ ربط nav فوراً قبل أي await — التبويبات تشتغل حتى لو auth علّق
-    bindNav();
-
     if (isPreview) {
         profile = { id:'demo', full_name:'المدير العام', role:'admin', avatar_emoji:'م' };
         window.A.profile = profile;
         renderAdminInfo();
+        bindNav();
         loadOverview();
         return;
     }
 
-    // Auth + admin check مع timeout — لو Supabase علّق ما نقفل الصفحة
-    const withTimeout = (p, ms, label) => Promise.race([
-        Promise.resolve(p),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout: '+label)), ms))
-    ]);
-
-    let user = null;
-    try { user = await withTimeout(M.requireAuth('admin-login-v2.html'), 7000, 'auth'); }
-    catch(e) { console.error('Auth check timed out:', e); document.getElementById('contentArea').innerHTML = '<div class="empty"><div class="empty-ic">⏱</div><div class="empty-t">تأخّر التحقق من الدخول</div><div class="empty-d">حاول تحديث الصفحة. لو تكرّر، سجّل خروجك ثم دخولك.</div></div>'; return; }
+    // Auth + admin check
+    const user = await M.requireAuth('admin-login-v2.html');
     if (!user) return;
-
-    try { profile = await withTimeout(M.getProfile(), 6000, 'profile'); }
-    catch(e) { console.error('Profile load timed out:', e); profile = { id:user.id, full_name:'المدير', role:'admin', avatar_emoji:'م' }; }
-
+    profile = await M.getProfile();
     if (!profile || !['admin','staff'].includes(profile.role)) {
         document.body.innerHTML = '<div class="access-denied"><div class="access-denied-ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h1>غير مسموح</h1><p>هذه الصفحة للمدراء فقط</p><a class="btn btn-pri" href="dashboard-v2.html">الرجوع للتطبيق</a></div>';
         return;
@@ -524,6 +512,7 @@ async function init() {
     window.A.profile = profile;
 
     renderAdminInfo();
+    bindNav();
     loadOverview();
     loadReviewBadge();
     loadPayoutsBadge();
@@ -640,67 +629,41 @@ async function loadOverview() {
         return;
     }
 
-    // Render skeleton immediately so the page never hangs
-    renderOverview({ totalQ:'…', totalUsers:'…', todayAttempts:'…', pendingReports:'…',
-        activeSubs:'…', monthlySubs:0, yearlySubs:0, freeUsers:'…', monthlyRevenue:'…', todayVisitors:0 });
+    try {
+        // Run all queries in parallel
+        const [qCount, usersCount, activeSubsData, attemptsToday, reportsPending, revenue] = await Promise.all([
+            sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false),
+            sb.from('profiles').select('*',{count:'exact',head:true}),
+            sb.from('profiles').select('subscription_type').gt('subscription_end', new Date().toISOString()),
+            sb.from('attempts').select('*',{count:'exact',head:true}).gte('created_at', new Date().toISOString().split('T')[0]),
+            sb.from('reports').select('*',{count:'exact',head:true}).eq('status','pending'),
+            sb.from('payments').select('amount').eq('status','paid').gte('paid_at', new Date(Date.now()-30*864e5).toISOString())
+        ]);
 
-    // Per-query timeout wrapper — never lets one slow query block the dashboard
-    const withTimeout = (p, ms=8000, label='') => Promise.race([
-        Promise.resolve(p),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout: '+label)), ms))
-    ]);
+        const subs = activeSubsData.data || [];
+        const monthlySubs = subs.filter(s => s.subscription_type === 'monthly').length;
+        const yearlySubs = subs.filter(s => s.subscription_type === 'yearly').length;
+        const total = usersCount.count || 0;
+        const activeSubsCount = subs.length;
+        const monthlyRevenue = (revenue.data || []).reduce((s,p) => s + Number(p.amount||0), 0);
 
-    const today = new Date().toISOString().split('T')[0];
-    const since30 = new Date(Date.now()-30*864e5).toISOString();
-
-    const queries = [
-        ['qCount',       sb.from('questions').select('*',{count:'estimated',head:true}).eq('disabled',false)],
-        ['usersCount',   sb.from('profiles').select('*',{count:'exact',head:true})],
-        ['activeSubs',   sb.from('profiles').select('subscription_type').gt('subscription_end', new Date().toISOString())],
-        ['attemptsT',    sb.from('attempts').select('*',{count:'exact',head:true}).gte('created_at', today)],
-        ['reportsP',     sb.from('reports').select('*',{count:'exact',head:true}).eq('status','pending')],
-        ['revenue',      sb.from('payments').select('amount').eq('status','paid').gte('paid_at', since30)]
-    ];
-
-    const results = await Promise.allSettled(
-        queries.map(([label, q]) => withTimeout(q, 8000, label).then(r => ({ label, r })))
-    );
-
-    const get = label => {
-        const hit = results.find(r => r.status==='fulfilled' && r.value && r.value.label === label);
-        return hit ? hit.value.r : null;
-    };
-
-    const qCount = get('qCount');
-    const usersCount = get('usersCount');
-    const activeSubsData = get('activeSubs');
-    const attemptsToday = get('attemptsT');
-    const reportsPending = get('reportsP');
-    const revenue = get('revenue');
-
-    const subs = activeSubsData?.data || [];
-    const monthlySubs = subs.filter(s => s.subscription_type === 'monthly').length;
-    const yearlySubs = subs.filter(s => s.subscription_type === 'yearly').length;
-    const total = usersCount?.count || 0;
-    const activeSubsCount = subs.length;
-    const monthlyRevenue = (revenue?.data || []).reduce((s,p) => s + Number(p.amount||0), 0);
-
-    renderOverview({
-        totalQ: qCount?.count || 0,
-        totalQDelta: 0,
-        totalUsers: total,
-        weekDelta: 0,
-        todayAttempts: attemptsToday?.count || 0,
-        pendingReports: reportsPending?.count || 0,
-        activeSubs: activeSubsCount,
-        monthlySubs, yearlySubs,
-        freeUsers: Math.max(0, total - activeSubsCount),
-        monthlyRevenue: Math.round(monthlyRevenue),
-        todayVisitors: 0
-    });
-
-    // Log any failed queries for diagnostics (non-blocking)
-    results.forEach((r,i) => { if (r.status === 'rejected') console.warn('Overview query failed:', queries[i][0], r.reason); });
+        renderOverview({
+            totalQ: qCount.count || 0,
+            totalQDelta: 0,
+            totalUsers: total,
+            weekDelta: 0,
+            todayAttempts: attemptsToday.count || 0,
+            pendingReports: reportsPending.count || 0,
+            activeSubs: activeSubsCount,
+            monthlySubs, yearlySubs,
+            freeUsers: total - activeSubsCount,
+            monthlyRevenue: Math.round(monthlyRevenue),
+            todayVisitors: 0
+        });
+    } catch(e) {
+        console.error(e);
+        c.innerHTML = '<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">حدث خطأ</div><div class="empty-d">'+(e.message||'')+'</div></div>';
+    }
 }
 
 function renderOverview(d) {
