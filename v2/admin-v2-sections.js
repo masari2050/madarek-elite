@@ -3172,4 +3172,492 @@ window.confirmPayoutReject = async function(id) {
     } catch(e) { showToast('خطأ: ' + (e.message||''), 'err'); }
 };
 
+// ════════════════════════════════════════════════════════════
+//  الاختبارات المحاكية (Phase 2)
+// ════════════════════════════════════════════════════════════
+
+const EXAM_TYPE_MAP = {
+    tahsili:          { name: 'محاكي التحصيلي',          q: 160, dur: 125, color: '#7C3AED' },
+    qudurat_computer: { name: 'محاكي القدرات (محوسب)',   q: 96,  dur: 100, color: '#0EA5E9' },
+    qudurat_paper:    { name: 'محاكي القدرات (ورقي)',    q: 120, dur: 125, color: '#F59E0B' },
+    custom:           { name: 'اختبار مخصّص',            q: 50,  dur: 60,  color: '#22C55E' }
+};
+
+window.loadMockExams = async function() {
+    const { sb } = window.A;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+
+    $c().innerHTML = `
+    <div id="mockExamsArea">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-l">
+            <div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+            <div><div class="card-title">الاختبارات المحاكية</div><div class="card-sub">إنشاء اختبارات تحصيلي/قدرات بأسئلة عشوائية متوازنة</div></div>
+          </div>
+          <button class="btn btn-pri" onclick="openMockExamForm()">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            اختبار جديد
+          </button>
+        </div>
+        <div class="tbl-wrap" id="mockExamsTable"><div class="loader">جاري التحميل...</div></div>
+      </div>
+
+      <div id="mockExamDetail" style="display:none;margin-top:18px"></div>
+    </div>`;
+
+    try {
+        if (isPreview) {
+            renderMockExamsTable([
+                { id: '1', exam_type: 'tahsili', title: 'محاكي التحصيلي — جلسة 1', starts_at: new Date(Date.now() + 86400000).toISOString(), duration_min: 125, questions_count: 160, total_registered: 28, total_completed: 0, avg_correct: null, is_active: true },
+                { id: '2', exam_type: 'qudurat_computer', title: 'محاكي قدرات محوسب', starts_at: new Date(Date.now() - 86400000*2).toISOString(), duration_min: 100, questions_count: 96, quant_count: 48, verbal_count: 48, total_registered: 45, total_completed: 38, avg_correct: 71.3, is_active: true }
+            ]);
+        } else {
+            const { data, error } = await sb.rpc('admin_list_all_mock_exams');
+            if (error) throw error;
+            renderMockExamsTable(data || []);
+        }
+    } catch(e) {
+        document.getElementById('mockExamsTable').innerHTML = '<div class="empty"><div class="empty-t">تعذّر تحميل القائمة</div><div class="empty-s">'+esc(e.message||'')+'</div></div>';
+    }
+};
+
+function renderMockExamsTable(rows) {
+    if (!rows.length) {
+        document.getElementById('mockExamsTable').innerHTML = '<div class="empty"><div class="empty-ic">📋</div><div class="empty-t">لا توجد اختبارات</div><div class="empty-s">اضغط "اختبار جديد" لإنشاء أوّل اختبار محاكي</div></div>';
+        return;
+    }
+    const now = new Date();
+    const html = `
+    <table class="tbl">
+      <thead><tr>
+        <th>العنوان</th><th>النوع</th><th>الموعد</th><th>المدة</th><th>الأسئلة</th><th>المسجّلون</th><th>المؤدّون</th><th>المعدل</th><th>الحالة</th><th></th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(e => {
+            const t = EXAM_TYPE_MAP[e.exam_type] || { name: e.exam_type, color: '#6B7094' };
+            const starts = new Date(e.starts_at);
+            const ends = new Date(starts.getTime() + (e.duration_min||0)*60000);
+            let phase = 'upcoming', phaseTxt = 'قادم', phaseColor = '#6D5DF6';
+            if (now >= starts && now < ends) { phase = 'live'; phaseTxt = 'مباشر الآن'; phaseColor = '#EF4444'; }
+            else if (now >= ends) { phase = 'past'; phaseTxt = 'انتهى'; phaseColor = '#9EA2B8'; }
+            const dist = (e.exam_type === 'qudurat_computer' || e.exam_type === 'qudurat_paper')
+                ? `<div style="font-size:10px;color:#6B7094;margin-top:2px">${e.quant_count||0} كمي + ${e.verbal_count||0} لفظي</div>` : '';
+            return `<tr>
+              <td><div style="font-weight:700">${esc(e.title)}</div>${dist}</td>
+              <td><span style="background:${t.color}22;color:${t.color};padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700">${esc(t.name)}</span></td>
+              <td style="font-size:12px">${starts.toLocaleString('ar-SA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+              <td>${e.duration_min} د</td>
+              <td>${e.questions_count}</td>
+              <td>${fmt(e.total_registered)}</td>
+              <td>${fmt(e.total_completed)}</td>
+              <td>${e.avg_correct != null ? e.avg_correct + '%' : '—'}</td>
+              <td><span style="background:${phaseColor}22;color:${phaseColor};padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700">${phaseTxt}</span></td>
+              <td>
+                <button class="btn-icon" onclick="openMockExamDetail('${e.id}')" title="تفاصيل" style="margin-left:4px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                <button class="btn-icon" onclick="editMockExam('${e.id}')" title="تعديل"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="btn-icon" onclick="deleteMockExam('${e.id}','${esc(e.title).replace(/'/g,"\\'")}')" title="حذف" style="color:#EF4444"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+              </td>
+            </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+    document.getElementById('mockExamsTable').innerHTML = html;
+    window._mockExams = rows;
+}
+
+window.openMockExamForm = function(exam) {
+    const isEdit = !!exam;
+    const title = exam?.title || '';
+    const type = exam?.exam_type || 'tahsili';
+    const starts = exam?.starts_at ? new Date(exam.starts_at) : new Date(Date.now() + 86400000);
+    const dt = starts.toISOString().slice(0,16);
+    const dur = exam?.duration_min || EXAM_TYPE_MAP[type].dur;
+    const qc = exam?.questions_count || EXAM_TYPE_MAP[type].q;
+    const quant = exam?.quant_count != null ? exam.quant_count : Math.floor(qc/2);
+    const verbal = exam?.verbal_count != null ? exam.verbal_count : (qc - Math.floor(qc/2));
+
+    const html = `
+    <div class="modal-overlay" id="mxFormOverlay" onclick="if(event.target.id==='mxFormOverlay')closeMockExamForm()" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto">
+      <div style="background:#fff;border-radius:18px;max-width:520px;width:100%;padding:24px;max-height:92vh;overflow:auto">
+        <h3 style="font-size:17px;font-weight:800;margin-bottom:6px">${isEdit ? 'تعديل اختبار محاكي' : 'إنشاء اختبار محاكي'}</h3>
+        <p style="font-size:12.5px;color:#6B7094;margin-bottom:16px">سيتم اختيار الأسئلة عشوائياً من المخزون عند بداية الاختبار، موزّعة حسب القسم.</p>
+
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">نوع الاختبار</label>
+          <select class="form-input" id="mxType" onchange="mxTypeChanged()" ${isEdit ? 'disabled' : ''}>
+            <option value="tahsili" ${type==='tahsili'?'selected':''}>محاكي التحصيلي</option>
+            <option value="qudurat_computer" ${type==='qudurat_computer'?'selected':''}>محاكي القدرات (محوسب)</option>
+            <option value="qudurat_paper" ${type==='qudurat_paper'?'selected':''}>محاكي القدرات (ورقي)</option>
+            <option value="custom" ${type==='custom'?'selected':''}>مخصّص</option>
+          </select>
+        </div>
+
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">العنوان</label>
+          <input class="form-input" id="mxTitle" value="${esc(title)}" placeholder="مثال: محاكي التحصيلي — جلسة الإثنين">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="form-field">
+            <label class="form-label">تاريخ البداية</label>
+            <input class="form-input" type="datetime-local" id="mxStart" value="${dt}">
+          </div>
+          <div class="form-field">
+            <label class="form-label">المدة (دقيقة)</label>
+            <input class="form-input" type="number" id="mxDur" value="${dur}" min="5" max="300">
+          </div>
+        </div>
+
+        <div class="form-field full" style="margin-bottom:12px">
+          <label class="form-label">عدد الأسئلة الإجمالي</label>
+          <input class="form-input" type="number" id="mxQ" value="${qc}" min="5" max="300" oninput="mxAutoSplit()">
+        </div>
+
+        <div id="mxQuduratSplit" style="display:${(type==='qudurat_computer'||type==='qudurat_paper')?'block':'none'}">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="form-field">
+              <label class="form-label">أسئلة كمي</label>
+              <input class="form-input" type="number" id="mxQuant" value="${quant}" min="0" oninput="mxSyncVerbal()">
+            </div>
+            <div class="form-field">
+              <label class="form-label">أسئلة لفظي</label>
+              <input class="form-input" type="number" id="mxVerbal" value="${verbal}" min="0" oninput="mxSyncQuant()">
+            </div>
+          </div>
+        </div>
+
+        <div id="mxAvail" style="font-size:11.5px;color:#6B7094;margin-bottom:14px;padding:10px;background:#F0EDE7;border-radius:10px;line-height:1.7"></div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn" onclick="closeMockExamForm()">إلغاء</button>
+          <button class="btn btn-pri" id="mxSave" onclick="saveMockExam(${isEdit ? "'"+exam.id+"'" : 'null'})">${isEdit ? 'حفظ التعديلات' : 'إنشاء'}</button>
+        </div>
+      </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    mxRefreshAvail();
+};
+
+window.closeMockExamForm = function() {
+    document.getElementById('mxFormOverlay')?.remove();
+};
+
+window.mxTypeChanged = function() {
+    const t = document.getElementById('mxType').value;
+    const meta = EXAM_TYPE_MAP[t] || EXAM_TYPE_MAP.custom;
+    document.getElementById('mxQ').value = meta.q;
+    document.getElementById('mxDur').value = meta.dur;
+    document.getElementById('mxQuduratSplit').style.display = (t==='qudurat_computer'||t==='qudurat_paper') ? 'block' : 'none';
+    mxAutoSplit();
+    mxRefreshAvail();
+};
+
+window.mxAutoSplit = function() {
+    const t = document.getElementById('mxType').value;
+    if (t!=='qudurat_computer' && t!=='qudurat_paper') { mxRefreshAvail(); return; }
+    const total = parseInt(document.getElementById('mxQ').value) || 0;
+    const half = Math.floor(total/2);
+    document.getElementById('mxQuant').value = half;
+    document.getElementById('mxVerbal').value = total - half;
+    mxRefreshAvail();
+};
+
+window.mxSyncVerbal = function() {
+    const total = parseInt(document.getElementById('mxQ').value) || 0;
+    const q = parseInt(document.getElementById('mxQuant').value) || 0;
+    document.getElementById('mxVerbal').value = Math.max(0, total - q);
+    mxRefreshAvail();
+};
+window.mxSyncQuant = function() {
+    const total = parseInt(document.getElementById('mxQ').value) || 0;
+    const v = parseInt(document.getElementById('mxVerbal').value) || 0;
+    document.getElementById('mxQuant').value = Math.max(0, total - v);
+    mxRefreshAvail();
+};
+
+// يحسب التوزيع المتساوي على n مواد
+function _splitEvenly(total, n) {
+    if (n <= 0) return [];
+    const base = Math.floor(total / n);
+    const remainder = total - base * n;
+    const arr = new Array(n).fill(base);
+    for (let i = 0; i < remainder; i++) arr[i] += 1;
+    return arr;
+}
+
+function _renderDistribution(label, breakdown, totalNeeded) {
+    if (!breakdown.length) return `<div style="color:#EF4444">لا توجد أسئلة في ${esc(label)}</div>`;
+    const parts = _splitEvenly(totalNeeded, breakdown.length);
+    let warn = false;
+    const rows = breakdown.map((row, i) => {
+        const need = parts[i];
+        const have = row.available || 0;
+        const ok = have >= need;
+        if (!ok) warn = true;
+        return `<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:11.5px">
+          <span>${esc(row.sub_section)}</span>
+          <span>${need} من ${have} ${ok ? '<span style="color:#22C55E">✓</span>' : '<span style="color:#EF4444">ناقص</span>'}</span>
+        </div>`;
+    }).join('');
+    return `<div style="margin-bottom:8px"><b>${esc(label)}:</b> ${totalNeeded} سؤال على ${breakdown.length} ${breakdown.length===1?'مادة':'مواد'}</div>${rows}${warn?'<div style="color:#EF4444;font-size:11px;margin-top:6px">⚠️ بعض المواد فيها أسئلة أقل من المطلوب — رفع المزيد قبل الموعد</div>':''}`;
+}
+
+async function mxRefreshAvail() {
+    const { sb } = window.A;
+    const t = document.getElementById('mxType').value;
+    const totalNeeded = parseInt(document.getElementById('mxQ').value) || 0;
+    const div = document.getElementById('mxAvail');
+    if (!div) return;
+    div.innerHTML = 'جاري فحص التوزيع...';
+
+    try {
+        const isPreview = new URLSearchParams(window.location.search).has('preview');
+
+        async function getBreakdown(section) {
+            if (isPreview) {
+                if (section === 'tahsili') return [{sub_section:'فيزياء',available:120},{sub_section:'كيمياء',available:115},{sub_section:'أحياء',available:98},{sub_section:'رياضيات',available:140},{sub_section:'لغة إنجليزية',available:60}];
+                if (section === 'quant')   return [{sub_section:'حساب',available:80},{sub_section:'جبر',available:65},{sub_section:'هندسة',available:50},{sub_section:'مقارنات',available:45}];
+                if (section === 'verbal')  return [{sub_section:'تناظر',available:70},{sub_section:'تكملة',available:60},{sub_section:'استيعاب',available:55},{sub_section:'خطأ سياقي',available:40},{sub_section:'إكمال جمل',available:38}];
+                return [];
+            }
+            const { data, error } = await sb.rpc('admin_get_section_breakdown', { p_section: section });
+            if (error) throw error;
+            return data || [];
+        }
+
+        if (t === 'qudurat_computer' || t === 'qudurat_paper') {
+            const qNeed = parseInt(document.getElementById('mxQuant').value) || 0;
+            const vNeed = parseInt(document.getElementById('mxVerbal').value) || 0;
+            const [qB, vB] = await Promise.all([getBreakdown('quant'), getBreakdown('verbal')]);
+            div.innerHTML = `<div style="font-weight:700;margin-bottom:8px">📊 توزيع تلقائي على المواد:</div>${_renderDistribution('قدرات كمي', qB, qNeed)}<div style="margin-top:10px">${_renderDistribution('قدرات لفظي', vB, vNeed)}</div>`;
+        } else if (t === 'tahsili') {
+            const b = await getBreakdown('tahsili');
+            div.innerHTML = `<div style="font-weight:700;margin-bottom:8px">📊 توزيع متساوٍ على المواد:</div>${_renderDistribution('تحصيلي', b, totalNeeded)}`;
+        } else {
+            const r = isPreview ? { count: 3500 } : await sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false);
+            div.innerHTML = `📊 المخزون الإجمالي: ${r.count||0} (نحتاج ${totalNeeded})`;
+        }
+    } catch(e) {
+        div.innerHTML = 'تعذّر فحص التوزيع: ' + esc(e.message||'');
+    }
+}
+
+window.saveMockExam = async function(examId) {
+    const { sb } = window.A;
+    const btn = document.getElementById('mxSave');
+    const type = document.getElementById('mxType').value;
+    const title = document.getElementById('mxTitle').value.trim();
+    const startsLocal = document.getElementById('mxStart').value;
+    const dur = parseInt(document.getElementById('mxDur').value) || 0;
+    const qc = parseInt(document.getElementById('mxQ').value) || 0;
+    const isQudurat = (type==='qudurat_computer'||type==='qudurat_paper');
+    const quant = isQudurat ? (parseInt(document.getElementById('mxQuant').value) || 0) : null;
+    const verbal = isQudurat ? (parseInt(document.getElementById('mxVerbal').value) || 0) : null;
+
+    if (!title) { showToast('أدخل عنوان الاختبار', 'err'); return; }
+    if (!startsLocal) { showToast('حدّد تاريخ البداية', 'err'); return; }
+    if (dur < 5 || qc < 5) { showToast('المدة أو عدد الأسئلة قليل جداً', 'err'); return; }
+    if (isQudurat && (quant + verbal) !== qc) { showToast('مجموع كمي + لفظي يجب يساوي العدد الإجمالي', 'err'); return; }
+
+    btn.disabled = true; btn.textContent = 'جارٍ الحفظ...';
+    try {
+        const startsAt = new Date(startsLocal).toISOString();
+        if (examId) {
+            const { error } = await sb.rpc('admin_update_mock_exam', {
+                p_exam_id: examId, p_title: title, p_starts_at: startsAt,
+                p_duration_min: dur, p_questions_count: qc,
+                p_quant_count: quant, p_verbal_count: verbal,
+                p_is_active: null
+            });
+            if (error) throw error;
+            showToast('تم حفظ التعديلات', 'suc');
+        } else {
+            const { error } = await sb.rpc('admin_create_mock_exam', {
+                p_exam_type: type, p_title: title, p_starts_at: startsAt,
+                p_duration_min: dur, p_questions_count: qc,
+                p_quant_count: quant, p_verbal_count: verbal
+            });
+            if (error) throw error;
+            showToast('تم إنشاء الاختبار', 'suc');
+        }
+        closeMockExamForm();
+        loadMockExams();
+    } catch(e) {
+        showToast('خطأ: ' + (e.message||''), 'err');
+        btn.disabled = false; btn.textContent = examId ? 'حفظ التعديلات' : 'إنشاء';
+    }
+};
+
+window.editMockExam = function(id) {
+    const exam = (window._mockExams || []).find(e => e.id === id);
+    if (!exam) return;
+    openMockExamForm(exam);
+};
+
+window.deleteMockExam = async function(id, title) {
+    const { sb } = window.A;
+    if (!confirm('حذف "' + title + '"? لا يمكن التراجع. كل التسجيلات والإجابات ستُحذف.')) return;
+    try {
+        const { error } = await sb.rpc('admin_delete_mock_exam', { p_exam_id: id });
+        if (error) throw error;
+        showToast('تم الحذف', 'suc');
+        loadMockExams();
+    } catch(e) { showToast('خطأ: ' + (e.message||''), 'err'); }
+};
+
+window.openMockExamDetail = async function(id) {
+    const { sb } = window.A;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    const div = document.getElementById('mockExamDetail');
+    div.style.display = 'block';
+    div.innerHTML = '<div class="loader">جاري التحميل...</div>';
+
+    let detail;
+    try {
+        if (isPreview) {
+            detail = { exam: (window._mockExams||[]).find(e=>e.id===id), stats: { total_registered:28, total_completed:18, avg_correct_pct:72.4, avg_duration_min:88.5, top_score:142, lowest_score:54 } };
+        } else {
+            const { data, error } = await sb.rpc('admin_get_mock_exam_detail', { p_exam_id: id });
+            if (error) throw error;
+            detail = data;
+        }
+        if (!detail) { div.innerHTML = '<div class="empty"><div class="empty-t">الاختبار غير موجود</div></div>'; return; }
+        renderMockExamDetail(detail);
+        window._mockExamCurrent = id;
+        loadMockExamTab('registered');
+    } catch(e) {
+        div.innerHTML = '<div class="empty"><div class="empty-t">تعذّر التحميل</div><div class="empty-s">'+esc(e.message||'')+'</div></div>';
+    }
+};
+
+function renderMockExamDetail(d) {
+    const e = d.exam;
+    const s = d.stats || {};
+    const t = EXAM_TYPE_MAP[e.exam_type] || { name: e.exam_type, color: '#6B7094' };
+    document.getElementById('mockExamDetail').innerHTML = `
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-hdr-l">
+          <div class="card-ic" style="background:${t.color}22;color:${t.color}"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div><div class="card-title">${esc(e.title)}</div><div class="card-sub">${esc(t.name)} · ${e.questions_count} سؤال · ${e.duration_min} د</div></div>
+        </div>
+        <button class="btn" onclick="document.getElementById('mockExamDetail').style.display='none'">إغلاق</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 16px 14px">
+        <div class="kpi pur"><div class="kpi-label">المسجّلون</div><div class="kpi-val">${fmt(s.total_registered)}</div><div class="kpi-sub">${fmt(s.total_completed)} أدّوا</div></div>
+        <div class="kpi green"><div class="kpi-label">معدّل الصح</div><div class="kpi-val">${s.avg_correct_pct != null ? s.avg_correct_pct + '%' : '—'}</div><div class="kpi-sub">من المؤدّين</div></div>
+        <div class="kpi blue"><div class="kpi-label">متوسط الوقت</div><div class="kpi-val">${s.avg_duration_min != null ? s.avg_duration_min + ' د' : '—'}</div><div class="kpi-sub">للاختبار الكامل</div></div>
+        <div class="kpi orange"><div class="kpi-label">أعلى نتيجة</div><div class="kpi-val">${fmt(s.top_score)}</div><div class="kpi-sub">من ${e.questions_count}</div></div>
+      </div>
+
+      <div class="q-filter-row" style="padding:0 16px 12px">
+        <button class="q-filter-btn on" data-tab="registered" onclick="loadMockExamTab('registered')">المسجّلون</button>
+        <button class="q-filter-btn"    data-tab="completed"  onclick="loadMockExamTab('completed')">المؤدّون</button>
+        <button class="q-filter-btn"    data-tab="leaders"    onclick="loadMockExamTab('leaders')">المتصدّرون</button>
+        <button class="q-filter-btn"    data-tab="stats"      onclick="loadMockExamTab('stats')">الإحصائيات</button>
+      </div>
+
+      <div class="tbl-wrap" id="mockExamTabBody"><div class="loader">جاري التحميل...</div></div>
+    </div>`;
+    window._mockExamDetail = d;
+}
+
+window.loadMockExamTab = async function(tab) {
+    const { sb } = window.A;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    document.querySelectorAll('#mockExamDetail .q-filter-btn').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+    const body = document.getElementById('mockExamTabBody');
+    if (!body) return;
+    body.innerHTML = '<div class="loader">جاري التحميل...</div>';
+    const examId = window._mockExamCurrent;
+
+    try {
+        if (tab === 'registered') {
+            let rows = [];
+            if (isPreview) {
+                rows = [
+                    { user_id:'u1', full_name:'محمد العتيبي', email:'m@x.com', registered_at:new Date().toISOString(), score_correct:null, score_total:null, rank_position:null },
+                    { user_id:'u2', full_name:'سعد الزهراني', email:'s@x.com', registered_at:new Date(Date.now()-3600000).toISOString(), score_correct:null, score_total:null, rank_position:null }
+                ];
+            } else {
+                const { data, error } = await sb.rpc('admin_list_mock_exam_registrations', { p_exam_id: examId });
+                if (error) throw error;
+                rows = data || [];
+            }
+            if (!rows.length) { body.innerHTML = '<div class="empty"><div class="empty-t">لا يوجد مسجّلون بعد</div></div>'; return; }
+            body.innerHTML = `<table class="tbl"><thead><tr><th>الاسم</th><th>الإيميل</th><th>تاريخ التسجيل</th><th>الحالة</th></tr></thead><tbody>
+              ${rows.map(r => `<tr>
+                <td style="font-weight:600">${esc(r.full_name||'مستخدم')}</td>
+                <td style="font-size:11.5px;color:#6B7094">${esc(r.email||'')}</td>
+                <td>${new Date(r.registered_at).toLocaleString('ar-SA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+                <td>${r.submitted_at ? '<span style="color:#22C55E">أدّى</span>' : '<span style="color:#F59E0B">لم يبدأ</span>'}</td>
+              </tr>`).join('')}
+            </tbody></table>`;
+
+        } else if (tab === 'completed') {
+            let rows = [];
+            if (isPreview) {
+                rows = [
+                    { user_id:'u1', full_name:'محمد العتيبي', email:'m@x.com', started_at:new Date().toISOString(), submitted_at:new Date().toISOString(), duration_min:88, score_correct:142, score_total:160, score_pct:88.8, rank_position:1 }
+                ];
+            } else {
+                const { data, error } = await sb.rpc('admin_list_mock_exam_completed', { p_exam_id: examId });
+                if (error) throw error;
+                rows = data || [];
+            }
+            if (!rows.length) { body.innerHTML = '<div class="empty"><div class="empty-t">لا يوجد مؤدّون بعد</div></div>'; return; }
+            body.innerHTML = `<table class="tbl"><thead><tr><th>المرتبة</th><th>الاسم</th><th>النتيجة</th><th>النسبة</th><th>المدة</th><th>تاريخ التسليم</th></tr></thead><tbody>
+              ${rows.map(r => `<tr>
+                <td style="font-weight:800;color:#6D5DF6">#${r.rank_position||'—'}</td>
+                <td style="font-weight:600">${esc(r.full_name||'مستخدم')}</td>
+                <td>${r.score_correct}/${r.score_total}</td>
+                <td><span style="background:#22C55E22;color:#22C55E;padding:3px 9px;border-radius:8px;font-weight:700">${r.score_pct}%</span></td>
+                <td>${r.duration_min} د</td>
+                <td style="font-size:11.5px;color:#6B7094">${new Date(r.submitted_at).toLocaleString('ar-SA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+              </tr>`).join('')}
+            </tbody></table>`;
+
+        } else if (tab === 'leaders') {
+            let rows = [];
+            if (isPreview) {
+                rows = [{rank:1,full_name:'محمد العتيبي',score_correct:142,score_total:160,score_pct:88.8,duration_min:88}];
+            } else {
+                const { data, error } = await sb.rpc('mock_exam_leaderboard', { p_exam_id: examId, p_limit: 50 });
+                if (error) throw error;
+                rows = data || [];
+            }
+            if (!rows.length) { body.innerHTML = '<div class="empty"><div class="empty-t">لا متصدّرون بعد</div></div>'; return; }
+            body.innerHTML = `<table class="tbl"><thead><tr><th>المرتبة</th><th>الاسم</th><th>النتيجة</th><th>النسبة</th><th>المدة</th></tr></thead><tbody>
+              ${rows.map(r => {
+                const medal = r.rank===1?'🥇':r.rank===2?'🥈':r.rank===3?'🥉':'';
+                return `<tr>
+                  <td style="font-weight:800;color:#6D5DF6">${medal} #${r.rank}</td>
+                  <td style="font-weight:600">${esc(r.full_name||'مستخدم')}</td>
+                  <td>${r.score_correct}/${r.score_total}</td>
+                  <td><span style="background:#22C55E22;color:#22C55E;padding:3px 9px;border-radius:8px;font-weight:700">${r.score_pct}%</span></td>
+                  <td>${r.duration_min} د</td>
+                </tr>`;
+              }).join('')}
+            </tbody></table>`;
+
+        } else if (tab === 'stats') {
+            const s = window._mockExamDetail?.stats || {};
+            const e = window._mockExamDetail?.exam || {};
+            body.innerHTML = `<div style="padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
+              <div class="kpi pur"><div class="kpi-label">إجمالي المسجّلين</div><div class="kpi-val">${fmt(s.total_registered)}</div></div>
+              <div class="kpi green"><div class="kpi-label">عدد المؤدّين</div><div class="kpi-val">${fmt(s.total_completed)}</div><div class="kpi-sub">نسبة الإكمال ${s.total_registered ? Math.round((s.total_completed/s.total_registered)*100) : 0}%</div></div>
+              <div class="kpi blue"><div class="kpi-label">متوسط الإجابات الصحيحة</div><div class="kpi-val">${s.avg_correct_pct != null ? s.avg_correct_pct + '%' : '—'}</div></div>
+              <div class="kpi orange"><div class="kpi-label">متوسط الوقت</div><div class="kpi-val">${s.avg_duration_min != null ? s.avg_duration_min + ' د' : '—'}</div><div class="kpi-sub">من أصل ${e.duration_min} د</div></div>
+              <div class="kpi green"><div class="kpi-label">أعلى نتيجة</div><div class="kpi-val">${fmt(s.top_score)}</div><div class="kpi-sub">من ${e.questions_count}</div></div>
+              <div class="kpi red"><div class="kpi-label">أدنى نتيجة</div><div class="kpi-val">${fmt(s.lowest_score)}</div><div class="kpi-sub">من ${e.questions_count}</div></div>
+            </div>`;
+        }
+    } catch(err) {
+        body.innerHTML = '<div class="empty"><div class="empty-t">خطأ في التحميل</div><div class="empty-s">'+esc(err.message||'')+'</div></div>';
+    }
+};
+
 })();

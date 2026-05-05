@@ -801,13 +801,26 @@ function applyMockExamConfig(cfg) {
     const meta = document.getElementById('mockMeta');
     const cta = document.getElementById('mockCta');
     const cntEl = document.getElementById('mockCount');
+    const ban = document.getElementById('mockBan');
     if (!ttl || !meta || !cta) return;
     if (cfg.title) ttl.textContent = cfg.title;
     const dateStr = formatExamDate(cfg.exam_date);
     const q = parseInt(cfg.questions, 10);
     const dur = parseInt(cfg.duration_min, 10);
     const parts = [];
-    if (dateStr) parts.push('يبدأ ' + dateStr);
+    // حالة الاختبار حسب الوقت
+    let examPhase = 'upcoming';
+    if (cfg.exam_date) {
+        const start = new Date(cfg.exam_date).getTime();
+        const end = start + (parseInt(cfg.duration_min,10) || 0) * 60000;
+        const now = Date.now();
+        if (now >= start && now < end) examPhase = 'live';
+        else if (now >= end) examPhase = 'ended';
+    }
+
+    if (examPhase === 'live') parts.push('مباشر الآن');
+    else if (dateStr) parts.push('يبدأ ' + dateStr);
+
     if (q && dur) parts.push(q + ' سؤال في ' + dur + ' دقيقة');
     else if (q) parts.push(q + ' سؤال');
     if (parts.length) meta.textContent = parts.join(' — ');
@@ -820,6 +833,16 @@ function applyMockExamConfig(cfg) {
         } else {
             cntEl.style.display = 'none';
         }
+    }
+
+    // البنر كله قابل للضغط — يفتح صفحة الاختبار (تتعامل مع كل الحالات: عدّاد/تسجيل/مباشر/نتيجة)
+    if (ban && _mockExamId) {
+        ban.style.cursor = 'pointer';
+        ban.onclick = function(ev){
+            // لا تتداخل مع زر "سجّل الآن" أو الشارة الخضراء
+            if (ev.target.closest('#mockCta') || ev.target.closest('#mockRegBadge')) return;
+            location.href = 'mock-exam-v2.html?exam_id=' + encodeURIComponent(_mockExamId);
+        };
     }
 }
 
