@@ -1,17 +1,12 @@
 -- ============================================================
--- مدارك النخبة v2 — Migration 54
--- RPC للمالية في لوحة الإدارة
+-- مدارك النخبة v2 — Migration 55
+-- إصلاح admin_get_finance: تحمّل غياب الأعمدة (ليس فقط الجداول)
 -- ============================================================
--- يستبدل في loadFinance() هذي الـ queries:
---   - payment_fees (للحساب)
---   - payments period + all-time (للإيرادات والأرصدة)
---   - expenses period + all-time
---   - finance_accounts (الأرصدة الأولية)
---   - finance_transfers (التحويلات)
---   - profiles (لأسماء العملاء في قائمة الدفعات)
+-- السبب: في production جدول finance_accounts موجود بدون عمود
+-- account_type → SQL 54 يكسر بـ "column account_type does not exist".
+-- الحل: توسيع EXCEPTION ليشمل undefined_column أيضاً (في الـ 4 BEGIN blocks).
 --
--- يرجع JSON واحد فيه كل أرقام صفحة المالية + قائمة آخر 50 دفعة.
--- محصّن بـ SECURITY DEFINER + admin check + يتعامل مع جداول مفقودة.
+-- آمن: CREATE OR REPLACE — يستبدل الـ function بدون تأثير على شي ثاني.
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.admin_get_finance(
@@ -53,9 +48,7 @@ BEGIN
         ELSE '1970-01-01'::TIMESTAMPTZ
     END;
 
-    -- ─────────────────────────────────────────
     -- 1. الأرصدة الأولية (يتجاوز إن الجدول/العمود مفقود)
-    -- ─────────────────────────────────────────
     BEGIN
         SELECT
             COALESCE(SUM(CASE WHEN account_type = 'bank'     THEN initial_balance ELSE 0 END), 0),
@@ -66,10 +59,7 @@ BEGIN
         init_bank := 0; init_treasury := 0;
     END;
 
-    -- ─────────────────────────────────────────
     -- 2. الإيرادات والرسوم للفترة المحددة
-    --    استبعاد FREE-* + الدفعات بصفر
-    -- ─────────────────────────────────────────
     WITH period_payments AS (
         SELECT p.amount, p.payment_method
         FROM payments p
@@ -93,9 +83,7 @@ BEGIN
 
     total_inc_net := total_inc_gross - total_fees;
 
-    -- ─────────────────────────────────────────
     -- 3. المصروفات للفترة (يتجاوز إن الجدول/العمود مفقود)
-    -- ─────────────────────────────────────────
     BEGIN
         SELECT COALESCE(SUM(amount), 0), COUNT(*)::INT
         INTO total_exp, exp_count
@@ -105,9 +93,7 @@ BEGIN
         total_exp := 0; exp_count := 0;
     END;
 
-    -- ─────────────────────────────────────────
     -- 4. الإيرادات الصافية كاملة الوقت (لرصيد البنك)
-    -- ─────────────────────────────────────────
     WITH all_payments AS (
         SELECT p.amount, p.payment_method
         FROM payments p
@@ -125,18 +111,14 @@ BEGIN
     INTO total_inc_net_all
     FROM all_with_fees;
 
-    -- ─────────────────────────────────────────
     -- 5. المصروفات كاملة الوقت
-    -- ─────────────────────────────────────────
     BEGIN
         SELECT COALESCE(SUM(amount), 0) INTO total_exp_all FROM expenses;
     EXCEPTION WHEN undefined_table OR undefined_column THEN
         total_exp_all := 0;
     END;
 
-    -- ─────────────────────────────────────────
     -- 6. التحويلات بين الصناديق
-    -- ─────────────────────────────────────────
     BEGIN
         SELECT
             COALESCE(SUM(CASE WHEN from_account = 'bank'     THEN amount ELSE 0 END), 0),
@@ -153,9 +135,7 @@ BEGIN
                                   - xfers_from_bank + xfers_to_bank;
     treasury_balance := init_treasury - xfers_from_treasury + xfers_to_treasury;
 
-    -- ─────────────────────────────────────────
     -- 7. آخر 50 دفعة فعلية للفترة + اسم العميل
-    -- ─────────────────────────────────────────
     SELECT COALESCE(json_agg(row_to_json(t)), '[]'::json)
     INTO payments_list
     FROM (
@@ -172,9 +152,6 @@ BEGIN
         LIMIT 50
     ) t;
 
-    -- ─────────────────────────────────────────
-    -- النتيجة النهائية
-    -- ─────────────────────────────────────────
     result := json_build_object(
         'period_days',         p_period_days,
         'total_inc_gross',     total_inc_gross,
@@ -202,6 +179,3 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION public.admin_get_finance(INT) TO authenticated;
-
-COMMENT ON FUNCTION public.admin_get_finance(INT) IS
-  'كل أرقام صفحة المالية + آخر 50 دفعة في استدعاء واحد. SECURITY DEFINER + admin check.';
