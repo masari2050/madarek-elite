@@ -630,34 +630,25 @@ async function loadOverview() {
     }
 
     try {
-        // Run all queries in parallel
-        const [qCount, usersCount, activeSubsData, attemptsToday, reportsPending, revenue] = await Promise.all([
-            sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false),
-            sb.from('profiles').select('*',{count:'exact',head:true}),
-            sb.from('profiles').select('subscription_type').gt('subscription_end', new Date().toISOString()),
-            sb.from('attempts').select('*',{count:'exact',head:true}).gte('created_at', new Date().toISOString().split('T')[0]),
-            sb.from('reports').select('*',{count:'exact',head:true}).eq('status','pending'),
-            sb.from('payments').select('amount').eq('status','paid').gte('paid_at', new Date(Date.now()-30*864e5).toISOString())
-        ]);
+        // RPC SECURITY DEFINER: يتجاوز RLS بأمان (admin check داخل DB)
+        const { data, error } = await sb.rpc('admin_get_overview');
+        if (error) throw error;
 
-        const subs = activeSubsData.data || [];
-        const monthlySubs = subs.filter(s => s.subscription_type === 'monthly').length;
-        const yearlySubs = subs.filter(s => s.subscription_type === 'yearly').length;
-        const total = usersCount.count || 0;
-        const activeSubsCount = subs.length;
-        const monthlyRevenue = (revenue.data || []).reduce((s,p) => s + Number(p.amount||0), 0);
+        const total = data.totalUsers || 0;
+        const activeSubsCount = data.activeSubs || 0;
 
         renderOverview({
-            totalQ: qCount.count || 0,
+            totalQ: data.totalQ || 0,
             totalQDelta: 0,
             totalUsers: total,
             weekDelta: 0,
-            todayAttempts: attemptsToday.count || 0,
-            pendingReports: reportsPending.count || 0,
+            todayAttempts: data.todayAttempts || 0,
+            pendingReports: data.pendingReports || 0,
             activeSubs: activeSubsCount,
-            monthlySubs, yearlySubs,
-            freeUsers: total - activeSubsCount,
-            monthlyRevenue: Math.round(monthlyRevenue),
+            monthlySubs: data.monthlySubs || 0,
+            yearlySubs: data.yearlySubs || 0,
+            freeUsers: Math.max(0, total - activeSubsCount),
+            monthlyRevenue: Math.round(data.monthlyRevenue || 0),
             todayVisitors: 0
         });
     } catch(e) {
