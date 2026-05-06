@@ -1065,49 +1065,28 @@ window.loadFinance = async function() {
 
     try {
         const period = parseInt(document.getElementById('finPeriod').value) || 30;
-        const sinceISO = period > 0 ? new Date(Date.now()-period*864e5).toISOString() : '1970-01-01T00:00:00Z';
 
-        // ── جلب رسوم وسائل الدفع (إن وُجد الجدول) ──
-        let feesMap = { default: { pct: 2.75, fixed: 0 } };
-        try {
-            const { data: fees } = await sb.from('payment_fees').select('*');
-            (fees || []).forEach(f => {
-                feesMap[f.payment_method] = { pct: Number(f.fee_percent || 0), fixed: Number(f.fee_fixed || 0) };
-            });
-        } catch(e){} // جدول ما بعد موجود → نستخدم الافتراضي
-        const calcFee = (amt, method) => {
-            const f = feesMap[method] || feesMap['default'];
-            return Math.round((Number(amt) * f.pct / 100 + f.fixed) * 100) / 100;
-        };
+        // RPC SECURITY DEFINER: كل الأرقام + آخر 50 دفعة في استدعاء واحد
+        const { data: f, error } = await sb.rpc('admin_get_finance', { p_period_days: period });
+        if (error) throw error;
 
-        // الدفعات الفعلية فقط: status=paid + payment_id لا يبدأ بـ FREE
-        let q = sb.from('payments').select('id,user_id,amount,plan_type,status,paid_at,created_at,payment_id,coupon_code,payment_method,profiles(full_name)')
-            .eq('status','paid').gte('paid_at', sinceISO);
-        const { data: payments } = await q.order('paid_at',{ascending:false}).limit(100);
-
-        // فلتر إضافي في الذاكرة: استبعاد الدفعات المجانية (FREE-) والكوبونات 100%
-        const realPayments = (payments||[]).filter(p => {
-            const pid = (p.payment_id||'').toString();
-            const amt = Number(p.amount||0);
-            return !pid.startsWith('FREE-') && amt > 0;
-        });
-
-        const totalIncGross = realPayments.reduce((s,p)=>s+Number(p.amount||0),0);
-        const totalFees = realPayments.reduce((s,p)=>s + calcFee(p.amount, p.payment_method||'default'), 0);
-        const totalIncNet = totalIncGross - totalFees;
-
-        // المصروفات
-        const { data: exps } = await sb.from('expenses').select('amount,expense_date').gte('expense_date', sinceISO.split('T')[0]);
-        const totalExp = (exps||[]).reduce((s,e)=>s+Number(e.amount||0),0);
+        const totalIncNet = Number(f.total_inc_net || 0);
+        const totalExp    = Number(f.total_exp || 0);
+        const realPayments = f.payments || [];
 
         document.getElementById('finInc').textContent = fmt(Math.round(totalIncNet));
-        document.getElementById('finIncCount').textContent = realPayments.length;
+        document.getElementById('finIncCount').textContent = f.inc_count || 0;
         document.getElementById('finExp').textContent = fmt(Math.round(totalExp));
-        document.getElementById('finExpCount').textContent = (exps||[]).length;
-        document.getElementById('finNet').textContent = fmt(Math.round(totalIncNet - totalExp));
+        document.getElementById('finExpCount').textContent = f.exp_count || 0;
+        document.getElementById('finNet').textContent = fmt(Math.round(f.net_profit || 0));
 
-        // ── حساب أرصدة البنك والخزينة (على كل الوقت، بغض النظر عن period) ──
-        await recomputeAccountBalances(sb, feesMap, calcFee);
+        // أرصدة البنك والخزينة (محسوبة في الـ RPC على كل الوقت)
+        document.getElementById('bankBal').textContent = fmt(Math.round(f.bank_balance || 0));
+        document.getElementById('trsBal').textContent  = fmt(Math.round(f.treasury_balance || 0));
+        document.getElementById('bankSub').textContent =
+            `رصيد أولي ${fmt(Math.round(f.init_bank||0))} + صافي ${fmt(Math.round(f.total_inc_net_all||0))} − مصروفات ${fmt(Math.round(f.total_exp_all||0))} − تحويلات صادرة ${fmt(Math.round(f.xfers_from_bank||0))}`;
+        document.getElementById('trsSub').textContent =
+            `رصيد أولي ${fmt(Math.round(f.init_treasury||0))} + تحويلات واردة ${fmt(Math.round(f.xfers_to_treasury||0))} − صادرة ${fmt(Math.round(f.xfers_from_treasury||0))}`;
 
         const list = document.getElementById('txList');
         if (realPayments.length === 0) {
@@ -1115,8 +1094,8 @@ window.loadFinance = async function() {
             return;
         }
         list.innerHTML = '<table><thead><tr><th>العميل</th><th>الخطة</th><th>الكوبون</th><th>المبلغ</th><th>رقم الدفع</th><th>التاريخ</th></tr></thead><tbody>' +
-            realPayments.slice(0,50).map(p => `<tr>
-                <td class="td-name">${esc(p.profiles?.full_name||'—')}</td>
+            realPayments.map(p => `<tr>
+                <td class="td-name">${esc(p.full_name||'—')}</td>
                 <td>${esc(p.plan_type==='yearly'?'سنوي':p.plan_type==='monthly'?'شهري':p.plan_type||'—')}</td>
                 <td class="td-muted">${p.coupon_code ? '<span class="status-pill" style="background:var(--acc-s);color:var(--acc)">'+esc(p.coupon_code)+'</span>' : '—'}</td>
                 <td><b style="color:var(--suc)">+${fmt(Math.round(p.amount))} ر.س</b></td>
@@ -1133,62 +1112,6 @@ window.switchAdminPage = function(page) {
 // ═══════════════════════════════════════════════════════
 // 7A-extra. FINANCE ACCOUNTS (bank + treasury)
 // ═══════════════════════════════════════════════════════
-
-async function recomputeAccountBalances(sb, feesMap, calcFee) {
-    try {
-        // 1. أرصدة أولية
-        let initBank = 0, initTreasury = 0;
-        try {
-            const { data: accs } = await sb.from('finance_accounts').select('*');
-            (accs || []).forEach(a => {
-                if (a.account_type === 'bank') initBank = Number(a.initial_balance || 0);
-                else if (a.account_type === 'treasury') initTreasury = Number(a.initial_balance || 0);
-            });
-        } catch(e) { console.warn('finance_accounts not ready:', e.message); }
-
-        // 2. الإيرادات كاملة الوقت (للبنك)
-        const { data: allPayments } = await sb.from('payments')
-            .select('amount,payment_id,payment_method')
-            .eq('status','paid');
-        const realAll = (allPayments || []).filter(p => {
-            const pid = (p.payment_id||'').toString();
-            return !pid.startsWith('FREE-') && Number(p.amount||0) > 0;
-        });
-        const totalIncNetAll = realAll.reduce((s,p) => s + (Number(p.amount) - calcFee(p.amount, p.payment_method || 'default')), 0);
-
-        // 3. المصروفات كاملة الوقت
-        const { data: allExps } = await sb.from('expenses').select('amount');
-        const totalExpAll = (allExps || []).reduce((s,e) => s + Number(e.amount || 0), 0);
-
-        // 4. التحويلات
-        let transfersFromBank = 0, transfersToBank = 0;
-        let transfersFromTrs = 0, transfersToTrs = 0;
-        try {
-            const { data: xfers } = await sb.from('finance_transfers').select('*');
-            (xfers || []).forEach(x => {
-                const amt = Number(x.amount || 0);
-                if (x.from_account === 'bank') transfersFromBank += amt;
-                if (x.to_account === 'bank') transfersToBank += amt;
-                if (x.from_account === 'treasury') transfersFromTrs += amt;
-                if (x.to_account === 'treasury') transfersToTrs += amt;
-            });
-        } catch(e) {}
-
-        const bankBalance = initBank + totalIncNetAll - totalExpAll - transfersFromBank + transfersToBank;
-        const treasuryBalance = initTreasury - transfersFromTrs + transfersToTrs;
-
-        document.getElementById('bankBal').textContent = fmt(Math.round(bankBalance));
-        document.getElementById('trsBal').textContent = fmt(Math.round(treasuryBalance));
-        document.getElementById('bankSub').textContent =
-            `رصيد أولي ${fmt(Math.round(initBank))} + صافي ${fmt(Math.round(totalIncNetAll))} − مصروفات ${fmt(Math.round(totalExpAll))} − تحويلات صادرة ${fmt(Math.round(transfersFromBank))}`;
-        document.getElementById('trsSub').textContent =
-            `رصيد أولي ${fmt(Math.round(initTreasury))} + تحويلات واردة ${fmt(Math.round(transfersToTrs))} − صادرة ${fmt(Math.round(transfersFromTrs))}`;
-    } catch(e) {
-        console.error('recompute err:', e);
-        document.getElementById('bankBal').textContent = '—';
-        document.getElementById('trsBal').textContent = '—';
-    }
-}
 
 // ── ضبط الرصيد الأولي ──
 window.openInitialBalanceModal = async function() {
