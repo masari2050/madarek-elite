@@ -561,18 +561,29 @@ async function loadAISuggest() {
             if (!stats[t]) stats[t] = {c:0,t:0};
             stats[t].t++; if (a.is_correct) stats[t].c++;
         });
-        let weak=null, weakAcc=100;
+        // pick weakest topic with ≥3 attempts (≤ بدل < حتى تظهر دائماً حتى لو الدقة 100%)
+        let weak=null, weakAcc=101;
         for (const [k,v] of Object.entries(stats)) {
             if (v.t<3) continue;
             const acc = Math.round(v.c/v.t*100);
-            if (acc<weakAcc) { weakAcc=acc; weak=k; }
+            if (acc<=weakAcc) { weakAcc=acc; weak=k; }
+        }
+        // fallback: لو ما في موضوع بـ≥3 محاولات، خذ الأكثر تكراراً
+        if (!weak) {
+            let topCount = 0;
+            for (const [k,v] of Object.entries(stats)) {
+                if (v.t > topCount) { topCount = v.t; weak = k; weakAcc = Math.round(v.c/v.t*100); }
+            }
         }
         if (weak) {
             const sMap={quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي'};
             const el = document.getElementById('aiSuggest');
             el.style.display = 'flex';
             document.getElementById('aiSuggestTitle').textContent = 'تدريب مخصص: ' + (sMap[weak]||weak);
-            document.getElementById('aiSuggestDesc').textContent = 'أداؤك '+weakAcc+'% — اضغط لتدريب مركّز';
+            const msg = weakAcc < 60 ? ('أداؤك '+weakAcc+'% — اضغط لتدريب مركّز')
+                      : weakAcc < 85 ? ('أداؤك '+weakAcc+'% — ارفع مستواك أكثر')
+                      : ('أداؤك '+weakAcc+'% — تحدّى نفسك أكثر');
+            document.getElementById('aiSuggestDesc').textContent = msg;
             el.setAttribute('data-section', weak);
             el.setAttribute('data-name', sMap[weak]||weak);
         }

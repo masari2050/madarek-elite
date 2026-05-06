@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>مدارك النخبة — الملف الشخصي</title>
-<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(!fs||fs==="small")fs="large";if(["medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
 <style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
 <link rel="icon" href="../icons/icon-192.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -327,9 +327,12 @@ html[data-fs="large"] .fs-pill{font-size:14px}
 .ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
 .ni.on{background:rgba(124,58,237,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
 
-html[data-fs="small"] .wrap{zoom:0.93}
+/* حجم الخط — مناسب (responsive) أو كبير */
 html[data-fs="large"] .wrap{zoom:1.1}
-@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+@supports not (zoom:1){html[data-fs="large"] .wrap{font-size:16.5px}}
+/* "مناسب" يتكيّف مع عرض الشاشة (clamp بين 14.5 و 16.5px) */
+@media (min-width:380px){html:not([data-fs="large"]) body{font-size:15.5px}}
+@media (min-width:768px){html:not([data-fs="large"]) body{font-size:16.5px}}
 </style>
 </head>
 <body>
@@ -473,7 +476,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <div class="setting" onclick="cycleFontSize()">
     <div class="set-ic pur"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
-    <div class="set-body"><div class="set-t">حجم الخط</div><div class="set-s" id="fsLabel">متوسط</div></div>
+    <div class="set-body"><div class="set-t">حجم الخط</div><div class="set-s" id="fsLabel">كبير</div></div>
     <div class="fs-pill" id="fsPill">أ</div>
   </div>
 </div>
@@ -1010,9 +1013,14 @@ function loadToggles() {
     updateFsLabel();
 }
 
-const FS_ORDER = ['small', 'medium', 'large'];
-const FS_NAMES = { small: 'صغير', medium: 'متوسط', large: 'كبير' };
-function getFontSize() { const v = localStorage.getItem('madarek_font_size'); return FS_ORDER.includes(v) ? v : 'medium'; }
+const FS_ORDER = ['medium', 'large'];
+const FS_NAMES = { medium: 'مناسب', large: 'كبير' };
+function getFontSize() {
+    const v = localStorage.getItem('madarek_font_size');
+    // الافتراضي = "كبير". الـ legacy "small" يُرفع لـ "كبير" أيضاً.
+    if (v === 'medium') return 'medium';
+    return 'large';
+}
 function updateFsLabel() { const lbl = document.getElementById('fsLabel'); if (lbl) lbl.textContent = FS_NAMES[getFontSize()]; }
 
 window.cycleFontSize = function() {
@@ -1228,7 +1236,14 @@ window.changePassword = async function() {
 };
 
 window.goPlan = function() { location.href = isSubscribed() ? 'pricing-v2.html' : 'pricing-v2.html'; };
-window.openWA = function() { window.open('https://wa.me/966500000000', '_blank'); };
+window.openWA = async function() {
+    let num = '966553339885';
+    try {
+        const { data } = await sb.from('site_settings').select('value').eq('key','whatsapp_number').maybeSingle();
+        if (data?.value) num = String(data.value).replace(/\D/g,'');
+    } catch(e){}
+    window.open('https://wa.me/' + num, '_blank');
+};
 window.doLogout = async function() {
     if (!confirm('هل تريد تسجيل الخروج؟')) return;
     await M.signOut();

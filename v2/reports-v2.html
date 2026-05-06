@@ -526,7 +526,7 @@ const topicMap = {
     math:'الرياضيات', mathematics:'الرياضيات',
     history:'التاريخ', geography:'الجغرافيا',
     islamic:'الدراسات الإسلامية', arabic:'اللغة العربية', english:'اللغة الإنجليزية',
-    general:'عام', other:'أخرى', misc:'متنوع', mixed:'مختلط'
+    general:'عام', other:'غير مصنّف', misc:'متنوع', mixed:'مختلط'
 };
 function arTopic(t){
     if(!t) return 'عام';
@@ -534,7 +534,7 @@ function arTopic(t){
     const k = String(t).trim().toLowerCase().replace(/\s+/g,'_');
     if(topicMap[k]) return topicMap[k];
     if(sectionMap[k]) return sectionMap[k];
-    return 'أخرى';
+    return 'غير مصنّف';
 }
 
 // ── Achievement SVG icons (Lucide-style stroke) ──
@@ -773,7 +773,10 @@ async function loadStatsTab() {
             if (!topicStats[t]) topicStats[t] = {c:0,t:0};
             topicStats[t].t++; if (a.is_correct) topicStats[t].c++;
         });
-        const topics = Object.entries(topicStats).map(([k,v])=>({k,acc:Math.round(v.c/v.t*100),count:v.t}));
+        // أخفِ "غير مصنّف" بالكامل إذا دقتها 0% (لا قيمة معلوماتية)
+        const topics = Object.entries(topicStats)
+            .map(([k,v])=>({k,acc:Math.round(v.c/v.t*100),count:v.t}))
+            .filter(t => !(t.k === 'غير مصنّف' && t.acc === 0));
 
         // Focus card: sort ASC by acc, top 5 weakest
         const weakest = [...topics].sort((a,b)=>a.acc-b.acc).slice(0, 5);
@@ -866,6 +869,8 @@ async function loadAITab() {
         const topicRanked = Object.entries(topicStats)
             .filter(([,v]) => v.t >= 3)
             .map(([k,v]) => ({ key:k, name:arTopic(k), section:v.section, acc:Math.round(v.c/v.t*100), count:v.t }))
+            // أخفِ "غير مصنّف" إذا دقتها 0% — لا قيمة معلوماتية
+            .filter(t => !(t.name === 'غير مصنّف' && t.acc === 0))
             .sort((a,b) => a.acc - b.acc);
         const weakTopics = topicRanked.filter(t => t.acc < 60).slice(0, 3);
 

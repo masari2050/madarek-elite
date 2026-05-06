@@ -57,7 +57,7 @@ async function getWhatsAppNumber() {
 }
 
 function normalizeNumber(n) {
-    if (!n) return '966500000000';
+    if (!n) return '966553339885';
     // أزل كل شيء غير رقم
     return String(n).replace(/[^0-9]/g, '');
 }
@@ -77,7 +77,7 @@ function inject() {
     // أنشئ الزر (الرقم يُحدّث لاحقاً)
     const btn = document.createElement('a');
     btn.className = 'wa-float-btn';
-    btn.href = 'https://wa.me/966500000000';
+    btn.href = 'https://wa.me/966553339885';
     btn.target = '_blank';
     btn.rel = 'noopener';
     btn.setAttribute('aria-label', 'تواصل واتساب');
