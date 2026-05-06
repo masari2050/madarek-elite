@@ -471,29 +471,28 @@ window.loadUsers = async function(page=1) {
         const search = (document.getElementById('uSearch')?.value || '').trim();
         const filter = document.getElementById('uFilter').value;
 
-        let q = sb.from('profiles').select('id,full_name,phone,subscription_type,subscription_end,avatar_emoji,created_at,last_seen_at,used_coupon', { count:'exact' });
-        if (search) q = q.or('full_name.ilike.%'+search+'%,phone.ilike.%'+search+'%');
-        const nowISO = new Date().toISOString();
-        if (filter === 'subscribed') q = q.in('subscription_type',['monthly','yearly','quarterly']).gt('subscription_end', nowISO);
-        else if (filter === 'free') q = q.or('subscription_type.is.null,subscription_type.eq.free');
-        else if (filter === 'expired') q = q.lt('subscription_end', nowISO);
+        // RPC SECURITY DEFINER: قائمة + إحصائيات + count في استدعاء واحد
+        const { data: rpcData, error } = await sb.rpc('admin_get_users', {
+            p_filter: filter || '',
+            p_search: search || '',
+            p_page: page,
+            p_page_size: PAGE_SIZE
+        });
+        if (error) throw error;
 
-        const { data, count } = await q.order('created_at',{ascending:false}).range((page-1)*PAGE_SIZE, page*PAGE_SIZE-1);
+        const data = rpcData?.users || [];
+        const count = rpcData?.total_count || 0;
 
         const tbl = document.getElementById('uTable');
-        if (!data || data.length === 0) {
+        if (data.length === 0) {
             tbl.innerHTML = '<div class="empty"><div class="empty-ic">👥</div><div class="empty-t">لا أعضاء</div></div>';
             return;
         }
 
-        // Get attempts counts for each user (simplified)
-        const uids = data.map(u => u.id);
-        const { data: attemptsData } = await sb.from('attempts').select('user_id,is_correct').in('user_id', uids);
+        // الإحصائيات جاهزة من RPC (total_attempts + correct_attempts)
         const stats = {};
-        (attemptsData||[]).forEach(a => {
-            if (!stats[a.user_id]) stats[a.user_id] = { total:0, correct:0 };
-            stats[a.user_id].total++;
-            if (a.is_correct) stats[a.user_id].correct++;
+        data.forEach(u => {
+            stats[u.id] = { total: u.total_attempts || 0, correct: u.correct_attempts || 0 };
         });
 
         tbl.innerHTML = `<table>
