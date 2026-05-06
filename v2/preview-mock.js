@@ -532,6 +532,21 @@ async function mockRPC(name, args) {
             return { data: { ok: true }, error: null };
         case 'apply_referral':
             return { data: { success: true, referrer_bonus_days: 10, referred_bonus_days: 7 }, error: null };
+        case 'admin_get_finance':
+            return { data: {
+                period_days: args?.p_period_days || 30,
+                total_inc_gross: 4380, total_fees: 125, total_inc_net: 4255,
+                inc_count: 17, total_exp: 850, exp_count: 4, net_profit: 3405,
+                bank_balance: 12340, treasury_balance: 5000,
+                init_bank: 8000, init_treasury: 5000,
+                total_inc_net_all: 6240, total_exp_all: 1900,
+                xfers_from_bank: 0, xfers_to_bank: 0,
+                xfers_from_treasury: 0, xfers_to_treasury: 0,
+                payments: [
+                    { id:'m1', user_id:'u1', amount:99, plan_type:'monthly', status:'paid', paid_at:new Date().toISOString(), payment_id:'INV-12345', coupon_code:null, payment_method:'visa', full_name:'سارة الحربي' },
+                    { id:'m2', user_id:'u2', amount:799, plan_type:'yearly', status:'paid', paid_at:new Date(Date.now()-864e5).toISOString(), payment_id:'INV-12346', coupon_code:'NEW10', payment_method:'mada', full_name:'محمد الزهراني' }
+                ]
+            }, error: null };
         default:
             console.warn('[Preview Mock] Unknown RPC:', name, args);
             return { data: null, error: null };

@@ -1067,8 +1067,9 @@ window.loadFinance = async function() {
         const period = parseInt(document.getElementById('finPeriod').value) || 30;
 
         // RPC SECURITY DEFINER: كل الأرقام + آخر 50 دفعة في استدعاء واحد
-        const { data: f, error } = await sb.rpc('admin_get_finance', { p_period_days: period });
+        const { data, error } = await sb.rpc('admin_get_finance', { p_period_days: period });
         if (error) throw error;
+        const f = data || {};
 
         const totalIncNet = Number(f.total_inc_net || 0);
         const totalExp    = Number(f.total_exp || 0);
