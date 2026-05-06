@@ -449,27 +449,35 @@ window.resolveReport = async function(reportId, action, questionId, keepQuestion
 window.loadUsers = async function(page=1) {
     const { sb } = window.A;
     const PAGE_SIZE = 20;
+    // اقرأ القيم الحالية قبل rebuild حتى لا تُمسح
+    const prevSearch = (document.getElementById('uSearch')?.value || '').trim();
+    const prevFilter = document.getElementById('uFilter')?.value || '';
+    const opt = (val, label) => `<option value="${val}"${val===prevFilter?' selected':''}>${label}</option>`;
     $c().innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
         <div class="search-box">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="uSearch" placeholder="ابحث بالاسم أو الجوال..." oninput="uSearchDebounce()">
+            <input type="search" id="uSearch" placeholder="ابحث بالاسم أو الجوال..." value="${esc(prevSearch)}" oninput="uSearchDebounce()">
         </div>
         <div style="display:flex;gap:8px">
             <select class="form-select" id="uFilter" style="width:auto" onchange="loadUsers(1)">
-                <option value="">كل الأعضاء</option>
-                <option value="subscribed">مشتركون</option>
-                <option value="free">مجانيون</option>
-                <option value="expired">منتهي</option>
+                ${opt('','كل الأعضاء')}${opt('subscribed','مشتركون')}${opt('free','مجانيون')}${opt('expired','منتهي')}
             </select>
             <button class="btn btn-ghost" onclick="exportUsers()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
         </div>
     </div>
     <div class="card"><div class="tbl-wrap" id="uTable"><div class="loader">جاري التحميل...</div></div></div>`;
 
+    // الحفاظ على cursor position في خانة البحث بعد rebuild
+    const searchInput = document.getElementById('uSearch');
+    if (prevSearch && searchInput) {
+        searchInput.focus();
+        searchInput.setSelectionRange(prevSearch.length, prevSearch.length);
+    }
+
     try {
-        const search = (document.getElementById('uSearch')?.value || '').trim();
-        const filter = document.getElementById('uFilter').value;
+        const search = prevSearch;
+        const filter = prevFilter;
 
         // RPC SECURITY DEFINER: قائمة + إحصائيات + count في استدعاء واحد
         const { data: rpcData, error } = await sb.rpc('admin_get_users', {
