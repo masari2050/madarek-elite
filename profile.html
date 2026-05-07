@@ -484,7 +484,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- ═══ LEADERBOARD ═══ -->
-<div class="lead-block" onclick="toggleLead(this)">
+<div class="lead-block" id="leaderboard" onclick="toggleLead(this)" style="scroll-margin-top:16px">
   <div class="li"><svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6m12 5h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
   <div class="lt">المتصدرون</div>
   <div class="lc" id="leadCount">— متدرب</div>
@@ -737,6 +737,15 @@ async function init() {
     loadAchievements();
     loadLeaderboardCount();
     loadToggles();
+    // فتح قسم المتصدرين تلقائياً + scroll لو وصل عبر #leaderboard
+    if (window.location.hash === '#leaderboard') {
+        setTimeout(() => {
+            const block = document.getElementById('leaderboard');
+            if (!block) return;
+            if (!block.classList.contains('open')) toggleLead(block);
+            block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 250);
+    }
 }
 
 function loadPreviewProfile() {
@@ -1026,9 +1035,11 @@ window.toggleLead = async function(el) {
                 // list 4-50
                 if (rest.length > 0) {
                     html += '<div class="lead-list">';
-                    rest.forEach(p => {
+                    rest.forEach((p, i) => {
                         const isMe = p.user_id === profile.id;
-                        html += '<div class="lead-item'+(isMe?' me':'')+'"><div class="lead-rank">#'+p.rank+'</div><div class="lead-av">'+esc((p.name||'?').charAt(0))+'</div><div class="lead-nm">'+esc(p.name||'—')+(isMe?' (أنت)':'')+'</div><div class="lead-xp">'+(p.xp||0)+' XP</div></div>';
+                        // الـ RPC ما يرجع rank → نحسبه من index (top3 أخذوا 1-3، rest يبدأ من 4)
+                        const rank = p.rank || (i + 4);
+                        html += '<div class="lead-item'+(isMe?' me':'')+'"><div class="lead-rank">#'+rank+'</div><div class="lead-av">'+esc((p.name||'?').charAt(0))+'</div><div class="lead-nm">'+esc(p.name||'—')+(isMe?' (أنت)':'')+'</div><div class="lead-xp">'+(p.xp||0)+' XP</div></div>';
                     });
                     html += '</div>';
                 }
