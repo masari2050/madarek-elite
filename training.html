@@ -66,6 +66,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cat{padding:14px;cursor:pointer;transition:all .18s;animation:si .3s var(--ease) backwards;display:flex;flex-direction:column;gap:12px}
 .cat:nth-child(1){animation-delay:.05s}.cat:nth-child(2){animation-delay:.1s}.cat:nth-child(3){animation-delay:.15s}.cat:nth-child(4){animation-delay:.2s}
 .cat:active{transform:scale(.99)}
+/* 🔒 locked state — التصميم الأصلي (موف خفيف) + القفل وردي فقط */
+.cat.locked{opacity:.85}
+.cat.locked:hover{opacity:.95}
+.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--pri);font-weight:700;margin-top:8px;text-align:center;padding:11px 14px;background:rgba(109,93,246,.08);border-radius:11px;border:1px dashed rgba(109,93,246,.32)}
+/* SVG القفل: وردي مميّز فقط (هو ما يلفت الانتباه — النص بلون الهوية) */
+.cat.locked .cat-locked-msg svg{width:20px;height:20px;stroke:#EC4899;fill:none;stroke-width:2.5;stroke-linecap:round;flex-shrink:0}
+[data-t="d"] .cat.locked .cat-locked-msg,html.dark .cat.locked .cat-locked-msg{background:rgba(155,140,255,.12);color:var(--pt);border-color:rgba(155,140,255,.32)}
+[data-t="d"] .cat.locked .cat-locked-msg svg,html.dark .cat.locked .cat-locked-msg svg{stroke:#F472B6}
+.cat.click-pulse{transform:scale(.98);transition:transform .15s ease}
 .cat-row{display:flex;align-items:center;gap:12px}
 .ci{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
 .ci svg{width:22px;height:22px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -274,7 +283,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <div class="trn-list">
-  <div class="cat card" onclick="openModal('quant','قدرات كمي')">
+  <div class="cat card" onclick="openModal('quant','قدرات كمي',event)" >
     <div class="cat-row">
       <div class="ci km"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
       <div style="flex:1"><div class="n">قدرات كمي</div><div class="d">النسب · الهندسة · الجبر · الإحصاء</div></div>
@@ -288,7 +297,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     </div>
   </div>
 
-  <div class="cat card" onclick="openModal('verbal','قدرات لفظي')">
+  <div class="cat card" onclick="openModal('verbal','قدرات لفظي',event)" >
     <div class="cat-row">
       <div class="ci lf"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
       <div style="flex:1"><div class="n">قدرات لفظي</div><div class="d">التناظر · إكمال الجمل · الاستيعاب</div></div>
@@ -302,7 +311,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     </div>
   </div>
 
-  <div class="cat card" onclick="openModal('mixed','كمي + لفظي مختلط')">
+  <div class="cat card" onclick="openModal('mixed','كمي + لفظي مختلط',event)" >
     <div class="cat-row">
       <div class="ci mx"><svg viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></div>
       <div style="flex:1"><div class="n">كمي + لفظي مختلط</div><div class="d">تدريب شامل من القسمين — محاكاة الاختبار الحقيقي</div></div>
@@ -316,7 +325,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     </div>
   </div>
 
-  <div class="cat card" onclick="openModal('tahsili','تحصيلي')">
+  <div class="cat card" onclick="openModal('tahsili','تحصيلي',event)" >
     <div class="cat-row">
       <div class="ci th"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/></svg></div>
       <div style="flex:1"><div class="n">تحصيلي</div><div class="d">أحياء · كيمياء · فيزياء · رياضيات</div></div>
@@ -458,6 +467,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <script src="v2/preview-mock.js"></script>
 <script src="v2/supabase-helpers-v2.js"></script>
 <script src="v2/whatsapp-float.js"></script>
+<script src="js/haptics.js"></script>
+<script src="js/locked-modal.js"></script>
 <script>
 (function(){
 'use strict';
@@ -471,7 +482,15 @@ let selectedMode = 'instant';
 
 const qsTrain = new URLSearchParams(window.location.search);
 const isPreview = qsTrain.has('preview');
-const forceSubscriber = qsTrain.get('force_subscriber') === 'true';
+// sticky preview flags بين تبويبات الـ bottom nav
+try {
+    if (qsTrain.get('force_free') === 'true') sessionStorage.setItem('madarek_force_free','1');
+    if (qsTrain.get('force_free') === 'false') sessionStorage.removeItem('madarek_force_free');
+    if (qsTrain.get('force_subscriber') === 'true') sessionStorage.setItem('madarek_force_subscriber','1');
+    if (qsTrain.get('force_subscriber') === 'false') sessionStorage.removeItem('madarek_force_subscriber');
+} catch(_){}
+const forceSubscriber = qsTrain.get('force_subscriber') === 'true' || (function(){try{return sessionStorage.getItem('madarek_force_subscriber')==='1';}catch(_){return false;}})();
+const forceFree = qsTrain.get('force_free') === 'true' || (function(){try{return sessionStorage.getItem('madarek_force_free')==='1';}catch(_){return false;}})();
 
 init();
 
@@ -488,7 +507,15 @@ async function init() {
             role: 'user'
         };
         applySubscriptionUI();
+        applyTrainingLockUI();
         loadCounts();
+    } else if (forceFree) {
+        // وضع اختبار المجاني (sticky عبر sessionStorage بين التبويبات)
+        profile = { id:'free-test', subscription_type:'free', role:'user' };
+        applySubscriptionUI();
+        applyTrainingLockUI();
+        loadPreview();  // mock counts للعرض
+        return;
     } else if (isPreview) {
         loadPreview();
         return;
@@ -498,6 +525,7 @@ async function init() {
         profile = await M.getProfile();
         if (!profile) return;
         applySubscriptionUI();
+        applyTrainingLockUI();
         loadCounts();
         loadProgress();
         loadAISuggest();
@@ -651,10 +679,26 @@ window.startAIPlan = function() {
     openModal(el.getAttribute('data-section'), el.getAttribute('data-name'));
 };
 
-window.openModal = function(section, name) {
-    // 🔒 مستخدم غير مشترك → redirect مباشر لـ /pricing.html (نفس سلوك التسريبات)
+window.openModal = function(section, name, evt) {
+    // 🔒 مستخدم غير مشترك → modal لطيف بدل redirect مفاجئ
     if (profile && !isSubscribed(profile)) {
-        location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
+        // scale خفيف على البطاقة المضغوطة (بديل عن أي اهتزاز عنيف)
+        const card = evt && evt.currentTarget;
+        if (card && card.classList) {
+            card.classList.add('click-pulse');
+            setTimeout(() => card.classList.remove('click-pulse'), 160);
+        }
+        // haptic خفيف (no-op على Desktop)
+        if (typeof window.hapticMedium === 'function') window.hapticMedium();
+        // modal مشترك
+        if (typeof showLockedModal === 'function') {
+            showLockedModal({
+                title: 'هذا المحتوى للمشتركين',
+                body: 'اشترك الآن لفتح كل التدريبات والاختبارات الكاملة'
+            });
+        } else {
+            location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
+        }
         return;
     }
     selectedSection = section;
@@ -663,6 +707,20 @@ window.openModal = function(section, name) {
     document.getElementById('modal').classList.add('on');
     updateTime();
 };
+
+// يطبّق mark"locked" على بطاقات الاختبارات الرئيسية لغير المشتركين
+function applyTrainingLockUI() {
+    if (!profile || isSubscribed(profile)) return;  // مشترك → لا قفل
+    document.querySelectorAll('.trn-list .cat').forEach(card => {
+        if (card.classList.contains('locked')) return;
+        card.classList.add('locked');
+        // 🔒 + رسالة في زر سفلي واحد فقط (لا أيقونة منفصلة في الزاوية)
+        const msg = document.createElement('div');
+        msg.className = 'cat-locked-msg';
+        msg.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>اشترك لفتح التدريب الكامل</span>';
+        card.appendChild(msg);
+    });
+}
 
 window.closeModal = function() {
     document.getElementById('modal').classList.remove('on');
@@ -711,6 +769,9 @@ window.suggestSection = function() {
 
 // Preview mode
 function loadPreview() {
+    // ضع mock profile حتى applyTrainingLockUI يقدر يفحص الاشتراك
+    profile = { id:'mock-preview', subscription_type:'free', role:'user' };
+
     document.getElementById('cnt-quant').textContent = '1,143 سؤال';
     document.getElementById('cnt-verbal').textContent = '1,461 سؤال';
     document.getElementById('cnt-tahsili').textContent = '986 سؤال';
@@ -721,6 +782,9 @@ function loadPreview() {
     renderProgress('verbal',  30, 9,  1461);  // ≈2% solved, 30% acc → weak
     renderProgress('mixed',   52, 0,  2604);  // ≈2% solved, لم تبدأ (correct=0)
     renderProgress('tahsili', 0,  0,  986);   // not started
+
+    // طبّق UI القفل لغير المشتركين (preview mode = free بطبيعته)
+    applyTrainingLockUI();
 
     // اعرض البنر التسجيلي بالـ preview العادي (مو مشترك)
     document.getElementById('subBanner').style.display = '';
