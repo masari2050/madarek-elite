@@ -91,6 +91,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .lk-ic.ip{background:var(--ps)}.lk-ic.ip svg{stroke:var(--pri)}
 .lk-ic.dn{background:var(--ss)}.lk-ic.dn svg{stroke:var(--suc)}
 .lk-ic.locked{background:var(--ps)}.lk-ic.locked svg{stroke:var(--pri)}
+/* 🔒 locked card — opacity أوضح + cursor */
+.lk-item.locked{opacity:.78;cursor:pointer}
+.lk-item.locked:hover{opacity:.95}
 .lk-info{flex:1;min-width:0}
 .lk-n{font-size:14px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .lk-sec{font-size:10px;font-weight:600;color:var(--pt);background:var(--ps);padding:2px 8px;border-radius:8px}
@@ -449,8 +452,8 @@ function renderCard(g) {
     const meta = dateStr + ' · ' + (g.question_count||0) + ' سؤال';
 
     if (isLocked) {
-        // كارد مقفل: بدون progress، بدون click، يفتح pricing
-        return '<div class="lk-item card" onclick="goPricing()">'
+        // كارد مقفل: opacity 0.78 + 🔒 + click يفتح modal "اشترك"
+        return '<div class="lk-item card locked" onclick="openLeak(\'' + g.id + '\',\'' + esc(g.section||'') + '\',' + (g.question_count||20) + ')">'
             + '<div class="lk-ic locked">'
             +   '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
             + '</div>'
