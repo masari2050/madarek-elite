@@ -66,13 +66,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cat{padding:14px;cursor:pointer;transition:all .18s;animation:si .3s var(--ease) backwards;display:flex;flex-direction:column;gap:12px}
 .cat:nth-child(1){animation-delay:.05s}.cat:nth-child(2){animation-delay:.1s}.cat:nth-child(3){animation-delay:.15s}.cat:nth-child(4){animation-delay:.2s}
 .cat:active{transform:scale(.99)}
-/* 🔒 locked state — تصميم خفيف وأنيق (مثل dashed border في leaks card) */
-.cat.locked{opacity:.78}
-.cat.locked:hover{opacity:.95}
-.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#9D174D;font-weight:700;margin-top:8px;text-align:center;padding:11px 14px;background:#FDF2F8;border-radius:11px;border:1px dashed #F9A8D4}
-.cat.locked .cat-locked-msg svg{width:20px;height:20px;stroke:#9D174D;fill:none;stroke-width:2.4;stroke-linecap:round;flex-shrink:0;opacity:.85}
-[data-t="d"] .cat.locked .cat-locked-msg,html.dark .cat.locked .cat-locked-msg{background:rgba(244,114,182,.06);color:#F9A8D4;border-color:rgba(244,114,182,.3)}
-[data-t="d"] .cat.locked .cat-locked-msg svg,html.dark .cat.locked .cat-locked-msg svg{stroke:#F9A8D4}
+/* 🔒 locked state — gradient موف الهوية + قفل/كلمة وردي مميّز */
+.cat.locked{opacity:.95}
+.cat.locked:hover{opacity:1}
+.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13.5px;color:#FBCFE8;font-weight:700;margin-top:10px;text-align:center;padding:13px 14px;background:linear-gradient(135deg,#7C6BFA 0%,#6D5DF6 100%);border-radius:12px;border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 14px rgba(109,93,246,.28),inset 0 1px 0 rgba(255,255,255,.12);transition:all .2s var(--ease)}
+.cat.locked .cat-locked-msg:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(109,93,246,.36),inset 0 1px 0 rgba(255,255,255,.14)}
+.cat.locked .cat-locked-msg svg{width:20px;height:20px;stroke:#FBCFE8;fill:none;stroke-width:2.4;stroke-linecap:round;flex-shrink:0}
 .cat.click-pulse{transform:scale(.98);transition:transform .15s ease}
 .cat-row{display:flex;align-items:center;gap:12px}
 .ci{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
