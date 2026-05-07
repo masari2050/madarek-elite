@@ -202,7 +202,7 @@ button,a{font-family:inherit;cursor:pointer;color:inherit;text-decoration:none;b
     </a>
     <div class="hdr-spacer"></div>
     <a class="hdr-link" href="/v2/login-v2.html">دخول</a>
-    <a class="hdr-cta" href="/v2/demo.html">ابدأ مجاناً</a>
+    <a class="hdr-cta" href="/v2/register-v2.html">سجّل الآن</a>
   </div>
 </header>
 
@@ -482,7 +482,7 @@ Object.keys(ROT_PHRASES).forEach(id => {
 });
 
 // ═══ CTA tracking ═══
-document.querySelectorAll('a[href*="demo"], a[href*="pricing-v2"], a[href*="login-v2"]').forEach(a => {
+document.querySelectorAll('a[href*="demo"], a[href*="pricing-v2"], a[href*="login-v2"], a[href*="register-v2"]').forEach(a => {
     a.addEventListener('click', () => {
         try {
             if (window.gtag) gtag('event', 'click', { event_category:'cta', event_label: a.href });
