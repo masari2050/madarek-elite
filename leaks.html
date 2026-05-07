@@ -277,6 +277,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <script src="v2/preview-mock.js"></script>
 <script src="v2/supabase-helpers-v2.js"></script>
 <script src="v2/whatsapp-float.js"></script>
+<script src="js/haptics.js"></script>
+<script src="js/locked-modal.js"></script>
 <script>
 (function(){
 'use strict';
@@ -521,6 +523,18 @@ window.filterLeaks = function() {
 };
 
 window.openLeak = function(leakId, section, count) {
+    // 🔒 مستخدم غير مشترك → modal بدل redirect مفاجئ
+    if (isLocked) {
+        if (typeof showLockedModal === 'function') {
+            showLockedModal({
+                title: 'هذه التسريبة للمشتركين',
+                body: 'اشترك الآن لفتح كل التسريبات والأسئلة الحقيقية مع شرح مفصّل'
+            });
+        } else {
+            window.location.href = '/pricing.html';
+        }
+        return;
+    }
     const sectionMap = { 'قدرات كمي':'quant', 'قدرات لفظي':'verbal', 'تحصيلي':'tahsili', 'مختلط':'mixed' };
     const secSlug = sectionMap[section] || 'mixed';
     const params = new URLSearchParams({
