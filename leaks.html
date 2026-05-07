@@ -427,8 +427,19 @@ async function loadLeaks() {
 }
 
 function renderLeaks() {
-    const search = (document.getElementById('lkSearch')?.value || '').trim().toLowerCase();
     const area = document.getElementById('lkArea');
+    if (!area) return;
+    try {
+        _renderLeaksInner(area);
+    } catch(err) {
+        // دفاعي: لو حصل أي JS exception، نمنع الـ loader من البقاء عالق
+        console.error('renderLeaks failed:', err);
+        area.innerHTML = '<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">حدث خطأ في عرض القائمة</div><div class="empty-d">حاول إعادة تحميل الصفحة</div></div>';
+    }
+}
+
+function _renderLeaksInner(area) {
+    const search = (document.getElementById('lkSearch')?.value || '').trim().toLowerCase();
 
     let filtered = allLeaks;
     if (!isLocked && currentFilter !== 'all') filtered = filtered.filter(g => g._status === currentFilter);
