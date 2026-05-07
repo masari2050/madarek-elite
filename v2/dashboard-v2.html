@@ -43,7 +43,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* HEADER */
 .hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
-.av{width:40px;height:40px;border-radius:50%;background:var(--pri);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.av{width:40px;height:40px;border-radius:50%;background:var(--pri);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden}
 .hdr-nm{font-size:15px;font-weight:700}.hdr-sub{font-size:11px;color:var(--i3);margin-top:1px}
 .sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;margin-right:6px;vertical-align:middle;letter-spacing:.3px}
 .sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
@@ -527,7 +527,25 @@ function renderHeader() {
     const name = profile.full_name || 'مستخدم';
     const firstName = name.split(' ')[0];
     document.getElementById('userName').textContent = 'أهلاً، ' + firstName;
-    document.getElementById('userAvatar').textContent = profile.avatar_emoji || firstName.charAt(0);
+    renderAvatar(document.getElementById('userAvatar'), profile.avatar_emoji, firstName);
+}
+
+// يعرض صورة (photo:URL) أو Dicebear (dice:style:seed) أو نص (حرف/إيموجي)
+function renderAvatar(el, value, fallbackName) {
+    if (!el) return;
+    const v = value || '';
+    if (v.startsWith('photo:')) {
+        const url = v.slice(6);
+        el.innerHTML = '<img src="' + url.replace(/"/g,'&quot;') + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+    } else if (v.startsWith('dice:')) {
+        const parts = v.split(':');
+        const style = parts[1] || 'avataaars';
+        const seed = parts.slice(2).join(':') || (fallbackName || 'user');
+        const url = 'https://api.dicebear.com/7.x/' + encodeURIComponent(style) + '/svg?seed=' + encodeURIComponent(seed);
+        el.innerHTML = '<img src="' + url + '" alt="" style="width:100%;height:100%;border-radius:50%">';
+    } else {
+        el.textContent = v || (fallbackName ? fallbackName.charAt(0) : '—');
+    }
 }
 
 // ── Sub Badge ──
