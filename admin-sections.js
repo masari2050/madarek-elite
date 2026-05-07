@@ -3472,6 +3472,8 @@ function _splitEvenly(total, n) {
 }
 
 function _renderDistribution(label, breakdown, totalNeeded) {
+    // فلترة "غير محدد" / sub_section فارغ — لا تعرض في الواجهة (مربك للأدمن)
+    breakdown = (breakdown || []).filter(r => r.sub_section && String(r.sub_section).trim() && r.sub_section !== 'غير محدد');
     if (!breakdown.length) return `<div style="color:#EF4444">لا توجد أسئلة في ${esc(label)}</div>`;
     const parts = _splitEvenly(totalNeeded, breakdown.length);
     let warn = false;

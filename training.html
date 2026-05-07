@@ -652,6 +652,11 @@ window.startAIPlan = function() {
 };
 
 window.openModal = function(section, name) {
+    // 🔒 مستخدم غير مشترك → redirect مباشر لـ /pricing.html (نفس سلوك التسريبات)
+    if (profile && !isSubscribed(profile)) {
+        location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
+        return;
+    }
     selectedSection = section;
     selectedSectionName = name;
     document.getElementById('mttl').textContent = name;

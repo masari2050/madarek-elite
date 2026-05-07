@@ -354,12 +354,12 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="ref-cash-arr">←</div>
 </div>
 
-<!-- SUBSCRIPTION WARNING (if about to expire) -->
-<div class="sub-banner" id="subBanner">
+<!-- SUBSCRIPTION BANNER (free users only) -->
+<a class="sub-banner" id="subBanner" href="/pricing.html" style="text-decoration:none;cursor:pointer">
   <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
   <div class="t" id="subBannerText"></div>
-  <a class="btn" href="/pricing.html">جدّد الآن</a>
-</div>
+  <span class="btn">اشترك الآن</span>
+</a>
 
 <!-- STREAK -->
 <div class="streak card" id="streakCard">
@@ -664,23 +664,14 @@ function formatRemaining(ms) {
     return s + ' ثانية';
 }
 window.mockExamRegister = async function() {
-    const btn = document.getElementById('mockCta');
-    if (btn && btn.disabled) return;
+    // RPC register_for_active_mock_exam غير موجود في prod (TODO: SQL migration)
+    // مؤقتاً: تحويل لـ /pricing.html بدل الخطأ الإنجليزي للمستخدم
     const user = window.MadarekV2 ? await window.MadarekV2.getUser() : null;
     if (!user) {
         location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
         return;
     }
-    if (btn) { btn.disabled = true; btn.textContent = 'جاري التسجيل...'; }
-    try {
-        const { error } = await sb.rpc('register_for_active_mock_exam');
-        if (error) throw error;
-        applyMockExamRegistered();
-        loadMockExamBanner();
-    } catch (e) {
-        if (btn) { btn.disabled = false; btn.textContent = 'سجّل الآن'; }
-        alert('تعذّر التسجيل: ' + (e.message || 'حاول مرّة أخرى'));
-    }
+    location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
 };
 
 // ── Home Stats ──
@@ -1174,20 +1165,15 @@ async function checkNotifications() {
 
 // ── Subscription Check ──
 async function checkSubscription() {
+    const banner = document.getElementById('subBanner');
     if (!M.isSubscribed(profile)) {
-        // Show upgrade banner for free users
-        const banner = document.getElementById('subBanner');
+        // مستخدم مجاني → اعرض البنر
         banner.style.display = 'flex';
         document.getElementById('subBannerText').textContent = 'اشترك الآن للوصول لجميع الأسئلة والتسريبات';
         return;
     }
-
-    const daysLeft = M.subscriptionDaysLeft(profile);
-    if (daysLeft > 0 && daysLeft <= 7) {
-        const banner = document.getElementById('subBanner');
-        banner.style.display = 'flex';
-        document.getElementById('subBannerText').textContent = 'اشتراكك ينتهي خلال ' + daysLeft + ' أيام — جدّد الآن';
-    }
+    // مشترك نشط → اخفِ البنر كلياً (لا "جدّد الآن")
+    banner.style.display = 'none';
 }
 
 // ── Dark Mode ──
