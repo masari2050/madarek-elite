@@ -893,8 +893,12 @@ window.loadCoupons = async function() {
     <div id="couponsList"><div class="loader">جاري التحميل...</div></div>`;
 
     try {
-        const { data } = await sb.from('coupons').select('*').order('created_at',{ascending:false});
+        const { data, error } = await sb.from('coupons').select('*').order('created_at',{ascending:false});
         const list = document.getElementById('couponsList');
+        if (error) {
+            list.innerHTML = '<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">خطأ في التحميل</div><div class="empty-d">'+esc(error.message||'')+'</div></div>';
+            return;
+        }
         if (!data || data.length === 0) {
             list.innerHTML = '<div class="empty"><div class="empty-ic">🎟️</div><div class="empty-t">لا كوبونات</div></div>';
             return;
@@ -963,13 +967,21 @@ window.saveCoupon = async function(id) {
         is_active: document.getElementById('cpActive').checked
     };
     if (!data.code) return showToast('الكود مطلوب','err');
+    if (data.discount_type !== 'free' && (!data.discount_value || data.discount_value <= 0)) {
+        return showToast('قيمة الخصم يجب أن تكون أكبر من صفر','err');
+    }
     try {
-        if (id) await sb.from('coupons').update(data).eq('id', id);
-        else await sb.from('coupons').insert(data);
+        const res = id
+            ? await sb.from('coupons').update(data).eq('id', id)
+            : await sb.from('coupons').insert(data);
+        if (res.error) {
+            const msg = (res.error.code === '23505') ? 'الكود مستخدم بالفعل' : (res.error.message || 'فشل الحفظ');
+            return showToast('خطأ: ' + msg, 'err');
+        }
         showToast('تم الحفظ','suc');
         closeModal();
         loadCoupons();
-    } catch(e) { showToast('خطأ: '+e.message,'err'); }
+    } catch(e) { showToast('خطأ: '+(e.message||'فشل الاتصال'),'err'); }
 };
 
 window.editCoupon = async function(id) {
@@ -981,7 +993,8 @@ window.editCoupon = async function(id) {
 window.deleteCoupon = async function(id) {
     if (!confirm('هل تريد حذف الكوبون؟')) return;
     const { sb } = window.A;
-    await sb.from('coupons').delete().eq('id', id);
+    const { error } = await sb.from('coupons').delete().eq('id', id);
+    if (error) return showToast('خطأ: '+(error.message||'فشل الحذف'),'err');
     showToast('تم الحذف','suc');
     loadCoupons();
 };
