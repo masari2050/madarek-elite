@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f0a2e">
+    <!-- TikTok Pixel Code Start -->
+    <script>!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};ttq.load('D6OG9VRC77UET383RRTG');ttq.page()}(window,document,'ttq');</script>
+    <!-- TikTok Pixel Code End -->
+    <title>جرّب مدارك النخبة — 5 أسئلة مجانية</title>
+    <meta name="description" content="جرّب مدارك النخبة مجاناً — حل 5 أسئلة قدرات (كمي ولفظي) مع شرح مفصّل واكتشف مستواك قبل ما تشترك.">
+    <link rel="canonical" href="https://madarekelite.com/demo.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://madarekelite.com/demo.html">
+    <meta property="og:title" content="جرّب مدارك النخبة — 5 أسئلة مجانية">
+    <meta property="og:description" content="اختبر نفسك بـ 5 أسئلة قدرات مجانية مع شرح مفصّل — بدون تسجيل.">
+    <meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
+    <meta property="og:locale" content="ar_SA">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .option-btn{display:block;width:100%;text-align:right;padding:14px 18px;border-radius:14px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .25s ease;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.85);position:relative}
+        .option-btn:hover:not(.disabled){background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.4);transform:translateY(-2px)}
+        .option-btn.correct{background:rgba(16,185,129,0.15)!important;border-color:#10b981!important;color:#6ee7b7!important}
+        .option-btn.wrong{background:rgba(239,68,68,0.12)!important;border-color:#ef4444!important;color:#fca5a5!important}
+        .option-btn.disabled{cursor:default;opacity:.7}
+        .option-btn .badge{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.8rem;font-weight:800}
+        .progress-dot{width:10px;height:10px;border-radius:50%;transition:all .3s}
+        .exp-box{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:16px;margin-top:12px;text-align:right}
+        .exp-label{color:#6ee7b7;font-weight:800;font-size:.8rem;margin-bottom:6px}
+        .exp-text{color:rgba(255,255,255,0.8);font-size:.85rem;line-height:1.7}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+        @keyframes confetti{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(-60px) rotate(360deg)}}
+        .fade-up{animation:fadeUp .4s ease forwards}
+        .scale-in{animation:scaleIn .5s ease forwards}
+
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 30px rgba(99,102,241,0.3);transition:all .3s;cursor:pointer;color:#fff;text-decoration:none}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
+        .btn-fire{background:linear-gradient(135deg,#f97316,#ef4444);box-shadow:0 8px 30px rgba(249,115,22,0.3);transition:all .3s;cursor:pointer;color:#fff;text-decoration:none}
+        .btn-fire:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(249,115,22,0.5)}
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+
+        .result-ring{width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto}
+    </style>
+    <!-- App detection: hide pricing inside Capacitor WebView -->
+    <script>
+    (function(){
+        var ua = navigator.userAgent;
+        var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1);
+        if(isApp){
+            document.documentElement.classList.add('in-app');
+            document.addEventListener('DOMContentLoaded', function(){
+                var cta = document.getElementById('demo-main-cta');
+                if(cta) cta.textContent = 'سجّل معنا';
+            });
+        }
+    })();
+    </script>
+    <style>
+    .in-app #ramadanOffer,
+    .in-app #demo-free-label,
+    .in-app .demo-pricing-link { display: none !important; }
+    </style>
+</head>
+<body class="font-tajawal text-white">
+
+    <!-- Header -->
+    <div class="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="text-purple-300/50 hover:text-white transition text-sm flex items-center gap-1">
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            الرئيسية
+        </a>
+        <a href="index.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="17" height="17" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <span class="name">مدارك النخبة</span>
+        </a>
+        <span id="demo-free-label" class="text-purple-200/40 text-xs">تجربة مجانية</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-lg mx-auto px-4 pb-16">
+
+        <!-- Intro Screen -->
+        <div id="introScreen" class="text-center py-8 fade-up">
+            <span class="text-6xl block mb-4">🎯</span>
+            <h1 class="text-3xl font-black mb-3">جرّب بنفسك!</h1>
+            <p class="text-purple-200/70 text-sm mb-2">٥ أسئلة سريعة — كمي ولفظي</p>
+            <p class="text-purple-200/50 text-xs mb-8">شوف مستواك وكيف المنصة تشرح لك كل سؤال</p>
+            <button onclick="startDemo()" class="btn-fire px-10 py-4 rounded-xl font-bold text-base">🔥 يلا نبدأ!</button>
+            <p class="text-purple-200/30 text-[10px] mt-4">بدون تسجيل — مباشرة</p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <!-- Progress -->
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <div id="dot0" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot1" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot2" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot3" class="progress-dot bg-purple-500/30"></div>
+                <div class="w-5 h-0.5 bg-purple-500/20 rounded"></div>
+                <div id="dot4" class="progress-dot bg-purple-500/30"></div>
+            </div>
+
+            <!-- Question Counter -->
+            <div class="text-center mb-5">
+                <span class="text-purple-200/40 text-xs">السؤال</span>
+                <span class="text-white font-black text-lg mx-1" id="qNum">1</span>
+                <span class="text-purple-200/40 text-xs">من 5</span>
+            </div>
+
+            <!-- Section Badge -->
+            <div class="text-center mb-4">
+                <span id="qBadge" class="inline-block text-xs font-bold px-3 py-1 rounded-full"></span>
+            </div>
+
+            <!-- Question Text -->
+            <div class="rounded-2xl p-5 mb-5" style="background:rgba(255,255,255,0.08);border:1.5px solid rgba(139,92,246,0.35);box-shadow:0 4px 24px rgba(0,0,0,0.3)">
+                <p id="qText" class="text-base font-bold leading-relaxed text-white/90"></p>
+            </div>
+
+            <!-- Options -->
+            <div id="optionsContainer" class="space-y-3 mb-4"></div>
+
+            <!-- Explanation (hidden initially) -->
+            <div id="expContainer" class="hidden"></div>
+
+            <!-- Next Button -->
+            <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full py-3.5 rounded-xl font-bold text-sm text-white mt-5 btn-primary">
+                السؤال التالي ←
+            </button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultScreen" class="hidden text-center py-6 scale-in">
+            <!-- Score Ring -->
+            <div class="mb-6">
+                <div id="scoreRing" class="result-ring mx-auto mb-4">
+                    <div class="text-center">
+                        <span id="scoreNum" class="text-5xl font-black block"></span>
+                        <span class="text-purple-200/60 text-sm">من 5</span>
+                    </div>
+                </div>
+                <h2 id="scoreMsg" class="text-2xl font-black mb-2"></h2>
+                <p id="scoreDesc" class="text-purple-200/60 text-sm"></p>
+            </div>
+
+            <!-- Value Props -->
+            <div class="rounded-2xl p-5 mb-6 text-right" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+                <p class="text-sm font-bold text-white/90 mb-4 text-center">المنصة الكاملة تعطيك:</p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">📝</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">بنك أسئلة شامل ومتجدد</p>
+                            <p class="text-purple-200/50 text-[10px]">كمي + لفظي + تحصيلي</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">💡</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">شرح مفصّل لكل سؤال</p>
+                            <p class="text-purple-200/50 text-[10px]">تفهم ليش الإجابة صح — مو بس تحفظ</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">📊</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">إحصائيات ذكية</p>
+                            <p class="text-purple-200/50 text-[10px]">تعرف نقاط قوتك وضعفك بالضبط</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">🔥</span>
+                        <div>
+                            <p class="text-sm font-bold text-white/80">تسريبات مع شرح</p>
+                            <p class="text-purple-200/50 text-[10px]">أسئلة من أحدث الاختبارات</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- عرض رمضان — يظهر تلقائي لو في خصم بـ site_settings -->
+            <div id="ramadanOffer" class="hidden rounded-2xl p-5 mb-6 text-center relative overflow-hidden" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(99,102,241,0.08));border:1.5px solid rgba(139,92,246,0.3)">
+                <div class="absolute top-0 right-0 w-24 h-24 rounded-full" style="background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);transform:translate(30%,-30%)"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                        <span class="text-lg">🌙</span>
+                        <span class="text-sm font-black text-white">عرض مؤقت</span>
+                        <span class="text-lg">🌙</span>
+                    </div>
+                    <div class="flex items-center justify-center gap-3 mb-2">
+                        <span class="text-purple-200/50 text-base" style="text-decoration:line-through;text-decoration-color:#ef4444;text-decoration-thickness:2.5px" id="demo-orig-price"></span>
+                        <span class="text-3xl font-black text-white" id="demo-new-price"></span>
+                        <span class="text-purple-200/60 text-sm">ريال/شهر</span>
+                    </div>
+                    <p class="text-purple-200/50 text-[11px] mb-3">استثمر في مستقبلك بأقل تكلفة 🎯</p>
+                    <a href="pricing.html" class="demo-pricing-link inline-block text-xs font-bold px-5 py-2 rounded-lg text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">شوف الباقات ←</a>
+                </div>
+            </div>
+
+            <!-- Team Line -->
+            <p class="text-purple-200/40 text-xs mb-5">🇸🇦 فريق سعودي يفهمك ويفهم اختباراتك</p>
+
+            <!-- CTAs -->
+            <a href="pricing.html" id="demo-main-cta" class="btn-primary block w-full py-4 rounded-xl font-bold text-base mb-3">
+                اشترك الآن وكمّل مشوارك ✨
+            </a>
+            <a href="index.html" class="block text-purple-200/40 text-xs hover:text-purple-300 transition">← ارجع للرئيسية</a>
+        </div>
+    </div>
+
+<script>
+var demoQuestions = [
+    {
+        section: 'كمي',
+        color: '#3b82f6',
+        text: 'إذا كان عُمر أحمد ضعف عُمر محمد، ومجموع عمريهما 36 سنة، فكم عُمر محمد؟',
+        choices: ['10 سنوات', '12 سنة', '18 سنة', '24 سنة'],
+        correct: 1,
+        explanation: 'نفرض عمر محمد = س، وعمر أحمد = 2س\nالمجموع: س + 2س = 36\n3س = 36\nس = 12 سنة ✅\nوعمر أحمد = 24 سنة'
+    },
+    {
+        section: 'لفظي — تناظر',
+        color: '#10b981',
+        text: 'كتاب : مكتبة',
+        choices: ['سيارة : مرآب', 'قلم : ورقة', 'طالب : مدرسة', 'ماء : كوب'],
+        correct: 0,
+        explanation: 'العلاقة: الأول يُحفظ في الثاني (مكان التخزين)\n\nالكتاب يُحفظ في المكتبة ← السيارة تُحفظ في المرآب ✅\n\nباقي الخيارات:\n• قلم وورقة = علاقة استخدام مو تخزين\n• طالب ومدرسة = علاقة انتماء\n• ماء وكوب = الماء يوضع في الكوب مؤقتاً مو يُحفظ'
+    },
+    {
+        section: 'لفظي — خطأ سياقي',
+        color: '#a855f7',
+        text: 'حدد الكلمة الخاطئة سياقياً:\n\n"استطاع الطالب أن يحقق الجهل في دراسته بفضل اجتهاده المتواصل"',
+        choices: ['استطاع', 'يحقق', 'الجهل', 'اجتهاده'],
+        correct: 2,
+        explanation: 'كلمة "الجهل" لا تناسب السياق — الجملة تتكلم عن نتيجة إيجابية بسبب اجتهاد\n\nالصحيح: "التفوق" أو "النجاح" ✅\n\nالطريقة: اقرأ الجملة كاملة وشوف أي كلمة تناقض المعنى العام'
+    },
+    {
+        section: 'كمي — نسبة',
+        color: '#3b82f6',
+        text: 'إذا كان سعر منتج 200 ريال وحصل عليه خصم 15%، فكم يدفع؟',
+        choices: ['170 ريال', '175 ريال', '180 ريال', '185 ريال'],
+        correct: 0,
+        explanation: 'قيمة الخصم = 200 × 15% = 200 × 0.15 = 30 ريال\n\nالسعر بعد الخصم = 200 - 30 = 170 ريال ✅\n\nطريقة أسرع: 200 × 0.85 = 170 ريال'
+    },
+    {
+        section: 'لفظي — إكمال الجمل',
+        color: '#10b981',
+        text: 'النجاح يحتاج إلى ... مستمر وعزيمة لا تلين',
+        choices: ['تعب', 'عمل', 'جهد', 'وقت'],
+        correct: 2,
+        explanation: 'كلمة "جهد" هي الأنسب لأنها:\n\n• تتوافق مع "مستمر" — نقول "جهد مستمر" ✅\n• تتناسب مع "عزيمة" في المعنى (كلاهما يدل على بذل الطاقة)\n\n"عمل مستمر" ممكنة لغوياً لكن "جهد" أدق في سياق النجاح والعزيمة'
+    }
+];
+
+var currentQ = 0, score = 0, answered = false;
+var labels = ['أ','ب','ج','د'];
+
+// 🔊 أصوات الصح والخطأ (نفس practice.html)
+var audioCtx;
+function getAudio(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function createBeep(f,d,v){ try{ var a=getAudio(),o=a.createOscillator(),g=a.createGain(); o.connect(g);g.connect(a.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(v||0.3,a.currentTime);g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+d);o.start(a.currentTime);o.stop(a.currentTime+d);}catch(e){} }
+function playSound(ok){ if(ok){createBeep(800,0.1,0.3);setTimeout(function(){createBeep(1000,0.15,0.3)},100);}else{createBeep(200,0.3,0.3);} }
+
+function startDemo() {
+    document.getElementById('introScreen').classList.add('hidden');
+    document.getElementById('quizScreen').classList.remove('hidden');
+    document.getElementById('quizScreen').classList.add('fade-up');
+    showQuestion();
+}
+
+function showQuestion() {
+    var q = demoQuestions[currentQ];
+    answered = false;
+
+    // Update progress dots
+    for (var i = 0; i < 5; i++) {
+        var dot = document.getElementById('dot' + i);
+        if (i < currentQ) {
+            dot.style.background = '#8b5cf6';
+            dot.style.width = '10px'; dot.style.height = '10px';
+        } else if (i === currentQ) {
+            dot.style.background = '#8b5cf6';
+            dot.style.width = '14px'; dot.style.height = '14px';
+            dot.style.boxShadow = '0 0 12px rgba(139,92,246,0.5)';
+        } else {
+            dot.style.background = 'rgba(139,92,246,0.3)';
+            dot.style.width = '10px'; dot.style.height = '10px';
+            dot.style.boxShadow = 'none';
+        }
+    }
+
+    document.getElementById('qNum').textContent = currentQ + 1;
+    document.getElementById('qBadge').textContent = q.section;
+    document.getElementById('qBadge').style.background = q.color + '20';
+    document.getElementById('qBadge').style.color = q.color;
+    document.getElementById('qBadge').style.border = '1px solid ' + q.color + '40';
+
+    // Handle multiline text
+    document.getElementById('qText').innerHTML = q.text.replace(/\n/g, '<br>');
+
+    // Build options
+    var container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    q.choices.forEach(function(choice, idx) {
+        var btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = '<span>' + labels[idx] + ') ' + choice + '</span>';
+        btn.onclick = function() { selectAnswer(idx); };
+        container.appendChild(btn);
+    });
+
+    document.getElementById('expContainer').classList.add('hidden');
+    document.getElementById('expContainer').innerHTML = '';
+    document.getElementById('nextBtn').classList.add('hidden');
+
+    // Update button text for last question
+    if (currentQ === 4) {
+        document.getElementById('nextBtn').textContent = 'شوف النتيجة 🎯';
+    }
+}
+
+function selectAnswer(idx) {
+    if (answered) return;
+    answered = true;
+    var q = demoQuestions[currentQ];
+    var isCorrect = (idx === q.correct);
+    if (isCorrect) score++;
+    playSound(isCorrect);
+
+    // Highlight buttons
+    var btns = document.querySelectorAll('.option-btn');
+    btns.forEach(function(btn, i) {
+        btn.classList.add('disabled');
+        if (i === q.correct) {
+            btn.classList.add('correct');
+            btn.innerHTML += '<span class="badge">✅</span>';
+        } else if (i === idx && !isCorrect) {
+            btn.classList.add('wrong');
+            btn.innerHTML += '<span class="badge">❌</span>';
+        }
+    });
+
+    // Show explanation
+    var expDiv = document.getElementById('expContainer');
+    expDiv.innerHTML = '<div class="exp-box fade-up"><div class="exp-label">' +
+        (isCorrect ? '✅ أحسنت!' : '💡 الشرح') +
+        '</div><div class="exp-text">' + q.explanation.replace(/\n/g, '<br>') + '</div></div>';
+    expDiv.classList.remove('hidden');
+
+    // Show next button
+    document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion() {
+    currentQ++;
+    if (currentQ >= 5) {
+        showResults();
+    } else {
+        document.getElementById('quizScreen').classList.remove('fade-up');
+        void document.getElementById('quizScreen').offsetWidth;
+        document.getElementById('quizScreen').classList.add('fade-up');
+        showQuestion();
+    }
+}
+
+function showResults() {
+    document.getElementById('quizScreen').classList.add('hidden');
+    var screen = document.getElementById('resultScreen');
+    screen.classList.remove('hidden');
+
+    document.getElementById('scoreNum').textContent = score;
+
+    // حفظ أن الزائر أكمل التجربة
+    localStorage.setItem('madarek_demo_done', JSON.stringify({score: score, total: 5, time: Date.now()}));
+
+    // 🔥 popup تحويلي — بعد الديمو (مرة وحدة بس للأبد)
+    if(typeof showConvPopup === 'function') showConvPopup();
+    // 📲 popup تحميل التطبيق — بس لو التحويلي ما طلع
+    if(!_convPopupShown) setTimeout(function(){ showAppPopup(); }, 10000);
+
+    // Ring color based on score (out of 5)
+    var ring = document.getElementById('scoreRing');
+    if (score >= 4) {
+        ring.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))';
+        ring.style.border = '3px solid rgba(16,185,129,0.5)';
+        document.getElementById('scoreMsg').textContent = 'ما شاء الله عليك! 🔥';
+        document.getElementById('scoreDesc').textContent = 'مستواك ممتاز — خلك على هالمستوى مع تدريب مستمر';
+    } else if (score === 3) {
+        ring.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05))';
+        ring.style.border = '3px solid rgba(251,191,36,0.5)';
+        document.getElementById('scoreMsg').textContent = 'أداء جيد! 💪';
+        document.getElementById('scoreDesc').textContent = 'قريب من الكمال — شوي تدريب وتوصل';
+    } else if (score === 2) {
+        ring.style.background = 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))';
+        ring.style.border = '3px solid rgba(139,92,246,0.5)';
+        document.getElementById('scoreMsg').textContent = 'بداية حلوة! ⚡';
+        document.getElementById('scoreDesc').textContent = 'كل خبير بدأ من هنا — المهم تبدأ وتستمر';
+    } else {
+        ring.style.background = 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))';
+        ring.style.border = '3px solid rgba(139,92,246,0.5)';
+        document.getElementById('scoreMsg').textContent = 'يلا نبدأ المشوار! 🚀';
+        document.getElementById('scoreDesc').textContent = 'الحين عرفت وين تحتاج تركّز — هذا أول خطوة';
+    }
+}
+
+// 🌙 جلب عرض رمضان من site_settings (بدون مكتبة Supabase — fetch خفيف)
+(function(){
+    var AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+    fetch('https://czzcmbxejxbotjemyuqf.supabase.co/rest/v1/site_settings?select=key,value',{
+        headers:{'apikey':AK,'Authorization':'Bearer '+AK}
+    }).then(function(r){return r.json()}).then(function(data){
+        var s={};data.forEach(function(r){s[r.key]=r.value});
+        var mOrig=parseInt(s.price_monthly_original)||0;
+        var mCurrent=parseInt(s.price_monthly_current)||0;
+        var discPct=parseInt(s.discount_percent)||0;
+        // حساب السعر النهائي
+        var mNow;
+        if(discPct>0&&mOrig>0) mNow=Math.round(mOrig*(100-discPct)/100);
+        else if(mCurrent>0) mNow=mCurrent;
+        else mNow=mOrig;
+        // نعرض العرض فقط لو في خصم فعلي (السعر الأصلي أكبر من الحالي)
+        if(mOrig>0&&mNow<mOrig){
+            var el1=document.getElementById('demo-orig-price');
+            var el2=document.getElementById('demo-new-price');
+            var offer=document.getElementById('ramadanOffer');
+            if(el1) el1.textContent=mOrig+' ريال';
+            if(el2) el2.textContent=mNow;
+            if(offer) offer.classList.remove('hidden');
+        }
+    }).catch(function(){});
+})();
+
+// تتبع: لو الزائر رجع بعد ما جرب — نعرض له رسالة مختلفة
+window.addEventListener('DOMContentLoaded', function() {
+    var prev = localStorage.getItem('madarek_demo_done');
+    if (prev) {
+        try {
+            var d = JSON.parse(prev);
+            var intro = document.getElementById('introScreen');
+            intro.innerHTML = '<span class="text-6xl block mb-4">👋</span>' +
+                '<h1 class="text-3xl font-black mb-3">أهلاً مرة ثانية!</h1>' +
+                '<p class="text-purple-200/70 text-sm mb-2">سبق وجربت المنصة — نتيجتك كانت <span class="text-white font-bold">' + d.score + '/5</span></p>' +
+                '<p class="text-purple-200/50 text-xs mb-8">جاهز تبدأ رحلتك الحقيقية؟</p>' +
+                '<a href="pricing.html" class="btn-primary inline-block px-10 py-4 rounded-xl font-bold text-base mb-4">' + (document.documentElement.classList.contains('in-app') ? 'سجّل معنا' : 'اشترك الآن وكمّل مشوارك ✨') + '</a>' +
+                '<br><button onclick="resetDemo()" class="text-purple-200/40 text-xs hover:text-purple-300 transition mt-3">أو جرّب مرة ثانية ↻</button>';
+        } catch(e) {}
+    }
+});
+
+function resetDemo() {
+    localStorage.removeItem('madarek_demo_done');
+    location.reload();
+}
+</script>
+<script src="analytics.js"></script>
+
+<!-- 🔥 Popup تحويلي — QUDRAT30 بعد التجربة -->
+<style>
+@keyframes convSlideUp{0%{opacity:0;transform:translateY(40px) scale(0.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes convPulse{0%,100%{box-shadow:0 8px 40px rgba(139,92,246,0.25)}50%{box-shadow:0 14px 50px rgba(139,92,246,0.45)}}
+@keyframes convShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes convTick{0%{opacity:0.5}50%{opacity:1}100%{opacity:0.5}}
+#conv-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(5px);z-index:9997;display:none;align-items:center;justify-content:center;padding:16px}
+#conv-overlay.show{display:flex}
+#conv-popup{position:relative;width:380px;max-width:100%;background:linear-gradient(160deg,#13103a,#1e1555,#13103a);border:1.5px solid rgba(139,92,246,0.25);border-radius:24px;padding:30px 24px 26px;text-align:center;animation:convSlideUp 0.5s ease,convPulse 3s ease-in-out infinite;direction:rtl;font-family:'Tajawal',sans-serif;overflow:hidden}
+#conv-popup::before{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,0.12),transparent 65%);pointer-events:none}
+.conv-close{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5;line-height:1}
+.conv-close:hover{color:#fff;background:rgba(255,255,255,0.12)}
+.conv-score{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:8px 18px;margin-bottom:16px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:#a5b4fc}
+.conv-title{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;line-height:1.4}
+.conv-desc{font-size:15px;color:#fff;line-height:1.8;margin-bottom:20px;font-weight:500}
+.conv-coupon-box{background:rgba(139,92,246,0.08);border:1.5px dashed rgba(139,92,246,0.35);border-radius:14px;padding:14px;margin-bottom:18px}
+.conv-coupon-label{font-size:12px;color:rgba(196,181,253,0.5);margin-bottom:6px}
+.conv-coupon-code{font-family:'Cairo',sans-serif;font-size:26px;font-weight:900;letter-spacing:3px;background:linear-gradient(110deg,#c4b5fd,#818cf8,#c4b5fd);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:convShimmer 4s linear infinite}
+.conv-coupon-discount{font-size:18px;font-weight:900;color:#fb923c;margin-top:6px}
+.conv-coupon-code{cursor:pointer;position:relative;transition:transform .15s}
+.conv-coupon-code:active{transform:scale(0.95)}
+.conv-copied{position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;font-size:12px;padding:4px 12px;border-radius:8px;white-space:nowrap;animation:convFadeOut 1.5s ease forwards;-webkit-text-fill-color:#fff}
+@keyframes convFadeOut{0%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+.conv-motivate{font-size:12.5px;color:rgba(251,146,60,0.8);margin-bottom:10px;font-weight:600}
+.conv-timer{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px}
+.conv-timer-block{background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);border-radius:10px;padding:6px 10px;min-width:52px;text-align:center}
+.conv-timer-num{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;color:#fb923c;animation:convTick 1s ease-in-out infinite}
+.conv-timer-label{font-size:10px;color:rgba(251,146,60,0.45);margin-top:2px}
+.conv-timer-sep{font-size:20px;font-weight:900;color:rgba(251,146,60,0.3)}
+.conv-cta{display:block;width:100%;padding:14px;border-radius:14px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;color:#fff;background:linear-gradient(135deg,#f97316,#fb923c,#f59e0b);border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 25px rgba(249,115,22,0.4);text-decoration:none;text-align:center}
+.conv-cta:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(249,115,22,0.5)}
+@media(max-width:400px){#conv-popup{padding:24px 18px 22px}.conv-title{font-size:19px}.conv-coupon-code{font-size:22px}}
+</style>
+
+<div id="conv-overlay">
+    <div id="conv-popup">
+        <button class="conv-close" id="conv-close-btn">✕</button>
+        <div class="conv-score" id="conv-score">📊 نتيجتك: 0 من 5</div>
+        <h3 class="conv-title">تبي تتحسّن؟</h3>
+        <p class="conv-desc">آلاف الأسئلة من التجميعات والتسريبات القريبة — تتفاعل معاك وتتحدّث باستمرار</p>
+        <div class="conv-coupon-box">
+            <p class="conv-coupon-label">كود خصم خاص لك — اضغط للنسخ</p>
+            <p class="conv-coupon-code" id="conv-code" onclick="var c=this;navigator.clipboard.writeText('QUDRAT30').then(function(){var s=document.createElement('span');s.className='conv-copied';s.textContent='✅ تم النسخ!';c.style.position='relative';c.appendChild(s);setTimeout(function(){s.remove()},1500)})">QUDRAT30</p>
+            <p class="conv-coupon-discount">خصم <span style="font-size:24px;font-weight:900">30%</span> على جميع الباقات</p>
+        </div>
+        <p class="conv-motivate">لأنك ضيف علينا أول مرة — عرضك الخاص ينتهي خلال:</p>
+        <div class="conv-timer">
+            <div class="conv-timer-block"><div class="conv-timer-num" id="conv-hrs">48</div><div class="conv-timer-label">ساعة</div></div>
+            <span class="conv-timer-sep">:</span>
+            <div class="conv-timer-block"><div class="conv-timer-num" id="conv-mins">00</div><div class="conv-timer-label">دقيقة</div></div>
+            <span class="conv-timer-sep">:</span>
+            <div class="conv-timer-block"><div class="conv-timer-num" id="conv-secs">00</div><div class="conv-timer-label">ثانية</div></div>
+        </div>
+        <a href="pricing.html?coupon=QUDRAT30" class="conv-cta">اشترك الحين ✨</a>
+    </div>
+</div>
+
+<script>
+// بوب أب تحويلي — يتفعل من showResults()
+var _convPopupShown = false;
+function showConvPopup(){
+    if(_convPopupShown) return;
+    _convPopupShown = true;
+
+    // لا تظهر لو طلع قبل كذا (localStorage = مرة وحدة بس للأبد)
+    if(localStorage.getItem('madarek_conv_shown')) return;
+
+    // نتيجة الطالب
+    var demoData = JSON.parse(localStorage.getItem('madarek_demo_done') || '{}');
+    var el = document.getElementById('conv-score');
+    if(el && demoData.score !== undefined) el.textContent = '📊 نتيجتك: ' + demoData.score + ' من 5';
+
+    // عداد 48 ساعة — يكمل حتى لو أغلق
+    var TIMER_KEY = 'madarek_conv_timer_start';
+    var DURATION = 48 * 60 * 60 * 1000;
+    var startTime = parseInt(localStorage.getItem(TIMER_KEY) || '0');
+    if(!startTime || Date.now() - startTime > DURATION){
+        startTime = Date.now();
+        localStorage.setItem(TIMER_KEY, String(startTime));
+    }
+    function tick(){
+        var rem = Math.max(0, DURATION - (Date.now() - startTime));
+        var h = Math.floor(rem/3600000), m = Math.floor((rem%3600000)/60000), s = Math.floor((rem%60000)/1000);
+        document.getElementById('conv-hrs').textContent = h<10?'0'+h:h;
+        document.getElementById('conv-mins').textContent = m<10?'0'+m:m;
+        document.getElementById('conv-secs').textContent = s<10?'0'+s:s;
+    }
+    tick();
+    var tInt = setInterval(tick, 1000);
+
+    setTimeout(function(){
+        document.getElementById('conv-overlay').classList.add('show');
+
+        document.getElementById('conv-close-btn').onclick = function(){
+            localStorage.setItem('madarek_conv_shown','1');
+            var ov = document.getElementById('conv-overlay');
+            ov.style.transition='opacity .3s'; ov.style.opacity='0';
+            setTimeout(function(){ ov.classList.remove('show'); ov.style.opacity=''; clearInterval(tInt); }, 300);
+        };
+        document.getElementById('conv-overlay').onclick = function(e){
+            if(e.target === this) document.getElementById('conv-close-btn').click();
+        };
+    }, 2000);
+}
+</script>
+
+<!-- 📲 Popup تحميل التطبيق -->
+<style>
+@keyframes appPopSlide{0%{opacity:0;transform:translate(-50%,30px) scale(0.95)}100%{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes appPopGlow{0%,100%{box-shadow:0 8px 40px rgba(99,102,241,0.25)}50%{box-shadow:0 12px 50px rgba(99,102,241,0.4)}}
+@keyframes appPhoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#app-dl-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:9998;display:none;align-items:center;justify-content:center}
+#app-dl-overlay.show{display:flex}
+#app-dl-popup{position:relative;width:360px;max-width:calc(100vw - 28px);background:linear-gradient(160deg,#13103a,#1a1450,#13103a);border:1.5px solid rgba(99,102,241,0.2);border-radius:24px;padding:32px 24px 28px;text-align:center;animation:appPopSlide 0.5s ease,appPopGlow 3s ease-in-out infinite;direction:rtl;font-family:'Tajawal',sans-serif;overflow:hidden}
+#app-dl-popup::before{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,0.1),transparent 70%);pointer-events:none}
+#app-dl-popup .adl-close{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5;line-height:1}
+#app-dl-popup .adl-close:hover{color:#fff;background:rgba(255,255,255,0.12)}
+#app-dl-popup .adl-phone{font-size:64px;display:block;margin-bottom:16px;animation:appPhoneFloat 3s ease-in-out infinite}
+#app-dl-popup .adl-title{font-family:'Cairo',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:10px;line-height:1.4}
+#app-dl-popup .adl-desc{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:24px}
+#app-dl-popup .adl-stores{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#app-dl-popup .adl-store{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:14px;font-size:14px;font-weight:700;color:#fff;text-decoration:none;transition:all .25s}
+#app-dl-popup .adl-store:hover{transform:translateY(-2px)}
+#app-dl-popup .adl-ios{background:linear-gradient(135deg,#1e1b4b,#312e81);border:1.5px solid rgba(99,102,241,0.3)}
+#app-dl-popup .adl-ios:hover{box-shadow:0 6px 20px rgba(99,102,241,0.35)}
+#app-dl-popup .adl-android{background:linear-gradient(135deg,#064e3b,#065f46);border:1.5px solid rgba(16,185,129,0.3)}
+#app-dl-popup .adl-android:hover{box-shadow:0 6px 20px rgba(16,185,129,0.35)}
+@media(max-width:400px){
+  #app-dl-popup{padding:26px 18px 22px}
+  #app-dl-popup .adl-title{font-size:18px}
+  #app-dl-popup .adl-store{padding:10px 16px;font-size:13px}
+}
+</style>
+
+<div id="app-dl-overlay">
+    <div id="app-dl-popup">
+        <button class="adl-close" id="adl-close-btn">✕</button>
+        <span class="adl-phone">📲</span>
+        <h3 class="adl-title">ذاكر في أي مكان وما تفوتك مسألة 📲</h3>
+        <p class="adl-desc">حمّل التطبيق وخذ مدارك معك — إشعارات يومية، أسئلة، ونتائجك في جيبك</p>
+        <div class="adl-stores">
+            <a href="https://apps.apple.com/ca/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" class="adl-store adl-ios">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                App Store
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" class="adl-store adl-android">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M3.18 23.54L14.44 12 3.18.46C2.68.96 2.5 1.78 2.5 2.63v18.74c0 .85.18 1.67.68 2.17zM16.12 13.67L5.44 24l13.2-7.6-2.52-2.73zm2.44-2.44L21.5 12l-2.94 1.7-2.7-2.47 2.7-2zm-2.52-2.56L5.44 0l10.68 10.33 2.52-2.73z"/></svg>
+                Google Play
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function showAppPopup(){
+    // لا تعرض داخل التطبيق
+    if(document.documentElement.classList.contains('in-app')) return;
+
+    // مرة كل 3 أيام
+    var KEY = 'madarek_app_popup_last';
+    var last = parseInt(localStorage.getItem(KEY) || '0');
+    var threeDays = 3 * 24 * 60 * 60 * 1000;
+    if(Date.now() - last < threeDays) return;
+
+    localStorage.setItem(KEY, Date.now());
+    var overlay = document.getElementById('app-dl-overlay');
+    overlay.classList.add('show');
+
+    document.getElementById('adl-close-btn').onclick = function(){
+        overlay.style.transition = 'opacity .3s';
+        overlay.style.opacity = '0';
+        setTimeout(function(){ overlay.classList.remove('show'); overlay.style.opacity = ''; }, 300);
+    };
+
+    overlay.onclick = function(e){
+        if(e.target === overlay) document.getElementById('adl-close-btn').click();
+    };
+}
+</script>
+</body>
+</html>

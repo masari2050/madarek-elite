@@ -313,40 +313,52 @@ if (params.get('ref')) {
 }
 
 document.body.dataset.screen = 's-trial';
+// ── 5 أسئلة ثابتة (hard-coded — مختارة بعناية، نفسها لكل زائر) ──
+const FIXED_TRIAL_QUESTIONS = [
+    {
+        section: 'quant',
+        question_text: 'إذا كان س + ص = 10، وس × ص = 24، فما قيمة س² + ص²؟',
+        choices: ['52', '48', '60', '44'],
+        correct_idx: 0,
+        explanation: 'س² + ص² = (س + ص)² − 2سص = 10² − 2(24) = 100 − 48 = 52'
+    },
+    {
+        section: 'verbal',
+        question_text: 'اختر الكلمة التي تختلف عن المجموعة: قلم، مسطرة، كتاب، مقص',
+        choices: ['قلم', 'مسطرة', 'كتاب', 'مقص'],
+        correct_idx: 2,
+        explanation: 'الكتاب مصدر معلومات، أما القلم والمسطرة والمقص فهي أدوات.'
+    },
+    {
+        section: 'tahsili',
+        question_text: 'ما عدد الإلكترونات في الغلاف الخارجي لذرة الكلور (العدد الذري 17)؟',
+        choices: ['2', '5', '7', '8'],
+        correct_idx: 2,
+        explanation: 'توزيع إلكترونات الكلور: 2، 8، 7. الغلاف الخارجي يحتوي على 7 إلكترونات.'
+    },
+    {
+        section: 'quant',
+        question_text: 'تاجر اشترى سلعة بـ 200 ريال وباعها بخسارة 15%، ثم أعاد شراءها بسعر البيع وباعها بربح 20%. كم ربح أو خسر في المجموع؟',
+        choices: ['ربح 4 ريال', 'خسر 4 ريال', 'ربح 2 ريال', 'لم يربح ولم يخسر'],
+        correct_idx: 0,
+        explanation: 'باع أولاً بـ 200×0.85=170 (خسر 30). أعاد الشراء بـ 170 وباع بـ 170×1.20=204 (ربح 34). الإجمالي: 34−30 = ربح 4 ريال.'
+    },
+    {
+        section: 'verbal',
+        question_text: 'أكمل التناظر: ساعة : وقت = ميزان : ____',
+        choices: ['ذهب', 'وزن', 'عدل', 'تجارة'],
+        correct_idx: 1,
+        explanation: 'الساعة تقيس الوقت، والميزان يقيس الوزن. العلاقة: أداة قياس وما تقيسه.'
+    }
+];
+
 startTrial();
 
-async function startTrial() {
+function startTrial() {
     currentQ = 0;
     trialCorrect = 0;
-    try {
-        const SAFE_COLS = 'id,question_text,choices,image_url,section,sub_section,topic,passage_id,passage_text,passage_order,explanation';
-        const { data: qData } = await sb
-            .from('questions')
-            .select(SAFE_COLS)
-            .eq('disabled', false)
-            .is('passage_id', null)
-            .limit(100);
-
-        if (!qData || qData.length < 5) {
-            const { data: fallback } = await sb
-                .from('questions')
-                .select(SAFE_COLS)
-                .eq('disabled', false)
-                .limit(50);
-            trialQuestions = shuffle(fallback || []).slice(0, 5);
-        } else {
-            trialQuestions = shuffle(qData).slice(0, 5);
-        }
-
-        if (trialQuestions.length === 0) {
-            document.getElementById('trialArea').innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--i3)">لا توجد أسئلة حالياً — جرب لاحقاً</div>';
-            return;
-        }
-
-        renderTrialQuestion();
-    } catch(e) {
-        document.getElementById('trialArea').innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--dng)">حدث خطأ — جرب مرة ثانية</div>';
-    }
+    trialQuestions = FIXED_TRIAL_QUESTIONS;
+    renderTrialQuestion();
 }
 
 function renderTrialQuestion() {
@@ -396,12 +408,8 @@ window.trialAnswer = async function(btn, idx) {
     });
 
     const q = trialQuestions[currentQ];
-    let isCorrect = false;
-    try {
-        const { data } = await sb.rpc('check_answer', { q_id: q.id, selected_answer: idx });
-        isCorrect = data === true;
-    } catch(e) { isCorrect = false; }
-
+    // فحص محلي (الإجابات معرّفة في FIXED_TRIAL_QUESTIONS)
+    const isCorrect = (idx === q.correct_idx);
     if (isCorrect) trialCorrect++;
 
     btn.classList.remove('picked');
