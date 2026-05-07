@@ -196,9 +196,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <div class="bottom">
-  ما عندك حساب؟ <a href="register-v2.html">سجّل الآن</a>
+  ما عندك حساب؟ <a href="/register.html">سجّل الآن</a>
 </div>
-<a href="welcome-v2.html" class="back">← العودة للرئيسية</a>
+<a href="/" class="back">← العودة للرئيسية</a>
 
 <!-- FORGOT PASSWORD MODAL -->
 <div class="mdl" id="forgotModal">
@@ -275,7 +275,7 @@ if(!_isRecoveryUrl){
       var r=await sb.auth.getSession();
       if(r.data&&r.data.session){
         if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(e){}}
-        window.location.href='dashboard-v2.html';
+        window.location.href='/dashboard.html';
       }
     }catch(e){}
   })();
@@ -301,7 +301,7 @@ window.loginBio=async function(){
   var status=await window._biometric.authenticate();
   if(status==='success'){
     var r=await sb.auth.getSession();
-    if(r.data&&r.data.session){window.location.href='dashboard-v2.html';}
+    if(r.data&&r.data.session){window.location.href='/dashboard.html';}
     else{toast('جلستك انتهت — سجّل دخول بالبريد','err');}
   }else if(status==='failed'){toast('البصمة ما نجحت — جرّب مرة ثانية','err');}
 };
@@ -379,7 +379,7 @@ window.saveNewPass=async function(){
       if(r.error)throw r.error;
     }else if(error){throw error;}
     m.textContent='تم تغيير كلمة المرور بنجاح ✓';m.className='mdl-msg ok on';
-    setTimeout(function(){window.location.href='dashboard-v2.html';},1200);
+    setTimeout(function(){window.location.href='/dashboard.html';},1200);
   }catch(e){
     var mm=e.message||'';
     m.textContent=(mm.includes('expired')||mm.includes('JWT')||mm.includes('session'))?'انتهت صلاحية الرابط — اطلب رابط جديد':'ما قدرنا نغيّر — حاول مرة ثانية';
@@ -408,7 +408,7 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
     try{localStorage.setItem('khawariz_user',JSON.stringify({id:data.user.id,email:data.user.email,name:data.user.user_metadata?.name||''}));}catch(_){}
     if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(_){}}
     btn.innerHTML='<span>تم! جاري التحويل...</span>';
-    setTimeout(function(){window.location.href='dashboard-v2.html';},600);
+    setTimeout(function(){window.location.href='/dashboard.html';},600);
   }catch(err){
     _attempts++;
     if(_attempts>=10){_locked=true;_lockTime=Date.now()+120000;toast('كثرت المحاولات — حاول بعد دقيقتين','err');}

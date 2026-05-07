@@ -228,7 +228,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <h3>التسريبات حصرية للمشتركين</h3>
   <p>احصل على أحدث الأسئلة الحقيقية من اختبارات هذا الشهر مع شروحات مفصّلة — متاحة فقط مع الاشتراك الشهري أو السنوي</p>
-  <a class="lk-locked-cta" href="v2/pricing-v2.html">اشترك الآن</a>
+  <a class="lk-locked-cta" href="/pricing.html">اشترك الآن</a>
 </div>
 
 <!-- PRETITLE — للمستخدم غير المشترك (X مجموعة بانتظارك) -->
@@ -533,11 +533,11 @@ window.openLeak = function(leakId, section, count) {
     const curQs = new URLSearchParams(window.location.search);
     if (curQs.has('preview')) params.set('preview','1');
     if (curQs.get('force_subscriber') === 'true') params.set('force_subscriber','true');
-    window.location.href = 'practice-v2.html?' + params.toString();
+    window.location.href = '/practice.html?' + params.toString();
 };
 
 window.goPricing = function() {
-    window.location.href = 'pricing-v2.html';
+    window.location.href = '/pricing.html';
 };
 
 function esc(s) {

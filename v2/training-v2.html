@@ -202,7 +202,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <h3>افتح التدريب وارفع مستواك بسرعة</h3>
   <p>كل بنك الأسئلة + التحليل الذكي + التسريبات الرسمية + شرح مفصّل لكل سؤال — مع ضمان رضاك</p>
-  <a href="pricing-v2.html" class="sub-cta">
+  <a href="/pricing.html" class="sub-cta">
     اشترك الآن
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </a>
@@ -391,11 +391,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="ni on" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
-  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>التسريبات</span></a>
-  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
-  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
-  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+  <a class="ni on" href="/training.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="/leaks.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="/dashboard.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="/reports.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="/profile.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -437,7 +437,7 @@ async function init() {
         loadPreview();
         return;
     } else {
-        const user = await M.requireAuth('login-v2.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
@@ -635,7 +635,7 @@ window.startPractice = function() {
     const cur = new URLSearchParams(window.location.search);
     if (cur.has('preview')) params.set('preview','1');
     if (cur.get('force_subscriber') === 'true') params.set('force_subscriber','true');
-    window.location.href = 'practice-v2.html?' + params.toString();
+    window.location.href = '/practice.html?' + params.toString();
 };
 
 window.comingSoon = function() {

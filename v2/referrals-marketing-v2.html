@@ -363,7 +363,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
       أنشئ حسابي وابدأ أربح
     </button>
     <div class="cta-bottom">
-      عندك حساب؟ <a href="login-v2.html">سجّل دخول</a>
+      عندك حساب؟ <a href="/login.html">سجّل دخول</a>
     </div>
   </div>
 
@@ -399,7 +399,7 @@ function getReferralCode(){
 // ═══ الانتقال للتسجيل مع تمرير الكود ═══
 function goRegister(){
   var code = getReferralCode();
-  var dest = 'register-v2.html';
+  var dest = '/register.html';
   if (code) dest += '?ref=' + encodeURIComponent(code);
   window.location.href = dest;
 }

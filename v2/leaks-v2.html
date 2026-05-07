@@ -172,7 +172,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <h3>التسريبات حصرية للمشتركين</h3>
   <p>احصل على أحدث الأسئلة الحقيقية من اختبارات هذا الشهر مع شروحات مفصّلة — متاحة فقط مع الاشتراك الشهري أو السنوي</p>
-  <a class="lk-locked-cta" href="pricing-v2.html">اشترك الآن</a>
+  <a class="lk-locked-cta" href="/pricing.html">اشترك الآن</a>
 </div>
 
 <!-- PRETITLE — للمستخدم غير المشترك (X مجموعة بانتظارك) -->
@@ -210,11 +210,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
-  <a class="ni on" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
-  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
-  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
-  <a class="ni" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+  <a class="ni" href="/training.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni on" href="/leaks.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="/dashboard.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="/reports.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="/profile.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -258,7 +258,7 @@ async function init() {
         const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
         profile = p || { id:'mock-user-00000000', subscription_type:'monthly' };
     } else {
-        const user = await M.requireAuth('login-v2.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
@@ -477,11 +477,11 @@ window.openLeak = function(leakId, section, count) {
     const curQs = new URLSearchParams(window.location.search);
     if (curQs.has('preview')) params.set('preview','1');
     if (curQs.get('force_subscriber') === 'true') params.set('force_subscriber','true');
-    window.location.href = 'practice-v2.html?' + params.toString();
+    window.location.href = '/practice.html?' + params.toString();
 };
 
 window.goPricing = function() {
-    window.location.href = 'pricing-v2.html';
+    window.location.href = '/pricing.html';
 };
 
 function esc(s) {

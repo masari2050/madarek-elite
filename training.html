@@ -258,7 +258,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <h3>افتح التدريب وارفع مستواك بسرعة</h3>
   <p>كل بنك الأسئلة + التحليل الذكي + التسريبات الرسمية + شرح مفصّل لكل سؤال — مع ضمان رضاك</p>
-  <a href="v2/pricing-v2.html" class="sub-cta">
+  <a href="/pricing.html" class="sub-cta">
     اشترك الآن
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </a>
@@ -691,7 +691,7 @@ window.startPractice = function() {
     const cur = new URLSearchParams(window.location.search);
     if (cur.has('preview')) params.set('preview','1');
     if (cur.get('force_subscriber') === 'true') params.set('force_subscriber','true');
-    window.location.href = 'practice-v2.html?' + params.toString();
+    window.location.href = '/practice.html?' + params.toString();
 };
 
 window.comingSoon = function() {

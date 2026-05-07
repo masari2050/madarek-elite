@@ -445,7 +445,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- ═══ REFERRAL ═══ -->
-<div class="ref-card" onclick="location.href='referrals-v2.html'">
+<div class="ref-card" onclick="location.href='/referrals.html'">
   <div class="ref-row">
     <div class="ref-ic">
       <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
@@ -1045,7 +1045,7 @@ window.toggleLead = async function(el) {
                          +     'أنت في المرتبة #'+myRank
                          +   '</div>'
                          +   '<div class="outside-banner-xp">XP '+myXp+' — تحتاج '+gap+' XP لتدخل الـ top 50</div>'
-                         +   '<button class="outside-banner-cta" onclick="location.href=\'training-v2.html\'">'
+                         +   '<button class="outside-banner-cta" onclick="location.href=\'/training.html\'">'
                          +     '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
                          +     'يلا تدرب'
                          +   '</button>'
@@ -1291,7 +1291,7 @@ window.changePassword = async function() {
     else { if (M.showToast) M.showToast('تم تحديث كلمة المرور', 'success'); }
 };
 
-window.goPlan = function() { location.href = isSubscribed() ? 'pricing-v2.html' : 'pricing-v2.html'; };
+window.goPlan = function() { location.href = isSubscribed() ? '/pricing.html' : '/pricing.html'; };
 window.openWA = async function() {
     let num = '966553339885';
     try {

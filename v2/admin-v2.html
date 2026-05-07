@@ -471,7 +471,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="preview-mock.js"></script>
 <script src="supabase-helpers-v2.js"></script>
-<script src="admin-v2-sections.js"></script>
+<script src="admin-sections.js"></script>
 <script src="whatsapp-float.js"></script>
 <script>
 (function(){
@@ -502,11 +502,11 @@ async function init() {
     }
 
     // Auth + admin check
-    const user = await M.requireAuth('admin-login-v2.html');
+    const user = await M.requireAuth('/admin-login.html');
     if (!user) return;
     profile = await M.getProfile();
     if (!profile || !['admin','staff'].includes(profile.role)) {
-        document.body.innerHTML = '<div class="access-denied"><div class="access-denied-ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h1>غير مسموح</h1><p>هذه الصفحة للمدراء فقط</p><a class="btn btn-pri" href="dashboard-v2.html">الرجوع للتطبيق</a></div>';
+        document.body.innerHTML = '<div class="access-denied"><div class="access-denied-ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h1>غير مسموح</h1><p>هذه الصفحة للمدراء فقط</p><a class="btn btn-pri" href="/dashboard.html">الرجوع للتطبيق</a></div>';
         return;
     }
     window.A.profile = profile;

@@ -142,7 +142,7 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
-  <a href="login-v2.html" class="back">← دخول المشتركين</a>
+  <a href="/login.html" class="back">← دخول المشتركين</a>
 </div>
 
 <!-- FORGOT PASSWORD MODAL -->
@@ -213,7 +213,7 @@ if(!_isRecoveryUrl){
       var s=await sb.auth.getSession();
       if(s.data&&s.data.session){
         var ok=await ensureAdmin(s.data.session.user.id).catch(function(){return null;});
-        if(ok){window.location.href='admin-v2.html';}
+        if(ok){window.location.href='/admin.html';}
       }
     }catch(e){}
   })();
@@ -279,7 +279,7 @@ window.saveNewPass=async function(){
     var {error}=await sb.auth.updateUser({password:p1});
     if(error)throw error;
     m.textContent='تم تغيير كلمة المرور ✓';m.className='mdl-msg ok on';
-    setTimeout(function(){window.location.href='admin-v2.html';},1200);
+    setTimeout(function(){window.location.href='/admin.html';},1200);
   }catch(e){
     var mm=e.message||'';
     m.textContent=(mm.indexOf('expired')>-1||mm.indexOf('JWT')>-1||mm.indexOf('session')>-1)?'انتهت صلاحية الرابط — اطلب رابط جديد':'ما قدرنا نغيّر — حاول مرة ثانية';
@@ -311,7 +311,7 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
     }
     _attempts=0;
     btn.innerHTML='<span>تم — جاري التحويل...</span>';
-    setTimeout(function(){window.location.href='admin-v2.html';},500);
+    setTimeout(function(){window.location.href='/admin.html';},500);
   }catch(err){
     _attempts++;
     if(_attempts>=10){_locked=true;_lockTime=Date.now()+120000;toast('كثرت المحاولات — حاول بعد دقيقتين','err');}

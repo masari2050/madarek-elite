@@ -389,7 +389,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- ═══ REFERRAL ═══ -->
-<div class="ref-card" onclick="location.href='referrals-v2.html'">
+<div class="ref-card" onclick="location.href='/referrals.html'">
   <div class="ref-row">
     <div class="ref-ic">
       <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
@@ -598,11 +598,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <nav class="nav">
-  <a class="ni" href="training-v2.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
-  <a class="ni" href="leaks-v2.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
-  <a class="ni" href="dashboard-v2.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
-  <a class="ni" href="reports-v2.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
-  <a class="ni on" href="profile-v2.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+  <a class="ni" href="/training.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="/leaks.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="/dashboard.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="/reports.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni on" href="/profile.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -670,7 +670,7 @@ async function init() {
     } else if (isPreview) {
         loadPreviewProfile();
     } else {
-        const user = await M.requireAuth('login-v2.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
@@ -989,7 +989,7 @@ window.toggleLead = async function(el) {
                          +     'أنت في المرتبة #'+myRank
                          +   '</div>'
                          +   '<div class="outside-banner-xp">XP '+myXp+' — تحتاج '+gap+' XP لتدخل الـ top 50</div>'
-                         +   '<button class="outside-banner-cta" onclick="location.href=\'training-v2.html\'">'
+                         +   '<button class="outside-banner-cta" onclick="location.href=\'/training.html\'">'
                          +     '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
                          +     'يلا تدرب'
                          +   '</button>'
@@ -1235,7 +1235,7 @@ window.changePassword = async function() {
     else { if (M.showToast) M.showToast('تم تحديث كلمة المرور', 'success'); }
 };
 
-window.goPlan = function() { location.href = isSubscribed() ? 'pricing-v2.html' : 'pricing-v2.html'; };
+window.goPlan = function() { location.href = isSubscribed() ? '/pricing.html' : '/pricing.html'; };
 window.openWA = async function() {
     let num = '966553339885';
     try {

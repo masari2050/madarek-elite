@@ -509,7 +509,7 @@ function hideOverlay(){ $('overlay').classList.remove('on'); }
 
 function goBack(){
   if (history.length > 1) history.back();
-  else window.location.href = 'welcome-v2.html';
+  else window.location.href = '/';
 }
 
 // ═══ Auth + redirect logic ═══════════════════════════════
@@ -538,8 +538,8 @@ async function init(){
   } catch(_) {}
 
   if (!user) {
-    const next = encodeURIComponent('pricing-v2.html');
-    window.location.href = 'login-v2.html?next=' + next;
+    const next = encodeURIComponent('/pricing.html');
+    window.location.href = '/login.html?next=' + next;
     return;
   }
   currentUser = user;
@@ -554,7 +554,7 @@ async function init(){
       const end = prof.subscription_end ? new Date(prof.subscription_end) : null;
       if (!end || end > new Date()) {
         showToast('اشتراكك مفعّل بالفعل', 'ok');
-        setTimeout(()=> window.location.href = 'dashboard-v2.html', 1200);
+        setTimeout(()=> window.location.href = '/dashboard.html', 1200);
         return;
       }
     }
@@ -824,7 +824,7 @@ window.subscribe = async function(){
         'تم تفعيل اشتراكك',
         `خطة ${data.plan === 'yearly' ? 'سنوي' : data.plan === 'quarterly' ? '3 شهور' : 'شهري'} — صالحة حتى ${data.expires}`
       );
-      setTimeout(()=> window.location.href = 'dashboard-v2.html', 2200);
+      setTimeout(()=> window.location.href = '/dashboard.html', 2200);
       return;
     }
 

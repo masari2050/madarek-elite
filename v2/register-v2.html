@@ -272,9 +272,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <div class="bottom">
-  عندك حساب؟ <a href="login-v2.html">سجّل دخول</a>
+  عندك حساب؟ <a href="/login.html">سجّل دخول</a>
 </div>
-<a href="welcome-v2.html" class="back">← العودة للرئيسية</a>
+<a href="/" class="back">← العودة للرئيسية</a>
 
 </div><!-- /mainScr -->
 
@@ -287,7 +287,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="success-p">أرسلنا رابط تأكيد إلى:</div>
   <div class="success-email" id="successEmail">—</div>
   <div class="success-p">افتح بريدك واضغط على رابط التأكيد<br>ثم ارجع هنا وسجّل دخول</div>
-  <a href="login-v2.html" class="submit" style="margin-top:22px;text-decoration:none;display:flex">
+  <a href="/login.html" class="submit" style="margin-top:22px;text-decoration:none;display:flex">
     <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
     <span>الذهاب لتسجيل الدخول</span>
   </a>
@@ -443,7 +443,7 @@ function getRedirect(){
   var r=params.get('redirect');
   if(r&&ALLOWED.indexOf(r)===-1)r=null;
   if(r==='pricing'&&urlCoupon)return 'pricing.html?coupon='+encodeURIComponent(urlCoupon);
-  if(r==='dashboard'||!r)return 'dashboard-v2.html';
+  if(r==='dashboard'||!r)return '/dashboard.html';
   return r+'.html';
 }
 

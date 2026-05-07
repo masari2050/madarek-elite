@@ -333,14 +333,14 @@ async function init() {
         const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
         profile = p || { id:'mock-user-00000000' };
     } else {
-        const user = await M.requireAuth('login-v2.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
 
         // لو أكمله أو تخطاه مسبقاً → للرئيسية
         if (profile.onboarding_completed || profile.onboarding_skipped) {
-            location.replace('dashboard-v2.html');
+            location.replace('/dashboard.html');
             return;
         }
     }
@@ -617,7 +617,7 @@ window.skipOnboarding = async function() {
 window.goDashboard = function() {
     const qs = new URLSearchParams(location.search);
     const extra = qs.has('force_subscriber') ? '?force_subscriber=true' : (qs.has('preview') ? '?preview' : '');
-    location.replace('dashboard-v2.html' + extra);
+    location.replace('/dashboard.html' + extra);
 };
 
 // ── Utils ──

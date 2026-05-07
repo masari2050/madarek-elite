@@ -290,11 +290,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
       <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       أعد الاختبار
     </button>
-    <button class="res-btn sec" onclick="location.href='training-v2.html'">
+    <button class="res-btn sec" onclick="location.href='/training.html'">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       رجوع للأقسام
     </button>
-    <button class="res-btn sec" onclick="location.href='dashboard-v2.html'">
+    <button class="res-btn sec" onclick="location.href='/dashboard.html'">
       <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       الرئيسية
     </button>
@@ -450,10 +450,15 @@ async function init() {
         const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
         profile = p || { id:'mock-user-00000000', full_name:'عبدالله', total_questions_solved:0, total_correct:0, total_sessions:0 };
     } else {
-        const user = await M.requireAuth('../login.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
+        // ── 🔒 Subscription gate (يحمي من الوصول المباشر بدون اشتراك) ──
+        if (!M.isSubscribed(profile)) {
+            location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname + location.search);
+            return;
+        }
     }
 
     await loadQuestions();
@@ -978,7 +983,7 @@ window.sendReport = async function() {
 window.confirmExit = function() {
     if (currentIdx > 0 && !confirm('هل تريد الخروج؟ سيتم حفظ تقدمك.')) return;
     clearInterval(timerInterval);
-    location.href = 'training-v2.html';
+    location.href = '/training.html';
 };
 
 window.confirmEnd = function() {

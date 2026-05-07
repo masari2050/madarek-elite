@@ -1668,11 +1668,11 @@ window.loadBanners = async function() {
                 <div class="form-field" id="img_internal_wrap" style="${img.config.link_type==='internal'?'':'display:none'}">
                     <label class="form-label">الصفحة الداخلية</label>
                     <select class="form-select" id="img_internal">
-                        <option value="leaks-v2.html" ${img.config.link==='leaks-v2.html'?'selected':''}>التسريبات</option>
-                        <option value="training-v2.html" ${img.config.link==='training-v2.html'?'selected':''}>التدريب</option>
-                        <option value="reports-v2.html" ${img.config.link==='reports-v2.html'?'selected':''}>التقارير</option>
+                        <option value="/leaks.html" ${img.config.link==='/leaks.html'?'selected':''}>التسريبات</option>
+                        <option value="/training.html" ${img.config.link==='/training.html'?'selected':''}>التدريب</option>
+                        <option value="/reports.html" ${img.config.link==='/reports.html'?'selected':''}>التقارير</option>
                         <option value="../pricing.html" ${img.config.link==='../pricing.html'?'selected':''}>الاشتراك</option>
-                        <option value="profile-v2.html" ${img.config.link==='profile-v2.html'?'selected':''}>الملف الشخصي</option>
+                        <option value="/profile.html" ${img.config.link==='/profile.html'?'selected':''}>الملف الشخصي</option>
                     </select>
                 </div>
                 <div class="form-field full" id="img_external_wrap" style="${img.config.link_type==='external'?'':'display:none'}">

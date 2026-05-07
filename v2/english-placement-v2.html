@@ -475,7 +475,7 @@ function showResult() {
     renderQuestion();
   };
   document.getElementById('homeBtn').onclick = () => {
-    window.location.href = 'training-v2.html';
+    window.location.href = '/training.html';
   };
 }
 
@@ -485,11 +485,11 @@ function escapeHtml(s) {
 
 function exitConfirm() {
   if (answers.length === 0 && selected === null) {
-    window.location.href = 'training-v2.html';
+    window.location.href = '/training.html';
     return;
   }
   if (confirm('هل أنت متأكد؟ لن تُحفظ إجاباتك.')) {
-    window.location.href = 'training-v2.html';
+    window.location.href = '/training.html';
   }
 }
 
