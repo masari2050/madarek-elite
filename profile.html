@@ -726,7 +726,7 @@ async function init() {
     } else if (isPreview) {
         loadPreviewProfile();
     } else {
-        const user = await M.requireAuth('login-v2.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;

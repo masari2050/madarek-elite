@@ -489,7 +489,7 @@ async function init() {
         loadPreviewMode();
         return;
     } else {
-        const user = await M.requireAuth('../login.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
@@ -668,7 +668,7 @@ window.mockExamRegister = async function() {
     if (btn && btn.disabled) return;
     const user = window.MadarekV2 ? await window.MadarekV2.getUser() : null;
     if (!user) {
-        location.href = 'v2/login-v2.html?redirect=' + encodeURIComponent(location.pathname);
+        location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
         return;
     }
     if (btn) { btn.disabled = true; btn.textContent = 'جاري التسجيل...'; }

@@ -49,7 +49,7 @@
     async function requireAuth(redirectTo) {
         const user = await getUser();
         if (!user) {
-            const redir = redirectTo || 'login-v2.html';
+            const redir = redirectTo || '/login.html';
             window.location.href = redir + '?redirect=' + encodeURIComponent(window.location.pathname);
             return null;
         }
@@ -59,7 +59,7 @@
     async function requireAdmin() {
         const profile = await getProfile();
         if (!profile || !['admin', 'staff'].includes(profile.role)) {
-            window.location.href = 'admin-login-v2.html';
+            window.location.href = '/admin-login.html';
             return null;
         }
         return profile;
@@ -79,7 +79,7 @@
         _profile = null;
         // لو في صفحة admin → admin-login-v2.html، وإلا → login-v2.html
         const isAdmin = window.location.pathname.includes('admin');
-        window.location.href = isAdmin ? 'admin-login-v2.html' : 'login-v2.html';
+        window.location.href = isAdmin ? '/admin-login.html' : '/login.html';
     }
 
     // ── Subscription ──

@@ -314,7 +314,7 @@ async function init() {
         const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
         profile = p || { id:'mock-user-00000000', subscription_type:'monthly' };
     } else {
-        const user = await M.requireAuth('login-v2.html');
+        const user = await M.requireAuth('/login.html');
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
