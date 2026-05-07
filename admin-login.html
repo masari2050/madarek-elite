@@ -1,411 +1,347 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>دخول الإدارة - مدارك النخبة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        *{font-family:'Tajawal',sans-serif}
-        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 40%,#1e1550 60%,#0d0825 100%);min-height:100vh}
-        @keyframes spin-r{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-        @keyframes gp{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,.35)}50%{box-shadow:0 8px 36px rgba(99,102,241,.7)}}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-        .logo-icon{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1.5px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;position:relative;animation:gp 3s ease-in-out infinite;flex-shrink:0}
-        .logo-ring{position:absolute;inset:3px;border-radius:12px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-r 3s linear infinite;pointer-events:none}
-        .logo-name{font-family:'Cairo',sans-serif;font-size:28px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
-        .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.5rem;animation:fadeUp .5s ease}
-        .inp{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.1);border-radius:.875rem;padding:.85rem 1.1rem;color:#fff;width:100%;font-size:.95rem;transition:all .25s;outline:none}
-        .inp:focus{border-color:rgba(139,92,246,.6);background:rgba(255,255,255,0.09);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
-        .inp::placeholder{color:rgba(255,255,255,.2)}
-        .btn{background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:.9rem 2rem;border-radius:.875rem;font-weight:900;font-size:1rem;color:#fff;border:none;cursor:pointer;width:100%;transition:all .25s}
-        .btn:hover:not(:disabled){box-shadow:0 8px 30px rgba(99,102,241,.4);transform:translateY(-1px)}
-        .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-        .err-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:.75rem;padding:.75rem 1rem;color:#fca5a5;font-size:.875rem;text-align:center}
-        .shake{animation:shake .4s ease}
-        .pass-wrap{position:relative}
-        .eye-btn{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,.3);transition:.2s;background:none;border:none;padding:0}
-        .eye-btn:hover{color:rgba(255,255,255,.6)}
-        .spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin-r .7s linear infinite;vertical-align:middle;margin-left:6px}
-        .otp-input{text-align:center;font-size:1.5rem;letter-spacing:.5rem;direction:ltr}
-        .qr-wrap{background:#fff;padding:10px;border-radius:14px;display:inline-block}
-        .secret-code{font-size:.7rem;color:#a5b4fc;background:rgba(99,102,241,.1);padding:4px 14px;border-radius:8px;user-select:all;display:inline-block;direction:ltr;font-family:monospace}
-        @keyframes pulseGreen{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 8px rgba(34,197,94,0)}}
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — دخول لوحة الإدارة</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}}catch(e){}})();</script>
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.22);--pt:#9B8CFF;
+--acc:#FF8A3D;--gold:#F59E0B;
+--suc:#22C55E;--ss:rgba(34,197,94,.1);
+--dng:#EF4444;--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.06);--ln2:rgba(255,255,255,.1);
+--r:14px;--r2:18px;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100dvh}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;padding:24px 16px;position:relative}
+body::before{content:"";position:fixed;inset:0;background:
+  radial-gradient(circle at 15% 10%,rgba(109,93,246,.18),transparent 45%),
+  radial-gradient(circle at 85% 90%,rgba(255,138,61,.12),transparent 45%);
+  pointer-events:none;z-index:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+a{color:inherit;text-decoration:none}
 
-<!-- بانر عدم الصلاحية -->
-<div id="deniedBanner" class="hidden fixed top-0 inset-x-0 z-50 bg-red-600 text-white text-center py-3 text-sm font-bold">
-    ⛔ ما عندك صلاحية — هذي الصفحة للمسؤولين فقط
+.wrap{width:100%;max-width:420px;position:relative;z-index:1}
+
+.card{background:linear-gradient(180deg,rgba(31,34,54,.98),rgba(26,29,46,.98));border:1px solid var(--ln2);border-radius:var(--r2);padding:32px 28px 28px;box-shadow:0 24px 60px rgba(0,0,0,.4),0 4px 16px rgba(109,93,246,.1);backdrop-filter:blur(8px)}
+
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--ps);color:var(--pt);font-size:10px;font-weight:700;border-radius:20px;margin-bottom:18px;letter-spacing:.5px}
+.badge svg{width:12px;height:12px;stroke:var(--pt);fill:none;stroke-width:2.2}
+
+.logo-box{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.logo-ic{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--pri),var(--pt));display:grid;place-items:center;box-shadow:0 8px 24px rgba(109,93,246,.35);flex-shrink:0}
+.logo-ic svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2}
+.logo-txt .brand{font-size:17px;font-weight:700;line-height:1.2}
+.logo-txt .sub{font-size:11px;color:var(--i3);margin-top:3px}
+
+.h-title{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+.h-sub{font-size:12px;color:var(--i3);line-height:1.7;margin-bottom:24px}
+
+.form-lbl{font-size:11px;font-weight:600;color:var(--i2);margin-bottom:7px;display:block}
+.input-row{position:relative;margin-bottom:14px}
+.input{width:100%;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--ln2);background:var(--s2);color:var(--ink);font-size:13px;outline:none;transition:all .2s;font-weight:500}
+.input:focus{border-color:var(--pri);background:var(--s3);box-shadow:0 0 0 3px var(--ps)}
+.input::placeholder{color:var(--i4);font-weight:400}
+.input[type=email],.input[type=password]{direction:ltr;text-align:right}
+.eye{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;color:var(--i3);border-radius:8px;transition:color .2s}
+.eye:hover{color:var(--pt)}
+.eye svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
+
+.submit{width:100%;padding:14px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),var(--pt));color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .2s;margin-top:8px;box-shadow:0 6px 20px rgba(109,93,246,.3)}
+.submit:active{transform:scale(.98)}
+.submit:hover:not(:disabled){box-shadow:0 8px 28px rgba(109,93,246,.4)}
+.submit:disabled{opacity:.6;cursor:not-allowed}
+.submit svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5}
+
+.forgot{display:block;text-align:center;margin-top:14px;font-size:12px;color:var(--pt);font-weight:600;padding:6px;background:none;border:none;width:100%;transition:opacity .2s}
+.forgot:hover{opacity:.75}
+
+.sec-note{margin-top:22px;padding:12px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);border-radius:var(--r);display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--i2);line-height:1.7}
+.sec-note svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2;flex-shrink:0;margin-top:1px}
+.sec-note b{color:var(--gold);font-weight:700}
+
+.back{display:block;text-align:center;margin-top:20px;font-size:11px;color:var(--i4);padding:6px}
+.back:hover{color:var(--pt)}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:9999;padding:12px 22px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.3);opacity:0;transition:all .3s;max-width:90%;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--dng)}
+.toast.ok{background:var(--suc)}
+.toast.info{background:var(--pri)}
+
+.mdl{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
+.mdl.on{display:flex}
+.mdl-card{width:100%;max-width:380px;background:var(--sf);border-radius:20px;padding:24px 20px;border:1px solid var(--ln2)}
+.mdl-h{font-size:17px;font-weight:700;text-align:center;margin-bottom:6px}
+.mdl-p{font-size:12px;color:var(--i3);text-align:center;margin-bottom:18px;line-height:1.7}
+.mdl-msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:11px;text-align:center;display:none}
+.mdl-msg.on{display:block}
+.mdl-msg.err{background:var(--ds);color:var(--dng)}
+.mdl-msg.ok{background:var(--ss);color:var(--suc)}
+.mdl-msg.info{background:var(--ps);color:var(--pt)}
+.mdl-cancel{width:100%;margin-top:10px;padding:10px;font-size:12px;color:var(--i3);background:none;border:none}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <div class="badge">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>لوحة الإدارة — منطقة محمية</span>
+    </div>
+
+    <div class="logo-box">
+      <div class="logo-ic">
+        <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.8 9.5-9 10-5.2-.5-9-5-9-10V6l9-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <div class="logo-txt">
+        <div class="brand">مدارك النخبة</div>
+        <div class="sub">لوحة التحكم v2</div>
+      </div>
+    </div>
+
+    <div class="h-title">دخول المدراء والموظفين</div>
+    <div class="h-sub">سجّل دخولك بحساب إداري للوصول إلى لوحة التحكم</div>
+
+    <form id="loginForm">
+      <label class="form-lbl">البريد الإلكتروني</label>
+      <div class="input-row">
+        <input class="input" type="email" id="email" placeholder="admin@madarekelite.com" autocomplete="email" required>
+      </div>
+
+      <label class="form-lbl">كلمة المرور</label>
+      <div class="input-row">
+        <input class="input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+        <button type="button" class="eye" onclick="togglePw(this)" aria-label="إظهار/إخفاء كلمة المرور">
+          <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        </button>
+      </div>
+
+      <button type="submit" class="submit" id="submitBtn">
+        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>دخول إلى لوحة التحكم</span>
+      </button>
+
+      <button type="button" class="forgot" onclick="forgotPassword()">نسيت كلمة المرور؟</button>
+    </form>
+
+    <div class="sec-note">
+      <svg viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M4.93 19h14.14a2 2 0 001.73-3L13.73 4a2 2 0 00-3.46 0L3.2 16a2 2 0 001.73 3z"/></svg>
+      <span><b>تنبيه أمني:</b> هذه الصفحة مخصّصة للمدراء فقط. تُسجَّل جميع محاولات الدخول.</span>
+    </div>
+  </div>
+
+  <a href="v2/login-v2.html" class="back">← دخول المشتركين</a>
 </div>
 
-<div class="w-full max-w-md">
-
-    <!-- لوغو -->
-    <div class="flex flex-col items-center mb-8">
-        <div class="flex items-center gap-3 mb-3">
-            <div class="logo-icon">
-                <div class="logo-ring"></div>
-                <svg viewBox="0 0 36 36" width="26" height="26" fill="none">
-                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z"
-                        stroke="rgba(165,180,252,.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,.7)" stroke-width="2.5" stroke-linecap="round"/>
-                    <circle cx="5" cy="14" r="2.5" fill="#a5b4fc"/>
-                    <circle cx="18" cy="7" r="2.5" fill="#c4b5fd"/>
-                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
-                </svg>
-            </div>
-            <div>
-                <div class="logo-name">مدارك النخبة</div>
-                <div style="font-size:10px;color:rgba(196,181,253,.4);margin-top:2px">حيث يُصنع التميّز</div>
-            </div>
-        </div>
-        <h1 class="text-white font-black text-2xl">لوحة الإدارة</h1>
-        <p style="color:rgba(196,181,253,.4);font-size:.85rem;margin-top:5px">دخول مخصص للمسؤولين فقط</p>
+<!-- FORGOT PASSWORD MODAL -->
+<div class="mdl" id="forgotModal">
+  <div class="mdl-card">
+    <div class="mdl-h">نسيت كلمة المرور؟</div>
+    <div class="mdl-p">اكتب بريدك الإداري وبنرسل لك رابط لتغييرها</div>
+    <label class="form-lbl">البريد الإلكتروني</label>
+    <div class="input-row">
+      <input class="input" type="email" id="forgotEmail" placeholder="admin@madarekelite.com" autocomplete="email">
     </div>
+    <button class="submit" onclick="sendResetLink()" id="forgotSendBtn"><span>أرسل رابط التغيير</span></button>
+    <div class="mdl-msg" id="forgotMsg"></div>
+    <button class="mdl-cancel" onclick="closeModal('forgotModal')">إلغاء</button>
+  </div>
+</div>
 
-    <!-- كارد الفورم -->
-    <div class="card p-8">
-
-        <div id="errBox" class="err-box hidden mb-5"></div>
-
-        <!-- ═══ قسم تسجيل الدخول ═══ -->
-        <div id="loginSection">
-            <div class="space-y-4">
-                <div>
-                    <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">البريد الإلكتروني</label>
-                    <input type="email" id="email" class="inp" placeholder="example@email.com" autocomplete="email">
-                </div>
-                <div>
-                    <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">كلمة المرور</label>
-                    <div class="pass-wrap">
-                        <input type="password" id="password" class="inp" placeholder="••••••••"
-                            style="padding-left:3rem" autocomplete="current-password"
-                            onkeydown="if(event.key==='Enter')doLogin()">
-                        <button class="eye-btn" onclick="togglePass()" type="button">
-                            <svg id="eyeIco" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <button id="loginBtn" class="btn" onclick="doLogin()">
-                    🔐 دخول لوحة الإدارة
-                </button>
-            </div>
-
-            <div style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.12);border-radius:.75rem;padding:.75rem 1rem;margin-top:1.5rem;text-align:center">
-                <p style="color:rgba(251,191,36,.75);font-size:.8rem;font-weight:700">⚠️ هذه الصفحة للمسؤولين فقط</p>
-                <p style="color:rgba(255,255,255,.25);font-size:.75rem;margin-top:3px">المحاولات غير المصرح بها يتم تسجيلها</p>
-            </div>
-        </div>
-
-        <!-- ═══ قسم تفعيل المصادقة الثنائية (أول مرة) ═══ -->
-        <div id="mfaEnrollSection" class="hidden">
-            <div class="text-center mb-5">
-                <div style="font-size:2.5rem;margin-bottom:8px">🔐</div>
-                <h3 class="text-white font-black text-lg">تفعيل المصادقة الثنائية</h3>
-                <p style="color:rgba(196,181,253,.45);font-size:.8rem;margin-top:6px;line-height:1.6">
-                    للحفاظ على أمان لوحة التحكم<br>
-                    امسح الرمز بتطبيق <strong style="color:#a5b4fc">Google Authenticator</strong>
-                </p>
-            </div>
-
-            <div class="flex justify-center mb-4">
-                <div class="qr-wrap">
-                    <img id="qrCode" alt="QR Code" style="width:170px;height:170px">
-                </div>
-            </div>
-
-            <div class="text-center mb-5">
-                <p style="color:rgba(196,181,253,.3);font-size:.7rem;margin-bottom:6px">أو أدخل المفتاح يدوياً:</p>
-                <code id="mfaSecret" class="secret-code"></code>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label style="color:rgba(196,181,253,.55);font-size:.85rem;display:block;margin-bottom:6px">رمز التحقق من التطبيق</label>
-                    <input type="text" id="enrollCode" class="inp otp-input" placeholder="000000"
-                        maxlength="6" inputmode="numeric" autocomplete="one-time-code"
-                        onkeydown="if(event.key==='Enter')verifyEnrollment()">
-                </div>
-                <button id="enrollBtn" class="btn" onclick="verifyEnrollment()">✅ تأكيد وتفعيل</button>
-            </div>
-
-            <div style="background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:.75rem;padding:.75rem 1rem;margin-top:1.5rem;text-align:center">
-                <p style="color:rgba(34,197,94,.7);font-size:.75rem;line-height:1.6">
-                    بعد التفعيل، بتحتاج تطبيق المصادقة في كل مرة تسجّل دخول
-                </p>
-            </div>
-        </div>
-
-        <!-- ═══ قسم التحقق من الرمز (كل مرة يسجّل دخول) ═══ -->
-        <div id="mfaVerifySection" class="hidden">
-            <div class="text-center mb-6">
-                <div style="font-size:2.5rem;margin-bottom:8px">🔑</div>
-                <h3 class="text-white font-black text-lg">رمز التحقق</h3>
-                <p style="color:rgba(196,181,253,.45);font-size:.85rem;margin-top:6px">
-                    أدخل الرمز من تطبيق المصادقة
-                </p>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <input type="text" id="verifyCode" class="inp otp-input" placeholder="000000"
-                        maxlength="6" inputmode="numeric" autocomplete="one-time-code"
-                        onkeydown="if(event.key==='Enter')verifyMfa()">
-                </div>
-                <button id="verifyBtn" class="btn" onclick="verifyMfa()">🔐 تحقق ودخول</button>
-            </div>
-        </div>
-
+<!-- RESET PASSWORD MODAL -->
+<div class="mdl" id="resetModal">
+  <div class="mdl-card">
+    <div class="mdl-h">تغيير كلمة المرور</div>
+    <div class="mdl-p">اكتب كلمة المرور الجديدة</div>
+    <label class="form-lbl">كلمة المرور الجديدة</label>
+    <div class="input-row">
+      <input class="input" type="password" id="newPass" placeholder="6 أحرف على الأقل">
     </div>
-
-    <div class="text-center mt-5">
-        <a href="index.html" style="color:rgba(196,181,253,.35);font-size:.85rem;text-decoration:none">← الرئيسية</a>
+    <label class="form-lbl">تأكيد كلمة المرور</label>
+    <div class="input-row">
+      <input class="input" type="password" id="confirmPass" placeholder="أعد كتابة كلمة المرور">
     </div>
+    <button class="submit" onclick="saveNewPass()" id="resetSaveBtn"><span>حفظ كلمة المرور</span></button>
+    <div class="mdl-msg" id="resetMsg"></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-var sb=window.supabase.createClient(
-    'https://czzcmbxejxbotjemyuqf.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
-);
+(function(){
+'use strict';
 
-// ═══ متغيرات MFA ═══
-var _mfaFactorId=null;
-var _mfaChallengeId=null;
+var _rawAt=null,_rawRt=null,_isRecoveryUrl=false,_tokenHash=null;
+try{
+  var q=new URLSearchParams(window.location.search);
+  if(q.get('token_hash')&&q.get('type')==='recovery'){_isRecoveryUrl=true;_tokenHash=q.get('token_hash');}
+  else{
+    var h=new URLSearchParams(window.location.hash.substring(1));
+    if(h.get('type')==='recovery'){_isRecoveryUrl=true;_rawAt=h.get('access_token');_rawRt=h.get('refresh_token');}
+    else if(q.get('type')==='recovery'||q.has('code')){_isRecoveryUrl=true;}
+  }
+}catch(e){}
 
-// بانر عدم الصلاحية
-if(window.location.search.includes('denied')){
-    document.getElementById('deniedBanner').classList.remove('hidden');
+var SUPA_URL='https://czzcmbxejxbotjemyuqf.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+var sb=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{flowType:'implicit',persistSession:true,autoRefreshToken:true}});
+
+var _attempts=0,_locked=false,_lockTime=0;
+
+async function ensureAdmin(userId){
+  var r=await sb.from('profiles').select('role,full_name').eq('id',userId).maybeSingle();
+  if(r.error)throw r.error;
+  var role=r.data&&r.data.role;
+  return ['admin','staff'].indexOf(role)>-1 ? r.data : null;
 }
 
-// لو عنده سيشن نشط — تحقق من المصادقة الثنائية
-(async function(){
+if(!_isRecoveryUrl){
+  (async function(){
     try{
-        var{data:{session}}=await sb.auth.getSession();
-        if(!session)return;
-        var{data:p}=await sb.from('profiles').select('role').eq('id',session.user.id).single();
-        if(!p||!(p.role==='admin'||p.role==='staff'))return;
-
-        // تحقق من مستوى المصادقة
-        var{data:aal}=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
-        if(aal&&aal.currentLevel==='aal2'){
-            // مصادقة كاملة — دخول مباشر
-            location.href='admin.html';
-        }else if(aal&&aal.nextLevel==='aal2'&&aal.currentLevel==='aal1'){
-            // MFA مفعّل لكن ما تم التحقق — اعرض شاشة الرمز
-            await showMfaScreen();
-        }else{
-            // ما فيه MFA — دخول مباشر
-            location.href='admin.html';
-        }
+      var s=await sb.auth.getSession();
+      if(s.data&&s.data.session){
+        var ok=await ensureAdmin(s.data.session.user.id).catch(function(){return null;});
+        if(ok){window.location.href='admin.html';}
+      }
     }catch(e){}
+  })();
+}
+
+sb.auth.onAuthStateChange(function(event,session){
+  if(event==='PASSWORD_RECOVERY'||(event==='SIGNED_IN'&&_isRecoveryUrl)){
+    document.getElementById('resetModal').classList.add('on');
+  }
+});
+if(_isRecoveryUrl){
+  (async function(){
+    if(_tokenHash){
+      try{
+        var v=await sb.auth.verifyOtp({token_hash:_tokenHash,type:'recovery'});
+        if(!v.error&&v.data&&v.data.session){document.getElementById('resetModal').classList.add('on');return;}
+      }catch(e){}
+    }
+    var r=await sb.auth.getSession();
+    if(r.data&&r.data.session){document.getElementById('resetModal').classList.add('on');return;}
+    if(_rawAt&&_rawRt){
+      var s=await sb.auth.setSession({access_token:_rawAt,refresh_token:_rawRt}).catch(function(){return{};});
+      if(s.data&&s.data.session){document.getElementById('resetModal').classList.add('on');return;}
+    }
+    document.getElementById('resetModal').classList.add('on');
+    var m=document.getElementById('resetMsg');
+    m.textContent='جاري التحقق من الرابط...';m.className='mdl-msg info on';
+    document.getElementById('resetSaveBtn').disabled=true;
+  })();
+}
+
+window.forgotPassword=function(){
+  var em=document.getElementById('email').value.trim();
+  if(em)document.getElementById('forgotEmail').value=em;
+  document.getElementById('forgotMsg').className='mdl-msg';
+  document.getElementById('forgotModal').classList.add('on');
+  setTimeout(function(){document.getElementById('forgotEmail').focus();},200);
+};
+window.sendResetLink=async function(){
+  var em=document.getElementById('forgotEmail').value.trim();
+  var m=document.getElementById('forgotMsg');
+  var btn=document.getElementById('forgotSendBtn');
+  if(!em){m.textContent='اكتب بريدك أولاً';m.className='mdl-msg err on';return;}
+  btn.disabled=true;btn.innerHTML='<span>جاري الإرسال...</span>';
+  try{
+    var {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:window.location.origin+'/v2/admin-login-v2.html'});
+    if(error)throw error;
+    m.textContent='تم إرسال الرابط إلى '+em+' ✓';m.className='mdl-msg ok on';
+    btn.innerHTML='<span>تم الإرسال ✓</span>';
+    setTimeout(function(){closeModal('forgotModal');btn.disabled=false;btn.innerHTML='<span>أرسل رابط التغيير</span>';},3000);
+  }catch(e){
+    m.textContent='ما قدرنا نرسل — تأكد من البريد';m.className='mdl-msg err on';
+    btn.disabled=false;btn.innerHTML='<span>أرسل رابط التغيير</span>';
+  }
+};
+window.saveNewPass=async function(){
+  var p1=document.getElementById('newPass').value;
+  var p2=document.getElementById('confirmPass').value;
+  var m=document.getElementById('resetMsg');
+  if(!p1||p1.length<6){m.textContent='كلمة المرور لازم 6 أحرف على الأقل';m.className='mdl-msg err on';return;}
+  if(p1!==p2){m.textContent='كلمتا المرور غير متطابقتين';m.className='mdl-msg err on';return;}
+  try{
+    var {error}=await sb.auth.updateUser({password:p1});
+    if(error)throw error;
+    m.textContent='تم تغيير كلمة المرور ✓';m.className='mdl-msg ok on';
+    setTimeout(function(){window.location.href='admin.html';},1200);
+  }catch(e){
+    var mm=e.message||'';
+    m.textContent=(mm.indexOf('expired')>-1||mm.indexOf('JWT')>-1||mm.indexOf('session')>-1)?'انتهت صلاحية الرابط — اطلب رابط جديد':'ما قدرنا نغيّر — حاول مرة ثانية';
+    m.className='mdl-msg err on';
+  }
+};
+window.closeModal=function(id){document.getElementById(id).classList.remove('on');};
+
+document.getElementById('loginForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  if(_locked){
+    var remain=Math.ceil((_lockTime-Date.now())/1000);
+    if(remain>0){toast('كثرت المحاولات — انتظر '+remain+' ثانية','err');return;}
+    _locked=false;_attempts=0;
+  }
+  var em=document.getElementById('email').value.trim();
+  var pw=document.getElementById('password').value;
+  if(!em||!pw){toast('اكتب البريد وكلمة المرور','err');return;}
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;btn.innerHTML='<span>جاري الدخول...</span>';
+  try{
+    var {data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+    if(error)throw error;
+    var adminProfile=await ensureAdmin(data.user.id);
+    if(!adminProfile){
+      await sb.auth.signOut();
+      toast('هذا الحساب ليس له صلاحية إدارية','err');
+      resetBtn(btn);return;
+    }
+    _attempts=0;
+    btn.innerHTML='<span>تم — جاري التحويل...</span>';
+    setTimeout(function(){window.location.href='admin.html';},500);
+  }catch(err){
+    _attempts++;
+    if(_attempts>=10){_locked=true;_lockTime=Date.now()+120000;toast('كثرت المحاولات — حاول بعد دقيقتين','err');}
+    else if(_attempts>=5){_locked=true;_lockTime=Date.now()+30000;toast('كثرت المحاولات — انتظر 30 ثانية','err');}
+    else{toast('البريد أو كلمة المرور غير صحيحة','err');}
+    resetBtn(btn);
+  }
+});
+
+function resetBtn(btn){
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>دخول إلى لوحة التحكم</span>';
+}
+
+window.togglePw=function(btn){
+  var inp=btn.previousElementSibling;
+  if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>';}
+  else{inp.type='password';btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';}
+};
+
+function toast(msg,type){
+  var t=document.createElement('div');
+  t.className='toast '+(type||'info');
+  t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){t.classList.add('on');});
+  setTimeout(function(){t.classList.remove('on');setTimeout(function(){t.remove();},300);},3500);
+}
+
 })();
-
-function showErr(msg){
-    var b=document.getElementById('errBox');
-    b.textContent=msg;
-    b.classList.remove('hidden');
-    b.classList.remove('shake');
-    void b.offsetWidth;
-    b.classList.add('shake');
-}
-
-function togglePass(){
-    var inp=document.getElementById('password');
-    var ico=document.getElementById('eyeIco');
-    if(inp.type==='password'){
-        inp.type='text';
-        ico.innerHTML='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
-    }else{
-        inp.type='password';
-        ico.innerHTML='<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
-    }
-}
-
-// ═══ حماية من brute force ═══
-var _adminAttempts=0;
-var _adminLocked=false;
-var _adminLockTime=0;
-
-async function doLogin(){
-    // تحقق من القفل
-    if(_adminLocked){
-        var remaining=Math.ceil((_adminLockTime-Date.now())/1000);
-        if(remaining>0){showErr('كثرت المحاولات. انتظر '+remaining+' ثانية');return}
-        _adminLocked=false;_adminAttempts=0;
-    }
-    var email=document.getElementById('email').value.trim();
-    var pass=document.getElementById('password').value;
-    var btn=document.getElementById('loginBtn');
-
-    document.getElementById('errBox').classList.add('hidden');
-
-    if(!email||!pass){showErr('أدخل الإيميل وكلمة المرور');return}
-
-    btn.disabled=true;
-    btn.innerHTML='<span class="spin"></span> جاري التحقق...';
-
-    try{
-        var{data,error}=await sb.auth.signInWithPassword({email,password:pass});
-
-        if(error){
-            _adminAttempts++;
-            if(_adminAttempts>=6){_adminLocked=true;_adminLockTime=Date.now()+300000;showErr('تم قفل الدخول لمدة 5 دقائق — حماية أمنية')}
-            else if(_adminAttempts>=3){_adminLocked=true;_adminLockTime=Date.now()+60000;showErr('كثرت المحاولات — انتظر دقيقة')}
-            else{showErr('الإيميل أو كلمة المرور غلط')}
-            btn.disabled=false;
-            btn.innerHTML='🔐 دخول لوحة الإدارة';
-            return;
-        }
-
-        // 2. جلب الدور
-        var{data:profile}=await sb.from('profiles')
-            .select('role,full_name')
-            .eq('id',data.user.id)
-            .single();
-
-        var allowed=profile&&(profile.role==='admin'||profile.role==='staff');
-
-        if(!allowed){
-            await sb.auth.signOut();
-            showErr('ما عندك صلاحية الدخول للوحة الإدارة');
-            btn.disabled=false;
-            btn.innerHTML='🔐 دخول لوحة الإدارة';
-            return;
-        }
-
-        // 3. فحص المصادقة الثنائية
-        btn.innerHTML='<span class="spin"></span> جاري تحقق الأمان...';
-        await showMfaScreen();
-
-    }catch(e){
-        showErr('حصل خطأ غير متوقع، حاول مرة ثانية');
-        btn.disabled=false;
-        btn.innerHTML='🔐 دخول لوحة الإدارة';
-    }
-}
-
-// ═══ عرض شاشة MFA المناسبة ═══
-async function showMfaScreen(){
-    try{
-        var{data:factorsData}=await sb.auth.mfa.listFactors();
-        var totpFactors=(factorsData&&factorsData.totp)?factorsData.totp:[];
-        var verifiedFactors=totpFactors.filter(function(f){return f.status==='verified'});
-
-        // إخفاء قسم الدخول
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('errBox').classList.add('hidden');
-
-        if(verifiedFactors.length>0){
-            // ═══ المستخدم عنده MFA — اعرض شاشة الرمز ═══
-            _mfaFactorId=verifiedFactors[0].id;
-            var{data:challenge,error:chErr}=await sb.auth.mfa.challenge({factorId:_mfaFactorId});
-            if(chErr){showErr('خطأ في المصادقة الثنائية');return}
-            _mfaChallengeId=challenge.id;
-            document.getElementById('mfaVerifySection').classList.remove('hidden');
-            setTimeout(function(){document.getElementById('verifyCode').focus()},100);
-
-        }else{
-            // ═══ أول مرة — اعرض شاشة التفعيل مع QR ═══
-            var{data:enrollData,error:enErr}=await sb.auth.mfa.enroll({
-                factorType:'totp',
-                friendlyName:'مدارك النخبة'
-            });
-            if(enErr){
-                // لو MFA مو مدعوم — دخول مباشر
-                location.href='admin.html';
-                return;
-            }
-            _mfaFactorId=enrollData.id;
-            document.getElementById('qrCode').src=enrollData.totp.qr_code;
-            document.getElementById('mfaSecret').textContent=enrollData.totp.secret;
-            document.getElementById('mfaEnrollSection').classList.remove('hidden');
-            setTimeout(function(){document.getElementById('enrollCode').focus()},100);
-        }
-    }catch(e){
-        // MFA API غير متاح — دخول مباشر
-        location.href='admin.html';
-    }
-}
-
-// ═══ تأكيد تفعيل MFA (أول مرة) ═══
-async function verifyEnrollment(){
-    var code=document.getElementById('enrollCode').value.trim();
-    if(!code||code.length<6){showErr('أدخل الرمز المكوّن من 6 أرقام');return}
-
-    var btn=document.getElementById('enrollBtn');
-    btn.disabled=true;
-    btn.innerHTML='<span class="spin"></span> جاري التحقق...';
-    document.getElementById('errBox').classList.add('hidden');
-
-    try{
-        var{data:challenge,error:chErr}=await sb.auth.mfa.challenge({factorId:_mfaFactorId});
-        if(chErr)throw chErr;
-
-        var{data:vData,error:vErr}=await sb.auth.mfa.verify({
-            factorId:_mfaFactorId,
-            challengeId:challenge.id,
-            code:code
-        });
-        if(vErr)throw vErr;
-
-        btn.innerHTML='✅ تم التفعيل!';
-        btn.style.background='linear-gradient(135deg,#22c55e,#16a34a)';
-        setTimeout(function(){location.href='admin.html'},600);
-    }catch(e){
-        showErr('الرمز غلط — تأكد من التطبيق وحاول مرة ثانية');
-        btn.disabled=false;
-        btn.innerHTML='✅ تأكيد وتفعيل';
-        document.getElementById('enrollCode').value='';
-        document.getElementById('enrollCode').focus();
-    }
-}
-
-// ═══ التحقق من رمز MFA (كل تسجيل دخول) ═══
-async function verifyMfa(){
-    var code=document.getElementById('verifyCode').value.trim();
-    if(!code||code.length<6){showErr('أدخل الرمز المكوّن من 6 أرقام');return}
-
-    var btn=document.getElementById('verifyBtn');
-    btn.disabled=true;
-    btn.innerHTML='<span class="spin"></span> جاري التحقق...';
-    document.getElementById('errBox').classList.add('hidden');
-
-    try{
-        var{data:vData,error:vErr}=await sb.auth.mfa.verify({
-            factorId:_mfaFactorId,
-            challengeId:_mfaChallengeId,
-            code:code
-        });
-        if(vErr)throw vErr;
-
-        btn.innerHTML='✅ تم التحقق!';
-        btn.style.background='linear-gradient(135deg,#22c55e,#16a34a)';
-        setTimeout(function(){location.href='admin.html'},600);
-    }catch(e){
-        showErr('الرمز غلط — حاول مرة ثانية');
-        btn.disabled=false;
-        btn.innerHTML='🔐 تحقق ودخول';
-        document.getElementById('verifyCode').value='';
-        document.getElementById('verifyCode').focus();
-        // تحديث التحدي
-        try{
-            var{data:ch}=await sb.auth.mfa.challenge({factorId:_mfaFactorId});
-            if(ch)_mfaChallengeId=ch.id;
-        }catch(e2){}
-    }
-}
 </script>
 </body>
 </html>
