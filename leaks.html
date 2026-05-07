@@ -310,8 +310,16 @@ async function init() {
 
     const qs = new URLSearchParams(window.location.search);
     const isPreview = qs.has('preview');
-    const forceSubscriber = qs.get('force_subscriber') === 'true';
-    const forceFree = qs.get('force_free') === 'true';
+    // sticky preview flags: لو حُدّدوا في URL، اخزّنهم في sessionStorage
+    // عشان يستمرّوا بين تبويبات الـ bottom nav
+    try {
+        if (qs.get('force_free') === 'true') sessionStorage.setItem('madarek_force_free','1');
+        if (qs.get('force_free') === 'false') sessionStorage.removeItem('madarek_force_free');
+        if (qs.get('force_subscriber') === 'true') sessionStorage.setItem('madarek_force_subscriber','1');
+        if (qs.get('force_subscriber') === 'false') sessionStorage.removeItem('madarek_force_subscriber');
+    } catch(_){}
+    const forceSubscriber = qs.get('force_subscriber') === 'true' || (function(){try{return sessionStorage.getItem('madarek_force_subscriber')==='1';}catch(_){return false;}})();
+    const forceFree = qs.get('force_free') === 'true' || (function(){try{return sessionStorage.getItem('madarek_force_free')==='1';}catch(_){return false;}})();
 
     if (forceSubscriber) {
         profile = {
@@ -466,9 +474,22 @@ function renderLeaks() {
     area.innerHTML = '<div class="lk-list">' + visible.map(g => renderCard(g)).join('') + '</div>' + moreBlock;
 }
 
+// خريطة قيم الأقسام للعربي (بعض الصفوف في DB مكتوبة 'mixed' بالإنجليزي)
+const SECTION_LABELS = {
+    'mixed': 'مختلط',
+    'quant': 'قدرات كمي',
+    'verbal': 'قدرات لفظي',
+    'tahsili': 'تحصيلي'
+};
+function sectionLabelAr(s) {
+    if (!s) return '';
+    return SECTION_LABELS[s] || s;  // قيمة عربية موجودة → تبقى كما هي
+}
+
 function renderCard(g) {
     const dateStr = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
-    const sectionTag = g.section ? '<span class="lk-sec">' + esc(g.section) + '</span>' : '';
+    const sectionLabel = sectionLabelAr(g.section);
+    const sectionTag = sectionLabel ? '<span class="lk-sec">' + esc(sectionLabel) + '</span>' : '';
     const meta = dateStr + ' · ' + (g.question_count||0) + ' سؤال';
 
     if (isLocked) {

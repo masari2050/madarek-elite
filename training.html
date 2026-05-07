@@ -66,11 +66,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cat{padding:14px;cursor:pointer;transition:all .18s;animation:si .3s var(--ease) backwards;display:flex;flex-direction:column;gap:12px}
 .cat:nth-child(1){animation-delay:.05s}.cat:nth-child(2){animation-delay:.1s}.cat:nth-child(3){animation-delay:.15s}.cat:nth-child(4){animation-delay:.2s}
 .cat:active{transform:scale(.99)}
-/* 🔒 locked state — لغير المشتركين */
+/* 🔒 locked state — موحّد مع badge التسريبات (gradient وردي) */
 .cat.locked{opacity:.78}
-.cat.locked:hover{opacity:.92}
-.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--pri);font-weight:700;margin-top:6px;text-align:center;padding:9px 12px;background:rgba(124,58,237,.08);border-radius:10px;border:1px dashed rgba(124,58,237,.32)}
-.cat.locked .cat-locked-msg svg{width:14px;height:14px;stroke:var(--pri);fill:none;stroke-width:2.4;stroke-linecap:round;flex-shrink:0}
+.cat.locked:hover{opacity:.95}
+.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:#9D174D;font-weight:800;margin-top:8px;text-align:center;padding:11px 14px;background:linear-gradient(135deg,#FCE7F3,#FBCFE8);border-radius:11px;border:1px solid #F9A8D4}
+.cat.locked .cat-locked-msg svg{width:24px;height:24px;stroke:#9D174D;fill:none;stroke-width:2.4;stroke-linecap:round;flex-shrink:0}
+[data-t="d"] .cat.locked .cat-locked-msg,html.dark .cat.locked .cat-locked-msg{background:rgba(244,114,182,.18);color:#F9A8D4;border-color:rgba(244,114,182,.4)}
+[data-t="d"] .cat.locked .cat-locked-msg svg,html.dark .cat.locked .cat-locked-msg svg{stroke:#F9A8D4}
 .cat.click-pulse{transform:scale(.98);transition:transform .15s ease}
 .cat-row{display:flex;align-items:center;gap:12px}
 .ci{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
@@ -479,7 +481,15 @@ let selectedMode = 'instant';
 
 const qsTrain = new URLSearchParams(window.location.search);
 const isPreview = qsTrain.has('preview');
-const forceSubscriber = qsTrain.get('force_subscriber') === 'true';
+// sticky preview flags بين تبويبات الـ bottom nav
+try {
+    if (qsTrain.get('force_free') === 'true') sessionStorage.setItem('madarek_force_free','1');
+    if (qsTrain.get('force_free') === 'false') sessionStorage.removeItem('madarek_force_free');
+    if (qsTrain.get('force_subscriber') === 'true') sessionStorage.setItem('madarek_force_subscriber','1');
+    if (qsTrain.get('force_subscriber') === 'false') sessionStorage.removeItem('madarek_force_subscriber');
+} catch(_){}
+const forceSubscriber = qsTrain.get('force_subscriber') === 'true' || (function(){try{return sessionStorage.getItem('madarek_force_subscriber')==='1';}catch(_){return false;}})();
+const forceFree = qsTrain.get('force_free') === 'true' || (function(){try{return sessionStorage.getItem('madarek_force_free')==='1';}catch(_){return false;}})();
 
 init();
 
@@ -498,6 +508,13 @@ async function init() {
         applySubscriptionUI();
         applyTrainingLockUI();
         loadCounts();
+    } else if (forceFree) {
+        // وضع اختبار المجاني (sticky عبر sessionStorage بين التبويبات)
+        profile = { id:'free-test', subscription_type:'free', role:'user' };
+        applySubscriptionUI();
+        applyTrainingLockUI();
+        loadPreview();  // mock counts للعرض
+        return;
     } else if (isPreview) {
         loadPreview();
         return;
