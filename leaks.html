@@ -144,6 +144,62 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
 
 .hidden{display:none !important}
+/* ── PHONE-FRAME على التابلت + الديسك توب (≥768px) ── */
+@media (min-width:768px){
+  body{
+    background:
+      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
+      var(--bg);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(circle at top right,rgba(155,140,255,.18),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(255,138,61,.1),transparent 55%),
+      var(--bg);
+  }
+  html[data-fs]:not([data-fs="medium"]) .wrap,html .wrap{zoom:1}
+  .wrap{
+    max-width:520px;width:520px;
+    height:min(900px,calc(100vh - 48px));
+    min-height:680px;overflow-y:auto;
+    border-radius:30px;
+    box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
+    border:1px solid var(--ln);
+  }
+  [data-t="d"] .wrap,html.dark .wrap{
+    box-shadow:0 24px 64px rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.35);
+  }
+  .wrap::-webkit-scrollbar{width:5px}
+  .wrap::-webkit-scrollbar-track{background:transparent}
+  .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
+  .nav{
+    bottom:max(24px,calc((100dvh - min(900px,calc(100dvh - 48px))) / 2)) !important;
+    max-width:520px !important;
+  }
+}
+@media (min-width:1024px){
+  body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.32),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.26),transparent 60%),
+      radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.12),transparent 70%),
+      var(--bg);
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(155,140,255,.32),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.18),transparent 60%),
+      var(--bg);
+  }
+  .wrap{
+    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(109,93,246,.12);
+  }
+}
+
 </style>
 </head>
 <body>
