@@ -90,10 +90,22 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .lk-ic.nw{background:var(--as)}.lk-ic.nw svg{stroke:var(--acc)}
 .lk-ic.ip{background:var(--ps)}.lk-ic.ip svg{stroke:var(--pri)}
 .lk-ic.dn{background:var(--ss)}.lk-ic.dn svg{stroke:var(--suc)}
-.lk-ic.locked{background:var(--ps)}.lk-ic.locked svg{stroke:var(--pri)}
-/* 🔒 locked card — opacity أوضح + cursor */
-.lk-item.locked{opacity:.78;cursor:pointer}
-.lk-item.locked:hover{opacity:.95}
+.lk-ic.locked{background:var(--ps);width:48px;height:48px}
+.lk-ic.locked svg{stroke:var(--pri);width:24px;height:24px;stroke-width:2.4}
+/* 🔒 locked card — visual قوي للمحتوى المقفل */
+.lk-item.locked{opacity:.65;cursor:pointer;border:1px dashed rgba(124,58,237,.35);background:linear-gradient(135deg,rgba(124,58,237,.04),rgba(124,58,237,.02))}
+.lk-item.locked:hover{opacity:.92;border-color:rgba(124,58,237,.55);transform:translateY(-1px);transition:all .2s}
+.lk-b.locked{background:linear-gradient(135deg,#FCE7F3,#FBCFE8);color:#9D174D;border:1px solid #F9A8D4;font-weight:800;padding:5px 10px;display:inline-flex;align-items:center;gap:5px}
+.lk-b.locked svg{width:11px;height:11px;stroke:#9D174D;stroke-width:2.6}
+[data-t="d"] .lk-b.locked,html.dark .lk-b.locked{background:rgba(244,114,182,.18);color:#F9A8D4;border-color:rgba(244,114,182,.4)}
+[data-t="d"] .lk-b.locked svg,html.dark .lk-b.locked svg{stroke:#F9A8D4}
+
+/* "عرض الأقدم" زر pagination */
+.lk-more-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);margin:14px 16px 4px;padding:13px;border-radius:14px;background:var(--sf);color:var(--pri);border:1.5px dashed rgba(124,58,237,.35);font-size:13.5px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.lk-more-btn:hover{background:var(--ps);border-style:solid}
+.lk-more-btn:active{transform:scale(.98)}
+.lk-more-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;transition:transform .2s}
+.lk-more-btn.expanded svg{transform:rotate(180deg)}
 .lk-info{flex:1;min-width:0}
 .lk-n{font-size:14px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .lk-sec{font-size:10px;font-weight:600;color:var(--pt);background:var(--ps);padding:2px 8px;border-radius:8px}
@@ -126,12 +138,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
 @keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
 
-/* LOAD MORE */
-.lk-more{display:flex;justify-content:center;margin:16px 16px 4px}
-.lk-more-btn{padding:11px 28px;border-radius:var(--r);border:1.5px solid var(--pm);background:var(--sf);color:var(--pt);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px}
-.lk-more-btn:hover{background:var(--ps);border-color:var(--pri);color:var(--pri)}
-.lk-more-btn:active{transform:scale(.97)}
-.lk-more-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+/* LOAD MORE container (الزر نفسه له rule أعلى) */
+.lk-more{display:flex;flex-direction:column;align-items:stretch;margin:0}
 .lk-more-count{font-size:11px;color:var(--i3);margin-top:6px;text-align:center}
 
 /* NAV */
@@ -291,8 +299,9 @@ let profile = null;
 let allLeaks = [];
 let currentFilter = 'all';
 let isLocked = false; // true لو المستخدم غير مشترك
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;       // أول 10 مجموعات تظهر افتراضياً
 let shownCount = PAGE_SIZE;
+let isExpanded = false;     // حالة التوسيع (عرض كل الأقدم)
 
 init();
 
@@ -437,13 +446,24 @@ function renderLeaks() {
     const visible = filtered.slice(0, shownCount);
     const remaining = Math.max(0, filtered.length - visible.length);
 
-    area.innerHTML = '<div class="lk-list">' + visible.map(g => renderCard(g)).join('') + '</div>'
-    + (remaining > 0
-        ? '<div class="lk-more"><button class="lk-more-btn" onclick="loadMoreLeaks()">'
-          + '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
-          + 'اعرض ' + Math.min(PAGE_SIZE, remaining) + ' مجموعات إضافية</button></div>'
-          + '<div class="lk-more-count">عرض ' + visible.length + ' من أصل ' + filtered.length + '</div>'
-        : '');
+    // إذا فيه أكثر من PAGE_SIZE → زر "عرض الأقدم" / "إخفاء"
+    const hasOlder = filtered.length > PAGE_SIZE;
+    let moreBlock = '';
+    if (hasOlder) {
+        if (isExpanded) {
+            moreBlock = '<div class="lk-more"><button class="lk-more-btn expanded" onclick="loadMoreLeaks()">'
+                      + '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
+                      + 'إخفاء التسريبات الأقدم</button>'
+                      + '<div class="lk-more-count">عرض ' + filtered.length + ' من أصل ' + filtered.length + '</div></div>';
+        } else {
+            const olderCount = filtered.length - PAGE_SIZE;
+            moreBlock = '<div class="lk-more"><button class="lk-more-btn" onclick="loadMoreLeaks()">'
+                      + '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
+                      + '📂 عرض ' + olderCount + ' تسريبات أقدم</button>'
+                      + '<div class="lk-more-count">عرض ' + visible.length + ' من أصل ' + filtered.length + '</div></div>';
+        }
+    }
+    area.innerHTML = '<div class="lk-list">' + visible.map(g => renderCard(g)).join('') + '</div>' + moreBlock;
 }
 
 function renderCard(g) {
@@ -508,7 +528,14 @@ function renderCard(g) {
 }
 
 window.loadMoreLeaks = function() {
-    shownCount += PAGE_SIZE;
+    // toggle: لو متوسّع → يطوي للـ PAGE_SIZE / لو مطوي → يعرض الكل
+    if (isExpanded) {
+        isExpanded = false;
+        shownCount = PAGE_SIZE;
+    } else {
+        isExpanded = true;
+        shownCount = 9999;  // عرض الكل
+    }
     renderLeaks();
 };
 

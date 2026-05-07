@@ -173,7 +173,18 @@ function seedData() {
             { id:'lg2', title:'تسريبات 15 أبريل 2026', leak_date:'2026-04-15', section:'قدرات كمي', question_count:44, description:'44 سؤال كمي من اختبار الصباح', is_active:true, created_at:'2026-04-15T07:30:00Z' },
             { id:'lg3', title:'تسريبات 14 أبريل 2026', leak_date:'2026-04-14', section:'قدرات لفظي', question_count:122, description:'122 سؤال لفظي — تناظر وإكمال جمل', is_active:true, created_at:'2026-04-14T09:00:00Z' },
             { id:'lg4', title:'تسريبات 13 أبريل 2026', leak_date:'2026-04-13', section:'تحصيلي', question_count:98, description:'98 سؤال تحصيلي — أحياء وكيمياء', is_active:true, created_at:'2026-04-13T08:00:00Z' },
-            { id:'lg5', title:'تسريبات 10 أبريل 2026', leak_date:'2026-04-10', section:'مختلط', question_count:75, description:'75 سؤال مختلط من اختبار الأسبوع الماضي', is_active:true, created_at:'2026-04-10T10:00:00Z' }
+            { id:'lg5', title:'تسريبات 10 أبريل 2026', leak_date:'2026-04-10', section:'مختلط', question_count:75, description:'75 سؤال مختلط من اختبار الأسبوع الماضي', is_active:true, created_at:'2026-04-10T10:00:00Z' },
+            // mock data إضافية لاختبار pagination (≥10 cards)
+            { id:'lg6', title:'تسريبات 8 أبريل 2026', leak_date:'2026-04-08', section:'mixed', question_count:60, description:'مُسترجَع', is_active:true, created_at:'2026-04-08T21:00:00Z' },
+            { id:'lg7', title:'تسريبات 31 مارس 2026', leak_date:'2026-03-31', section:'mixed', question_count:85, description:'مُسترجَع', is_active:true, created_at:'2026-03-31T12:00:00Z' },
+            { id:'lg8', title:'تسريبات 30 مارس 2026', leak_date:'2026-03-30', section:'mixed', question_count:77, description:'مُسترجَع', is_active:true, created_at:'2026-03-30T12:00:00Z' },
+            { id:'lg9', title:'تسريبات 29 مارس 2026', leak_date:'2026-03-29', section:'mixed', question_count:50, description:'مُسترجَع', is_active:true, created_at:'2026-03-29T12:00:00Z' },
+            { id:'lg10', title:'تسريبات 28 مارس 2026', leak_date:'2026-03-28', section:'mixed', question_count:22, description:'مُسترجَع', is_active:true, created_at:'2026-03-28T12:00:00Z' },
+            { id:'lg11', title:'تسريبات 26 مارس 2026', leak_date:'2026-03-26', section:'mixed', question_count:24, description:'مُسترجَع', is_active:true, created_at:'2026-03-26T12:00:00Z' },
+            { id:'lg12', title:'تسريبات 18 مارس 2026', leak_date:'2026-03-18', section:'mixed', question_count:52, description:'مُسترجَع', is_active:true, created_at:'2026-03-18T07:00:00Z' },
+            { id:'lg13', title:'تسريبات 17 مارس 2026', leak_date:'2026-03-17', section:'mixed', question_count:54, description:'مُسترجَع', is_active:true, created_at:'2026-03-17T07:00:00Z' },
+            { id:'lg14', title:'تسريبات 16 مارس 2026', leak_date:'2026-03-16', section:'mixed', question_count:50, description:'مُسترجَع', is_active:true, created_at:'2026-03-16T07:00:00Z' },
+            { id:'lg15', title:'تسريبات 15 مارس 2026', leak_date:'2026-03-15', section:'mixed', question_count:66, description:'مُسترجَع', is_active:true, created_at:'2026-03-15T07:00:00Z' }
         ],
         user_leak_progress: [
             { id:'ulp1', user_id:MOCK_USER_ID, leak_group_id:'lg3', completed_count:79, total_count:122, percentage:65, status:'in_progress', updated_at: new Date(Date.now()-2*86400000).toISOString() },
