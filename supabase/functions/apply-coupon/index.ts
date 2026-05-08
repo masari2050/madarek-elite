@@ -141,20 +141,30 @@ serve(async (req) => {
     // ══════════════════════════════════════════
     //  8. حساب الخصم
     // ══════════════════════════════════════════
-    const { data: settings } = await supabaseAdmin
-      .from('site_settings').select('key, value')
-      .in('key', ['price_monthly_original', 'price_yearly_original', 'discount_percent'])
-
-    const sm: Record<string, number> = {}
-    settings?.forEach((s: any) => sm[s.key] = parseFloat(s.value))
-
-    const disc = sm['discount_percent'] || 0
     const durMonths = coupon.duration_months || (coupon.plan_type === 'yearly' ? 12 : 1)
 
     // تحديد نوع الاشتراك من المدة
     const subType = durMonths >= 12 ? 'yearly' : 'monthly'
-    const basePriceKey = subType === 'yearly' ? 'price_yearly_original' : 'price_monthly_original'
-    let basePrice = Math.round((sm[basePriceKey] || (subType === 'yearly' ? 468 : 60)) * (100 - disc) / 100)
+
+    // basePrice من جدول plans (المصدر الموحّد) مع fallback آمن.
+    // لو plans غير متوفّر/فاشل → نرجع للقيم الافتراضية.
+    let basePrice = subType === 'yearly' ? 799 : 99
+    try {
+      const planSlugForLookup = (typeof plan === 'string' && plan.trim())
+        ? plan.trim()
+        : subType  // 'monthly' أو 'yearly'
+      const { data: planRow } = await supabaseAdmin
+        .from('plans')
+        .select('price')
+        .eq('slug', planSlugForLookup)
+        .eq('is_active', true)
+        .maybeSingle()
+      const p = planRow ? Number(planRow.price) : 0
+      if (Number.isFinite(p) && p > 0) basePrice = Math.round(p)
+    } catch (priceErr) {
+      console.error('[apply-coupon] plans price lookup failed:', priceErr)
+      // نكمّل بـbasePrice الافتراضي — الـfunction لا تنكسر
+    }
 
     let finalAmount = basePrice
     const isFree = coupon.discount_type === 'free' ||
