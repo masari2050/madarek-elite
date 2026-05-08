@@ -35,11 +35,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
 @keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* TICKER — original RTL-working approach (restored after experiments) */
-.ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap}
-.ticker .kw{font-weight:700;margin-left:6px}
-.ticker-in{display:inline-block;animation:tick 22s linear infinite;padding-right:60px}
-@keyframes tick{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+/* TICKER — direction:ltr container makes transform math predictable.
+   Arabic text inside each .seg uses dir=rtl to keep bidi correct.
+   4 identical segs + slide one-seg-width (-25%) = perfectly seamless loop, no gap. */
+.ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;direction:ltr}
+.ticker .kw{font-weight:700;margin-inline-end:6px}
+.ticker-in{display:inline-block;animation:tick 22s linear infinite;will-change:transform}
+.ticker-in > .seg{display:inline-block;padding-inline-end:60px;direction:rtl}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-25%)}}
 
 /* HEADER */
 .hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
@@ -978,7 +981,7 @@ async function loadBanners() {
                 const text = cfg.text || '';
                 const kw = cfg.keyword || '';
                 const content = (kw ? '<span class="kw" style="color:' + kwColor + '">' + esc(kw) + '</span>' : '') + esc(text);
-                document.getElementById('tickerText').innerHTML = content + '&nbsp;&nbsp;&nbsp;&nbsp;' + content;
+                document.getElementById('tickerText').innerHTML = '<span class="seg">' + content + '</span><span class="seg">' + content + '</span><span class="seg">' + content + '</span><span class="seg">' + content + '</span>';
                 ticker.style.display = 'block';
                 if (cfg.bg_color) ticker.style.background = cfg.bg_color;
                 if (cfg.text_color) ticker.style.color = cfg.text_color;
@@ -1023,45 +1026,34 @@ async function loadMockExamBanner() {
     const m = document.getElementById('mockBan');
     if (!m) return;
 
-    // Step 1: check if banner is enabled in admin (banners.mock_exam.is_active)
-    // Even if a mock exam exists in mock_exams table, admin can hide the banner.
-    let bannerEnabled = true;
-    try {
-        const { data: bnr } = await sb.from('banners').select('is_active').eq('banner_type','mock_exam').maybeSingle();
-        if (bnr && bnr.is_active === false) {
-            m.style.display = 'none';
-            return;
-        }
-    } catch(_) {}
-
-    // Step 2: try the active-exam RPC (mock_exams table is source of truth)
+    // Source of truth: mock_exams table. Each exam has its own is_active toggle
+    // (controlled per-row from admin "الاختبارات المحاكية" tab).
+    // get_active_mock_exam_status() filters by is_active=true automatically.
     try {
         const { data: exam } = await sb.rpc('get_active_mock_exam_status');
-        if (exam && exam.length) {
-            const e = exam[0];
-            const startsTs = new Date(e.starts_at).getTime();
-            const endsTs = startsTs + (parseInt(e.duration_min,10) || 0) * 60000;
-            // Auto-hide 6 hours after exam ended (results window closed)
-            if (Date.now() > endsTs + 6 * 60 * 60 * 1000) {
-                m.style.display = 'none';
-                return;
-            }
-            _mockExamId = e.exam_id;
-            _mockExamMeta = { starts_at: e.starts_at, duration_min: e.duration_min, exam_type: e.exam_type };
-            applyMockExamConfig({
-                title: e.title,
-                exam_date: e.starts_at,
-                questions: e.questions_count,
-                duration_min: e.duration_min,
-                total_registered: e.total_registered
-            });
-            if (e.user_registered) applyMockExamRegistered();
-            return;
-        } else {
-            // No active exam → hide banner (no fallback to banners.mock_exam.config)
+        if (!exam || !exam.length) {
+            // No active exam (none scheduled or all toggled off) → hide
             m.style.display = 'none';
             return;
         }
+        const e = exam[0];
+        const startsTs = new Date(e.starts_at).getTime();
+        const endsTs = startsTs + (parseInt(e.duration_min,10) || 0) * 60000;
+        // Auto-hide 6 hours after exam ended (results window closed)
+        if (Date.now() > endsTs + 6 * 60 * 60 * 1000) {
+            m.style.display = 'none';
+            return;
+        }
+        _mockExamId = e.exam_id;
+        _mockExamMeta = { starts_at: e.starts_at, duration_min: e.duration_min, exam_type: e.exam_type };
+        applyMockExamConfig({
+            title: e.title,
+            exam_date: e.starts_at,
+            questions: e.questions_count,
+            duration_min: e.duration_min,
+            total_registered: e.total_registered
+        });
+        if (e.user_registered) applyMockExamRegistered();
     } catch(_) {
         m.style.display = 'none';
     }
@@ -1357,7 +1349,7 @@ function loadPreviewMode() {
     // Ticker
     const ticker = document.getElementById('tickerBar');
     ticker.style.display = 'block';
-    document.getElementById('tickerText').innerHTML = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل &nbsp;&nbsp;&nbsp;&nbsp; <span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل';
+    (() => { const c = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل'; const seg = '<span class="seg">'+c+'</span>'; document.getElementById('tickerText').innerHTML = seg+seg+seg+seg; })();
 
     // Main Banner
     const ban = document.getElementById('mainBanner');

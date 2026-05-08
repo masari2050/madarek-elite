@@ -263,13 +263,14 @@
             const escape = (s) => { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; };
             const content = (kw ? '<span style="font-weight:700;margin-left:6px;color:' + kwColor + '">' + escape(kw) + '</span>' : '') + escape(text);
             const style = document.createElement('style');
-            // Restored original RTL-working approach: -50% → 0 with 2 copies + nbsp
-            style.textContent = '@keyframes madarek-tick{from{transform:translateX(-50%)}to{transform:translateX(0)}}';
+            // direction:ltr container + 4 segs (dir=rtl) + slide -25% = seamless RTL ticker, no gap
+            style.textContent = '@keyframes madarek-tick{from{transform:translateX(0)}to{transform:translateX(-25%)}} #globalTicker .seg{display:inline-block;padding-inline-end:60px;direction:rtl}';
             document.head.appendChild(style);
             const el = document.createElement('div');
             el.id = 'globalTicker';
-            el.style.cssText = 'background:' + bg + ';color:' + color + ';font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:60';
-            el.innerHTML = '<span style="display:inline-block;animation:madarek-tick ' + dur + 's linear infinite;padding-right:60px">' + content + '&nbsp;&nbsp;&nbsp;&nbsp;' + content + '</span>';
+            el.style.cssText = 'background:' + bg + ';color:' + color + ';font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:60;direction:ltr';
+            const seg = '<span class="seg">' + content + '</span>';
+            el.innerHTML = '<span style="display:inline-block;animation:madarek-tick ' + dur + 's linear infinite;will-change:transform">' + seg + seg + seg + seg + '</span>';
             // Insert at very top of wrap if exists, else body
             const wrap = document.querySelector('.wrap');
             if (wrap) wrap.insertBefore(el, wrap.firstChild);
