@@ -1910,9 +1910,10 @@ window.loadBanners = async function() {
             <div class="banner-preview" style="padding:0">
                 <div class="ticker-preview-wrap" style="background:${esc(tk.config.bg_color||'#6D5DF6')};color:${esc(tk.config.text_color||'#fff')};border-radius:8px;overflow:hidden;white-space:nowrap;padding:9px 0;font-size:12.5px;font-weight:600">
                     <div class="ticker-preview-in">
-                        ${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        ${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
+                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
+                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
+                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
+                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
                     </div>
                 </div>
             </div>
@@ -3764,39 +3765,19 @@ window.loadMockExams = async function() {
     const { sb } = window.A;
     const isPreview = new URLSearchParams(window.location.search).has('preview');
 
-    // Read current banner visibility (banners.mock_exam.is_active)
-    let bannerActive = true;
-    try {
-        const { data: bnr } = await sb.from('banners').select('is_active').eq('banner_type','mock_exam').maybeSingle();
-        if (bnr && bnr.is_active === false) bannerActive = false;
-    } catch(_) {}
-
     $c().innerHTML = `
     <div id="mockExamsArea">
       <div class="card">
         <div class="card-hdr">
           <div class="card-hdr-l">
             <div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
-            <div><div class="card-title">الاختبارات المحاكية</div><div class="card-sub">إنشاء اختبارات تحصيلي/قدرات بأسئلة عشوائية متوازنة</div></div>
+            <div><div class="card-title">الاختبارات المحاكية</div><div class="card-sub">كل اختبار له toggle مستقل — أوقفه لإخفاء بنره من الصفحة الرئيسية فوراً</div></div>
           </div>
           <button class="btn btn-pri" onclick="openMockExamForm()">
             <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             اختبار جديد
           </button>
         </div>
-
-        <!-- Banner visibility toggle (controls dashboard mockBan visibility regardless of mock_exams content) -->
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin:0 0 10px;background:var(--s2);border:1px solid var(--ln);border-radius:10px">
-            <div style="display:flex;align-items:center;gap:10px;font-size:12.5px">
-                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                <div>
-                    <div style="font-weight:700">إظهار البنر في الصفحة الرئيسية</div>
-                    <div style="font-size:11px;color:var(--i3);margin-top:2px">أوقفه لإخفاء بنر المحاكي عند الطلاب فوراً (بدون حذف الاختبارات)</div>
-                </div>
-            </div>
-            ${_bannerToggleHTML('mock_exam', bannerActive)}
-        </div>
-
         <div class="tbl-wrap" id="mockExamsTable"><div class="loader">جاري التحميل...</div></div>
       </div>
 
@@ -3828,7 +3809,7 @@ function renderMockExamsTable(rows) {
     const html = `
     <table class="tbl">
       <thead><tr>
-        <th>العنوان</th><th>النوع</th><th>الموعد</th><th>المدة</th><th>الأسئلة</th><th>المسجّلون</th><th>المؤدّون</th><th>المعدل</th><th>الحالة</th><th></th>
+        <th>العنوان</th><th>النوع</th><th>الموعد</th><th>المدة</th><th>الأسئلة</th><th>المسجّلون</th><th>المؤدّون</th><th>المعدل</th><th>الحالة</th><th>البنر</th><th></th>
       </tr></thead>
       <tbody>
         ${rows.map(e => {
@@ -3840,6 +3821,7 @@ function renderMockExamsTable(rows) {
             else if (now >= ends) { phase = 'past'; phaseTxt = 'انتهى'; phaseColor = '#9EA2B8'; }
             const dist = (e.exam_type === 'qudurat_computer' || e.exam_type === 'qudurat_paper')
                 ? `<div style="font-size:10px;color:#6B7094;margin-top:2px">${e.quant_count||0} كمي + ${e.verbal_count||0} لفظي</div>` : '';
+            const isOn = e.is_active !== false;
             return `<tr>
               <td><div style="font-weight:700">${esc(e.title)}</div>${dist}</td>
               <td><span style="background:${t.color}22;color:${t.color};padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700">${esc(t.name)}</span></td>
@@ -3850,6 +3832,7 @@ function renderMockExamsTable(rows) {
               <td>${fmt(e.total_completed)}</td>
               <td>${e.avg_correct != null ? e.avg_correct + '%' : '—'}</td>
               <td><span style="background:${phaseColor}22;color:${phaseColor};padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700">${phaseTxt}</span></td>
+              <td><div class="toggle-big-wrap ${isOn?'is-on':''}" onclick="toggleMockExamActive('${e.id}', this)" title="${isOn?'البنر ظاهر للطلاب — اضغط لإخفائه':'البنر مخفي — اضغط لإظهاره'}" style="display:inline-flex"><div class="toggle-big ${isOn?'on':''}"></div></div></td>
               <td>
                 <button class="btn-icon" onclick="openMockExamDetail('${e.id}')" title="تفاصيل" style="margin-left:4px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
                 <button class="btn-icon" onclick="editMockExam('${e.id}')" title="تعديل"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
@@ -4257,6 +4240,25 @@ window.deleteMockExam = async function(id, title) {
         showToast('تم الحذف', 'suc');
         loadMockExams();
     } catch(e) { showToast('خطأ: ' + (e.message||''), 'err'); }
+};
+
+window.toggleMockExamActive = async function(id, wrap) {
+    const { sb } = window.A;
+    wrap.classList.toggle('is-on');
+    const inner = wrap.querySelector('.toggle-big');
+    if (inner) inner.classList.toggle('on');
+    const newState = wrap.classList.contains('is-on');
+    wrap.title = newState ? 'البنر ظاهر للطلاب — اضغط لإخفائه' : 'البنر مخفي — اضغط لإظهاره';
+    try {
+        const { error } = await sb.rpc('admin_set_mock_exam_active', { p_exam_id: id, p_is_active: newState });
+        if (error) throw error;
+        showSaveToast(newState ? 'تم إظهار البنر للطلاب' : 'تم إخفاء البنر — لن يظهر في الصفحة الرئيسية', 'suc');
+    } catch(e) {
+        // Revert on error
+        wrap.classList.toggle('is-on');
+        if (inner) inner.classList.toggle('on');
+        showSaveToast('خطأ: ' + (e.message||''), 'err');
+    }
 };
 
 window.openMockExamDetail = async function(id) {
