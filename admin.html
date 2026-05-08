@@ -500,7 +500,7 @@ async function init() {
         window.A.profile = profile;
         renderAdminInfo();
         bindNav();
-        loadOverview();
+        loadInitialPage();
         return;
     }
 
@@ -516,7 +516,7 @@ async function init() {
 
     renderAdminInfo();
     bindNav();
-    loadOverview();
+    loadInitialPage();
     loadReviewBadge();
     loadPayoutsBadge();
     loadOnlineCount();
@@ -577,9 +577,27 @@ window.closeSidebar = function() {
 };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 
+// يقرأ التاب من URL hash عند التحميل الأول → يبقى نفسه عند الـrefresh
+function loadInitialPage() {
+    const hash = (location.hash || '').replace(/^#/, '');
+    const validPages = ['overview','questions','review','users','users-analytics','plans','coupons','finance','invoices','expenses','mockexams','banners','pages','referrals','payouts','tips','seo','staff','incoming-reports','visitors','settings'];
+    const page = validPages.includes(hash) ? hash : 'overview';
+    const item = document.querySelector('[data-page="'+page+'"]');
+    const title = item ? (item.getAttribute('data-title') || '') : '';
+    if (page === 'overview') {
+        loadOverview();
+    } else {
+        switchPage(page, title);
+    }
+}
+
 function switchPage(page, title) {
     currentPage = page;
     window.A.currentPage = page;
+    // احفظ التاب في URL hash → يبقى نفسه عند الـrefresh
+    try {
+        if (location.hash !== '#'+page) history.replaceState(null, '', '#'+page);
+    } catch(_) {}
     document.querySelectorAll('.sb-item').forEach(e => e.classList.remove('active'));
     document.querySelector('[data-page="'+page+'"]')?.classList.add('active');
     document.getElementById('pageTitle').textContent = title || '';
