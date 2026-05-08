@@ -35,11 +35,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
 @keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* TICKER */
+/* TICKER — continuous loop, no jump (text duplicated 2x in HTML; animation slides ticker-in by -50%) */
 .ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap}
 .ticker .kw{font-weight:700;margin-left:6px}
-.ticker-in{display:inline-block;animation:tick 22s linear infinite;padding-right:60px}
-@keyframes tick{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.ticker-in{display:inline-block;animation:tick 22s linear infinite;will-change:transform}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* HEADER */
 .hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
@@ -57,8 +57,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* AD BANNER */
 .ad-ban{margin:0 6px 14px;border-radius:var(--r2);overflow:hidden;color:#fff;padding:14px 16px;display:none}
-/* mainBanner مُستبدل بـmockBan الجديد (mock-ban) — نخفيه دائماً عشان لا يتكرر مع DB content القديم */
-#mainBanner{display:none !important}
+/* mainBanner: مخفي افتراضياً (display:none في .ad-ban). يُعرض عبر JS لو is_active في DB ومدرج في schedule */
 .ad-tag{font-size:10px;font-weight:700;background:rgba(255,215,0,.2);color:#FFD700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px}
 .ad-title{font-size:14px;font-weight:700;margin-bottom:3px}
 .ad-sub{font-size:11px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:10px}
@@ -978,8 +977,10 @@ async function loadBanners() {
                 if (cfg.bg_color) ticker.style.background = cfg.bg_color;
                 if (cfg.text_color) ticker.style.color = cfg.text_color;
                 if (cfg.speed) {
-                    const dur = Math.max(5, 50 - cfg.speed / 2) + 's';
-                    document.querySelector('.ticker-in').style.animationDuration = dur;
+                    // Same formula as admin's applyTickerSpeedPreview: slider 10..100 → duration 60s..8s
+                    const dur = Math.max(8, Math.round((110 - cfg.speed) * 0.6));
+                    const el = document.querySelector('.ticker-in');
+                    if (el) el.style.animationDuration = dur + 's';
                 }
             }
             else if (b.banner_type === 'main') {

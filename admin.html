@@ -274,6 +274,19 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 .toast.suc{background:var(--suc)}.toast.err{background:var(--dng)}
 @keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
+/* SAVE TOAST (banner-style, top of page, large + obvious) */
+.save-toast{position:fixed;top:0;left:0;right:0;z-index:1100;display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:14px 20px;font-size:14px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,var(--suc),#16A34A);
+  box-shadow:0 6px 24px rgba(34,197,94,.35);
+  animation:saveToastIn .35s var(--ease);transform-origin:top}
+.save-toast.err{background:linear-gradient(135deg,var(--dng),#B91C1C);box-shadow:0 6px 24px rgba(239,68,68,.35)}
+.save-toast svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.save-toast .x{margin-right:auto;margin-left:0;cursor:pointer;opacity:.85;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.15);transition:background .15s}
+.save-toast .x:hover{background:rgba(255,255,255,.28)}
+@keyframes saveToastIn{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
+@keyframes saveToastOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-100%)}}
+
 /* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--ln);margin-top:4px}
 .pg-info{font-size:11px;color:var(--i3)}
@@ -295,6 +308,34 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 .toggle2.on{background:var(--suc)}
 .toggle2::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;right:2px;transition:right .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .toggle2.on::after{right:18px}
+
+/* BIG TOGGLE — for banners (clear active/inactive state) */
+.toggle-big-wrap{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.toggle-big{width:54px;height:28px;border-radius:16px;background:#D1D5DB;position:relative;transition:background .22s;flex-shrink:0;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.toggle-big.on{background:linear-gradient(135deg,var(--suc),#16A34A);box-shadow:inset 0 1px 3px rgba(0,0,0,.08),0 2px 6px rgba(34,197,94,.3)}
+.toggle-big::after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;right:3px;transition:right .22s;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.toggle-big.on::after{right:29px}
+.toggle-big-lbl{font-size:12px;font-weight:700;letter-spacing:.2px}
+.toggle-big-lbl .on-txt,.toggle-big-lbl .off-txt{display:none}
+.toggle-big-wrap.is-on .on-txt{display:inline;color:var(--suc)}
+.toggle-big-wrap:not(.is-on) .off-txt{display:inline;color:var(--i3)}
+
+/* EMOJI PICKER */
+.emoji-btn{width:34px;height:34px;border-radius:8px;background:var(--s2);border:1px solid var(--ln);cursor:pointer;font-size:16px;display:grid;place-items:center;transition:all .15s;flex-shrink:0}
+.emoji-btn:hover{background:var(--pri-s);border-color:var(--pri-m)}
+.emoji-pop{position:absolute;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:10px;box-shadow:0 12px 32px rgba(0,0,0,.18);z-index:1000;display:grid;grid-template-columns:repeat(8,1fr);gap:4px;width:288px}
+.emoji-pop .ep-item{width:30px;height:30px;display:grid;place-items:center;cursor:pointer;border-radius:6px;font-size:18px;transition:background .12s}
+.emoji-pop .ep-item:hover{background:var(--s2)}
+
+/* TICKER PREVIEW (live in admin) */
+.ticker-preview-in{display:inline-block;animation:tk-preview 22s linear infinite;padding-right:60px;will-change:transform}
+@keyframes tk-preview{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+
+/* SCHEDULE FIELDS */
+.sched-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.sched-hint{font-size:10.5px;color:var(--i4);margin-top:4px;display:flex;align-items:center;gap:4px}
+.sched-hint svg{width:11px;height:11px;stroke:var(--i4);fill:none;stroke-width:2}
+.sched-clear{font-size:11px;color:var(--pri);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit}
 
 /* SETTINGS */
 .settings-section{margin-bottom:24px}
