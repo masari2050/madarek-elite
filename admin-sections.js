@@ -1910,9 +1910,9 @@ window.loadBanners = async function() {
             <div class="banner-preview" style="padding:0">
                 <div class="ticker-preview-wrap" style="background:${esc(tk.config.bg_color||'#6D5DF6')};color:${esc(tk.config.text_color||'#fff')};border-radius:8px;overflow:hidden;white-space:nowrap;padding:9px 0;font-size:12.5px;font-weight:600">
                     <div class="ticker-preview-in">
-                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
-                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
-                        <span class="seg">${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}</span>
+                        ${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        ${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
                     </div>
                 </div>
             </div>
