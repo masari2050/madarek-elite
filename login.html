@@ -354,7 +354,7 @@ window.sendResetLink=async function(){
   btn.disabled=true;btn.querySelector('span')&&(btn.querySelector('span').textContent='جاري الإرسال...');
   btn.innerHTML='<span>جاري الإرسال...</span>';
   try{
-    var {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:window.location.origin+'/v2/login-v2.html'});
+    var {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:window.location.origin+'/login.html'});
     if(error)throw error;
     m.textContent='تم إرسال الرابط إلى '+em+' ✓';m.className='mdl-msg ok on';
     btn.innerHTML='<span>تم الإرسال ✓</span>';
