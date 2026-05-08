@@ -1022,11 +1022,30 @@ async function loadBanners() {
 async function loadMockExamBanner() {
     const m = document.getElementById('mockBan');
     if (!m) return;
-    // أوّلاً: حاول قراءة الاختبار النشط من mock_exams (الأحدث المعتمد)
+
+    // Step 1: check if banner is enabled in admin (banners.mock_exam.is_active)
+    // Even if a mock exam exists in mock_exams table, admin can hide the banner.
+    let bannerEnabled = true;
+    try {
+        const { data: bnr } = await sb.from('banners').select('is_active').eq('banner_type','mock_exam').maybeSingle();
+        if (bnr && bnr.is_active === false) {
+            m.style.display = 'none';
+            return;
+        }
+    } catch(_) {}
+
+    // Step 2: try the active-exam RPC (mock_exams table is source of truth)
     try {
         const { data: exam } = await sb.rpc('get_active_mock_exam_status');
         if (exam && exam.length) {
             const e = exam[0];
+            const startsTs = new Date(e.starts_at).getTime();
+            const endsTs = startsTs + (parseInt(e.duration_min,10) || 0) * 60000;
+            // Auto-hide 6 hours after exam ended (results window closed)
+            if (Date.now() > endsTs + 6 * 60 * 60 * 1000) {
+                m.style.display = 'none';
+                return;
+            }
             _mockExamId = e.exam_id;
             _mockExamMeta = { starts_at: e.starts_at, duration_min: e.duration_min, exam_type: e.exam_type };
             applyMockExamConfig({
@@ -1038,15 +1057,14 @@ async function loadMockExamBanner() {
             });
             if (e.user_registered) applyMockExamRegistered();
             return;
+        } else {
+            // No active exam → hide banner (no fallback to banners.mock_exam.config)
+            m.style.display = 'none';
+            return;
         }
-    } catch(e) {}
-    // fallback: قبل تشغيل SQL 36 — اقرأ من banners.mock_exam
-    try {
-        const { data } = await sb.from('banners').select('is_active,config').eq('banner_type','mock_exam').maybeSingle();
-        if (!data) return; // النص الثابت يبقى
-        if (!data.is_active) { m.style.display = 'none'; return; }
-        applyMockExamConfig(data.config || {});
-    } catch(e) {}
+    } catch(_) {
+        m.style.display = 'none';
+    }
 }
 
 // ── Mock Exam Banner Config ──

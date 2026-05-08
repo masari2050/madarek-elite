@@ -3764,6 +3764,13 @@ window.loadMockExams = async function() {
     const { sb } = window.A;
     const isPreview = new URLSearchParams(window.location.search).has('preview');
 
+    // Read current banner visibility (banners.mock_exam.is_active)
+    let bannerActive = true;
+    try {
+        const { data: bnr } = await sb.from('banners').select('is_active').eq('banner_type','mock_exam').maybeSingle();
+        if (bnr && bnr.is_active === false) bannerActive = false;
+    } catch(_) {}
+
     $c().innerHTML = `
     <div id="mockExamsArea">
       <div class="card">
@@ -3777,6 +3784,19 @@ window.loadMockExams = async function() {
             اختبار جديد
           </button>
         </div>
+
+        <!-- Banner visibility toggle (controls dashboard mockBan visibility regardless of mock_exams content) -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin:0 0 10px;background:var(--s2);border:1px solid var(--ln);border-radius:10px">
+            <div style="display:flex;align-items:center;gap:10px;font-size:12.5px">
+                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <div>
+                    <div style="font-weight:700">إظهار البنر في الصفحة الرئيسية</div>
+                    <div style="font-size:11px;color:var(--i3);margin-top:2px">أوقفه لإخفاء بنر المحاكي عند الطلاب فوراً (بدون حذف الاختبارات)</div>
+                </div>
+            </div>
+            ${_bannerToggleHTML('mock_exam', bannerActive)}
+        </div>
+
         <div class="tbl-wrap" id="mockExamsTable"><div class="loader">جاري التحميل...</div></div>
       </div>
 
