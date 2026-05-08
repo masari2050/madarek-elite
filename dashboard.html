@@ -35,11 +35,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
 @keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* TICKER — continuous loop, no jump (text duplicated 2x in HTML; animation slides ticker-in by -50%) */
+/* TICKER — RTL continuous loop, no jump, no gap
+   - text duplicated 3× as separate segs (each with padding-inline-end so widths match)
+   - keyframe 0 → -33.333% (slides exactly one seg-width); 3 segs ensures viewport never sees empty space
+   - in RTL: visually the text moves right→left (new content enters from right) */
 .ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap}
 .ticker .kw{font-weight:700;margin-left:6px}
 .ticker-in{display:inline-block;animation:tick 22s linear infinite;will-change:transform}
-@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-in > .seg{padding-inline-end:60px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-33.333%)}}
 
 /* HEADER */
 .hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
@@ -972,7 +976,7 @@ async function loadBanners() {
                 const text = cfg.text || '';
                 const kw = cfg.keyword || '';
                 const content = (kw ? '<span class="kw" style="color:' + kwColor + '">' + esc(kw) + '</span>' : '') + esc(text);
-                document.getElementById('tickerText').innerHTML = content + '&nbsp;&nbsp;&nbsp;&nbsp;' + content;
+                document.getElementById('tickerText').innerHTML = '<span class="seg">' + content + '</span><span class="seg">' + content + '</span><span class="seg">' + content + '</span>';
                 ticker.style.display = 'block';
                 if (cfg.bg_color) ticker.style.background = cfg.bg_color;
                 if (cfg.text_color) ticker.style.color = cfg.text_color;
@@ -1333,7 +1337,7 @@ function loadPreviewMode() {
     // Ticker
     const ticker = document.getElementById('tickerBar');
     ticker.style.display = 'block';
-    document.getElementById('tickerText').innerHTML = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل &nbsp;&nbsp;&nbsp;&nbsp; <span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل';
+    (() => { const c = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل'; document.getElementById('tickerText').innerHTML = '<span class="seg">'+c+'</span><span class="seg">'+c+'</span><span class="seg">'+c+'</span>'; })();
 
     // Main Banner
     const ban = document.getElementById('mainBanner');
