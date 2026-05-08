@@ -464,29 +464,71 @@ window.resolveReport = async function(reportId, action, questionId, keepQuestion
 // ═══════════════════════════════════════════════════════
 // 4. USERS
 // ═══════════════════════════════════════════════════════
+// ── حالة الفلاتر (تُحفظ بين الصفحات) ──
+window._uFilters = window._uFilters || { search:'', sub:'', source:'', sort:'newest' };
+
 window.loadUsers = async function(page=1) {
     const { sb } = window.A;
     const PAGE_SIZE = 20;
     // اقرأ القيم الحالية قبل rebuild حتى لا تُمسح
-    const prevSearch = (document.getElementById('uSearch')?.value || '').trim();
-    const prevFilter = document.getElementById('uFilter')?.value || '';
-    const opt = (val, label) => `<option value="${val}"${val===prevFilter?' selected':''}>${label}</option>`;
+    const cur = window._uFilters;
+    const prevSearch = (document.getElementById('uSearch')?.value || cur.search || '').trim();
+    const prevSub    = document.getElementById('uSubFilter')?.value ?? cur.sub;
+    const prevSrc    = document.getElementById('uSrcFilter')?.value ?? cur.source;
+    const prevSort   = document.getElementById('uSort')?.value ?? cur.sort;
+    cur.search = prevSearch; cur.sub = prevSub; cur.source = prevSrc; cur.sort = prevSort;
+
+    const opt = (selected, val, label) => `<option value="${val}"${val===selected?' selected':''}>${label}</option>`;
+
     $c().innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
-        <div class="search-box">
+    <div id="uStatsRow" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+        <div class="stat-card" id="statTotal" style="background:var(--sf);border:1px solid var(--ln);padding:14px;border-radius:14px"><div style="font-size:11px;color:var(--i3);font-weight:600">إجمالي الأعضاء</div><div style="font-size:22px;font-weight:800;color:var(--ink);margin-top:4px">…</div></div>
+        <div class="stat-card" id="statActive" style="background:var(--sf);border:1px solid var(--ln);padding:14px;border-radius:14px;cursor:pointer" onclick="setUsersFilter('sub','active')"><div style="font-size:11px;color:var(--i3);font-weight:600">مشتركون فعليون</div><div style="font-size:22px;font-weight:800;color:var(--suc);margin-top:4px">…</div></div>
+        <div class="stat-card" id="statFree" style="background:var(--sf);border:1px solid var(--ln);padding:14px;border-radius:14px;cursor:pointer" onclick="setUsersFilter('sub','free')"><div style="font-size:11px;color:var(--i3);font-weight:600">مجانيون</div><div style="font-size:22px;font-weight:800;color:var(--i2);margin-top:4px">…</div></div>
+        <div class="stat-card" id="statExpired" style="background:var(--sf);border:1px solid var(--ln);padding:14px;border-radius:14px;cursor:pointer" onclick="setUsersFilter('sub','expired')"><div style="font-size:11px;color:var(--i3);font-weight:600">منتهي اشتراكهم</div><div style="font-size:22px;font-weight:800;color:var(--dng);margin-top:4px">…</div></div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap">
+        <div class="search-box" style="flex:1;min-width:240px">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="uSearch" placeholder="ابحث بالاسم أو الجوال..." value="${esc(prevSearch)}" oninput="uSearchDebounce()">
+            <input type="search" id="uSearch" placeholder="ابحث بالاسم/الجوال/الإيميل/كود الكوبون/UUID..." value="${esc(prevSearch)}" oninput="uSearchDebounce()">
         </div>
-        <div style="display:flex;gap:8px">
-            <select class="form-select" id="uFilter" style="width:auto" onchange="loadUsers(1)">
-                ${opt('','كل الأعضاء')}${opt('subscribed','مشتركون')}${opt('free','مجانيون')}${opt('expired','منتهي')}
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select class="form-select" id="uSubFilter" style="width:auto;min-width:130px" onchange="loadUsers(1)">
+                ${opt(prevSub,'','كل الاشتراكات')}
+                ${opt(prevSub,'active','مشتركون فعليون')}
+                ${opt(prevSub,'monthly','شهري')}
+                ${opt(prevSub,'quarterly','3 شهور')}
+                ${opt(prevSub,'yearly','سنوي')}
+                ${opt(prevSub,'free','مجانيون')}
+                ${opt(prevSub,'expired','منتهي')}
             </select>
-            <button class="btn btn-ghost" onclick="exportUsers()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
+            <select class="form-select" id="uSrcFilter" style="width:auto;min-width:140px" onchange="loadUsers(1)">
+                ${opt(prevSrc,'','كل المصادر')}
+                ${opt(prevSrc,'coupon_free','كوبون مجاني')}
+                ${opt(prevSrc,'coupon_discount','كوبون خصم')}
+                ${opt(prevSrc,'paid','مدفوع (MyFatoorah)')}
+                ${opt(prevSrc,'apple_iap','Apple IAP')}
+                ${opt(prevSrc,'google_play','Google Play')}
+                ${opt(prevSrc,'admin_grant','منحة إدارية')}
+                ${opt(prevSrc,'referral','إحالة')}
+                ${opt(prevSrc,'unknown','غير محدّد')}
+            </select>
+            <select class="form-select" id="uSort" style="width:auto;min-width:130px" onchange="loadUsers(1)">
+                ${opt(prevSort,'newest','الأحدث')}
+                ${opt(prevSort,'oldest','الأقدم')}
+                ${opt(prevSort,'last_seen_desc','الأكثر نشاطاً')}
+                ${opt(prevSort,'last_seen_asc','الأقل نشاطاً')}
+                ${opt(prevSort,'name','أبجدي')}
+            </select>
+            <button class="btn btn-ghost" onclick="resetUsersFilters()" title="إعادة تعيين كل الفلاتر"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></button>
+            <button class="btn btn-ghost" onclick="exportUsers()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
         </div>
     </div>
-    <div class="card"><div class="tbl-wrap" id="uTable"><div class="loader">جاري التحميل...</div></div></div>`;
+    <div class="card"><div class="tbl-wrap" id="uTable"><div class="loader">جاري التحميل...</div></div></div>
+    <style>@media(max-width:780px){#uStatsRow{grid-template-columns:repeat(2,1fr)}}</style>`;
 
-    // الحفاظ على cursor position في خانة البحث بعد rebuild
+    // الحفاظ على cursor في البحث
     const searchInput = document.getElementById('uSearch');
     if (prevSearch && searchInput) {
         searchInput.focus();
@@ -494,24 +536,25 @@ window.loadUsers = async function(page=1) {
     }
 
     try {
-        const search = prevSearch;
-        const filter = prevFilter;
-
-        // RPC SECURITY DEFINER: قائمة + إحصائيات + count في استدعاء واحد
+        // مع الفلاتر الموسّعة، نجلب صفحة كبيرة (500) ونفلتر/نفرز ونرتّب client-side
+        const rpcFilter = (prevSub === 'active') ? 'subscribed'
+                        : (prevSub === 'free')   ? 'free'
+                        : (prevSub === 'expired')? 'expired'
+                        : '';
         const { data: rpcData, error } = await sb.rpc('admin_get_users', {
-            p_filter: filter || '',
-            p_search: search || '',
-            p_page: page,
-            p_page_size: PAGE_SIZE
+            p_filter: rpcFilter,
+            p_search: '',                 // البحث client-side عشان يطابق email/coupon
+            p_page: 1,
+            p_page_size: 500
         });
         if (error) throw error;
 
-        const data = rpcData?.users || [];
-        const count = rpcData?.total_count || 0;
+        let data = rpcData?.users || [];
 
         const tbl = document.getElementById('uTable');
         if (data.length === 0) {
             tbl.innerHTML = '<div class="empty"><div class="empty-ic">👥</div><div class="empty-t">لا أعضاء</div></div>';
+            updateUsersStats({total:0,active:0,free:0,expired:0});
             return;
         }
 
@@ -592,16 +635,97 @@ window.loadUsers = async function(page=1) {
             return pill('منحة (يدوي)', 'var(--pri)', 'var(--ps)', 'مشترك بدون payment/coupon — مفترض أُضيف يدوياً من admin');
         };
 
+        // ── helper: تصنيف source لكل user (للفلتر) ──
+        const classifyUser = (u) => {
+            const ex = extraMap[u.id] || {};
+            const cp = couponMap[u.id];
+            const lastPay = paymentMap[u.id];
+            const profCoupon = u.used_coupon || '';
+            const isPaid = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
+            if (!isPaid) return 'none';
+            if (cp && cp.isFree) return 'coupon_free';
+            if (cp && !cp.isFree) return 'coupon_discount';
+            if (lastPay && lastPay.coupon_code) return Number(lastPay.amount) === 0 ? 'coupon_free' : 'coupon_discount';
+            if (profCoupon) return 'coupon_discount';
+            if (ex.subscription_source === 'apple_iap')   return 'apple_iap';
+            if (ex.subscription_source === 'google_play') return 'google_play';
+            if (ex.subscription_source === 'admin')       return 'admin_grant';
+            if (ex.subscription_source === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) return 'paid';
+            if (ex.referred_by) return 'referral';
+            return 'unknown';
+        };
+
+        // ── الإحصائيات (من البيانات الكاملة قبل الفلاتر) ──
+        const now = new Date();
+        let sCount = {total: data.length, active:0, free:0, expired:0};
+        data.forEach(u => {
+            const hasEnd = u.subscription_end && new Date(u.subscription_end) > now;
+            if (u.subscription_type && u.subscription_type !== 'free' && hasEnd) sCount.active++;
+            else if (u.subscription_end && new Date(u.subscription_end) <= now && u.subscription_type !== 'free') sCount.expired++;
+            else sCount.free++;
+        });
+        updateUsersStats(sCount);
+
+        // ── فلتر type-precise ──
+        if (prevSub === 'monthly' || prevSub === 'quarterly' || prevSub === 'yearly') {
+            data = data.filter(u => u.subscription_type === prevSub && u.subscription_end && new Date(u.subscription_end) > now);
+        } else if (prevSub === 'active') {
+            data = data.filter(u => u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > now);
+        }
+
+        // ── فلتر "كيف اشترك" ──
+        if (prevSrc) {
+            data = data.filter(u => classifyUser(u) === prevSrc);
+        }
+
+        // ── البحث الموسّع (name/phone/email/coupon/UUID) ──
+        if (prevSearch) {
+            const q = prevSearch.toLowerCase();
+            data = data.filter(u => {
+                const ex = extraMap[u.id] || {};
+                const cp = couponMap[u.id];
+                const lastPay = paymentMap[u.id];
+                return (u.full_name||'').toLowerCase().includes(q)
+                    || (u.phone||'').toLowerCase().includes(q)
+                    || (ex.email||'').toLowerCase().includes(q)
+                    || (cp && cp.code && cp.code.toLowerCase().includes(q))
+                    || (lastPay && lastPay.coupon_code && lastPay.coupon_code.toLowerCase().includes(q))
+                    || (u.used_coupon||'').toLowerCase().includes(q)
+                    || (u.id||'').toLowerCase().includes(q);
+            });
+        }
+
+        // ── الترتيب ──
+        const sortFn = {
+            'newest':         (a,b) => new Date(b.created_at) - new Date(a.created_at),
+            'oldest':         (a,b) => new Date(a.created_at) - new Date(b.created_at),
+            'last_seen_desc': (a,b) => new Date(b.last_seen_at||0) - new Date(a.last_seen_at||0),
+            'last_seen_asc':  (a,b) => new Date(a.last_seen_at||0) - new Date(b.last_seen_at||0),
+            'name':           (a,b) => (a.full_name||'').localeCompare(b.full_name||'', 'ar')
+        }[prevSort] || ((a,b) => new Date(b.created_at) - new Date(a.created_at));
+        data.sort(sortFn);
+
+        // ── pagination client-side ──
+        const filteredCount = data.length;
+        const totalPages = Math.max(1, Math.ceil(filteredCount/PAGE_SIZE));
+        if (page > totalPages) page = totalPages;
+        const pageData = data.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
+
+        if (pageData.length === 0) {
+            tbl.innerHTML = '<div class="empty"><div class="empty-ic">🔎</div><div class="empty-t">لا نتائج</div><div class="empty-d">جرّب تغيير الفلاتر أو إعادة التعيين</div></div>';
+            return;
+        }
+
         tbl.innerHTML = `<table>
             <thead><tr><th>العضو</th><th>الجوال</th><th>الاشتراك</th><th>كيف اشترك</th><th>الانضمام</th><th>آخر نشاط</th><th>المحاولات</th><th>الدقة</th><th></th></tr></thead>
-            <tbody>${data.map(u => {
+            <tbody>${pageData.map(u => {
                 const st = stats[u.id] || {total:0,correct:0};
                 const acc = st.total > 0 ? Math.round(st.correct/st.total*100) : 0;
                 const sub = (u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date())
                     ? '<span class="status-pill active">' + (u.subscription_type === 'yearly' ? 'سنوي' : u.subscription_type === 'quarterly' ? '3 أشهر' : 'شهري') + '</span>'
                     : '<span class="status-pill free">مجاني</span>';
-                const lastSeen = fmtDate(u.last_seen_at);
-                const joined = fmtDate(u.created_at);
+                const lastSeen = fmtDate(u.last_seen_at, true);
+                const joined   = fmtDate(u.created_at, true);
                 const name = u.full_name || '—';
                 const email = (extraMap[u.id]||{}).email || '';
                 return `<tr>
@@ -609,8 +733,8 @@ window.loadUsers = async function(page=1) {
                     <td class="td-muted">${esc(u.phone||'—')}</td>
                     <td>${sub}</td>
                     <td>${sourceBadge(u)}</td>
-                    <td class="td-muted">${joined}</td>
-                    <td class="td-muted">${lastSeen}</td>
+                    <td class="td-muted" style="white-space:nowrap;font-size:11.5px">${joined}</td>
+                    <td class="td-muted" style="white-space:nowrap;font-size:11.5px">${lastSeen}</td>
                     <td><b>${fmt(st.total)}</b></td>
                     <td><b style="color:${acc>=70?'var(--suc)':acc>=50?'var(--acc)':'var(--dng)'}">${acc}%</b></td>
                     <td><button class="q-act-btn" onclick="viewUser('${u.id}')"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></td>
@@ -618,12 +742,32 @@ window.loadUsers = async function(page=1) {
             }).join('')}</tbody>
         </table>`;
 
-        // Pagination
-        const totalPages = Math.ceil((count||0)/PAGE_SIZE);
-        if (totalPages > 1) {
-            tbl.innerHTML += '<div class="pagination" style="padding:14px"><div class="pg-info">'+fmt(count)+' عضو · صفحة '+page+'/'+totalPages+'</div><div class="pg-btns"><button class="pg-btn" '+(page<=1?'disabled':'')+' onclick="loadUsers('+(page-1)+')"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button><button class="pg-btn" '+(page>=totalPages?'disabled':'')+' onclick="loadUsers('+(page+1)+')"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button></div></div>';
+        // Pagination + count info
+        if (totalPages > 1 || filteredCount > 0) {
+            tbl.innerHTML += '<div class="pagination" style="padding:14px"><div class="pg-info">'+fmt(filteredCount)+' عضو · صفحة '+page+'/'+totalPages+'</div><div class="pg-btns"><button class="pg-btn" '+(page<=1?'disabled':'')+' onclick="loadUsers('+(page-1)+')"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button><button class="pg-btn" '+(page>=totalPages?'disabled':'')+' onclick="loadUsers('+(page+1)+')"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button></div></div>';
         }
     } catch(e) { document.getElementById('uTable').innerHTML = '<div class="empty-d">خطأ: '+e.message+'</div>'; }
+};
+
+// ── helpers لفلاتر الأعضاء ──
+function updateUsersStats(c) {
+    const tot = document.getElementById('statTotal');
+    const act = document.getElementById('statActive');
+    const fre = document.getElementById('statFree');
+    const exp = document.getElementById('statExpired');
+    if (tot) tot.querySelector('div:last-child').textContent = fmt(c.total);
+    if (act) act.querySelector('div:last-child').textContent = fmt(c.active);
+    if (fre) fre.querySelector('div:last-child').textContent = fmt(c.free);
+    if (exp) exp.querySelector('div:last-child').textContent = fmt(c.expired);
+}
+window.setUsersFilter = function(key, val) {
+    if (!window._uFilters) window._uFilters = {search:'',sub:'',source:'',sort:'newest'};
+    window._uFilters[key] = val;
+    loadUsers(1);
+};
+window.resetUsersFilters = function() {
+    window._uFilters = {search:'',sub:'',source:'',sort:'newest'};
+    loadUsers(1);
 };
 
 let uSearchTimer;
