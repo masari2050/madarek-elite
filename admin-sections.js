@@ -521,25 +521,53 @@ window.loadUsers = async function(page=1) {
             stats[u.id] = { total: u.total_attempts || 0, correct: u.correct_attempts || 0 };
         });
 
+        // جلب email + subscription_source + referred_by للأعضاء المعروضين (لا يأتي من RPC)
+        const userIds = data.map(u => u.id);
+        const extraMap = {};
+        try {
+            const { data: extras } = await sb.from('profiles')
+                .select('id, email, subscription_source, referred_by')
+                .in('id', userIds);
+            (extras || []).forEach(e => { extraMap[e.id] = e; });
+        } catch(_) { /* لو فشل، نكمّل بدون extras */ }
+
+        // helper: badge مصدر الاشتراك (مدفوع / كوبون / إحالة / منحة / IAP)
+        const sourceBadge = (u) => {
+            const ex = extraMap[u.id] || {};
+            const src = ex.subscription_source || '';
+            const cp = u.used_coupon || '';
+            const isPaid = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
+            if (!isPaid) return '<span class="td-muted">—</span>';
+            const pill = (txt, color, bg, title='') => `<span title="${esc(title)}" style="font-size:11px;font-weight:700;color:${color};background:${bg};padding:3px 9px;border-radius:8px;white-space:nowrap">${esc(txt)}</span>`;
+            if (cp) {
+                // كوبون استخدمه
+                return pill(cp, 'var(--acc)', 'var(--as)', 'كوبون: '+cp);
+            }
+            if (src === 'apple_iap')   return pill('Apple IAP', '#1A1D2E', '#E5E7EB', 'اشتراك من iOS');
+            if (src === 'google_play') return pill('Google Play', '#1A1D2E', '#E5E7EB', 'اشتراك من Android');
+            if (src === 'admin')       return pill('منحة إدارية', 'var(--pri)', 'var(--ps)', 'admin منح اشتراك يدوياً');
+            if (src === 'myfatoorah')  return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'دفع عبر MyFatoorah');
+            if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)', 'اشترك عبر إحالة');
+            return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'مدفوع (المصدر غير محدّد)');
+        };
+
         tbl.innerHTML = `<table>
-            <thead><tr><th>العضو</th><th>الجوال</th><th>الاشتراك</th><th>الكوبون</th><th>الانضمام</th><th>آخر نشاط</th><th>المحاولات</th><th>الدقة</th><th></th></tr></thead>
+            <thead><tr><th>العضو</th><th>الجوال</th><th>الاشتراك</th><th>كيف اشترك</th><th>الانضمام</th><th>آخر نشاط</th><th>المحاولات</th><th>الدقة</th><th></th></tr></thead>
             <tbody>${data.map(u => {
                 const st = stats[u.id] || {total:0,correct:0};
                 const acc = st.total > 0 ? Math.round(st.correct/st.total*100) : 0;
                 const sub = (u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date())
                     ? '<span class="status-pill active">' + (u.subscription_type === 'yearly' ? 'سنوي' : u.subscription_type === 'quarterly' ? '3 أشهر' : 'شهري') + '</span>'
                     : '<span class="status-pill free">مجاني</span>';
-                const couponCell = u.used_coupon
-                    ? '<span style="font-size:11px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 9px;border-radius:8px">'+esc(u.used_coupon)+'</span>'
-                    : '<span class="td-muted">—</span>';
                 const lastSeen = fmtDate(u.last_seen_at);
                 const joined = fmtDate(u.created_at);
                 const name = u.full_name || '—';
+                const email = (extraMap[u.id]||{}).email || '';
                 return `<tr>
-                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, name, 36) : esc(name.charAt(0)))}</div><div class="td-name">${esc(name)}</div></div></td>
+                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, name, 36) : esc(name.charAt(0)))}</div><div><div class="td-name">${esc(name)}</div>${email ? '<div style="font-size:10.5px;color:var(--i4);direction:ltr;text-align:right;margin-top:2px">'+esc(email)+'</div>' : ''}</div></div></td>
                     <td class="td-muted">${esc(u.phone||'—')}</td>
                     <td>${sub}</td>
-                    <td>${couponCell}</td>
+                    <td>${sourceBadge(u)}</td>
                     <td class="td-muted">${joined}</td>
                     <td class="td-muted">${lastSeen}</td>
                     <td><b>${fmt(st.total)}</b></td>
@@ -575,7 +603,7 @@ window.viewUser = async function(id) {
         ${sectionHead('— معلومات شخصية —')}
         <div class="form-field"><label class="form-label">الاسم الكامل</label><input class="form-input" id="euName" value="${esc(u.full_name||'')}"></div>
         <div class="form-field"><label class="form-label">الجوال</label><input class="form-input" id="euPhone" value="${esc(u.phone||'')}" placeholder="+966..."></div>
-        <div class="form-field"><label class="form-label">البريد الإلكتروني (Login)</label><input class="form-input" id="euEmail" value="${esc(u.email||'')}" readonly style="background:var(--s2);color:var(--i4)" title="لتغيير بريد الدخول استخدم Supabase Dashboard أو زر إعادة كلمة السر"></div>
+        <div class="form-field"><label class="form-label">البريد الإلكتروني (Login)</label><input class="form-input" id="euEmail" value="${esc(u.email||'')}" placeholder="user@example.com" style="direction:ltr;text-align:left"></div>
         <div class="form-field"><label class="form-label">كود الإحالة</label><input class="form-input" id="euRef" value="${esc(u.referral_code||'')}" placeholder="MADAR-..."></div>
         <div class="form-field"><label class="form-label">Avatar (ايموجي / dice / photo)</label><input class="form-input" id="euAvatar" value="${esc(u.avatar_emoji||'')}" placeholder="م أو dice:adventurer:seed أو photo:url"></div>
         <div class="form-field"><label class="form-label">الدور (Role)</label>
@@ -628,14 +656,21 @@ window.viewUser = async function(id) {
             </div>
         </div>
 
-        ${sectionHead('— إجراءات —')}
+        ${sectionHead('— تغيير كلمة السر (تعيين مباشر) —')}
+        <div class="form-field"><label class="form-label">كلمة سر جديدة</label><input class="form-input" type="text" id="euNewPwd" placeholder="6 أحرف على الأقل (اتركه فارغاً لعدم التغيير)" style="direction:ltr;text-align:left" autocomplete="off"></div>
+        <div class="form-field"><label class="form-label">&nbsp;</label>
+            <button type="button" class="btn btn-pri" onclick="adminChangeUserPassword('${u.id}')" style="width:100%">تعيين كلمة السر الآن</button>
+        </div>
+
+        ${sectionHead('— إجراءات أخرى —')}
         <div class="form-field full">
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button type="button" class="btn btn-ghost" onclick="adminSendPasswordReset('${esc(u.email||'')}')" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>إرسال رابط إعادة كلمة السر</button>
+                <button type="button" class="btn btn-ghost" onclick="adminSendPasswordReset('${esc(u.email||'')}')" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>إرسال رابط إعادة كلمة السر للعضو</button>
             </div>
             <div style="font-size:11px;color:var(--i4);margin-top:8px;line-height:1.7">
-                • <b>كلمة السر:</b> يصل للعضو رابط على إيميله ليُعيد تعيينها بنفسه (لا يقدر admin يعرضها).<br>
-                • <b>تغيير البريد:</b> غير متاح من هنا (يحتاج Supabase Dashboard لتعديل auth.users).<br>
+                • <b>تغيير البريد:</b> عدّله أعلى الصفحة + اضغط "حفظ التغييرات" — يُحدَّث في auth.users و profiles.<br>
+                • <b>كلمة السر (تعيين مباشر):</b> ادخل القيمة في الحقل أعلاه واضغط "تعيين الآن".<br>
+                • <b>إعادة كلمة السر بريداً:</b> الزر السابق يرسل رابط للعضو ليعيدها بنفسه.<br>
                 • <b>حذف الحساب:</b> يستخدمه العضو من تطبيقه (مطلوب Apple)؛ من هنا غير متاح للحماية.
             </div>
         </div>
@@ -662,6 +697,36 @@ window.adminSendPasswordReset = async function(email) {
     }
 };
 
+// ── تعيين كلمة سر جديدة للعضو مباشرة (admin only — Edge Function) ──
+window.adminChangeUserPassword = async function(userId) {
+    const pwdInput = document.getElementById('euNewPwd');
+    const pwd = pwdInput?.value || '';
+    if (!pwd) return showToast('ادخل كلمة السر الجديدة','err');
+    if (pwd.length < 6) return showToast('كلمة السر يجب أن تكون 6 أحرف على الأقل','err');
+    if (!confirm('سيتم تعيين كلمة السر الجديدة للعضو فوراً.\n\nالعضو سيستخدمها للدخول. متابعة؟')) return;
+    const { sb } = window.A;
+    try {
+        const { data, error } = await sb.functions.invoke('admin-update-user', {
+            body: { user_id: userId, new_password: pwd }
+        });
+        if (error) {
+            let msg = error.message || 'فشل التحديث';
+            try {
+                if (error.context && typeof error.context.json === 'function') {
+                    const b = await error.context.json();
+                    msg = b?.error || msg;
+                }
+            } catch(_) {}
+            throw new Error(msg);
+        }
+        if (!data || data.error) throw new Error((data && data.error) || 'فشل التحديث');
+        if (pwdInput) pwdInput.value = '';
+        showToast('تم تعيين كلمة السر بنجاح', 'suc');
+    } catch (e) {
+        showToast('خطأ: ' + (e.message || 'فشل التحديث'), 'err');
+    }
+};
+
 // ── حفظ تعديلات العضو ──
 window.saveUser = async function(id) {
     const { sb } = window.A;
@@ -672,6 +737,7 @@ window.saveUser = async function(id) {
     const xpVal = parseInt(getVal('euXp'),10);
     const lvlVal = parseInt(getVal('euLevel'),10);
     const streakVal = parseInt(getVal('euStreak'),10);
+    const newEmail = (getVal('euEmail')||'').trim().toLowerCase();
     const patch = {
         full_name: (getVal('euName')||'').trim() || null,
         phone: (getVal('euPhone')||'').trim() || null,
@@ -691,6 +757,26 @@ window.saveUser = async function(id) {
     if (patch.subscription_type === 'free') patch.subscription_end = null;
 
     try {
+        // 1) تحقّق إذا الإيميل تغيّر — حدّثه عبر Edge Function (auth.users + profiles)
+        const { data: cur } = await sb.from('profiles').select('email').eq('id', id).single();
+        const oldEmail = (cur?.email || '').toLowerCase();
+        if (newEmail && newEmail !== oldEmail) {
+            const { data: r, error: emErr } = await sb.functions.invoke('admin-update-user', {
+                body: { user_id: id, new_email: newEmail }
+            });
+            if (emErr) {
+                let msg = emErr.message || 'فشل تحديث البريد';
+                try {
+                    if (emErr.context && typeof emErr.context.json === 'function') {
+                        const b = await emErr.context.json();
+                        msg = b?.error || msg;
+                    }
+                } catch(_) {}
+                throw new Error('البريد: ' + msg);
+            }
+            if (r?.error) throw new Error('البريد: ' + r.error);
+        }
+        // 2) باقي الحقول مباشرة على profiles
         const { error } = await sb.from('profiles').update(patch).eq('id', id);
         if (error) throw error;
         showToast('حُفظت التغييرات','suc');
@@ -1876,7 +1962,7 @@ window.openMockExamRegList = async function() {
             <tr>
                 <td style="padding:8px 10px">${esc(r.full_name || '—')}</td>
                 <td style="padding:8px 10px;font-size:11px;color:var(--i3)">${esc(r.email)}</td>
-                <td style="padding:8px 10px;font-size:11px;color:var(--i3)">${new Date(r.registered_at).toLocaleString('ar-SA',{dateStyle:'short',timeStyle:'short'})}</td>
+                <td style="padding:8px 10px;font-size:11px;color:var(--i3)">${fmtDate(r.registered_at, true)}</td>
             </tr>`).join('') : `<tr><td colspan="3" style="padding:20px;text-align:center;color:var(--i3)">لا مسجّلون بعد</td></tr>`;
         const body = `
             <div style="font-size:13px;margin-bottom:12px">${esc(exam.title)} · <strong>${list.length}</strong> مسجّل</div>
@@ -2676,7 +2762,7 @@ window.viewStaffActivity = async function(userId) {
         } catch(e){}
 
         const qCount = recentQs.length || st.questions_added || 0;
-        const lastSeenStr = p.last_seen_at ? new Date(p.last_seen_at).toLocaleString('ar-SA') : '—';
+        const lastSeenStr = p.last_seen_at ? fmtDate(p.last_seen_at, true) : '—';
         const joinedStr = fmtDate(p.created_at);
 
         const qsHtml = recentQs.length > 0 ? recentQs.map(q => `
@@ -3112,7 +3198,7 @@ function fmtDate(s) {
     if (!s) return '—';
     try {
         const d = new Date(s);
-        return d.toLocaleString('ar-SA', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        return fmtDate(d, true);
     } catch { return s; }
 }
 
@@ -3302,7 +3388,7 @@ function renderMockExamsTable(rows) {
             return `<tr>
               <td><div style="font-weight:700">${esc(e.title)}</div>${dist}</td>
               <td><span style="background:${t.color}22;color:${t.color};padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700">${esc(t.name)}</span></td>
-              <td style="font-size:12px">${starts.toLocaleString('ar-SA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+              <td style="font-size:12px">${fmtDate(starts, true)}</td>
               <td>${e.duration_min} د</td>
               <td>${e.questions_count}</td>
               <td>${fmt(e.total_registered)}</td>
@@ -3803,7 +3889,7 @@ window.loadMockExamTab = async function(tab) {
               ${rows.map(r => `<tr>
                 <td style="font-weight:600">${esc(r.full_name||'مستخدم')}</td>
                 <td style="font-size:11.5px;color:#6B7094">${esc(r.email||'')}</td>
-                <td>${new Date(r.registered_at).toLocaleString('ar-SA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+                <td>${fmtDate(r.registered_at, true)}</td>
                 <td>${r.submitted_at ? '<span style="color:#22C55E">أدّى</span>' : '<span style="color:#F59E0B">لم يبدأ</span>'}</td>
               </tr>`).join('')}
             </tbody></table>`;
@@ -3827,7 +3913,7 @@ window.loadMockExamTab = async function(tab) {
                 <td>${r.score_correct}/${r.score_total}</td>
                 <td><span style="background:#22C55E22;color:#22C55E;padding:3px 9px;border-radius:8px;font-weight:700">${r.score_pct}%</span></td>
                 <td>${r.duration_min} د</td>
-                <td style="font-size:11.5px;color:#6B7094">${new Date(r.submitted_at).toLocaleString('ar-SA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+                <td style="font-size:11.5px;color:#6B7094">${fmtDate(r.submitted_at, true)}</td>
               </tr>`).join('')}
             </tbody></table>`;
 
