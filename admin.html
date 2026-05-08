@@ -327,9 +327,10 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 .emoji-pop .ep-item{width:30px;height:30px;display:grid;place-items:center;cursor:pointer;border-radius:6px;font-size:18px;transition:background .12s}
 .emoji-pop .ep-item:hover{background:var(--s2)}
 
-/* TICKER PREVIEW (live in admin) */
-.ticker-preview-in{display:inline-block;animation:tk-preview 22s linear infinite;padding-right:60px;will-change:transform}
-@keyframes tk-preview{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+/* TICKER PREVIEW (live in admin) — RTL continuous loop, no gap (3 segs + -33.333%) */
+.ticker-preview-in{display:inline-block;animation:tk-preview 22s linear infinite;will-change:transform}
+.ticker-preview-in > .seg{padding-inline-end:60px}
+@keyframes tk-preview{from{transform:translateX(0)}to{transform:translateX(-33.333%)}}
 
 /* SCHEDULE FIELDS */
 .sched-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
