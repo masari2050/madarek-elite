@@ -343,8 +343,8 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="sum">
     <div class="sum-h">ملخّص الاشتراك</div>
     <div class="sum-row">
-      <span class="sum-k">خطة <span id="sumPlanName">سنوي</span></span>
-      <span class="sum-v" id="sumBase">799 ر.س</span>
+      <span class="sum-k">خطة <span id="sumPlanName">شهري</span></span>
+      <span class="sum-v" id="sumBase">99 ر.س</span>
     </div>
     <div class="sum-row discount" id="sumDiscountRow" style="display:none">
       <span class="sum-k">الخصم (<span id="sumCouponCode"></span>)</span>
@@ -353,7 +353,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <div class="sum-divider"></div>
     <div class="sum-row total">
       <span class="sum-k">الإجمالي المستحق</span>
-      <span class="sum-v" id="sumTotal">799 ر.س</span>
+      <span class="sum-v" id="sumTotal">99 ر.س</span>
     </div>
     <div class="sum-vat">الأسعار شاملة ضريبة القيمة المضافة 15%</div>
   </div>
@@ -361,7 +361,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <!-- CTA -->
   <button class="cta" id="ctaBtn" onclick="subscribe()">
     <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
-    <span>اشترك الآن — <span id="ctaPrice">799 ر.س</span></span>
+    <span>اشترك الآن — <span id="ctaPrice">99 ر.س</span></span>
     <span class="cta-arrow">←</span>
   </button>
 
@@ -466,7 +466,7 @@ const sb = window.sb || (typeof supabase !== 'undefined' && typeof supabase.crea
   : null);
 
 let plans = [];               // الخطط من DB أو defaults
-let selectedSlug = 'yearly';  // الخطة المختارة (سنوي افتراضياً مثل التطبيق)
+let selectedSlug = 'monthly';  // الشهري الافتراضي — يقلّل sticker shock وأقرب لتوقّع السوق
 let appliedCoupon = null;     // { code, discount_type, discount_value, final, base }
 let currentUser = null;       // user object
 let loadingCheckout = false;

@@ -664,14 +664,28 @@ function formatRemaining(ms) {
     return s + ' ثانية';
 }
 window.mockExamRegister = async function() {
-    // RPC register_for_active_mock_exam غير موجود في prod (TODO: SQL migration)
-    // مؤقتاً: تحويل لـ /pricing.html بدل الخطأ الإنجليزي للمستخدم
+    // 1) زائر → login مع redirect
     const user = window.MadarekV2 ? await window.MadarekV2.getUser() : null;
     if (!user) {
         location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
         return;
     }
-    location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
+
+    // 2) فحص الاشتراك
+    const isPro = profile && M.isSubscribed(profile);
+    if (!isPro) {
+        location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
+        return;
+    }
+
+    // 3) مشترك Pro → mock-exam.html (يهتم بالتسجيل + بدء الامتحان)
+    if (_mockExamId) {
+        location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId);
+    } else if (M && typeof M.showToast === 'function') {
+        M.showToast('لا يوجد اختبار محاكي نشط حالياً', 'err');
+    } else {
+        alert('لا يوجد اختبار محاكي نشط حالياً');
+    }
 };
 
 // ── Home Stats ──
