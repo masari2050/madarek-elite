@@ -41,13 +41,17 @@ CREATE INDEX IF NOT EXISTS idx_banners_schedule
 --    AND (target_pages @> ARRAY['all'] OR target_pages @> ARRAY[target_page])
 -- ============================================================
 
+-- ملاحظة: target_pages في DB قد يكون jsonb (في schema قديم) أو text[]. لذا نستخدم
+--        JSONB cast + ?| operator لـcompatibility مع كلا النوعين.
+--        RETURNS TABLE يستخدم JSONB لـtarget_pages — العميل في JS يفحص Array.isArray أصلاً.
+
 CREATE OR REPLACE FUNCTION get_active_banners(target_page TEXT DEFAULT 'dashboard')
 RETURNS TABLE (
     id              UUID,
     banner_type     TEXT,
     is_active       BOOLEAN,
     config          JSONB,
-    target_pages    TEXT[],
+    target_pages    JSONB,
     sort_order      INTEGER,
     schedule_start  TIMESTAMPTZ,
     schedule_end    TIMESTAMPTZ,
@@ -65,7 +69,7 @@ BEGIN
         b.banner_type,
         b.is_active,
         b.config,
-        b.target_pages,
+        b.target_pages::jsonb AS target_pages,
         b.sort_order,
         b.schedule_start,
         b.schedule_end,
@@ -76,8 +80,8 @@ BEGIN
       AND (b.schedule_start IS NULL OR b.schedule_start <= NOW())
       AND (b.schedule_end   IS NULL OR b.schedule_end   >= NOW())
       AND (
-          b.target_pages @> ARRAY['all']::TEXT[]
-          OR b.target_pages @> ARRAY[target_page]::TEXT[]
+          -- ?| works on jsonb arrays: returns true if any element matches any value in param
+          b.target_pages::jsonb ?| ARRAY['all', target_page]
       )
     ORDER BY b.sort_order ASC NULLS LAST, b.banner_type ASC;
 END;
