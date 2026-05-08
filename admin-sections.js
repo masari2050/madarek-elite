@@ -904,7 +904,8 @@ window.loadCoupons = async function() {
             return;
         }
         list.innerHTML = data.map(c => {
-            const isFree = c.discount_type === 'free';
+            // كوبون "مجاني" يُخزَّن كـpercentage=100 (CHECK constraint يمنع 'free')
+            const isFree = c.discount_type === 'free' || (c.discount_type === 'percentage' && Number(c.discount_value) >= 100);
             const badge = isFree ? '<span class="coupon-badge free">مجاني</span>'
                         : c.discount_type === 'percentage' ? '<span class="coupon-badge discount">-'+c.discount_value+'%</span>'
                         : '<span class="coupon-badge discount">-'+c.discount_value+' ريال</span>';
@@ -912,7 +913,7 @@ window.loadCoupons = async function() {
             return `<div class="coupon-item">
                 <div class="coupon-code">${esc(c.code)}</div>
                 <div class="coupon-info">
-                    <div class="coupon-n">${c.discount_type==='free'?'اشتراك مجاني':'خصم على الاشتراك'}</div>
+                    <div class="coupon-n">${isFree?'اشتراك مجاني':'خصم على الاشتراك'}</div>
                     <div class="coupon-d">${c.expires_at?'ينتهي '+new Date(c.expires_at).toLocaleDateString('ar-SA'):'لا ينتهي'}${expired?' (منتهي)':''} · ${c.plan_type==='all'?'كل الخطط':esc(c.plan_type||'—')}</div>
                 </div>
                 ${badge}
@@ -927,7 +928,13 @@ window.loadCoupons = async function() {
 };
 
 window.openCouponModal = function(existing) {
-    const d = existing || { code:'', discount_type:'free', discount_value:0, plan_type:'all', duration_months:1, max_uses:null, expires_at:null, is_active:true };
+    // عند التعديل: لو كوبون مخزّن كـpercentage=100 → اعرضه كـ"مجاني" في الـUI
+    let displayed = existing ? { ...existing } : null;
+    if (displayed && displayed.discount_type === 'percentage' && Number(displayed.discount_value) >= 100) {
+        displayed.discount_type = 'free';
+        displayed.discount_value = 0;
+    }
+    const d = displayed || { code:'', discount_type:'free', discount_value:0, plan_type:'all', duration_months:1, max_uses:null, expires_at:null, is_active:true };
     const body = `
     <div class="form-grid">
         <div class="form-field"><label class="form-label">كود الكوبون</label><input class="form-input" id="cpCode" value="${esc(d.code)}" style="text-transform:uppercase"></div>
@@ -964,17 +971,22 @@ window.saveCoupon = async function(id) {
         // غير فعّال → اضبط الانتهاء في الماضي
         expiresAt = '2000-01-01';
     }
+    let uiType = document.getElementById('cpType').value;
+    let uiValue = parseFloat(document.getElementById('cpValue').value) || 0;
+    // DB لا يدعم discount_type='free' (CHECK constraint يقبل فقط 'percentage' و 'fixed').
+    // النظام يخزّن "مجاني" كـpercentage=100 (نفس نمط FREE01 / IZ73 / RENAD).
+    if (uiType === 'free') { uiType = 'percentage'; uiValue = 100; }
     const data = {
         code: document.getElementById('cpCode').value.trim().toUpperCase(),
-        discount_type: document.getElementById('cpType').value,
-        discount_value: parseFloat(document.getElementById('cpValue').value) || 0,
+        discount_type: uiType,
+        discount_value: uiValue,
         plan_type: document.getElementById('cpPlan').value,
         duration_months: parseInt(document.getElementById('cpMonths').value) || 1,
         max_uses: parseInt(document.getElementById('cpMax').value) || null,
         expires_at: expiresAt
     };
     if (!data.code) return showToast('الكود مطلوب','err');
-    if (data.discount_type !== 'free' && (!data.discount_value || data.discount_value <= 0)) {
+    if (!data.discount_value || data.discount_value <= 0) {
         return showToast('قيمة الخصم يجب أن تكون أكبر من صفر','err');
     }
     try {

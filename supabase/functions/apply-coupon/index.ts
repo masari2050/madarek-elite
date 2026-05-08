@@ -139,36 +139,32 @@ serve(async (req) => {
     }
 
     // ══════════════════════════════════════════
-    //  8. حساب الخصم — basePrice من جدول plans (المصدر الموحّد)
-    //     سابقاً كان من site_settings + discount_percent → غلط
-    //     (site_settings.price_monthly_original=115 بينما plans.price=99)
+    //  8. حساب الخصم
     // ══════════════════════════════════════════
-    const planSlug = (typeof plan === 'string' && plan.trim()) ? plan.trim() : null
-    let planRow: any = null
-    if (planSlug) {
-      const { data: pr } = await supabaseAdmin
-        .from('plans')
-        .select('slug, price, duration_days')
-        .eq('slug', planSlug)
-        .eq('is_active', true)
-        .maybeSingle()
-      planRow = pr
-    }
-    if (!planRow) {
-      // fallback: لو ما اخترت خطة، خذ الشهرية الفعّالة
-      const { data: pr2 } = await supabaseAdmin
-        .from('plans')
-        .select('slug, price, duration_days')
-        .eq('slug', 'monthly')
-        .eq('is_active', true)
-        .maybeSingle()
-      planRow = pr2 || { slug: 'monthly', price: 99, duration_days: 30 }
-    }
+    const durMonths = coupon.duration_months || (coupon.plan_type === 'yearly' ? 12 : 1)
 
-    const subType = planRow.slug  // 'monthly' | 'quarterly' | 'yearly'
-    const planMonths = Math.max(1, Math.round(Number(planRow.duration_days || 30) / 30))
-    const durMonths = coupon.duration_months || planMonths
-    const basePrice = Math.round(Number(planRow.price))
+    // تحديد نوع الاشتراك من المدة
+    const subType = durMonths >= 12 ? 'yearly' : 'monthly'
+
+    // basePrice من جدول plans (المصدر الموحّد) مع fallback آمن.
+    // لو plans غير متوفّر/فاشل → نرجع للقيم الافتراضية.
+    let basePrice = subType === 'yearly' ? 799 : 99
+    try {
+      const planSlugForLookup = (typeof plan === 'string' && plan.trim())
+        ? plan.trim()
+        : subType  // 'monthly' أو 'yearly'
+      const { data: planRow } = await supabaseAdmin
+        .from('plans')
+        .select('price')
+        .eq('slug', planSlugForLookup)
+        .eq('is_active', true)
+        .maybeSingle()
+      const p = planRow ? Number(planRow.price) : 0
+      if (Number.isFinite(p) && p > 0) basePrice = Math.round(p)
+    } catch (priceErr) {
+      console.error('[apply-coupon] plans price lookup failed:', priceErr)
+      // نكمّل بـbasePrice الافتراضي — الـfunction لا تنكسر
+    }
 
     let finalAmount = basePrice
     const isFree = coupon.discount_type === 'free' ||
