@@ -956,6 +956,11 @@ window.openCouponModal = function(existing) {
 
 window.saveCoupon = async function(id) {
     const { sb } = window.A;
+    // ملاحظة: عمود is_active غير موجود في DB لجدول coupons.
+    // التعطيل يتم عبر expires_at في الماضي.
+    const isActive = document.getElementById('cpActive').checked;
+    let expiresAt = document.getElementById('cpExpires').value || null;
+    if (!isActive) expiresAt = '2000-01-01';
     const data = {
         code: document.getElementById('cpCode').value.trim().toUpperCase(),
         discount_type: document.getElementById('cpType').value,
@@ -963,8 +968,7 @@ window.saveCoupon = async function(id) {
         plan_type: document.getElementById('cpPlan').value,
         duration_months: parseInt(document.getElementById('cpMonths').value) || 1,
         max_uses: parseInt(document.getElementById('cpMax').value) || null,
-        expires_at: document.getElementById('cpExpires').value || null,
-        is_active: document.getElementById('cpActive').checked
+        expires_at: expiresAt
     };
     if (!data.code) return showToast('الكود مطلوب','err');
     if (data.discount_type !== 'free' && (!data.discount_value || data.discount_value <= 0)) {
