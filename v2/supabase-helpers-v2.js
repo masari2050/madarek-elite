@@ -212,16 +212,33 @@
     }
 
     // ── Banners ──
-    // page: "dashboard"|"leaks"|"training"|"reports"|"profile" — يفلتر حسب target_pages
+    // page: "dashboard"|"leaks"|"training"|"reports"|"profile" — يفلتر حسب target_pages + جدولة زمنية
+    // يستخدم RPC get_active_banners (SQL 62) عند توفّره (يفلتر بالـschedule على DB)
+    // وإلا fallback لـquery يدوية + فلترة JS-side
     async function getActiveBanners(page) {
-        const { data } = await getSb()
+        const sb = getSb();
+        // (1) Try RPC (SQL 62 — schedule-aware filtering)
+        try {
+            const { data, error } = await sb.rpc('get_active_banners', { target_page: page || 'dashboard' });
+            if (!error && Array.isArray(data)) return data;
+        } catch(_) { /* RPC not deployed yet — fall through */ }
+
+        // (2) Fallback: direct query + JS-side filter
+        const { data } = await sb
             .from('banners')
             .select('*')
             .eq('is_active', true)
             .order('sort_order');
         const all = data || [];
-        if (!page) return all;
-        return all.filter(b => {
+        const now = new Date();
+        const inSchedule = b => {
+            if (b.schedule_start && new Date(b.schedule_start) > now) return false;
+            if (b.schedule_end && new Date(b.schedule_end) < now) return false;
+            return true;
+        };
+        const filtered = all.filter(inSchedule);
+        if (!page) return filtered;
+        return filtered.filter(b => {
             const targets = Array.isArray(b.target_pages) ? b.target_pages : ['dashboard'];
             return targets.includes('all') || targets.includes(page);
         });
@@ -241,16 +258,18 @@
             const kw = cfg.keyword || '';
             const text = cfg.text || '';
             const speed = cfg.speed || 50;
-            const dur = Math.max(5, 50 - speed / 2);
+            // Same formula as admin/dashboard: slider 10..100 → duration 60s..8s
+            const dur = Math.max(8, Math.round((110 - speed) * 0.6));
             const escape = (s) => { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; };
             const content = (kw ? '<span style="font-weight:700;margin-left:6px;color:' + kwColor + '">' + escape(kw) + '</span>' : '') + escape(text);
             const style = document.createElement('style');
-            style.textContent = '@keyframes madarek-tick{from{transform:translateX(-50%)}to{transform:translateX(0)}}';
+            // Continuous loop: text duplicated 2x → slide -50% = swap halves seamlessly (no jump)
+            style.textContent = '@keyframes madarek-tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}';
             document.head.appendChild(style);
             const el = document.createElement('div');
             el.id = 'globalTicker';
             el.style.cssText = 'background:' + bg + ';color:' + color + ';font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:60';
-            el.innerHTML = '<span style="display:inline-block;animation:madarek-tick ' + dur + 's linear infinite;padding-right:60px">' + content + '&nbsp;&nbsp;&nbsp;&nbsp;' + content + '</span>';
+            el.innerHTML = '<span style="display:inline-block;animation:madarek-tick ' + dur + 's linear infinite;will-change:transform">' + content + '&nbsp;&nbsp;&nbsp;&nbsp;' + content + '</span>';
             // Insert at very top of wrap if exists, else body
             const wrap = document.querySelector('.wrap');
             if (wrap) wrap.insertBefore(el, wrap.firstChild);

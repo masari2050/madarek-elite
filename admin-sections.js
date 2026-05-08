@@ -1880,7 +1880,7 @@ window.loadBanners = async function() {
     try {
         const { data } = await sb.from('banners').select('*').order('sort_order');
         const banners = data || [];
-        const getB = type => banners.find(b => b.banner_type === type) || { banner_type:type, is_active:false, config:{}, target_pages:['dashboard'] };
+        const getB = type => banners.find(b => b.banner_type === type) || { banner_type:type, is_active:false, config:{}, target_pages:['dashboard'], schedule_start:null, schedule_end:null };
         const tk = getB('ticker'), img = getB('image'), mn = getB('main'), mx = getB('mock_exam');
 
         // target_pages helper → اختيار واحد من 4
@@ -1905,16 +1905,23 @@ window.loadBanners = async function() {
         <!-- TICKER -->
         <div class="banner-form">
             <div class="banner-form-top"><div class="banner-form-title">🎯 الشريط المتحرك <span class="banner-status ${tk.is_active?'live':'off'}">${tk.is_active?'مفعّل':'معطّل'}</span></div>
-                <label class="toggle2 ${tk.is_active?'on':''}" id="tkToggle" onclick="toggleBanner('ticker',this)"></label>
+                ${_bannerToggleHTML('ticker', tk.is_active)}
             </div>
-            <div class="banner-preview"><div class="ticker-preview" style="background:${esc(tk.config.bg_color||'#6D5DF6')};color:${esc(tk.config.text_color||'#fff')}">
-                ${tk.config.keyword?'<span style="font-weight:700;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
-            </div></div>
+            <div class="banner-preview" style="padding:0">
+                <div class="ticker-preview-wrap" style="background:${esc(tk.config.bg_color||'#6D5DF6')};color:${esc(tk.config.text_color||'#fff')};border-radius:8px;overflow:hidden;white-space:nowrap;padding:9px 0;font-size:12.5px;font-weight:600">
+                    <div class="ticker-preview-in">
+                        ${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        ${tk.config.keyword?'<span style="font-weight:800;margin-left:6px;color:'+esc(tk.config.keyword_color||'#FFD700')+'">'+esc(tk.config.keyword)+'</span>':''}${esc(tk.config.text||'نص الشريط')}
+                    </div>
+                </div>
+            </div>
             <div class="form-grid">
                 <div class="form-field full">
                     <label class="form-label">الكلمة المميزة ولونها</label>
                     <div class="field-inline">
                         <input class="form-input" id="tk_keyword" value="${esc(tk.config.keyword||'')}" placeholder="مثلاً: جديد">
+                        ${_emojiBtnHTML('tk_keyword')}
                         <input class="form-input color-pick" type="color" id="tk_keyword_color" value="${esc(tk.config.keyword_color||'#FF6B35')}" title="لون الكلمة">
                     </div>
                 </div>
@@ -1922,6 +1929,7 @@ window.loadBanners = async function() {
                     <label class="form-label">نص الشريط ولونه</label>
                     <div class="field-inline">
                         <input class="form-input" id="tk_text" value="${esc(tk.config.text||'')}" placeholder="نص الإعلان...">
+                        ${_emojiBtnHTML('tk_text')}
                         <input class="form-input color-pick" type="color" id="tk_text_color" value="${esc(tk.config.text_color||'#ffffff')}" title="لون النص">
                     </div>
                 </div>
@@ -1932,8 +1940,12 @@ window.loadBanners = async function() {
                         <span style="flex:1;font-size:11px;color:var(--i3);align-self:center;padding-right:6px">اختر خلفية الشريط المتحرك</span>
                     </div>
                 </div>
-                <div class="form-field full"><label class="form-label">سرعة الحركة: <span id="tk_speed_v">${tk.config.speed||50}</span></label><input type="range" id="tk_speed" min="10" max="100" value="${tk.config.speed||50}" oninput="document.getElementById('tk_speed_v').textContent=this.value"></div>
+                <div class="form-field full">
+                    <label class="form-label">سرعة الحركة: <span id="tk_speed_v">${tk.config.speed||50}</span></label>
+                    <input type="range" id="tk_speed" min="10" max="100" value="${tk.config.speed||50}" oninput="applyTickerSpeedPreview(this.value)">
+                </div>
                 ${tgtSelect('tk_target', tgtValue(tk))}
+                ${_scheduleHTML('tk', tk.schedule_start, tk.schedule_end)}
             </div>
             <button class="btn btn-pri" style="margin-top:12px" onclick='saveBanner("ticker")'>حفظ</button>
         </div>
@@ -1943,7 +1955,7 @@ window.loadBanners = async function() {
             <div class="banner-form-top"><div class="banner-form-title">🎪 البنر الرئيسي <span class="banner-status ${mn.is_active?'live':'off'}">${mn.is_active?'مفعّل':'معطّل'}</span> <span class="banner-pos">${(mn.sort_order||0) < (img.sort_order||0) ? '⬆ أعلى' : '⬇ أسفل'}</span></div>
                 <div style="display:flex;gap:8px;align-items:center">
                     <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="swapBannerOrder()" title="تبديل الترتيب مع بنر الصورة">↕ تبديل الترتيب</button>
-                    <label class="toggle2 ${mn.is_active?'on':''}" onclick="toggleBanner('main',this)"></label>
+                    ${_bannerToggleHTML('main', mn.is_active)}
                 </div>
             </div>
             <div class="banner-preview"><div class="banner-block" style="background:linear-gradient(135deg,${esc(mn.config.bg_left||'#1A1230')},${esc(mn.config.bg_right||'#2D1B69')})">
@@ -1955,14 +1967,30 @@ window.loadBanners = async function() {
                 </div>
             </div></div>
             <div class="form-grid">
-                <div class="form-field full"><label class="form-label">التاغ (ملصق صغير فوق العنوان)</label><input class="form-input" id="mn_tag" value="${esc(mn.config.tag||'')}" placeholder="مثلاً: اختبار محاكي"></div>
-                <div class="form-field full"><label class="form-label">العنوان الرئيسي</label><input class="form-input" id="mn_title" value="${esc(mn.config.title||'')}" placeholder="السبت القادم — القدرات"></div>
-                <div class="form-field full"><label class="form-label">النص التوضيحي</label><input class="form-input" id="mn_subtitle" value="${esc(mn.config.subtitle||'')}" placeholder="وصف مختصر..."></div>
+                <div class="form-field full"><label class="form-label">التاغ (ملصق صغير فوق العنوان)</label>
+                    <div class="field-inline">
+                        <input class="form-input" id="mn_tag" value="${esc(mn.config.tag||'')}" placeholder="مثلاً: اختبار محاكي">
+                        ${_emojiBtnHTML('mn_tag')}
+                    </div>
+                </div>
+                <div class="form-field full"><label class="form-label">العنوان الرئيسي</label>
+                    <div class="field-inline">
+                        <input class="form-input" id="mn_title" value="${esc(mn.config.title||'')}" placeholder="السبت القادم — القدرات">
+                        ${_emojiBtnHTML('mn_title')}
+                    </div>
+                </div>
+                <div class="form-field full"><label class="form-label">النص التوضيحي</label>
+                    <div class="field-inline">
+                        <input class="form-input" id="mn_subtitle" value="${esc(mn.config.subtitle||'')}" placeholder="وصف مختصر...">
+                        ${_emojiBtnHTML('mn_subtitle')}
+                    </div>
+                </div>
 
                 <div class="form-field full">
                     <label class="form-label">نص الزر ولونه ولون الخط</label>
                     <div class="field-inline">
                         <input class="form-input" id="mn_cta_text" value="${esc(mn.config.cta_text||'')}" placeholder="سجّل مشاركتي">
+                        ${_emojiBtnHTML('mn_cta_text')}
                         <input class="form-input color-pick" type="color" id="mn_btn_color" value="${esc(mn.config.btn_color||'#FFD700')}" title="لون الزر">
                         <input class="form-input color-pick" type="color" id="mn_btn_text_color" value="${esc(mn.config.btn_text_color||'#1A1230')}" title="لون نص الزر">
                     </div>
@@ -1978,14 +2006,15 @@ window.loadBanners = async function() {
                 </div>
 
                 ${tgtSelect('mn_target', tgtValue(mn))}
+                ${_scheduleHTML('mn', mn.schedule_start, mn.schedule_end)}
             </div>
             <button class="btn btn-pri" style="margin-top:12px" onclick='saveBanner("main")'>حفظ</button>
         </div>
 
         <!-- MOCK EXAM BANNER -->
         <div class="banner-form">
-            <div class="banner-form-top"><div class="banner-form-title">بنر الاختبار المحاكي <span class="banner-status ${mx.is_active?'live':'off'}">${mx.is_active?'مفعّل':'معطّل'}</span></div>
-                <label class="toggle2 ${mx.is_active?'on':''}" onclick="toggleBanner('mock_exam',this)"></label>
+            <div class="banner-form-top"><div class="banner-form-title">📝 بنر الاختبار المحاكي <span class="banner-status ${mx.is_active?'live':'off'}">${mx.is_active?'مفعّل':'معطّل'}</span></div>
+                ${_bannerToggleHTML('mock_exam', mx.is_active)}
             </div>
             <div class="form-grid">
                 <div class="form-field">
@@ -2003,7 +2032,10 @@ window.loadBanners = async function() {
                 </div>
                 <div class="form-field full">
                     <label class="form-label">عنوان البنر</label>
-                    <input class="form-input" id="mx_title" value="${esc(mx.config.title||'')}" placeholder="محاكي التحصيلي — الفترة الأولى">
+                    <div class="field-inline">
+                        <input class="form-input" id="mx_title" value="${esc(mx.config.title||'')}" placeholder="محاكي التحصيلي — الفترة الأولى">
+                        ${_emojiBtnHTML('mx_title')}
+                    </div>
                 </div>
                 <div class="form-field">
                     <label class="form-label">عدد الأسئلة</label>
@@ -2015,8 +2047,12 @@ window.loadBanners = async function() {
                 </div>
                 <div class="form-field full">
                     <label class="form-label">نص الزر</label>
-                    <input class="form-input" id="mx_cta_text" value="${esc(mx.config.cta_text||'سجّل الآن')}">
+                    <div class="field-inline">
+                        <input class="form-input" id="mx_cta_text" value="${esc(mx.config.cta_text||'سجّل الآن')}">
+                        ${_emojiBtnHTML('mx_cta_text')}
+                    </div>
                 </div>
+                ${_scheduleHTML('mx', mx.schedule_start, mx.schedule_end)}
             </div>
             <div style="display:flex;gap:8px;margin-top:12px">
                 <button class="btn btn-pri" onclick='saveBanner("mock_exam")'>حفظ</button>
@@ -2029,7 +2065,7 @@ window.loadBanners = async function() {
             <div class="banner-form-top"><div class="banner-form-title">🖼️ بنر الصورة <span class="banner-status ${img.is_active?'live':'off'}">${img.is_active?'مفعّل':'معطّل'}</span> <span class="banner-pos">${(img.sort_order||0) < (mn.sort_order||0) ? '⬆ أعلى' : '⬇ أسفل'}</span></div>
                 <div style="display:flex;gap:8px;align-items:center">
                     <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px" onclick="swapBannerOrder()" title="تبديل الترتيب مع البنر الرئيسي">↕ تبديل الترتيب</button>
-                    <label class="toggle2 ${img.is_active?'on':''}" onclick="toggleBanner('image',this)"></label>
+                    ${_bannerToggleHTML('image', img.is_active)}
                 </div>
             </div>
 
@@ -2078,10 +2114,18 @@ window.loadBanners = async function() {
                     <input class="form-input" id="img_external" type="url" value="${esc(img.config.link&&img.config.link_type==='external'?img.config.link:'')}" placeholder="https://example.com">
                 </div>
                 ${tgtSelect('img_target', tgtValue(img))}
+                ${_scheduleHTML('img', img.schedule_start, img.schedule_end)}
             </div>
 
             <button class="btn btn-pri" style="margin-top:12px" onclick='saveBanner("image")'>حفظ</button>
         </div>`;
+
+        // Apply initial ticker speed to preview
+        try {
+            if (typeof applyTickerSpeedPreview === 'function') {
+                applyTickerSpeedPreview(tk.config.speed || 50);
+            }
+        } catch(_) {}
     } catch(e) { showToast('خطأ','err'); }
 };
 
@@ -2218,6 +2262,8 @@ window.saveBanner = async function(type) {
     const { sb } = window.A;
     let config = {};
     let targetSelectId = null;
+    let prefix = null;
+    const labels = {ticker:'الشريط المتحرّك', main:'البنر الرئيسي', mock_exam:'بنر المحاكي', image:'بنر الصورة'};
     if (type === 'ticker') {
         config = {
             keyword: document.getElementById('tk_keyword').value,
@@ -2228,6 +2274,7 @@ window.saveBanner = async function(type) {
             speed: parseInt(document.getElementById('tk_speed').value)
         };
         targetSelectId = 'tk_target';
+        prefix = 'tk';
     } else if (type === 'main') {
         config = {
             tag: document.getElementById('mn_tag').value,
@@ -2240,6 +2287,7 @@ window.saveBanner = async function(type) {
             btn_text_color: document.getElementById('mn_btn_text_color').value
         };
         targetSelectId = 'mn_target';
+        prefix = 'mn';
     } else if (type === 'image') {
         const linkType = document.getElementById('img_link_type').value;
         let link = null;
@@ -2251,6 +2299,7 @@ window.saveBanner = async function(type) {
             link: link || null
         };
         targetSelectId = 'img_target';
+        prefix = 'img';
     } else if (type === 'mock_exam') {
         const q = parseInt(document.getElementById('mx_questions').value, 10);
         const dur = parseInt(document.getElementById('mx_duration').value, 10);
@@ -2262,6 +2311,7 @@ window.saveBanner = async function(type) {
             duration_min: isNaN(dur) ? null : dur,
             cta_text: document.getElementById('mx_cta_text').value.trim() || 'سجّل الآن'
         };
+        prefix = 'mx';
         // مزامنة مع mock_exams (للحجز الحقيقي + التسجيلات)
         if (config.exam_date && !isNaN(q) && !isNaN(dur) && config.title) {
             try {
@@ -2286,20 +2336,188 @@ window.saveBanner = async function(type) {
     const sel = targetSelectId ? document.getElementById(targetSelectId) : null;
     const target_pages = sel ? (targetMap[sel.value] || ['dashboard']) : ['dashboard'];
 
+    // Read schedule fields (optional — empty = no scheduling)
+    const schedStartEl = prefix ? document.getElementById(prefix + '_sched_start') : null;
+    const schedEndEl   = prefix ? document.getElementById(prefix + '_sched_end')   : null;
+    const schedule_start = schedStartEl ? _readLocalDT(schedStartEl.value) : null;
+    const schedule_end   = schedEndEl   ? _readLocalDT(schedEndEl.value)   : null;
+
+    // Validate: end > start (if both provided)
+    if (schedule_start && schedule_end && new Date(schedule_end) <= new Date(schedule_start)) {
+        showSaveToast('خطأ: تاريخ نهاية الجدولة يجب أن يكون بعد تاريخ البداية','err');
+        return;
+    }
+
     try {
-        // أول محاولة: حفظ مع target_pages (يتطلب تشغيل Migration 13)
-        const { error } = await sb.from('banners').update({ config, target_pages }).eq('banner_type', type);
+        const payload = { config, target_pages, schedule_start, schedule_end };
+        let { error } = await sb.from('banners').update(payload).eq('banner_type', type);
+
+        // Fallback A: schedule_* columns missing → drop them and retry
+        if (error && /schedule_(start|end)/i.test(error.message || '')) {
+            const p2 = { config, target_pages };
+            const r2 = await sb.from('banners').update(p2).eq('banner_type', type);
+            error = r2.error;
+            if (!error) {
+                showSaveToast('تم حفظ '+(labels[type]||type)+' — لتفعيل الجدولة شغّل Migration 62','err');
+                loadBanners();
+                return;
+            }
+        }
+        // Fallback B: target_pages column missing → save config only
         if (error && /target_pages/i.test(error.message || '')) {
-            // العمود غير موجود بعد — احفظ config فقط واعرض تنبيه
             await sb.from('banners').update({ config }).eq('banner_type', type);
-            showToast('حُفظ بدون "يظهر في" — شغّل Migration 13 في Supabase','err');
+            showSaveToast('تم الحفظ — شغّل Migration 13 لإكمال "يظهر في"','err');
         } else if (error) {
             throw error;
         } else {
-            showToast('تم الحفظ','suc');
+            const schedNote = (schedule_start || schedule_end) ? ' — مع جدولة زمنية' : '';
+            showSaveToast('تم حفظ '+(labels[type]||type)+' · منشور الآن'+schedNote,'suc');
         }
         loadBanners();
-    } catch(e) { showToast('خطأ: '+e.message,'err'); }
+    } catch(e) { showSaveToast('خطأ: '+e.message,'err'); }
+};
+
+// ═══════════════════════════════════════════════════════
+// BANNERS HELPERS — Save toast / Emoji picker / Schedule / Big toggle
+// ═══════════════════════════════════════════════════════
+
+window.showSaveToast = function(msg, type) {
+    type = type || 'suc';
+    const old = document.querySelector('.save-toast');
+    if (old) old.remove();
+    const t = document.createElement('div');
+    t.className = 'save-toast' + (type === 'err' ? ' err' : '');
+    const icon = type === 'err'
+        ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+        : '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    t.innerHTML = icon + '<span>' + msg + '</span><div class="x" title="إغلاق"><svg viewBox="0 0 24 24" style="width:12px;height:12px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>';
+    t.querySelector('.x').onclick = () => t.remove();
+    document.body.appendChild(t);
+    setTimeout(() => {
+        t.style.animation = 'saveToastOut .3s var(--ease) forwards';
+        setTimeout(() => t.remove(), 300);
+    }, 4000);
+};
+
+window.COMMON_EMOJIS = ['🎉','🚀','⏰','📚','🎯','⚡','💡','✨','🔥','📢','🎁','💪','📝','🏆','⭐','🎓','📊','💎','🌟','🎊','📌','🆕','🔔','✅'];
+
+window.openEmojiPicker = function(btn, inputId) {
+    const old = document.querySelector('.emoji-pop');
+    if (old) { old.remove(); if (old._for === inputId) return; }
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const pop = document.createElement('div');
+    pop.className = 'emoji-pop';
+    pop._for = inputId;
+    pop.innerHTML = window.COMMON_EMOJIS.map(e => '<div class="ep-item" data-e="'+e+'">'+e+'</div>').join('');
+    document.body.appendChild(pop);
+    const r = btn.getBoundingClientRect();
+    pop.style.top = (window.scrollY + r.bottom + 6) + 'px';
+    pop.style.right = Math.max(8, document.documentElement.clientWidth - r.right) + 'px';
+    pop.addEventListener('click', e => {
+        const it = e.target.closest('.ep-item');
+        if (!it) return;
+        const emoji = it.dataset.e;
+        const start = input.selectionStart != null ? input.selectionStart : input.value.length;
+        const end = input.selectionEnd != null ? input.selectionEnd : input.value.length;
+        input.value = input.value.slice(0,start) + emoji + input.value.slice(end);
+        input.focus();
+        try { input.setSelectionRange(start + emoji.length, start + emoji.length); } catch(_) {}
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        pop.remove();
+    });
+    setTimeout(() => {
+        const close = (ev) => {
+            if (!pop.contains(ev.target) && ev.target !== btn && !btn.contains(ev.target)) {
+                pop.remove();
+                document.removeEventListener('click', close);
+            }
+        };
+        document.addEventListener('click', close);
+    }, 50);
+};
+
+window.clearBannerSchedule = function(prefix) {
+    const s = document.getElementById(prefix + '_sched_start');
+    const e = document.getElementById(prefix + '_sched_end');
+    if (s) s.value = '';
+    if (e) e.value = '';
+};
+
+window._fmtLocalDT = function(v) {
+    if (!v) return '';
+    try {
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return '';
+        const tz = d.getTimezoneOffset() * 60000;
+        return new Date(d.getTime() - tz).toISOString().slice(0,16);
+    } catch(_) { return ''; }
+};
+
+window._readLocalDT = function(v) {
+    if (!v) return null;
+    try {
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return null;
+        return d.toISOString();
+    } catch(_) { return null; }
+};
+
+window._bannerToggleHTML = function(type, isActive) {
+    return ''
+        + '<div class="toggle-big-wrap '+(isActive?'is-on':'')+'" onclick="toggleBannerBig(\''+type+'\', this)" title="اضغط للتفعيل أو الإيقاف">'
+        +     '<span class="toggle-big-lbl"><span class="on-txt">نشط</span><span class="off-txt">متوقف</span></span>'
+        +     '<div class="toggle-big '+(isActive?'on':'')+'"></div>'
+        + '</div>';
+};
+
+window._emojiBtnHTML = function(targetInputId) {
+    return '<button type="button" class="emoji-btn" onclick="openEmojiPicker(this,\''+targetInputId+'\')" title="إضافة إيموجي">😀</button>';
+};
+
+window._scheduleHTML = function(prefix, schedStart, schedEnd) {
+    return ''
+        + '<div class="form-field full" style="margin-top:6px">'
+        +     '<label class="form-label">جدولة الظهور (اختياري — اتركها فارغة للظهور الدائم)</label>'
+        +     '<div class="sched-row">'
+        +         '<input class="form-input" id="'+prefix+'_sched_start" type="datetime-local" value="'+_fmtLocalDT(schedStart)+'" placeholder="من">'
+        +         '<input class="form-input" id="'+prefix+'_sched_end" type="datetime-local" value="'+_fmtLocalDT(schedEnd)+'" placeholder="إلى">'
+        +     '</div>'
+        +     '<div class="sched-hint">'
+        +         '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+        +         '<span>يظهر فقط بين هذين الوقتين ويختفي تلقائياً</span>'
+        +         '<button type="button" class="sched-clear" onclick="clearBannerSchedule(\''+prefix+'\')">مسح الجدولة</button>'
+        +     '</div>'
+        + '</div>';
+};
+
+window.toggleBannerBig = async function(type, wrap) {
+    const { sb } = window.A;
+    wrap.classList.toggle('is-on');
+    const inner = wrap.querySelector('.toggle-big');
+    if (inner) inner.classList.toggle('on');
+    const active = wrap.classList.contains('is-on');
+    const labels = {ticker:'الشريط المتحرّك', main:'البنر الرئيسي', mock_exam:'بنر المحاكي', image:'بنر الصورة'};
+    try {
+        const { error } = await sb.from('banners').update({is_active:active}).eq('banner_type', type);
+        if (error) throw error;
+        showSaveToast((active?'تم تفعيل ':'تم إيقاف ') + (labels[type] || type),'suc');
+        loadBanners();
+    } catch(e) {
+        wrap.classList.toggle('is-on');
+        if (inner) inner.classList.toggle('on');
+        showSaveToast('خطأ: '+e.message,'err');
+    }
+};
+
+window.applyTickerSpeedPreview = function(v) {
+    const n = parseInt(v, 10) || 50;
+    // Map slider 10..100 → duration 60s..8s (linear, inversed)
+    const dur = Math.max(8, Math.round((110 - n) * 0.6));
+    const el = document.querySelector('.ticker-preview-in');
+    if (el) el.style.animationDuration = dur + 's';
+    const lbl = document.getElementById('tk_speed_v');
+    if (lbl) lbl.textContent = n + ' (' + dur + ' ثانية لجولة كاملة)';
 };
 
 // ═══════════════════════════════════════════════════════
