@@ -643,7 +643,7 @@ function _mockTick() {
         // الحالة تغيّرت → render كامل
         _renderMockBadge(badge);
     } else if (newPhase === 'upcoming') {
-        // فقط حدّث نص العدّاد
+        // فقط حدّث نص العدّاد (السطر الثاني)
         const txtEl = document.getElementById('mockBadgeTxt');
         if (txtEl) {
             const start = new Date(_mockExamMeta.starts_at).getTime();
@@ -655,9 +655,14 @@ function _mockTick() {
         if (txtEl) {
             const start = new Date(_mockExamMeta.starts_at).getTime();
             const end = start + (parseInt(_mockExamMeta.duration_min,10) || 0) * 60000;
-            txtEl.textContent = 'ابدأ الاختبار المحاكي الآن — متبقّي ' + formatRemaining(end - Date.now());
+            txtEl.textContent = 'متبقّي ' + formatRemaining(end - Date.now()) + ' من وقت الاختبار';
         }
     }
+}
+
+function _examTypeLabel() {
+    const t = (_mockExamMeta && _mockExamMeta.exam_type) || 'tahsili';
+    return (t === 'tahsili') ? 'للتحصيلي' : 'للقدرات';
 }
 
 function _renderMockBadge(badge) {
@@ -671,24 +676,31 @@ function _renderMockBadge(badge) {
         document.head.appendChild(s);
     }
 
+    const examLabel = _examTypeLabel();
+
     if (phase === 'live') {
+        // وقت الاختبار → CTA لبدء الأسئلة
         const start = new Date(_mockExamMeta.starts_at).getTime();
         const end = start + (parseInt(_mockExamMeta.duration_min,10) || 0) * 60000;
         const remaining = formatRemaining(end - Date.now());
-        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(22,163,74,.55);cursor:pointer;animation:livePulse 1.4s infinite';
-        badge.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg><span id="mockBadgeTxt">ابدأ الاختبار المحاكي الآن — متبقّي ' + remaining + '</span>';
+        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:14px;font-weight:800;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 20px rgba(22,163,74,.55);cursor:pointer;animation:livePulse 1.4s infinite';
+        badge.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;font-size:14.5px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>ابدأ الاختبار المحاكي ' + examLabel + ' — اضغط هنا للدخول</span></div>'
+          + '<div id="mockBadgeTxt" style="font-size:11.5px;font-weight:600;opacity:.95">متبقّي ' + remaining + ' من وقت الاختبار</div>';
         badge.onclick = () => { if (_mockExamId) location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId); };
     } else if (phase === 'ended') {
         badge.style.cssText = 'margin-top:14px;padding:13px 16px;background:#9EA2B8;border:none;border-radius:12px;font-size:13.5px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer';
         badge.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>انتهى الاختبار — شوف نتيجتك</span>';
         badge.onclick = () => { if (_mockExamId) location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId); };
         if (_mockTickInterval) { clearInterval(_mockTickInterval); _mockTickInterval = null; }
-    } else { // upcoming
+    } else { // upcoming — تأكيد دائم + countdown
         const start = new Date(_mockExamMeta.starts_at).getTime();
         const remaining = formatRemaining(start - Date.now());
-        badge.style.cssText = 'margin-top:14px;padding:13px 16px;background:#16A34A;border:none;border-radius:12px;font-size:13.5px;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 4px 14px rgba(22,163,74,.45);cursor:pointer';
-        badge.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span id="mockBadgeTxt">يبدأ خلال ' + remaining + '</span>';
-        badge.onclick = () => { if (_mockExamId) location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId); };
+        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:14px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(22,163,74,.45);cursor:default';
+        badge.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>تم تسجيلك بنجاح في الاختبار المحاكي ' + examLabel + '</span></div>'
+          + '<div id="mockBadgeTxt" style="font-size:12.5px;font-weight:600;opacity:.95">يبدأ خلال ' + remaining + '</div>';
+        badge.onclick = null;  // ما يضغط لين يبدأ الاختبار
     }
 }
 
@@ -737,9 +749,8 @@ window.mockExamRegister = async function() {
             const msg = String(error.message || '');
             if (!msg.includes('no_active_exam') && !msg.includes('already_registered')) throw error;
         }
-        // ✓ تسجيل ناجح → بدّل الـUI من زر "سجّل الآن" → badge أخضر مع countdown
+        // ✓ تسجيل ناجح → بدّل الـUI من زر "سجّل الآن" → badge أخضر دائم (التأكيد داخل البادج، بدون toast مكرّر)
         applyMockExamRegistered();
-        if (M && typeof M.showToast === 'function') M.showToast('تم تسجيلك للاختبار المحاكي ✓', 'suc');
     } catch(e) {
         // إعادة الزر لحالته الأصلية
         if (btn) { btn.disabled = false; btn.textContent = origLabel || 'سجّل الآن'; btn.style.opacity = ''; }
@@ -1010,7 +1021,7 @@ async function loadMockExamBanner() {
         if (exam && exam.length) {
             const e = exam[0];
             _mockExamId = e.exam_id;
-            _mockExamMeta = { starts_at: e.starts_at, duration_min: e.duration_min };
+            _mockExamMeta = { starts_at: e.starts_at, duration_min: e.duration_min, exam_type: e.exam_type };
             applyMockExamConfig({
                 title: e.title,
                 exam_date: e.starts_at,
