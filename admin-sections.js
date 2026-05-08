@@ -521,34 +521,64 @@ window.loadUsers = async function(page=1) {
             stats[u.id] = { total: u.total_attempts || 0, correct: u.correct_attempts || 0 };
         });
 
-        // جلب email + subscription_source + referred_by للأعضاء المعروضين (لا يأتي من RPC)
+        // جلب email + subscription_source + referred_by + كوبون مُستخدَم فعلياً
         const userIds = data.map(u => u.id);
         const extraMap = {};
+        const couponMap = {};       // user_id → { code, isFree, type, value }
+        const paymentMap = {};      // user_id → آخر دفعة (amount, coupon_code, status)
         try {
-            const { data: extras } = await sb.from('profiles')
-                .select('id, email, subscription_source, referred_by')
-                .in('id', userIds);
-            (extras || []).forEach(e => { extraMap[e.id] = e; });
-        } catch(_) { /* لو فشل، نكمّل بدون extras */ }
+            const [profRes, redRes, payRes] = await Promise.all([
+                sb.from('profiles').select('id, email, subscription_source, referred_by').in('id', userIds),
+                sb.from('coupon_redemptions').select('user_id, coupon_code, discount_type, discount_value, final_amount, status, created_at').in('user_id', userIds).eq('status','success').order('created_at',{ascending:false}),
+                sb.from('payments').select('user_id, amount, coupon_code, status, created_at').in('user_id', userIds).eq('status','paid').order('created_at',{ascending:false})
+            ]);
+            (profRes.data || []).forEach(e => { extraMap[e.id] = e; });
+            // أحدث استخدام ناجح لكوبون لكل مستخدم
+            (redRes.data || []).forEach(r => {
+                if (!couponMap[r.user_id]) {
+                    const isFree = r.discount_type === 'free' || (r.discount_type === 'percentage' && Number(r.discount_value) >= 100) || Number(r.final_amount) <= 0;
+                    couponMap[r.user_id] = { code: r.coupon_code, isFree, type: r.discount_type, value: r.discount_value };
+                }
+            });
+            // آخر دفعة لكل مستخدم
+            (payRes.data || []).forEach(p => {
+                if (!paymentMap[p.user_id]) paymentMap[p.user_id] = p;
+            });
+        } catch(_) { /* لو فشل، نكمّل */ }
 
-        // helper: badge مصدر الاشتراك (مدفوع / كوبون / إحالة / منحة / IAP)
+        // helper: badge مصدر الاشتراك (مدفوع / كوبون مجاني / كوبون خصم / إحالة / منحة / IAP)
         const sourceBadge = (u) => {
             const ex = extraMap[u.id] || {};
             const src = ex.subscription_source || '';
-            const cp = u.used_coupon || '';
+            const cp = couponMap[u.id];   // الكوبون الفعلي من coupon_redemptions
+            const lastPay = paymentMap[u.id];
             const isPaid = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
             if (!isPaid) return '<span class="td-muted">—</span>';
+
             const pill = (txt, color, bg, title='') => `<span title="${esc(title)}" style="font-size:11px;font-weight:700;color:${color};background:${bg};padding:3px 9px;border-radius:8px;white-space:nowrap">${esc(txt)}</span>`;
-            if (cp) {
-                // كوبون استخدمه
-                return pill(cp, 'var(--acc)', 'var(--as)', 'كوبون: '+cp);
+
+            // 1) كوبون مجاني (FREE26 / FREE01 / TURAIF / النسبة 100%)
+            if (cp && cp.isFree) {
+                return pill('كوبون مجاني · ' + cp.code, '#9333EA', '#F3E8FF', 'اشتراك مجاني عبر كوبون: '+cp.code);
             }
+            // 2) كوبون خصم جزئي
+            if (cp && !cp.isFree) {
+                const valueLbl = cp.type === 'percentage' ? cp.value+'%' : cp.value+' ر.س';
+                return pill('كوبون خصم · ' + cp.code, 'var(--acc)', 'var(--as)', 'دفع جزئي بكوبون '+cp.code+' (-'+valueLbl+')');
+            }
+            // 3) IAP
             if (src === 'apple_iap')   return pill('Apple IAP', '#1A1D2E', '#E5E7EB', 'اشتراك من iOS');
             if (src === 'google_play') return pill('Google Play', '#1A1D2E', '#E5E7EB', 'اشتراك من Android');
+            // 4) منحة إدارية صريحة
             if (src === 'admin')       return pill('منحة إدارية', 'var(--pri)', 'var(--ps)', 'admin منح اشتراك يدوياً');
-            if (src === 'myfatoorah')  return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'دفع عبر MyFatoorah');
+            // 5) إحالة (referred_by موجود)
             if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)', 'اشترك عبر إحالة');
-            return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'مدفوع (المصدر غير محدّد)');
+            // 6) دفع كامل
+            if (src === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) {
+                return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'دفع عبر MyFatoorah');
+            }
+            // 7) Fallback (نادر)
+            return pill('غير محدّد', 'var(--i3)', 'var(--s2)', 'مشترك لكن المصدر غير محدّد');
         };
 
         tbl.innerHTML = `<table>
@@ -2394,22 +2424,59 @@ window.loadUsersAnalytics = async function(page=1) {
 
         // Attempts counts + آخر تدريب لكل مستخدم
         const uids = (data||[]).map(u=>u.id);
-        const { data: atts } = await sb.from('attempts').select('user_id,is_correct,created_at').in('user_id', uids);
+        const [attsRes, redRes, payRes, profExtra] = await Promise.all([
+            sb.from('attempts').select('user_id,is_correct,created_at').in('user_id', uids),
+            sb.from('coupon_redemptions').select('user_id, coupon_code, discount_type, discount_value, final_amount, status, created_at').in('user_id', uids).eq('status','success').order('created_at',{ascending:false}),
+            sb.from('payments').select('user_id, amount, status').in('user_id', uids).eq('status','paid').order('created_at',{ascending:false}),
+            sb.from('profiles').select('id, subscription_source, referred_by').in('id', uids)
+        ]);
         const stats = {};
-        (atts||[]).forEach(a => {
+        (attsRes.data||[]).forEach(a => {
             if (!stats[a.user_id]) stats[a.user_id] = { t:0, c:0, last: null };
             stats[a.user_id].t++;
             if (a.is_correct) stats[a.user_id].c++;
             if (!stats[a.user_id].last || a.created_at > stats[a.user_id].last) stats[a.user_id].last = a.created_at;
         });
+        const couponMap = {};
+        (redRes.data || []).forEach(r => {
+            if (!couponMap[r.user_id]) {
+                const isFree = r.discount_type === 'free' || (r.discount_type === 'percentage' && Number(r.discount_value) >= 100) || Number(r.final_amount) <= 0;
+                couponMap[r.user_id] = { code: r.coupon_code, isFree, type: r.discount_type, value: r.discount_value };
+            }
+        });
+        const paymentMap = {};
+        (payRes.data || []).forEach(p => { if (!paymentMap[p.user_id]) paymentMap[p.user_id] = p; });
+        const extraMap = {};
+        (profExtra.data || []).forEach(e => { extraMap[e.id] = e; });
 
         const tbl = document.getElementById('uaTable');
         if (!data || data.length === 0) { tbl.innerHTML = '<div class="empty-d">لا أعضاء</div>'; return; }
 
+        const sourceBadge = (u) => {
+            const ex = extraMap[u.id] || {};
+            const src = ex.subscription_source || '';
+            const cp = couponMap[u.id];
+            const lastPay = paymentMap[u.id];
+            const isPaid = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
+            if (!isPaid) return '<span class="td-muted">—</span>';
+            const pill = (txt, color, bg, title='') => `<span title="${esc(title)}" style="font-size:10px;font-weight:700;color:${color};background:${bg};padding:2px 8px;border-radius:8px;white-space:nowrap">${esc(txt)}</span>`;
+            if (cp && cp.isFree) return pill('مجاني · '+cp.code, '#9333EA', '#F3E8FF', 'كوبون مجاني: '+cp.code);
+            if (cp && !cp.isFree) {
+                const v = cp.type === 'percentage' ? cp.value+'%' : cp.value+' ر.س';
+                return pill('خصم · '+cp.code, 'var(--acc)', 'var(--as)', 'كوبون خصم '+cp.code+' (-'+v+')');
+            }
+            if (src === 'apple_iap')   return pill('Apple IAP', '#1A1D2E', '#E5E7EB');
+            if (src === 'google_play') return pill('Google Play', '#1A1D2E', '#E5E7EB');
+            if (src === 'admin')       return pill('منحة', 'var(--pri)', 'var(--ps)', 'منحة إدارية');
+            if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)');
+            if (src === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) return pill('مدفوع', 'var(--suc)', 'var(--ss)');
+            return pill('—', 'var(--i3)', 'var(--s2)');
+        };
+
         tbl.innerHTML = '<table><thead><tr>'
             + '<th>العضو</th>'
             + '<th>الاشتراك</th>'
-            + '<th>الكوبون</th>'
+            + '<th>كيف اشترك</th>'
             + '<th>المحلولة</th>'
             + '<th>نسبة الصح</th>'
             + '<th>آخر دخول</th>'
@@ -2427,13 +2494,10 @@ window.loadUsersAnalytics = async function(page=1) {
                 const sub = subActive
                     ? '<span class="status-pill active">'+subLabel+'</span>'
                     : '<span class="status-pill free">'+subLabel+'</span>';
-                const coupon = u.used_coupon
-                    ? '<span style="font-size:10px;color:var(--acc);background:var(--as);padding:2px 8px;border-radius:8px;font-weight:600">'+esc(u.used_coupon)+'</span>'
-                    : '<span class="td-muted">—</span>';
                 return `<tr>
-                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, u.full_name, 36) : esc((u.full_name||'?').charAt(0)))}</div><div><div class="td-name">${esc(u.full_name||'—')}</div><div style="font-size:9px;color:var(--i4)">${esc(u.email||'')}</div></div></div></td>
+                    <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, u.full_name, 36) : esc((u.full_name||'?').charAt(0)))}</div><div><div class="td-name">${esc(u.full_name||'—')}</div><div style="font-size:10.5px;color:var(--i4);direction:ltr;text-align:right;margin-top:2px">${esc(u.email||'')}</div></div></div></td>
                     <td>${sub}</td>
-                    <td>${coupon}</td>
+                    <td>${sourceBadge(u)}</td>
                     <td><b>${fmt(st.t)}</b></td>
                     <td style="min-width:90px"><div style="display:flex;align-items:center;gap:6px"><div style="width:40px;height:4px;background:var(--s2);border-radius:2px;overflow:hidden"><div style="width:${acc}%;height:100%;background:${acc>=70?'var(--suc)':acc>=50?'var(--acc)':'var(--dng)'}"></div></div><b style="color:${acc>=70?'var(--suc)':acc>=50?'var(--acc)':'var(--dng)'};font-size:11px">${acc}%</b></div></td>
                     <td class="td-muted">${fmtDate(u.last_seen_at)}</td>
