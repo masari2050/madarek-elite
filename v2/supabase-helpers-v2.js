@@ -264,7 +264,7 @@
             const content = (kw ? '<span style="font-weight:700;margin-left:6px;color:' + kwColor + '">' + escape(kw) + '</span>' : '') + escape(text);
             const style = document.createElement('style');
             // direction:ltr container + 4 segs (dir=rtl) + slide -25% = seamless RTL ticker, no gap
-            style.textContent = '@keyframes madarek-tick{from{transform:translateX(0)}to{transform:translateX(-25%)}} #globalTicker .seg{display:inline-block;padding-inline-end:60px;direction:rtl}';
+            style.textContent = '@keyframes madarek-tick{from{transform:translateX(-25%)}to{transform:translateX(0)}} #globalTicker .seg{display:inline-block;padding-inline-end:60px;direction:rtl}';
             document.head.appendChild(style);
             const el = document.createElement('div');
             el.id = 'globalTicker';
