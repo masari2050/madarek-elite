@@ -66,8 +66,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ad-sub{font-size:11px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:10px}
 .ad-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-size:11px;font-weight:700;border-radius:7px;font-family:inherit;cursor:pointer;border:none}
 
-/* MOCK EXAM BANNER (للجميع) */
-.mock-ban{margin:0 6px 14px;padding:18px 18px 16px;border-radius:var(--r2);
+/* MOCK EXAM BANNER (للجميع) — hidden by default, shown only after loadMockExamBanner confirms an active exam */
+.mock-ban{display:none;margin:0 6px 14px;padding:18px 18px 16px;border-radius:var(--r2);
   background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 55%,#8B7FFF 100%);
   color:#fff;position:relative;overflow:hidden;
   box-shadow:0 8px 24px rgba(109,93,246,.3);
@@ -1074,6 +1074,8 @@ function applyMockExamConfig(cfg) {
     const cntEl = document.getElementById('mockCount');
     const ban = document.getElementById('mockBan');
     if (!ttl || !meta || !cta) return;
+    // Reveal banner (hidden by default in CSS to prevent flash on page load)
+    if (ban) ban.style.display = 'block';
     if (cfg.title) ttl.textContent = cfg.title;
     const dateStr = formatExamDate(cfg.exam_date);
     const q = parseInt(cfg.questions, 10);
