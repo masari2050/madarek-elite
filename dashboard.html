@@ -502,6 +502,12 @@ async function init() {
     const isPreview = qs.has('preview');
     const forceSubscriber = qs.get('force_subscriber') === 'true';
 
+    // Banners are public content — start fetching ASAP, parallel with auth/profile.
+    // This shaves ~500-1000ms off ticker first-paint time.
+    const bannersPromise = (isPreview && !forceSubscriber)
+        ? null  // preview-mock handles this in loadPreviewMode()
+        : loadBanners().catch(() => {});
+
     if (forceSubscriber) {
         // وضع هجين: Supabase حقيقي + profile وهمي كمشترك
         profile = {
@@ -542,10 +548,10 @@ async function init() {
     renderHeader();
     showSubBadge();
 
-    // Load everything in parallel
+    // Load everything in parallel (banners already started above)
     Promise.all([
         loadHomeStats(),
-        loadBanners(),
+        bannersPromise || loadBanners(),
         loadStreak(),
         loadTips(),
         loadWeakTopics(),
