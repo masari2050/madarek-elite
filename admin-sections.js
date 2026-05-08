@@ -550,35 +550,46 @@ window.loadUsers = async function(page=1) {
         const sourceBadge = (u) => {
             const ex = extraMap[u.id] || {};
             const src = ex.subscription_source || '';
-            const cp = couponMap[u.id];   // الكوبون الفعلي من coupon_redemptions
-            const lastPay = paymentMap[u.id];
+            const cp = couponMap[u.id];          // من coupon_redemptions (المصدر الأدق)
+            const lastPay = paymentMap[u.id];    // آخر دفعة paid
+            const profCoupon = u.used_coupon || ''; // legacy field على profiles
             const isPaid = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
             if (!isPaid) return '<span class="td-muted">—</span>';
 
             const pill = (txt, color, bg, title='') => `<span title="${esc(title)}" style="font-size:11px;font-weight:700;color:${color};background:${bg};padding:3px 9px;border-radius:8px;white-space:nowrap">${esc(txt)}</span>`;
 
-            // 1) كوبون مجاني (FREE26 / FREE01 / TURAIF / النسبة 100%)
+            // 1) كوبون مجاني من coupon_redemptions (FREE26/FREE01/TURAIF/100%)
             if (cp && cp.isFree) {
                 return pill('كوبون مجاني · ' + cp.code, '#9333EA', '#F3E8FF', 'اشتراك مجاني عبر كوبون: '+cp.code);
             }
-            // 2) كوبون خصم جزئي
+            // 2) كوبون خصم جزئي من coupon_redemptions
             if (cp && !cp.isFree) {
                 const valueLbl = cp.type === 'percentage' ? cp.value+'%' : cp.value+' ر.س';
                 return pill('كوبون خصم · ' + cp.code, 'var(--acc)', 'var(--as)', 'دفع جزئي بكوبون '+cp.code+' (-'+valueLbl+')');
             }
-            // 3) IAP
+            // 3) كوبون من جدول payments (لو ما في coupon_redemption record)
+            if (lastPay && lastPay.coupon_code) {
+                const isFreeFromPay = Number(lastPay.amount) === 0;
+                if (isFreeFromPay) return pill('كوبون مجاني · ' + lastPay.coupon_code, '#9333EA', '#F3E8FF', 'دفعة بـ0 ر.س مع كوبون: '+lastPay.coupon_code);
+                return pill('كوبون خصم · ' + lastPay.coupon_code, 'var(--acc)', 'var(--as)', 'دفعة جزئية بكوبون: '+lastPay.coupon_code+' (المبلغ: '+lastPay.amount+' ر.س)');
+            }
+            // 4) كوبون من profiles.used_coupon (legacy field)
+            if (profCoupon) {
+                return pill('كوبون · ' + profCoupon, 'var(--acc)', 'var(--as)', 'مسجَّل في profiles.used_coupon (قد يكون قديم)');
+            }
+            // 5) IAP
             if (src === 'apple_iap')   return pill('Apple IAP', '#1A1D2E', '#E5E7EB', 'اشتراك من iOS');
             if (src === 'google_play') return pill('Google Play', '#1A1D2E', '#E5E7EB', 'اشتراك من Android');
-            // 4) منحة إدارية صريحة
+            // 6) منحة إدارية صريحة
             if (src === 'admin')       return pill('منحة إدارية', 'var(--pri)', 'var(--ps)', 'admin منح اشتراك يدوياً');
-            // 5) إحالة (referred_by موجود)
-            if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)', 'اشترك عبر إحالة');
-            // 6) دفع كامل
+            // 7) دفع كامل (mfatoorah أو payment > 0)
             if (src === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) {
                 return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'دفع عبر MyFatoorah');
             }
-            // 7) Fallback (نادر)
-            return pill('غير محدّد', 'var(--i3)', 'var(--s2)', 'مشترك لكن المصدر غير محدّد');
+            // 8) إحالة كـlast resort
+            if (ex.referred_by) return pill('إحالة', 'var(--pri)', 'var(--ps)', 'اشترك عبر إحالة');
+            // 9) Fallback — مشترك لكن لا أثر في أي جدول دفع/كوبون → أُضيف يدوياً
+            return pill('منحة (يدوي)', 'var(--pri)', 'var(--ps)', 'مشترك بدون payment/coupon — مفترض أُضيف يدوياً من admin');
         };
 
         tbl.innerHTML = `<table>
@@ -2427,7 +2438,7 @@ window.loadUsersAnalytics = async function(page=1) {
         const [attsRes, redRes, payRes, profExtra] = await Promise.all([
             sb.from('attempts').select('user_id,is_correct,created_at').in('user_id', uids),
             sb.from('coupon_redemptions').select('user_id, coupon_code, discount_type, discount_value, final_amount, status, created_at').in('user_id', uids).eq('status','success').order('created_at',{ascending:false}),
-            sb.from('payments').select('user_id, amount, status').in('user_id', uids).eq('status','paid').order('created_at',{ascending:false}),
+            sb.from('payments').select('user_id, amount, coupon_code, status, created_at').in('user_id', uids).eq('status','paid').order('created_at',{ascending:false}),
             sb.from('profiles').select('id, subscription_source, referred_by').in('id', uids)
         ]);
         const stats = {};
@@ -2457,6 +2468,7 @@ window.loadUsersAnalytics = async function(page=1) {
             const src = ex.subscription_source || '';
             const cp = couponMap[u.id];
             const lastPay = paymentMap[u.id];
+            const profCoupon = u.used_coupon || '';
             const isPaid = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
             if (!isPaid) return '<span class="td-muted">—</span>';
             const pill = (txt, color, bg, title='') => `<span title="${esc(title)}" style="font-size:10px;font-weight:700;color:${color};background:${bg};padding:2px 8px;border-radius:8px;white-space:nowrap">${esc(txt)}</span>`;
@@ -2465,12 +2477,17 @@ window.loadUsersAnalytics = async function(page=1) {
                 const v = cp.type === 'percentage' ? cp.value+'%' : cp.value+' ر.س';
                 return pill('خصم · '+cp.code, 'var(--acc)', 'var(--as)', 'كوبون خصم '+cp.code+' (-'+v+')');
             }
+            if (lastPay && lastPay.coupon_code) {
+                if (Number(lastPay.amount) === 0) return pill('مجاني · '+lastPay.coupon_code, '#9333EA', '#F3E8FF', 'كوبون مجاني (من payments): '+lastPay.coupon_code);
+                return pill('خصم · '+lastPay.coupon_code, 'var(--acc)', 'var(--as)', 'كوبون خصم (من payments): '+lastPay.coupon_code);
+            }
+            if (profCoupon) return pill('كوبون · '+profCoupon, 'var(--acc)', 'var(--as)', 'profiles.used_coupon');
             if (src === 'apple_iap')   return pill('Apple IAP', '#1A1D2E', '#E5E7EB');
             if (src === 'google_play') return pill('Google Play', '#1A1D2E', '#E5E7EB');
             if (src === 'admin')       return pill('منحة', 'var(--pri)', 'var(--ps)', 'منحة إدارية');
-            if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)');
             if (src === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) return pill('مدفوع', 'var(--suc)', 'var(--ss)');
-            return pill('—', 'var(--i3)', 'var(--s2)');
+            if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)');
+            return pill('منحة (يدوي)', 'var(--pri)', 'var(--ps)', 'بدون payment/coupon — أُضيف يدوياً');
         };
 
         tbl.innerHTML = '<table><thead><tr>'
