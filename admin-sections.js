@@ -10,6 +10,24 @@ const esc = s => { if (!s) return ''; const d = document.createElement('div'); d
 const SECTION_MAP = { quant:'قدرات كمي', verbal:'قدرات لفظي', tahsili:'تحصيلي', mixed:'مختلط' };
 const sectionTag = s => SECTION_MAP[s] || s || 'عام';
 
+// تنسيق تاريخ ميلادي موحّد (DD-MM-YYYY) — لا هجري في لوحة الإدارة
+function fmtDate(d, withTime = false) {
+    if (!d) return '—';
+    const dt = (d instanceof Date) ? d : new Date(d);
+    if (isNaN(dt.getTime())) return '—';
+    const pad = n => String(n).padStart(2, '0');
+    const out = `${pad(dt.getDate())}-${pad(dt.getMonth()+1)}-${dt.getFullYear()}`;
+    if (withTime) return `${out} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+    return out;
+}
+function fmtDateShort(d) {
+    if (!d) return '—';
+    const dt = (d instanceof Date) ? d : new Date(d);
+    if (isNaN(dt.getTime())) return '—';
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(dt.getDate())}-${pad(dt.getMonth()+1)}`;
+}
+
 function $c() { return document.getElementById('contentArea'); }
 
 // ═══════════════════════════════════════════════════════
@@ -334,7 +352,7 @@ async function loadReviewPendingQuestions() {
             return `<div class="review-q">
                 <div class="rq-top">
                     <span class="q-tag">${sectionTag(q.section)}${q.topic?' · '+esc(q.topic):''}</span>
-                    <span style="font-size:10px;color:var(--i3)">أُضيف: ${new Date(q.created_at).toLocaleDateString('ar-SA')}</span>
+                    <span style="font-size:10px;color:var(--i3)">أُضيف: ${fmtDate(q.created_at)}</span>
                 </div>
                 ${q.image_url ? '<img src="'+esc(q.image_url)+'" style="max-width:300px;border-radius:8px;margin-bottom:12px" onerror="this.style.display=\'none\'">' : ''}
                 <div class="rq-txt">${esc(q.question_text)}</div>
@@ -387,7 +405,7 @@ async function loadReviewReports() {
             return `<div class="review-q">
                 <div class="rq-top">
                     <span class="q-tag">${sectionTag(q.section)}</span>
-                    <span style="font-size:10px;color:var(--i3)">أبلغ: <b>${esc(r.profiles?.full_name||'—')}</b> · ${new Date(r.created_at).toLocaleDateString('ar-SA')}</span>
+                    <span style="font-size:10px;color:var(--i3)">أبلغ: <b>${esc(r.profiles?.full_name||'—')}</b> · ${fmtDate(r.created_at)}</span>
                 </div>
                 ${q.image_url ? '<img src="'+esc(q.image_url)+'" style="max-width:300px;border-radius:8px;margin-bottom:12px" onerror="this.style.display=\'none\'">' : ''}
                 <div class="rq-txt">${esc(q.question_text)}</div>
@@ -504,20 +522,24 @@ window.loadUsers = async function(page=1) {
         });
 
         tbl.innerHTML = `<table>
-            <thead><tr><th>العضو</th><th>الجوال</th><th>الاشتراك</th><th>الانضمام</th><th>آخر نشاط</th><th>المحاولات</th><th>الدقة</th><th></th></tr></thead>
+            <thead><tr><th>العضو</th><th>الجوال</th><th>الاشتراك</th><th>الكوبون</th><th>الانضمام</th><th>آخر نشاط</th><th>المحاولات</th><th>الدقة</th><th></th></tr></thead>
             <tbody>${data.map(u => {
                 const st = stats[u.id] || {total:0,correct:0};
                 const acc = st.total > 0 ? Math.round(st.correct/st.total*100) : 0;
                 const sub = (u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date())
                     ? '<span class="status-pill active">' + (u.subscription_type === 'yearly' ? 'سنوي' : u.subscription_type === 'quarterly' ? '3 أشهر' : 'شهري') + '</span>'
                     : '<span class="status-pill free">مجاني</span>';
-                const lastSeen = u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'}) : '—';
-                const joined = new Date(u.created_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+                const couponCell = u.used_coupon
+                    ? '<span style="font-size:11px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 9px;border-radius:8px">'+esc(u.used_coupon)+'</span>'
+                    : '<span class="td-muted">—</span>';
+                const lastSeen = fmtDate(u.last_seen_at);
+                const joined = fmtDate(u.created_at);
                 const name = u.full_name || '—';
                 return `<tr>
                     <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, name, 36) : esc(name.charAt(0)))}</div><div class="td-name">${esc(name)}</div></div></td>
                     <td class="td-muted">${esc(u.phone||'—')}</td>
                     <td>${sub}</td>
+                    <td>${couponCell}</td>
                     <td class="td-muted">${joined}</td>
                     <td class="td-muted">${lastSeen}</td>
                     <td><b>${fmt(st.total)}</b></td>
@@ -542,19 +564,30 @@ window.viewUser = async function(id) {
     const { sb } = window.A;
     const { data: u } = await sb.from('profiles').select('*').eq('id', id).single();
     if (!u) return;
-    // تاريخ الانتهاء بصيغة YYYY-MM-DD للإدخال
     const endDateVal = u.subscription_end ? new Date(u.subscription_end).toISOString().split('T')[0] : '';
     const subType = u.subscription_type || 'free';
+    const role = u.role || 'user';
+    const subSource = u.subscription_source || '';
+    const autoRenew = u.auto_renew_enabled !== false;
+    const sectionHead = (txt) => `<div class="form-field full" style="margin-top:6px"><div style="font-size:11px;font-weight:700;color:var(--pri);letter-spacing:.04em;padding:10px 0 4px;border-top:1px solid var(--ln)">${txt}</div></div>`;
     const body = `
     <div class="form-grid">
+        ${sectionHead('— معلومات شخصية —')}
         <div class="form-field"><label class="form-label">الاسم الكامل</label><input class="form-input" id="euName" value="${esc(u.full_name||'')}"></div>
         <div class="form-field"><label class="form-label">الجوال</label><input class="form-input" id="euPhone" value="${esc(u.phone||'')}" placeholder="+966..."></div>
-        <div class="form-field"><label class="form-label">البريد الإلكتروني</label><input class="form-input" id="euEmail" value="${esc(u.email||'')}" readonly style="background:var(--s2);color:var(--i4)"></div>
+        <div class="form-field"><label class="form-label">البريد الإلكتروني (Login)</label><input class="form-input" id="euEmail" value="${esc(u.email||'')}" readonly style="background:var(--s2);color:var(--i4)" title="لتغيير بريد الدخول استخدم Supabase Dashboard أو زر إعادة كلمة السر"></div>
         <div class="form-field"><label class="form-label">كود الإحالة</label><input class="form-input" id="euRef" value="${esc(u.referral_code||'')}" placeholder="MADAR-..."></div>
+        <div class="form-field"><label class="form-label">Avatar (ايموجي / dice / photo)</label><input class="form-input" id="euAvatar" value="${esc(u.avatar_emoji||'')}" placeholder="م أو dice:adventurer:seed أو photo:url"></div>
+        <div class="form-field"><label class="form-label">الدور (Role)</label>
+            <select class="form-select" id="euRole">
+                <option value="user" ${role==='user'?'selected':''}>عضو عادي</option>
+                <option value="staff" ${role==='staff'?'selected':''}>موظف (Staff)</option>
+                <option value="admin" ${role==='admin'?'selected':''}>مدير (Admin)</option>
+            </select>
+        </div>
 
-        <div class="form-field full"><hr style="border:none;border-top:1px solid var(--ln);margin:4px 0"></div>
-
-        <div class="form-field"><label class="form-label">نوع الاشتراك *</label>
+        ${sectionHead('— الاشتراك —')}
+        <div class="form-field"><label class="form-label">نوع الاشتراك</label>
             <select class="form-select" id="euSub">
                 <option value="free" ${subType==='free'?'selected':''}>مجاني</option>
                 <option value="monthly" ${subType==='monthly'?'selected':''}>شهري (Pro)</option>
@@ -563,14 +596,48 @@ window.viewUser = async function(id) {
             </select>
         </div>
         <div class="form-field"><label class="form-label">تاريخ انتهاء الاشتراك</label><input class="form-input" id="euEnd" type="date" value="${endDateVal}"></div>
-
+        <div class="form-field"><label class="form-label">مصدر الاشتراك</label>
+            <select class="form-select" id="euSource">
+                <option value="" ${!subSource?'selected':''}>—</option>
+                <option value="myfatoorah" ${subSource==='myfatoorah'?'selected':''}>MyFatoorah (دفع ويب)</option>
+                <option value="apple_iap" ${subSource==='apple_iap'?'selected':''}>Apple IAP (iOS)</option>
+                <option value="google_play" ${subSource==='google_play'?'selected':''}>Google Play (Android)</option>
+                <option value="admin" ${subSource==='admin'?'selected':''}>منحة إدارية</option>
+            </select>
+        </div>
+        <div class="form-field"><label class="form-label">التجديد التلقائي</label>
+            <label style="display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--s2);border-radius:11px;cursor:pointer">
+                <input type="checkbox" id="euAutoRenew" ${autoRenew?'checked':''}>
+                <span style="font-size:13px">مفعّل (يحاول التجديد قبل الانتهاء)</span>
+            </label>
+        </div>
         <div class="form-field full"><label class="form-label">الكوبون المستخدم</label><input class="form-input" id="euCoupon" value="${esc(u.used_coupon||'')}" placeholder="—"></div>
 
-        <div class="form-field full"><hr style="border:none;border-top:1px solid var(--ln);margin:4px 0"></div>
+        ${sectionHead('— التقدّم (Gamification) —')}
+        <div class="form-field"><label class="form-label">XP</label><input class="form-input" type="number" id="euXp" value="${u.xp||0}" min="0"></div>
+        <div class="form-field"><label class="form-label">المستوى</label><input class="form-input" type="number" id="euLevel" value="${u.level||1}" min="1"></div>
+        <div class="form-field"><label class="form-label">السلسلة (أيام متتالية)</label><input class="form-input" type="number" id="euStreak" value="${u.streak_days||0}" min="0"></div>
+        <div class="form-field"><label class="form-label">&nbsp;</label>
+            <button type="button" class="btn btn-ghost" onclick="document.getElementById('euXp').value=0;document.getElementById('euLevel').value=1;document.getElementById('euStreak').value=0;showToast('سيتم التصفير عند الحفظ','info')" style="width:100%">تصفير الكل (XP/Level/Streak)</button>
+        </div>
 
-        <div style="grid-column:span 2;background:var(--s2);padding:12px 14px;border-radius:10px;font-size:12px;color:var(--i3);line-height:2">
-            <div><b>XP:</b> ${u.xp||0} &nbsp;·&nbsp; <b>المستوى:</b> ${u.level||1} (${esc(u.level_name||'مبتدئ')}) &nbsp;·&nbsp; <b>السلسلة:</b> ${u.streak_days||0} يوم</div>
-            <div><b>سُجّل:</b> ${new Date(u.created_at).toLocaleDateString('ar-SA')} &nbsp;·&nbsp; <b>آخر دخول:</b> ${u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString('ar-SA') : '—'}</div>
+        <div class="form-field full" style="margin-top:6px">
+            <div style="background:var(--s2);padding:12px 14px;border-radius:10px;font-size:12px;color:var(--i3);line-height:2">
+                <div><b>سُجّل:</b> ${fmtDate(u.created_at)} &nbsp;·&nbsp; <b>آخر دخول:</b> ${fmtDate(u.last_seen_at)}</div>
+                <div><b>المعرّف:</b> <code style="font-size:10px">${esc(u.id)}</code></div>
+            </div>
+        </div>
+
+        ${sectionHead('— إجراءات —')}
+        <div class="form-field full">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn btn-ghost" onclick="adminSendPasswordReset('${esc(u.email||'')}')" style="font-size:12px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>إرسال رابط إعادة كلمة السر</button>
+            </div>
+            <div style="font-size:11px;color:var(--i4);margin-top:8px;line-height:1.7">
+                • <b>كلمة السر:</b> يصل للعضو رابط على إيميله ليُعيد تعيينها بنفسه (لا يقدر admin يعرضها).<br>
+                • <b>تغيير البريد:</b> غير متاح من هنا (يحتاج Supabase Dashboard لتعديل auth.users).<br>
+                • <b>حذف الحساب:</b> يستخدمه العضو من تطبيقه (مطلوب Apple)؛ من هنا غير متاح للحماية.
+            </div>
         </div>
     </div>`;
     const foot = `
@@ -580,29 +647,57 @@ window.viewUser = async function(id) {
     openModal('تعديل بيانات العضو', body, foot);
 };
 
+// ── إرسال رابط إعادة كلمة السر للعضو (يصل لإيميله) ──
+window.adminSendPasswordReset = async function(email) {
+    if (!email) return showToast('بريد العضو غير موجود','err');
+    if (!confirm('سيرسل رابط إعادة كلمة السر إلى:\n' + email + '\n\nمتابعة؟')) return;
+    const { sb } = window.A;
+    try {
+        const redirect = window.location.origin + '/login.html';
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirect });
+        if (error) throw error;
+        showToast('تم إرسال رابط إعادة كلمة السر', 'suc');
+    } catch (e) {
+        showToast('خطأ: ' + (e.message || 'فشل الإرسال'), 'err');
+    }
+};
+
 // ── حفظ تعديلات العضو ──
 window.saveUser = async function(id) {
     const { sb } = window.A;
-    const patch = {
-        full_name: document.getElementById('euName').value.trim() || null,
-        phone: document.getElementById('euPhone').value.trim() || null,
-        referral_code: document.getElementById('euRef').value.trim() || null,
-        subscription_type: document.getElementById('euSub').value,
-        used_coupon: document.getElementById('euCoupon').value.trim() || null
+    const getVal = (key) => {
+        const el = document.getElementById(key);
+        return el ? el.value : null;
     };
-    const endVal = document.getElementById('euEnd').value;
+    const xpVal = parseInt(getVal('euXp'),10);
+    const lvlVal = parseInt(getVal('euLevel'),10);
+    const streakVal = parseInt(getVal('euStreak'),10);
+    const patch = {
+        full_name: (getVal('euName')||'').trim() || null,
+        phone: (getVal('euPhone')||'').trim() || null,
+        referral_code: (getVal('euRef')||'').trim() || null,
+        avatar_emoji: (getVal('euAvatar')||'').trim() || null,
+        role: getVal('euRole') || 'user',
+        subscription_type: getVal('euSub'),
+        subscription_source: getVal('euSource') || null,
+        auto_renew_enabled: !!document.getElementById('euAutoRenew')?.checked,
+        used_coupon: (getVal('euCoupon')||'').trim() || null,
+        xp: Number.isFinite(xpVal) ? Math.max(0, xpVal) : 0,
+        level: Number.isFinite(lvlVal) ? Math.max(1, lvlVal) : 1,
+        streak_days: Number.isFinite(streakVal) ? Math.max(0, streakVal) : 0
+    };
+    const endVal = getVal('euEnd');
     patch.subscription_end = endVal ? new Date(endVal + 'T23:59:59').toISOString() : null;
-    // لو "مجاني" → امسح تاريخ الانتهاء
     if (patch.subscription_type === 'free') patch.subscription_end = null;
 
     try {
         const { error } = await sb.from('profiles').update(patch).eq('id', id);
         if (error) throw error;
-        showToast('حُفظت التغييرات','success');
+        showToast('حُفظت التغييرات','suc');
         closeModal();
         loadUsers();
     } catch(e) {
-        showToast('خطأ: '+(e.message||'فشل الحفظ'),'error');
+        showToast('خطأ: '+(e.message||'فشل الحفظ'),'err');
     }
 };
 
@@ -914,7 +1009,7 @@ window.loadCoupons = async function() {
                 <div class="coupon-code">${esc(c.code)}</div>
                 <div class="coupon-info">
                     <div class="coupon-n">${isFree?'اشتراك مجاني':'خصم على الاشتراك'}</div>
-                    <div class="coupon-d">${c.expires_at?'ينتهي '+new Date(c.expires_at).toLocaleDateString('ar-SA'):'لا ينتهي'}${expired?' (منتهي)':''} · ${c.plan_type==='all'?'كل الخطط':esc(c.plan_type||'—')}</div>
+                    <div class="coupon-d">${c.expires_at?'ينتهي '+fmtDate(c.expires_at):'لا ينتهي'}${expired?' (منتهي)':''} · ${c.plan_type==='all'?'كل الخطط':esc(c.plan_type||'—')}</div>
                 </div>
                 ${badge}
                 <div class="coupon-uses"><div class="v">${c.used_count||0}</div><div>${c.max_uses?'من '+c.max_uses:'استخدام'}</div></div>
@@ -1133,7 +1228,7 @@ window.loadFinance = async function() {
                 <td class="td-muted">${p.coupon_code ? '<span class="status-pill" style="background:var(--acc-s);color:var(--acc)">'+esc(p.coupon_code)+'</span>' : '—'}</td>
                 <td><b style="color:var(--suc)">+${fmt(Math.round(p.amount))} ر.س</b></td>
                 <td class="td-muted" style="font-family:monospace;font-size:10px">${esc((p.payment_id||'').substring(0,14))}</td>
-                <td class="td-muted">${new Date(p.paid_at||p.created_at).toLocaleDateString('ar-SA')}</td>
+                <td class="td-muted">${fmtDate(p.paid_at||p.created_at)}</td>
             </tr>`).join('') + '</tbody></table>';
     } catch(e) { showToast('خطأ: '+e.message,'err'); }
 };
@@ -1378,7 +1473,7 @@ window.loadInvoices = async function(page=1) {
                     <td class="td-muted">${fmt(Number(inv.tax_amount).toFixed(2))} ر.س</td>
                     <td><b>${fmt(Number(inv.total_amount).toFixed(2))} ر.س</b></td>
                     <td>${status}</td>
-                    <td class="td-muted">${new Date(inv.created_at).toLocaleDateString('ar-SA')}</td>
+                    <td class="td-muted">${fmtDate(inv.created_at)}</td>
                     <td><button class="q-act-btn" onclick='downloadInvoicePDF("${inv.id}")' title="تنزيل PDF"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></td>
                 </tr>`;
             }).join('') + '</tbody></table>';
@@ -1436,7 +1531,7 @@ window.loadExpenses = async function() {
                 <td><div class="td-name">${esc(e.title)}</div>${e.description?'<div style="font-size:10px;color:var(--i4);margin-top:2px">'+esc(e.description)+'</div>':''}</td>
                 <td><span class="status-pill" style="background:var(--s2);color:var(--i2)">${esc(categoryName(e.category))}</span></td>
                 <td><b style="color:var(--dng)">-${fmt(Number(e.amount).toFixed(2))} ر.س</b></td>
-                <td class="td-muted">${new Date(e.expense_date).toLocaleDateString('ar-SA')}</td>
+                <td class="td-muted">${fmtDate(e.expense_date)}</td>
                 <td><div style="display:flex;gap:4px"><button class="q-act-btn" onclick='editExpense("${e.id}")'><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="q-act-btn" onclick='deleteExpense("${e.id}")'><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button></div></td>
             </tr>`).join('') + '</tbody></table>';
     } catch(e) { showToast('خطأ: '+e.message,'err'); }
@@ -1955,7 +2050,7 @@ window.loadPages = async function() {
             <div class="card" style="padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick='editPage("${p.id}")'>
                 ${p.logo_url?'<img src="'+esc(p.logo_url)+'" style="width:36px;height:36px;border-radius:10px" onerror="this.style.display=\'none\'">':'<div style="width:36px;height:36px;border-radius:10px;background:var(--pri-s);display:grid;place-items:center"><svg width="16" height="16" fill="none" stroke="var(--pri)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>'}
                 <div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(p.title)}</div><div style="font-size:10px;color:var(--i3)">${esc(p.description||p.slug)}</div></div>
-                <div style="font-size:10px;color:var(--i4)">${new Date(p.updated_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'})}</div>
+                <div style="font-size:10px;color:var(--i4)">${fmtDate(p.updated_at)}</div>
             </div>`).join('');
     } catch(e) { showToast('خطأ','err'); }
 };
@@ -2225,8 +2320,6 @@ window.loadUsersAnalytics = async function(page=1) {
         const tbl = document.getElementById('uaTable');
         if (!data || data.length === 0) { tbl.innerHTML = '<div class="empty-d">لا أعضاء</div>'; return; }
 
-        const fmtDate = iso => iso ? new Date(iso).toLocaleDateString('ar-SA',{year:'2-digit',month:'short',day:'numeric'}) : '—';
-
         tbl.innerHTML = '<table><thead><tr>'
             + '<th>العضو</th>'
             + '<th>الاشتراك</th>'
@@ -2367,7 +2460,7 @@ window.loadStaff = async function() {
             const st = statsMap[s.id] || {};
             const qCount = questionsMap[s.id] || st.questions_added || 0;
             const tickets = st.tickets_resolved || 0;
-            const lastSeen = s.last_seen_at ? new Date(s.last_seen_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'}) : '—';
+            const lastSeen = s.last_seen_at ? fmtDate(s.last_seen_at) : '—';
             const roleLabel = s.role === 'admin' ? 'المدير العام' : 'موظف';
             return `
             <div class="staff-card" data-role="${esc(s.role)}">
@@ -2584,12 +2677,12 @@ window.viewStaffActivity = async function(userId) {
 
         const qCount = recentQs.length || st.questions_added || 0;
         const lastSeenStr = p.last_seen_at ? new Date(p.last_seen_at).toLocaleString('ar-SA') : '—';
-        const joinedStr = new Date(p.created_at).toLocaleDateString('ar-SA');
+        const joinedStr = fmtDate(p.created_at);
 
         const qsHtml = recentQs.length > 0 ? recentQs.map(q => `
             <div style="padding:10px 12px;border-bottom:1px solid var(--ln);font-size:12px">
                 <div style="font-weight:600;color:var(--ink)">${esc((q.question_text||'').substring(0,80))}${(q.question_text||'').length>80?'...':''}</div>
-                <div style="font-size:10px;color:var(--i4);margin-top:3px">${esc(q.section||'—')} · ${new Date(q.created_at).toLocaleDateString('ar-SA')}</div>
+                <div style="font-size:10px;color:var(--i4);margin-top:3px">${esc(q.section||'—')} · ${fmtDate(q.created_at)}</div>
             </div>`).join('') : '<div style="padding:20px;text-align:center;color:var(--i3);font-size:12px">لم يُضَف أي سؤال بعد</div>';
 
         const body = `
@@ -2657,7 +2750,7 @@ window.loadIncomingReports = async function() {
                 <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"><span class="q-tag" style="margin-left:6px">${sectionTag(r.questions?.section)}</span>${esc((r.questions?.question_text||'—').substring(0,60))}…</td>
                 <td style="color:var(--dng);font-weight:600">${esc(r.reason)}</td>
                 <td>${statusMap[r.status]||r.status}</td>
-                <td class="td-muted">${new Date(r.created_at).toLocaleDateString('ar-SA')}</td>
+                <td class="td-muted">${fmtDate(r.created_at)}</td>
                 <td>${r.status==='pending'?'<button class="btn btn-ghost" onclick="switchToReview()">مراجعة</button>':'—'}</td>
             </tr>`;
         }).join('') + '</tbody></table></div></div>';
@@ -2758,7 +2851,7 @@ window.loadVisitors = async function() {
                 feed.length === 0 ? '<div class="empty-d" style="padding:20px">لا نشاطات بعد</div>' :
                 feed.slice(0,15).map(f => {
                     const elapsed = Math.floor((Date.now() - new Date(f.time).getTime()) / 60000);
-                    const timeStr = elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : new Date(f.time).toLocaleDateString('ar-SA');
+                    const timeStr = elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : fmtDate(f.time);
                     return '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);align-items:center"><div style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:'+f.color.replace(')',',.12)').replace('var(--','rgba(var(--')+';font-size:14px">'+f.icon+'</div><div style="flex:1"><div style="font-size:12px;line-height:1.5">'+f.text+'</div><div style="font-size:9px;color:var(--i4);margin-top:2px">'+timeStr+'</div></div></div>';
                 }).join('')
             }</div></div>

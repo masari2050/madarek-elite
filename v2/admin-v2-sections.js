@@ -10,6 +10,17 @@ const esc = s => { if (!s) return ''; const d = document.createElement('div'); d
 const SECTION_MAP = { quant:'قدرات كمي', verbal:'قدرات لفظي', tahsili:'تحصيلي', mixed:'مختلط' };
 const sectionTag = s => SECTION_MAP[s] || s || 'عام';
 
+// تنسيق تاريخ ميلادي موحّد (DD-MM-YYYY) — لا هجري في لوحة الإدارة
+function fmtDate(d, withTime = false) {
+    if (!d) return '—';
+    const dt = (d instanceof Date) ? d : new Date(d);
+    if (isNaN(dt.getTime())) return '—';
+    const pad = n => String(n).padStart(2, '0');
+    const out = `${pad(dt.getDate())}-${pad(dt.getMonth()+1)}-${dt.getFullYear()}`;
+    if (withTime) return `${out} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+    return out;
+}
+
 function $c() { return document.getElementById('contentArea'); }
 
 // ═══════════════════════════════════════════════════════
@@ -334,7 +345,7 @@ async function loadReviewPendingQuestions() {
             return `<div class="review-q">
                 <div class="rq-top">
                     <span class="q-tag">${sectionTag(q.section)}${q.topic?' · '+esc(q.topic):''}</span>
-                    <span style="font-size:10px;color:var(--i3)">أُضيف: ${new Date(q.created_at).toLocaleDateString('ar-SA')}</span>
+                    <span style="font-size:10px;color:var(--i3)">أُضيف: ${fmtDate(q.created_at)}</span>
                 </div>
                 ${q.image_url ? '<img src="'+esc(q.image_url)+'" style="max-width:300px;border-radius:8px;margin-bottom:12px" onerror="this.style.display=\'none\'">' : ''}
                 <div class="rq-txt">${esc(q.question_text)}</div>
@@ -387,7 +398,7 @@ async function loadReviewReports() {
             return `<div class="review-q">
                 <div class="rq-top">
                     <span class="q-tag">${sectionTag(q.section)}</span>
-                    <span style="font-size:10px;color:var(--i3)">أبلغ: <b>${esc(r.profiles?.full_name||'—')}</b> · ${new Date(r.created_at).toLocaleDateString('ar-SA')}</span>
+                    <span style="font-size:10px;color:var(--i3)">أبلغ: <b>${esc(r.profiles?.full_name||'—')}</b> · ${fmtDate(r.created_at)}</span>
                 </div>
                 ${q.image_url ? '<img src="'+esc(q.image_url)+'" style="max-width:300px;border-radius:8px;margin-bottom:12px" onerror="this.style.display=\'none\'">' : ''}
                 <div class="rq-txt">${esc(q.question_text)}</div>
@@ -511,8 +522,8 @@ window.loadUsers = async function(page=1) {
                 const sub = (u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date())
                     ? '<span class="status-pill active">' + (u.subscription_type === 'yearly' ? 'سنوي' : u.subscription_type === 'quarterly' ? '3 أشهر' : 'شهري') + '</span>'
                     : '<span class="status-pill free">مجاني</span>';
-                const lastSeen = u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'}) : '—';
-                const joined = new Date(u.created_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+                const lastSeen = u.last_seen_at ? fmtDate(u.last_seen_at) : '—';
+                const joined = fmtDate(u.created_at);
                 const name = u.full_name || '—';
                 return `<tr>
                     <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, name, 36) : esc(name.charAt(0)))}</div><div class="td-name">${esc(name)}</div></div></td>
@@ -570,7 +581,7 @@ window.viewUser = async function(id) {
 
         <div style="grid-column:span 2;background:var(--s2);padding:12px 14px;border-radius:10px;font-size:12px;color:var(--i3);line-height:2">
             <div><b>XP:</b> ${u.xp||0} &nbsp;·&nbsp; <b>المستوى:</b> ${u.level||1} (${esc(u.level_name||'مبتدئ')}) &nbsp;·&nbsp; <b>السلسلة:</b> ${u.streak_days||0} يوم</div>
-            <div><b>سُجّل:</b> ${new Date(u.created_at).toLocaleDateString('ar-SA')} &nbsp;·&nbsp; <b>آخر دخول:</b> ${u.last_seen_at ? new Date(u.last_seen_at).toLocaleDateString('ar-SA') : '—'}</div>
+            <div><b>سُجّل:</b> ${fmtDate(u.created_at)} &nbsp;·&nbsp; <b>آخر دخول:</b> ${u.last_seen_at ? fmtDate(u.last_seen_at) : '—'}</div>
         </div>
     </div>`;
     const foot = `
@@ -913,7 +924,7 @@ window.loadCoupons = async function() {
                 <div class="coupon-code">${esc(c.code)}</div>
                 <div class="coupon-info">
                     <div class="coupon-n">${isFree?'اشتراك مجاني':'خصم على الاشتراك'}</div>
-                    <div class="coupon-d">${c.expires_at?'ينتهي '+new Date(c.expires_at).toLocaleDateString('ar-SA'):'لا ينتهي'}${expired?' (منتهي)':''} · ${c.plan_type==='all'?'كل الخطط':esc(c.plan_type||'—')}</div>
+                    <div class="coupon-d">${c.expires_at?'ينتهي '+fmtDate(c.expires_at):'لا ينتهي'}${expired?' (منتهي)':''} · ${c.plan_type==='all'?'كل الخطط':esc(c.plan_type||'—')}</div>
                 </div>
                 ${badge}
                 <div class="coupon-uses"><div class="v">${c.used_count||0}</div><div>${c.max_uses?'من '+c.max_uses:'استخدام'}</div></div>
@@ -1127,7 +1138,7 @@ window.loadFinance = async function() {
                 <td class="td-muted">${p.coupon_code ? '<span class="status-pill" style="background:var(--acc-s);color:var(--acc)">'+esc(p.coupon_code)+'</span>' : '—'}</td>
                 <td><b style="color:var(--suc)">+${fmt(Math.round(p.amount))} ر.س</b></td>
                 <td class="td-muted" style="font-family:monospace;font-size:10px">${esc((p.payment_id||'').substring(0,14))}</td>
-                <td class="td-muted">${new Date(p.paid_at||p.created_at).toLocaleDateString('ar-SA')}</td>
+                <td class="td-muted">${fmtDate(p.paid_at||p.created_at)}</td>
             </tr>`).join('') + '</tbody></table>';
     } catch(e) { showToast('خطأ: '+e.message,'err'); }
 };
@@ -1372,7 +1383,7 @@ window.loadInvoices = async function(page=1) {
                     <td class="td-muted">${fmt(Number(inv.tax_amount).toFixed(2))} ر.س</td>
                     <td><b>${fmt(Number(inv.total_amount).toFixed(2))} ر.س</b></td>
                     <td>${status}</td>
-                    <td class="td-muted">${new Date(inv.created_at).toLocaleDateString('ar-SA')}</td>
+                    <td class="td-muted">${fmtDate(inv.created_at)}</td>
                     <td><button class="q-act-btn" onclick='downloadInvoicePDF("${inv.id}")' title="تنزيل PDF"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></td>
                 </tr>`;
             }).join('') + '</tbody></table>';
@@ -1430,7 +1441,7 @@ window.loadExpenses = async function() {
                 <td><div class="td-name">${esc(e.title)}</div>${e.description?'<div style="font-size:10px;color:var(--i4);margin-top:2px">'+esc(e.description)+'</div>':''}</td>
                 <td><span class="status-pill" style="background:var(--s2);color:var(--i2)">${esc(categoryName(e.category))}</span></td>
                 <td><b style="color:var(--dng)">-${fmt(Number(e.amount).toFixed(2))} ر.س</b></td>
-                <td class="td-muted">${new Date(e.expense_date).toLocaleDateString('ar-SA')}</td>
+                <td class="td-muted">${fmtDate(e.expense_date)}</td>
                 <td><div style="display:flex;gap:4px"><button class="q-act-btn" onclick='editExpense("${e.id}")'><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="q-act-btn" onclick='deleteExpense("${e.id}")'><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button></div></td>
             </tr>`).join('') + '</tbody></table>';
     } catch(e) { showToast('خطأ: '+e.message,'err'); }
@@ -1949,7 +1960,7 @@ window.loadPages = async function() {
             <div class="card" style="padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick='editPage("${p.id}")'>
                 ${p.logo_url?'<img src="'+esc(p.logo_url)+'" style="width:36px;height:36px;border-radius:10px" onerror="this.style.display=\'none\'">':'<div style="width:36px;height:36px;border-radius:10px;background:var(--pri-s);display:grid;place-items:center"><svg width="16" height="16" fill="none" stroke="var(--pri)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>'}
                 <div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(p.title)}</div><div style="font-size:10px;color:var(--i3)">${esc(p.description||p.slug)}</div></div>
-                <div style="font-size:10px;color:var(--i4)">${new Date(p.updated_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'})}</div>
+                <div style="font-size:10px;color:var(--i4)">${fmtDate(p.updated_at)}</div>
             </div>`).join('');
     } catch(e) { showToast('خطأ','err'); }
 };
@@ -2219,7 +2230,7 @@ window.loadUsersAnalytics = async function(page=1) {
         const tbl = document.getElementById('uaTable');
         if (!data || data.length === 0) { tbl.innerHTML = '<div class="empty-d">لا أعضاء</div>'; return; }
 
-        const fmtDate = iso => iso ? new Date(iso).toLocaleDateString('ar-SA',{year:'2-digit',month:'short',day:'numeric'}) : '—';
+        const fmtDate = iso => iso ? fmtDate(iso) : '—';
 
         tbl.innerHTML = '<table><thead><tr>'
             + '<th>العضو</th>'
@@ -2361,7 +2372,7 @@ window.loadStaff = async function() {
             const st = statsMap[s.id] || {};
             const qCount = questionsMap[s.id] || st.questions_added || 0;
             const tickets = st.tickets_resolved || 0;
-            const lastSeen = s.last_seen_at ? new Date(s.last_seen_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'}) : '—';
+            const lastSeen = s.last_seen_at ? fmtDate(s.last_seen_at) : '—';
             const roleLabel = s.role === 'admin' ? 'المدير العام' : 'موظف';
             return `
             <div class="staff-card" data-role="${esc(s.role)}">
@@ -2578,12 +2589,12 @@ window.viewStaffActivity = async function(userId) {
 
         const qCount = recentQs.length || st.questions_added || 0;
         const lastSeenStr = p.last_seen_at ? new Date(p.last_seen_at).toLocaleString('ar-SA') : '—';
-        const joinedStr = new Date(p.created_at).toLocaleDateString('ar-SA');
+        const joinedStr = fmtDate(p.created_at);
 
         const qsHtml = recentQs.length > 0 ? recentQs.map(q => `
             <div style="padding:10px 12px;border-bottom:1px solid var(--ln);font-size:12px">
                 <div style="font-weight:600;color:var(--ink)">${esc((q.question_text||'').substring(0,80))}${(q.question_text||'').length>80?'...':''}</div>
-                <div style="font-size:10px;color:var(--i4);margin-top:3px">${esc(q.section||'—')} · ${new Date(q.created_at).toLocaleDateString('ar-SA')}</div>
+                <div style="font-size:10px;color:var(--i4);margin-top:3px">${esc(q.section||'—')} · ${fmtDate(q.created_at)}</div>
             </div>`).join('') : '<div style="padding:20px;text-align:center;color:var(--i3);font-size:12px">لم يُضَف أي سؤال بعد</div>';
 
         const body = `
@@ -2651,7 +2662,7 @@ window.loadIncomingReports = async function() {
                 <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis"><span class="q-tag" style="margin-left:6px">${sectionTag(r.questions?.section)}</span>${esc((r.questions?.question_text||'—').substring(0,60))}…</td>
                 <td style="color:var(--dng);font-weight:600">${esc(r.reason)}</td>
                 <td>${statusMap[r.status]||r.status}</td>
-                <td class="td-muted">${new Date(r.created_at).toLocaleDateString('ar-SA')}</td>
+                <td class="td-muted">${fmtDate(r.created_at)}</td>
                 <td>${r.status==='pending'?'<button class="btn btn-ghost" onclick="switchToReview()">مراجعة</button>':'—'}</td>
             </tr>`;
         }).join('') + '</tbody></table></div></div>';
@@ -2752,7 +2763,7 @@ window.loadVisitors = async function() {
                 feed.length === 0 ? '<div class="empty-d" style="padding:20px">لا نشاطات بعد</div>' :
                 feed.slice(0,15).map(f => {
                     const elapsed = Math.floor((Date.now() - new Date(f.time).getTime()) / 60000);
-                    const timeStr = elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : new Date(f.time).toLocaleDateString('ar-SA');
+                    const timeStr = elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : fmtDate(f.time);
                     return '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);align-items:center"><div style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:'+f.color.replace(')',',.12)').replace('var(--','rgba(var(--')+';font-size:14px">'+f.icon+'</div><div style="flex:1"><div style="font-size:12px;line-height:1.5">'+f.text+'</div><div style="font-size:9px;color:var(--i4);margin-top:2px">'+timeStr+'</div></div></div>';
                 }).join('')
             }</div></div>
