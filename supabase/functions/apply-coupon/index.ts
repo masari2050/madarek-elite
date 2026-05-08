@@ -139,22 +139,36 @@ serve(async (req) => {
     }
 
     // ══════════════════════════════════════════
-    //  8. حساب الخصم
+    //  8. حساب الخصم — basePrice من جدول plans (المصدر الموحّد)
+    //     سابقاً كان من site_settings + discount_percent → غلط
+    //     (site_settings.price_monthly_original=115 بينما plans.price=99)
     // ══════════════════════════════════════════
-    const { data: settings } = await supabaseAdmin
-      .from('site_settings').select('key, value')
-      .in('key', ['price_monthly_original', 'price_yearly_original', 'discount_percent'])
+    const planSlug = (typeof plan === 'string' && plan.trim()) ? plan.trim() : null
+    let planRow: any = null
+    if (planSlug) {
+      const { data: pr } = await supabaseAdmin
+        .from('plans')
+        .select('slug, price, duration_days')
+        .eq('slug', planSlug)
+        .eq('is_active', true)
+        .maybeSingle()
+      planRow = pr
+    }
+    if (!planRow) {
+      // fallback: لو ما اخترت خطة، خذ الشهرية الفعّالة
+      const { data: pr2 } = await supabaseAdmin
+        .from('plans')
+        .select('slug, price, duration_days')
+        .eq('slug', 'monthly')
+        .eq('is_active', true)
+        .maybeSingle()
+      planRow = pr2 || { slug: 'monthly', price: 99, duration_days: 30 }
+    }
 
-    const sm: Record<string, number> = {}
-    settings?.forEach((s: any) => sm[s.key] = parseFloat(s.value))
-
-    const disc = sm['discount_percent'] || 0
-    const durMonths = coupon.duration_months || (coupon.plan_type === 'yearly' ? 12 : 1)
-
-    // تحديد نوع الاشتراك من المدة
-    const subType = durMonths >= 12 ? 'yearly' : 'monthly'
-    const basePriceKey = subType === 'yearly' ? 'price_yearly_original' : 'price_monthly_original'
-    let basePrice = Math.round((sm[basePriceKey] || (subType === 'yearly' ? 468 : 60)) * (100 - disc) / 100)
+    const subType = planRow.slug  // 'monthly' | 'quarterly' | 'yearly'
+    const planMonths = Math.max(1, Math.round(Number(planRow.duration_days || 30) / 30))
+    const durMonths = coupon.duration_months || planMonths
+    const basePrice = Math.round(Number(planRow.price))
 
     let finalAmount = basePrice
     const isFree = coupon.discount_type === 'free' ||
