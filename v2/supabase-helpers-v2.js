@@ -77,6 +77,8 @@
         await getSb().auth.signOut();
         _currentUser = null;
         _profile = null;
+        // امسح cache الـheader حتى لا يشوف المستخدم التالي اسم السابق
+        try { localStorage.removeItem('madarek_cached_profile'); } catch(_) {}
         // لو في صفحة admin → admin-login-v2.html، وإلا → login-v2.html
         const isAdmin = window.location.pathname.includes('admin');
         window.location.href = isAdmin ? '/admin-login.html' : '/login.html';

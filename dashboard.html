@@ -463,6 +463,39 @@ let profile = null;
 let homeStats = null;
 
 // ── Init ──
+// ── Optimistic header from cache (يلغي flash "جاري التحميل") ──
+(function paintHeaderFromCache(){
+    try {
+        const cached = JSON.parse(localStorage.getItem('madarek_cached_profile') || 'null');
+        if (cached && cached.full_name) {
+            const firstName = (cached.full_name || '').split(' ')[0] || 'مستخدم';
+            const nameEl = document.getElementById('userName');
+            const subEl  = document.getElementById('userSub');
+            const avEl   = document.getElementById('userAvatar');
+            if (nameEl) nameEl.textContent = 'أهلاً، ' + firstName;
+            if (subEl)  subEl.textContent = '';
+            if (avEl) {
+                const v = cached.avatar_emoji || '';
+                if (v.startsWith('photo:')) avEl.innerHTML = '<img src="'+v.slice(6).replace(/"/g,'&quot;')+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+                else if (v.startsWith('dice:')) {
+                    const p = v.split(':'); const style = p[1]||'avataaars'; const seed = p.slice(2).join(':') || firstName;
+                    avEl.innerHTML = '<img src="https://api.dicebear.com/7.x/'+encodeURIComponent(style)+'/svg?seed='+encodeURIComponent(seed)+'" style="width:100%;height:100%;border-radius:50%">';
+                }
+                else avEl.textContent = v || firstName.charAt(0);
+            }
+            // Sub badge من الـcache (لو فيه)
+            if (cached.subscription_type === 'monthly' || cached.subscription_type === 'yearly') {
+                const b = document.getElementById('subBadge');
+                if (b) {
+                    if (cached.subscription_type === 'monthly') { b.textContent='Pro'; b.className='sub-badge monthly'; }
+                    else { b.textContent='✦ Elite'; b.className='sub-badge yearly'; }
+                    b.style.display = '';
+                }
+            }
+        }
+    } catch(_) { /* corrupt cache → نتجاهل ونكمّل عادي */ }
+})();
+
 init();
 
 async function init() {
@@ -528,6 +561,14 @@ function renderHeader() {
     const firstName = name.split(' ')[0];
     document.getElementById('userName').textContent = 'أهلاً، ' + firstName;
     renderAvatar(document.getElementById('userAvatar'), profile.avatar_emoji, firstName);
+    // حدّث الـcache للزيارة القادمة (إلغاء flash)
+    try {
+        localStorage.setItem('madarek_cached_profile', JSON.stringify({
+            full_name: profile.full_name || null,
+            avatar_emoji: profile.avatar_emoji || null,
+            subscription_type: profile.subscription_type || null
+        }));
+    } catch(_) {}
 }
 
 // يعرض صورة (photo:URL) أو Dicebear (dice:style:seed) أو نص (حرف/إيموجي)
@@ -678,13 +719,33 @@ window.mockExamRegister = async function() {
         return;
     }
 
-    // 3) مشترك Pro → mock-exam.html (يهتم بالتسجيل + بدء الامتحان)
-    if (_mockExamId) {
-        location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId);
-    } else if (M && typeof M.showToast === 'function') {
-        M.showToast('لا يوجد اختبار محاكي نشط حالياً', 'err');
-    } else {
-        alert('لا يوجد اختبار محاكي نشط حالياً');
+    // 3) لا يوجد اختبار محاكي نشط → toast فقط
+    if (!_mockExamId) {
+        if (M && typeof M.showToast === 'function') M.showToast('لا يوجد اختبار محاكي نشط حالياً', 'err');
+        else alert('لا يوجد اختبار محاكي نشط حالياً');
+        return;
+    }
+
+    // 4) مشترك Pro + اختبار نشط → تسجيل inline (بدون navigation)
+    const btn = document.getElementById('mockCta');
+    const origLabel = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'جاري التسجيل...'; btn.style.opacity = '0.7'; }
+    try {
+        const { error } = await sb.rpc('register_for_active_mock_exam');
+        // الـRPC لا يفشل لو المستخدم مسجّل بالفعل في النسخة الحالية، لكن نتعامل مع الحالات الشاذّة
+        if (error) {
+            const msg = String(error.message || '');
+            if (!msg.includes('no_active_exam') && !msg.includes('already_registered')) throw error;
+        }
+        // ✓ تسجيل ناجح → بدّل الـUI من زر "سجّل الآن" → badge أخضر مع countdown
+        applyMockExamRegistered();
+        if (M && typeof M.showToast === 'function') M.showToast('تم تسجيلك للاختبار المحاكي ✓', 'suc');
+    } catch(e) {
+        // إعادة الزر لحالته الأصلية
+        if (btn) { btn.disabled = false; btn.textContent = origLabel || 'سجّل الآن'; btn.style.opacity = ''; }
+        const msg = (e && e.message) ? e.message : 'تعذّر التسجيل';
+        if (M && typeof M.showToast === 'function') M.showToast('خطأ: ' + msg, 'err');
+        else alert('خطأ: ' + msg);
     }
 };
 
