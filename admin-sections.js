@@ -3419,14 +3419,6 @@ function payoutActions(r) {
     return '—';
 }
 
-function fmtDate(s) {
-    if (!s) return '—';
-    try {
-        const d = new Date(s);
-        return fmtDate(d, true);
-    } catch { return s; }
-}
-
 // ── Preview mock rows ──
 function buildPreviewPayouts(filter) {
     const all = [
