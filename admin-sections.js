@@ -355,28 +355,39 @@ window.loadQTopicBreakdown = async function(section) {
     const wrap = document.getElementById('qTopicBreakdown');
     if (!wrap) return;
     try {
-        // Fetch a generous sample to compute counts client-side
-        let q = sb.from('questions').select('section,topic').eq('disabled',false).limit(10000);
-        if (section) q = q.eq('section', section);
-        const { data } = await q;
-
-        // Aggregate by section → standard topic
+        // SERVER-SIDE ACCURATE counts via HEAD count={'exact'} requests.
+        // Previous bug: .select('topic').limit(10000) was capped by PostgREST max-rows
+        // (default 1000) → counts only reflected a sample, not the full table.
+        const sectionsToShow = section ? [section] : ['quant','verbal','tahsili'];
         const counts = { quant:{}, verbal:{}, tahsili:{} };
+        const sectionTotals = { quant:0, verbal:0, tahsili:0 };
+
+        await Promise.all(sectionsToShow.flatMap(sec => {
+            const stdList = window.QIYAS_TOPICS[sec] || [];
+            const totalReq = sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false).eq('section',sec)
+                .then(r => { sectionTotals[sec] = r.count || 0; });
+            const stdReqs = stdList.map(std => {
+                const raws = window.qInverseTopicMap(sec, std);
+                if (raws.length === 0) { counts[sec][std] = 0; return Promise.resolve(); }
+                return sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false).eq('section',sec).in('topic', raws)
+                    .then(r => { counts[sec][std] = r.count || 0; });
+            });
+            return [totalReq, ...stdReqs];
+        }));
+
+        // Unclassified = section total − sum of standard counts
         const unclassified = { quant:0, verbal:0, tahsili:0 };
-        (data||[]).forEach(r => {
-            if (!counts[r.section]) return;
-            const std = window.mapToStandardTopic(r.section, r.topic);
-            if (std) counts[r.section][std] = (counts[r.section][std]||0) + 1;
-            else unclassified[r.section]++;
+        sectionsToShow.forEach(sec => {
+            const classified = Object.values(counts[sec]).reduce((s,n) => s+n, 0);
+            unclassified[sec] = Math.max(0, sectionTotals[sec] - classified);
         });
 
         const sectionLabel = { quant:'قدرات كمي', verbal:'قدرات لفظي', tahsili:'تحصيلي' };
         const sectionColor = { quant:'#6D5DF6', verbal:'#22C55E', tahsili:'#FF8A3D' };
-        const sectionsToShow = section ? [section] : ['quant','verbal','tahsili'];
 
         const html = sectionsToShow.map(sec => {
             const stdList = window.QIYAS_TOPICS[sec] || [];
-            const total = stdList.reduce((s,t) => s + (counts[sec][t]||0), 0) + unclassified[sec];
+            const total = sectionTotals[sec]; // accurate count from DB
             if (total === 0) return '';
 
             // Build chips for each STANDARD topic (always shown, even if 0)
