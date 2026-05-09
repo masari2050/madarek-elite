@@ -63,7 +63,7 @@ button,input,select,textarea{font-family:inherit}
 .sb-online{width:6px;height:6px;border-radius:50%;background:var(--suc);margin-right:auto;flex-shrink:0}
 
 /* MAIN */
-.main{margin-right:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.main{margin-right:var(--sidebar-w);flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column}
 .topbar{background:var(--sf);border-bottom:1px solid var(--ln);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .tb-page{font-size:16px;font-weight:700}
 .tb-right{display:flex;align-items:center;gap:10px}
@@ -75,7 +75,7 @@ button,input,select,textarea{font-family:inherit}
 .online-dot{width:6px;height:6px;border-radius:50%;background:var(--suc);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .tb-date{font-size:11px;color:var(--i3)}
-.content{padding:24px 28px;flex:1}
+.content{padding:24px 28px;flex:1;min-width:0;overflow-x:hidden}
 .page{display:none}.page.active{display:block}
 
 /* KPI */
