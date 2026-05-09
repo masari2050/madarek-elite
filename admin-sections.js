@@ -975,18 +975,41 @@ window.saveUser = async function(id) {
 window.exportUsers = async function() {
     const { sb } = window.A;
     showToast('جاري التصدير...','');
+    const f = window._uaFilters || {};
+    const NOW = Date.now();
+    const DAY = 86400000;
     try {
-        const { data } = await sb.from('profiles').select('full_name,phone,subscription_type,subscription_end,created_at,xp').order('created_at',{ascending:false}).limit(5000);
+        let q = sb.from('profiles').select('full_name,email,phone,subscription_type,subscription_end,subscription_source,referred_by,used_coupon,xp,created_at,last_seen_at');
+        const nowIso = new Date().toISOString();
+        if (f.sub === 'active') q = q.in('subscription_type', ['monthly','quarterly','yearly']).gt('subscription_end', nowIso);
+        else if (f.sub === 'free') q = q.or('subscription_type.eq.free,subscription_type.is.null');
+        else if (['monthly','quarterly','yearly'].includes(f.sub)) q = q.eq('subscription_type', f.sub).gt('subscription_end', nowIso);
+        else if (f.sub === 'expired') q = q.in('subscription_type', ['monthly','quarterly','yearly']).lt('subscription_end', nowIso);
+        if (['myfatoorah','apple_iap','google_play','admin'].includes(f.source)) q = q.eq('subscription_source', f.source);
+        else if (f.source === 'referral') q = q.not('referred_by','is',null);
+        if (f.activity === 'online') q = q.gt('last_seen_at', new Date(NOW - 5*60000).toISOString());
+        else if (f.activity === 'week') q = q.gt('last_seen_at', new Date(NOW - 7*DAY).toISOString());
+        else if (f.activity === 'month') q = q.gt('last_seen_at', new Date(NOW - 30*DAY).toISOString());
+        else if (f.activity === 'dormant') q = q.or('last_seen_at.is.null,last_seen_at.lt.'+new Date(NOW - 30*DAY).toISOString());
+        if (f.registered === 'today') q = q.gte('created_at', new Date(new Date().setHours(0,0,0,0)).toISOString());
+        else if (f.registered === 'week') q = q.gte('created_at', new Date(NOW - 7*DAY).toISOString());
+        else if (f.registered === 'month') q = q.gte('created_at', new Date(NOW - 30*DAY).toISOString());
+        if (f.search) {
+            const term = f.search.replace(/'/g, "''");
+            q = q.or(`full_name.ilike.%${term}%,email.ilike.%${term}%,phone.ilike.%${term}%`);
+        }
+        const { data } = await q.order('created_at',{ascending:false}).limit(10000);
         if (!data) return;
-        const rows = [['الاسم','الجوال','الاشتراك','ينتهي','تاريخ التسجيل','XP']];
-        data.forEach(u => rows.push([u.full_name||'', u.phone||'', u.subscription_type||'free', u.subscription_end||'', u.created_at||'', u.xp||0]));
+        const rows = [['الاسم','الإيميل','الجوال','الاشتراك','ينتهي','المصدر','الكوبون','تاريخ التسجيل','آخر دخول','XP']];
+        data.forEach(u => rows.push([u.full_name||'', u.email||'', u.phone||'', u.subscription_type||'free', u.subscription_end||'', u.subscription_source||'', u.used_coupon||'', u.created_at||'', u.last_seen_at||'', u.xp||0]));
         const csv = rows.map(r => r.map(c => '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
         const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'users-'+new Date().toISOString().split('T')[0]+'.csv';
+        const filterLabel = (window._uaFilters && (window._uaFilters.sub||window._uaFilters.source||window._uaFilters.activity||window._uaFilters.registered)) ? '-filtered' : '';
+        a.download = 'users'+filterLabel+'-'+new Date().toISOString().split('T')[0]+'.csv';
         a.click();
-        showToast('تم التصدير','suc');
+        showToast('تم تصدير '+data.length+' عضو','suc');
     } catch(e) { showToast('خطأ: '+e.message,'err'); }
 };
 
@@ -2769,32 +2792,118 @@ window.saveSEO = async function(id) {
 // ═══════════════════════════════════════════════════════
 // 13. USERS ANALYTICS
 // ═══════════════════════════════════════════════════════
+// State for filters (preserved across re-renders)
+window._uaFilters = window._uaFilters || { sub:'', source:'', activity:'', registered:'', search:'', sort:'xp' };
+
 window.loadUsersAnalytics = async function(page=1) {
     const { sb } = window.A;
     const PAGE_SIZE = 30;
+    const f = window._uaFilters;
+    const NOW = Date.now();
+    const DAY = 86400000;
+
+    // Render skeleton (preserves filter values via window._uaFilters)
     $c().innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
-        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="search" id="uaSearch" placeholder="ابحث..." oninput="uaSearchDebounce()"></div>
-        <div style="display:flex;gap:8px">
-            <select class="form-select" id="uaSort" style="width:auto" onchange="loadUsersAnalytics(1)">
-                <option value="attempts">الأكثر تدريباً</option>
-                <option value="new">الأحدث</option>
-                <option value="accuracy">أعلى دقة</option>
-                <option value="inactive">الأقل نشاطاً</option>
-            </select>
-            <button class="btn btn-ghost" onclick="exportUsers()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
-        </div>
+    <!-- KPIs bar -->
+    <div id="uaKpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
+        <div class="kpi blue"><div class="kpi-label">إجمالي الأعضاء</div><div class="kpi-val" id="uaKpiTotal">—</div><div class="kpi-sub" id="uaKpiTotalSub">—</div></div>
+        <div class="kpi green"><div class="kpi-label">مشتركون نشطون</div><div class="kpi-val" id="uaKpiActive">—</div><div class="kpi-sub" id="uaKpiActiveSub">من الإجمالي</div></div>
+        <div class="kpi orange"><div class="kpi-label">مجانيون نشطون</div><div class="kpi-val" id="uaKpiFree">—</div><div class="kpi-sub">حلّوا أسئلة آخر 30 يوم</div></div>
+        <div class="kpi gold"><div class="kpi-label">متوسط XP</div><div class="kpi-val" id="uaKpiXp">—</div><div class="kpi-sub">لكل عضو</div></div>
+    </div>
+
+    <!-- Filter bar -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+        <div class="search-box" style="flex:1;min-width:220px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="search" id="uaSearch" placeholder="ابحث بالاسم / الإيميل / الجوال" value="${esc(f.search||'')}" oninput="uaSearchDebounce()"></div>
+        <select class="form-select" id="uaFilterSub" style="width:auto" onchange="uaApplyFilter()" title="نوع الاشتراك">
+            <option value="">كل الاشتراكات</option>
+            <option value="active" ${f.sub==='active'?'selected':''}>مشترك نشط</option>
+            <option value="free" ${f.sub==='free'?'selected':''}>مجاني فقط</option>
+            <option value="monthly" ${f.sub==='monthly'?'selected':''}>شهري</option>
+            <option value="quarterly" ${f.sub==='quarterly'?'selected':''}>ربع سنوي</option>
+            <option value="yearly" ${f.sub==='yearly'?'selected':''}>سنوي</option>
+            <option value="expired" ${f.sub==='expired'?'selected':''}>اشتراك منتهي</option>
+        </select>
+        <select class="form-select" id="uaFilterSource" style="width:auto" onchange="uaApplyFilter()" title="مصدر الاشتراك">
+            <option value="">كل المصادر</option>
+            <option value="myfatoorah" ${f.source==='myfatoorah'?'selected':''}>MyFatoorah</option>
+            <option value="apple_iap" ${f.source==='apple_iap'?'selected':''}>Apple IAP</option>
+            <option value="google_play" ${f.source==='google_play'?'selected':''}>Google Play</option>
+            <option value="admin" ${f.source==='admin'?'selected':''}>منحة إدارية</option>
+            <option value="referral" ${f.source==='referral'?'selected':''}>إحالة</option>
+            <option value="coupon_free" ${f.source==='coupon_free'?'selected':''}>كوبون مجاني</option>
+            <option value="coupon_discount" ${f.source==='coupon_discount'?'selected':''}>كوبون خصم</option>
+        </select>
+        <select class="form-select" id="uaFilterActivity" style="width:auto" onchange="uaApplyFilter()" title="حالة النشاط">
+            <option value="">كل الحالات</option>
+            <option value="online" ${f.activity==='online'?'selected':''}>🟢 متصل الآن</option>
+            <option value="week" ${f.activity==='week'?'selected':''}>🟡 نشط الأسبوع</option>
+            <option value="month" ${f.activity==='month'?'selected':''}>🟡 نشط الشهر</option>
+            <option value="dormant" ${f.activity==='dormant'?'selected':''}>🔴 خامد (>30 يوم)</option>
+        </select>
+        <select class="form-select" id="uaFilterRegistered" style="width:auto" onchange="uaApplyFilter()" title="تاريخ الانضمام">
+            <option value="">كل التواريخ</option>
+            <option value="today" ${f.registered==='today'?'selected':''}>اليوم</option>
+            <option value="week" ${f.registered==='week'?'selected':''}>آخر 7 أيام</option>
+            <option value="month" ${f.registered==='month'?'selected':''}>آخر 30 يوم</option>
+        </select>
+        <select class="form-select" id="uaSort" style="width:auto" onchange="uaApplyFilter()">
+            <option value="xp" ${f.sort==='xp'?'selected':''}>الأكثر XP</option>
+            <option value="new" ${f.sort==='new'?'selected':''}>الأحدث تسجيلاً</option>
+            <option value="last_seen" ${f.sort==='last_seen'?'selected':''}>الأحدث دخولاً</option>
+            <option value="dormant" ${f.sort==='dormant'?'selected':''}>الأقدم نشاطاً</option>
+        </select>
+        <button class="btn btn-ghost" onclick="exportUsers()" title="تصدير الفلتر الحالي"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
     </div>
     <div class="card"><div class="tbl-wrap" id="uaTable"><div class="loader">...</div></div></div>`;
 
+    // ── Build query with filters ──
     try {
-        const sort = document.getElementById('uaSort').value;
-        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
+        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,subscription_source,referred_by,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
 
-        if (sort === 'new') q = q.order('created_at',{ascending:false});
+        // Subscription filter
+        const nowIso = new Date().toISOString();
+        if (f.sub === 'active') q = q.in('subscription_type', ['monthly','quarterly','yearly']).gt('subscription_end', nowIso);
+        else if (f.sub === 'free') q = q.or('subscription_type.eq.free,subscription_type.is.null');
+        else if (f.sub === 'monthly') q = q.eq('subscription_type','monthly').gt('subscription_end', nowIso);
+        else if (f.sub === 'quarterly') q = q.eq('subscription_type','quarterly').gt('subscription_end', nowIso);
+        else if (f.sub === 'yearly') q = q.eq('subscription_type','yearly').gt('subscription_end', nowIso);
+        else if (f.sub === 'expired') q = q.in('subscription_type', ['monthly','quarterly','yearly']).lt('subscription_end', nowIso);
+
+        // Source filter (DB-side for direct sources only; coupon filtering happens after fetch)
+        if (f.source === 'myfatoorah') q = q.eq('subscription_source','myfatoorah');
+        else if (f.source === 'apple_iap') q = q.eq('subscription_source','apple_iap');
+        else if (f.source === 'google_play') q = q.eq('subscription_source','google_play');
+        else if (f.source === 'admin') q = q.eq('subscription_source','admin');
+        else if (f.source === 'referral') q = q.not('referred_by','is',null);
+
+        // Activity filter
+        if (f.activity === 'online') q = q.gt('last_seen_at', new Date(NOW - 5*60000).toISOString());
+        else if (f.activity === 'week') q = q.gt('last_seen_at', new Date(NOW - 7*DAY).toISOString());
+        else if (f.activity === 'month') q = q.gt('last_seen_at', new Date(NOW - 30*DAY).toISOString());
+        else if (f.activity === 'dormant') q = q.or('last_seen_at.is.null,last_seen_at.lt.'+new Date(NOW - 30*DAY).toISOString());
+
+        // Registration date filter
+        if (f.registered === 'today') q = q.gte('created_at', new Date(new Date().setHours(0,0,0,0)).toISOString());
+        else if (f.registered === 'week') q = q.gte('created_at', new Date(NOW - 7*DAY).toISOString());
+        else if (f.registered === 'month') q = q.gte('created_at', new Date(NOW - 30*DAY).toISOString());
+
+        // Search
+        if (f.search) {
+            const term = f.search.replace(/'/g, "''");
+            q = q.or(`full_name.ilike.%${term}%,email.ilike.%${term}%,phone.ilike.%${term}%`);
+        }
+
+        // Sort
+        if (f.sort === 'new') q = q.order('created_at',{ascending:false});
+        else if (f.sort === 'last_seen') q = q.order('last_seen_at',{ascending:false,nullsFirst:false});
+        else if (f.sort === 'dormant') q = q.order('last_seen_at',{ascending:true,nullsFirst:true});
         else q = q.order('xp',{ascending:false,nullsFirst:false});
 
         const { data, count } = await q.range((page-1)*PAGE_SIZE, page*PAGE_SIZE-1);
+
+        // Load KPIs in parallel (non-blocking)
+        loadUaKpis();
 
         // Attempts counts + آخر تدريب لكل مستخدم
         const uids = (data||[]).map(u=>u.id);
@@ -2823,8 +2932,39 @@ window.loadUsersAnalytics = async function(page=1) {
         const extraMap = {};
         (profExtra.data || []).forEach(e => { extraMap[e.id] = e; });
 
+        // Apply coupon-based source filters AFTER fetch (DB-side requires JOIN)
+        let filteredData = data || [];
+        if (f.source === 'coupon_free' || f.source === 'coupon_discount') {
+            filteredData = filteredData.filter(u => {
+                const cp = couponMap[u.id];
+                if (!cp) return false;
+                return f.source === 'coupon_free' ? cp.isFree : !cp.isFree;
+            });
+        }
+
         const tbl = document.getElementById('uaTable');
-        if (!data || data.length === 0) { tbl.innerHTML = '<div class="empty-d">لا أعضاء</div>'; return; }
+        if (!filteredData || filteredData.length === 0) { tbl.innerHTML = '<div class="empty-d" style="padding:30px;text-align:center"><div style="font-size:13px">لا توجد نتائج</div><div style="font-size:11px;color:var(--i4);margin-top:6px">جرّب تخفيف الفلاتر</div></div>'; return; }
+
+        // Lifecycle status badge
+        const lifecycleBadge = (u) => {
+            const lastSeen = u.last_seen_at ? new Date(u.last_seen_at).getTime() : 0;
+            const elapsed = NOW - lastSeen;
+            if (lastSeen && elapsed < 5*60000) {
+                return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 8px;border-radius:8px;white-space:nowrap"><span style="width:6px;height:6px;border-radius:50%;background:var(--suc);animation:livePulse 1.4s infinite"></span>متصل الآن</span>';
+            }
+            if (lastSeen && elapsed < 7*DAY) {
+                const hrs = Math.floor(elapsed / 3600000);
+                const lbl = hrs < 1 ? 'قبل دقائق' : hrs < 24 ? 'قبل '+hrs+' س' : 'قبل '+Math.floor(hrs/24)+' يوم';
+                return '<span style="font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 8px;border-radius:8px;white-space:nowrap" title="آخر دخول '+lbl+'">🟢 نشط</span>';
+            }
+            if (lastSeen && elapsed < 30*DAY) {
+                return '<span style="font-size:10px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 8px;border-radius:8px;white-space:nowrap">🟡 متوسط</span>';
+            }
+            if (!lastSeen) {
+                return '<span style="font-size:10px;font-weight:700;color:var(--i4);background:var(--s2);padding:3px 8px;border-radius:8px;white-space:nowrap" title="لم يدخل بعد">— جديد</span>';
+            }
+            return '<span style="font-size:10px;font-weight:700;color:var(--dng);background:rgba(239,68,68,.10);padding:3px 8px;border-radius:8px;white-space:nowrap" title="غاب لأكثر من 30 يوم">🔴 خامد</span>';
+        };
 
         const sourceBadge = (u) => {
             const ex = extraMap[u.id] || {};
@@ -2855,16 +2995,17 @@ window.loadUsersAnalytics = async function(page=1) {
 
         tbl.innerHTML = '<table><thead><tr>'
             + '<th>العضو</th>'
+            + '<th>الحالة</th>'
             + '<th>الاشتراك</th>'
             + '<th>كيف اشترك</th>'
             + '<th>المحلولة</th>'
             + '<th>نسبة الصح</th>'
             + '<th>آخر دخول</th>'
             + '<th>آخر تدريب</th>'
-            + '<th>تاريخ التسجيل</th>'
+            + '<th>التسجيل</th>'
             + '<th></th>'
             + '</tr></thead><tbody>' +
-            data.map(u => {
+            filteredData.map(u => {
                 const st = stats[u.id] || {t:0,c:0,last:null};
                 const acc = st.t > 0 ? Math.round(st.c/st.t*100) : 0;
                 const subActive = u.subscription_type && u.subscription_type !== 'free' && u.subscription_end && new Date(u.subscription_end) > new Date();
@@ -2876,6 +3017,7 @@ window.loadUsersAnalytics = async function(page=1) {
                     : '<span class="status-pill free">'+subLabel+'</span>';
                 return `<tr>
                     <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, u.full_name, 36) : esc((u.full_name||'?').charAt(0)))}</div><div><div class="td-name">${esc(u.full_name||'—')}</div><div style="font-size:10.5px;color:var(--i4);direction:ltr;text-align:right;margin-top:2px">${esc(u.email||'')}</div></div></div></td>
+                    <td>${lifecycleBadge(u)}</td>
                     <td>${sub}</td>
                     <td>${sourceBadge(u)}</td>
                     <td><b>${fmt(st.t)}</b></td>
@@ -2889,13 +3031,63 @@ window.loadUsersAnalytics = async function(page=1) {
 
         const totalPages = Math.ceil((count||0)/PAGE_SIZE);
         if (totalPages > 1) {
-            tbl.innerHTML += '<div class="pagination" style="padding:14px"><div class="pg-info">'+fmt(count)+' · صفحة '+page+'/'+totalPages+'</div><div class="pg-btns"><button class="pg-btn" '+(page<=1?'disabled':'')+' onclick="loadUsersAnalytics('+(page-1)+')"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button><button class="pg-btn" '+(page>=totalPages?'disabled':'')+' onclick="loadUsersAnalytics('+(page+1)+')"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button></div></div>';
+            tbl.innerHTML += '<div class="pagination" style="padding:14px"><div class="pg-info">'+fmt(count)+' عضو · صفحة '+page+'/'+totalPages+'</div><div class="pg-btns"><button class="pg-btn" '+(page<=1?'disabled':'')+' onclick="loadUsersAnalytics('+(page-1)+')"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button><button class="pg-btn" '+(page>=totalPages?'disabled':'')+' onclick="loadUsersAnalytics('+(page+1)+')"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button></div></div>';
         }
-    } catch(e) { showToast('خطأ','err'); }
+    } catch(e) { console.error(e); showToast('خطأ: '+(e.message||''),'err'); }
+};
+
+// Apply current filter values to state and reload
+window.uaApplyFilter = function() {
+    window._uaFilters.sub = document.getElementById('uaFilterSub')?.value || '';
+    window._uaFilters.source = document.getElementById('uaFilterSource')?.value || '';
+    window._uaFilters.activity = document.getElementById('uaFilterActivity')?.value || '';
+    window._uaFilters.registered = document.getElementById('uaFilterRegistered')?.value || '';
+    window._uaFilters.sort = document.getElementById('uaSort')?.value || 'xp';
+    loadUsersAnalytics(1);
+};
+
+// Load KPI cards in parallel (non-blocking)
+window.loadUaKpis = async function() {
+    const { sb } = window.A;
+    const NOW = Date.now();
+    const DAY = 86400000;
+    const nowIso = new Date().toISOString();
+    const month30Iso = new Date(NOW - 30*DAY).toISOString();
+    const monthAgoIso = new Date(NOW - 30*DAY).toISOString();
+    const month60Iso = new Date(NOW - 60*DAY).toISOString();
+    try {
+        const [total, totalLastMonth, active, freeActive, xpAll] = await Promise.all([
+            sb.from('profiles').select('id',{count:'exact',head:true}),
+            sb.from('profiles').select('id',{count:'exact',head:true}).lt('created_at', monthAgoIso),
+            sb.from('profiles').select('id',{count:'exact',head:true}).in('subscription_type',['monthly','quarterly','yearly']).gt('subscription_end', nowIso),
+            sb.from('attempts').select('user_id').gte('created_at', month30Iso),
+            sb.from('profiles').select('xp')
+        ]);
+        const totalCount = total.count || 0;
+        const lastMonthCount = totalLastMonth.count || 0;
+        const newThisMonth = totalCount - lastMonthCount;
+        const activeCount = active.count || 0;
+        const subscribedPct = totalCount > 0 ? Math.round(activeCount / totalCount * 100) : 0;
+        const uniqueFreeActive = new Set((freeActive.data||[]).map(a => a.user_id)).size;
+        const xpData = xpAll.data || [];
+        const avgXp = xpData.length > 0 ? Math.round(xpData.reduce((s,r) => s + (Number(r.xp)||0), 0) / xpData.length) : 0;
+
+        const setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setT('uaKpiTotal', fmt(totalCount));
+        setT('uaKpiTotalSub', '+'+fmt(newThisMonth)+' آخر 30 يوم');
+        setT('uaKpiActive', fmt(activeCount));
+        setT('uaKpiActiveSub', subscribedPct+'% من الإجمالي');
+        setT('uaKpiFree', fmt(uniqueFreeActive));
+        setT('uaKpiXp', fmt(avgXp));
+    } catch(e) { console.error('loadUaKpis', e); }
 };
 
 let uaTimer;
-window.uaSearchDebounce = function() { clearTimeout(uaTimer); uaTimer = setTimeout(()=>loadUsersAnalytics(1), 400); };
+window.uaSearchDebounce = function() {
+    clearTimeout(uaTimer);
+    window._uaFilters.search = document.getElementById('uaSearch')?.value || '';
+    uaTimer = setTimeout(()=>loadUsersAnalytics(1), 400);
+};
 
 // ═══════════════════════════════════════════════════════
 // 14. STAFF — CRUD + صلاحيات + نشاط
@@ -3292,37 +3484,117 @@ window.switchToReview = function() { document.querySelector('[data-page="review"
 // ═══════════════════════════════════════════════════════
 // 16. VISITORS ANALYTICS (بيانات حقيقية)
 // ═══════════════════════════════════════════════════════
-window.loadVisitors = async function() {
-    const { sb } = window.A;
-    $c().innerHTML = '<div id="visArea"><div class="loader">...</div></div>';
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const todayStart = today + 'T00:00:00';
-        const weekAgo = new Date(Date.now() - 7*864e5).toISOString();
+// Visitors page state (persists across re-renders / auto-refresh)
+window._visState = window._visState || { range: 'today', refreshTimer: null };
 
-        // كل البيانات بالتوازي
-        const [paysToday, signupsToday, activeToday, trainedToday, newSignupsWeek, visitorsToday] = await Promise.all([
-            sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at',todayStart),
-            sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at',todayStart),
+window.loadVisitors = async function(opts = {}) {
+    const { sb } = window.A;
+    const isRefresh = opts.refresh === true;
+
+    // First-time render: build skeleton with time range chips
+    if (!isRefresh) {
+        $c().innerHTML = `
+        <!-- Time range selector -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <span style="font-size:12px;color:var(--i3);font-weight:600">الفترة الزمنية:</span>
+            <div id="visRangeChips" style="display:inline-flex;background:var(--s2);border:1px solid var(--ln);border-radius:10px;padding:3px;gap:2px">
+                <button class="vis-chip ${window._visState.range==='today'?'active':''}" data-range="today" onclick="visSetRange('today')">اليوم</button>
+                <button class="vis-chip ${window._visState.range==='yesterday'?'active':''}" data-range="yesterday" onclick="visSetRange('yesterday')">أمس</button>
+                <button class="vis-chip ${window._visState.range==='week'?'active':''}" data-range="week" onclick="visSetRange('week')">7 أيام</button>
+                <button class="vis-chip ${window._visState.range==='month'?'active':''}" data-range="month" onclick="visSetRange('month')">30 يوم</button>
+            </div>
+            <div style="margin-right:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--i3)">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--suc);animation:livePulse 1.4s infinite"></span>
+                <span>تحديث تلقائي · <span id="visLastRefresh">الآن</span></span>
+            </div>
+        </div>
+        <div id="visArea"><div class="loader">جاري التحميل...</div></div>`;
+
+        // Inject chip styles + livePulse keyframe (once)
+        if (!document.getElementById('visChipStyles')) {
+            const s = document.createElement('style');
+            s.id = 'visChipStyles';
+            s.textContent = `.vis-chip{padding:6px 14px;border:none;background:transparent;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--i3);cursor:pointer;font-family:inherit;transition:all .15s}.vis-chip:hover{color:var(--pri)}.vis-chip.active{background:var(--sf);color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.06)}@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}`;
+            document.head.appendChild(s);
+        }
+
+        // Schedule auto-refresh every 30s
+        if (window._visState.refreshTimer) clearInterval(window._visState.refreshTimer);
+        window._visState.refreshTimer = setInterval(() => {
+            // Only refresh if section still visible
+            if (document.getElementById('visArea')) loadVisitors({ refresh: true });
+            else { clearInterval(window._visState.refreshTimer); window._visState.refreshTimer = null; }
+        }, 30000);
+    }
+
+    // Compute time range bounds + previous period for delta
+    const now = new Date();
+    const startOfToday = new Date(now); startOfToday.setHours(0,0,0,0);
+    let rangeStart, rangeEnd, prevStart, prevEnd, rangeLabel;
+    const range = window._visState.range || 'today';
+    if (range === 'today') {
+        rangeStart = startOfToday; rangeEnd = new Date(now);
+        prevStart = new Date(startOfToday.getTime() - 86400000); prevEnd = new Date(startOfToday);
+        rangeLabel = 'اليوم';
+    } else if (range === 'yesterday') {
+        rangeStart = new Date(startOfToday.getTime() - 86400000); rangeEnd = new Date(startOfToday);
+        prevStart = new Date(rangeStart.getTime() - 86400000); prevEnd = new Date(rangeStart);
+        rangeLabel = 'أمس';
+    } else if (range === 'week') {
+        rangeStart = new Date(now.getTime() - 7*86400000); rangeEnd = new Date(now);
+        prevStart = new Date(now.getTime() - 14*86400000); prevEnd = new Date(rangeStart);
+        rangeLabel = 'آخر 7 أيام';
+    } else { // month
+        rangeStart = new Date(now.getTime() - 30*86400000); rangeEnd = new Date(now);
+        prevStart = new Date(now.getTime() - 60*86400000); prevEnd = new Date(rangeStart);
+        rangeLabel = 'آخر 30 يوم';
+    }
+
+    try {
+        const rangeStartIso = rangeStart.toISOString();
+        const rangeEndIso = rangeEnd.toISOString();
+        const prevStartIso = prevStart.toISOString();
+        const prevEndIso = prevEnd.toISOString();
+
+        // Current period
+        const [pays, signups, active5min, trainedRange, visitors] = await Promise.all([
+            sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at', rangeStartIso).lt('paid_at', rangeEndIso),
+            sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
             sb.from('profiles').select('id',{count:'exact',head:true}).gte('last_seen_at', new Date(Date.now()-5*60000).toISOString()),
-            sb.from('attempts').select('user_id').gte('created_at',todayStart),
-            sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at',weekAgo),
-            sb.from('analytics_events').select('anonymous_id,user_id',{count:'exact'}).gte('created_at',todayStart).eq('event_type','page_view')
+            sb.from('attempts').select('user_id').gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
+            sb.from('analytics_events').select('anonymous_id,user_id',{count:'exact'}).gte('created_at', rangeStartIso).lt('created_at', rangeEndIso).eq('event_type','page_view')
         ]);
 
-        const realPays = (paysToday.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
-        const todayRev = realPays.reduce((s,p)=>s+Number(p.amount||0),0);
+        // Previous period (for delta)
+        const [paysPrev, signupsPrev, visitorsPrev] = await Promise.all([
+            sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at', prevStartIso).lt('paid_at', prevEndIso),
+            sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', prevStartIso).lt('created_at', prevEndIso),
+            sb.from('analytics_events').select('anonymous_id,user_id',{count:'exact'}).gte('created_at', prevStartIso).lt('created_at', prevEndIso).eq('event_type','page_view')
+        ]);
 
-        // Unique trained users today
-        const uniqueTrainees = new Set((trainedToday.data||[]).map(a=>a.user_id)).size;
+        const realPays = (pays.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
+        const realPaysPrev = (paysPrev.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
+        const rangeRev = realPays.reduce((s,p)=>s+Number(p.amount||0),0);
+        const prevRev = realPaysPrev.reduce((s,p)=>s+Number(p.amount||0),0);
 
-        // Unique visitors (fallback لـ 0 لو الجدول فاضي)
-        const uniqueVisitors = visitorsToday.count || 0;
+        const uniqueTrainees = new Set((trainedRange.data||[]).map(a=>a.user_id)).size;
+        const uniqueVisitors = visitors.count || 0;
+        const uniqueVisitorsPrev = visitorsPrev.count || 0;
+        const signupCount = signups.count || 0;
+        const signupCountPrev = signupsPrev.count || 0;
+        const cvr = uniqueVisitors > 0 ? ((signupCount) / uniqueVisitors * 100).toFixed(1) : 0;
 
-        // Conversion: signups / visitors
-        const cvr = uniqueVisitors > 0 ? ((signupsToday.count||0) / uniqueVisitors * 100).toFixed(1) : 0;
+        // Delta helper: returns formatted "+12% ↑" or "−5% ↓" or "—"
+        const delta = (cur, prev) => {
+            if (!prev && !cur) return '<span style="font-size:10px;color:var(--i4)">— لا مقارنة</span>';
+            if (!prev) return '<span style="font-size:10px;color:var(--suc);font-weight:700">جديد</span>';
+            const pct = Math.round((cur - prev) / prev * 100);
+            if (pct === 0) return '<span style="font-size:10px;color:var(--i4)">= نفس الفترة السابقة</span>';
+            const up = pct > 0;
+            return `<span style="font-size:10px;color:${up?'var(--suc)':'var(--dng)'};font-weight:700">${up?'↑':'↓'} ${Math.abs(pct)}%</span> <span style="font-size:9px;color:var(--i4)">vs السابق</span>`;
+        };
 
-        // Activity feed - آخر 20 حدث
+        // Activity feed (latest 15 events) — always recent regardless of range
         const [recentSignups, recentAttempts, recentPayments] = await Promise.all([
             sb.from('profiles').select('id,full_name,created_at').order('created_at',{ascending:false}).limit(10),
             sb.from('attempts').select('user_id,is_correct,created_at,profiles(full_name)').order('created_at',{ascending:false}).limit(10),
@@ -3336,7 +3608,6 @@ window.loadVisitors = async function() {
             if (isFree) feed.push({type:'coupon',icon:'🎟️',color:'var(--acc)',text:'<b>'+esc(p.profiles?.full_name||'مستخدم')+'</b> فعّل اشتراك مجاني (كوبون)',time:p.created_at});
             else feed.push({type:'subscribe',icon:'⭐',color:'var(--suc)',text:'<b>'+esc(p.profiles?.full_name||'مستخدم')+'</b> اشترك بـ '+Number(p.amount)+' ريال',time:p.created_at});
         });
-        // جمع المحاولات بالمستخدم
         const attByUser = {};
         (recentAttempts.data||[]).forEach(a => {
             const k = a.user_id;
@@ -3345,54 +3616,111 @@ window.loadVisitors = async function() {
             if (a.is_correct) attByUser[k].correct++;
         });
         Object.values(attByUser).slice(0,5).forEach(u => feed.push({type:'practice',icon:'📝',color:'var(--pri)',text:'<b>'+esc(u.name||'مستخدم')+'</b> حل '+u.count+' سؤال ('+u.correct+' صح)',time:u.time}));
-
         feed.sort((a,b) => new Date(b.time) - new Date(a.time));
 
-        // Top trainees today
+        // Top trainees in range
         const trainStats = {};
-        (trainedToday.data||[]).forEach(a => trainStats[a.user_id] = (trainStats[a.user_id]||0) + 1);
-        const topTrainees = Object.entries(trainStats).sort((a,b)=>b[1]-a[1]).slice(0,5);
+        (trainedRange.data||[]).forEach(a => trainStats[a.user_id] = (trainStats[a.user_id]||0) + 1);
+        const topTrainees = Object.entries(trainStats).sort((a,b)=>b[1]-a[1]).slice(0,10);
         let topTraineesData = [];
         if (topTrainees.length > 0) {
-            const { data: profs } = await sb.from('profiles').select('id,full_name,avatar_emoji').in('id', topTrainees.map(t=>t[0]));
+            const { data: profs } = await sb.from('profiles').select('id,full_name,avatar_emoji,xp').in('id', topTrainees.map(t=>t[0]));
             topTraineesData = topTrainees.map(t => {
                 const p = (profs||[]).find(x => x.id === t[0]);
-                return { name: p?.full_name||'مستخدم', avatar: p?.avatar_emoji, count: t[1] };
+                return { name: p?.full_name||'مستخدم', avatar: p?.avatar_emoji, count: t[1], xp: p?.xp||0 };
             });
         }
 
+        const renderFeedTime = (t) => {
+            const elapsed = Math.floor((Date.now() - new Date(t).getTime()) / 60000);
+            return elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : fmtDate(t);
+        };
+
+        // Update last refresh indicator
+        const refreshLbl = document.getElementById('visLastRefresh');
+        if (refreshLbl) refreshLbl.textContent = new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
+
         document.getElementById('visArea').innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
-            <div class="kpi green"><div class="kpi-label">إيراد اليوم</div><div class="kpi-val">${fmt(Math.round(todayRev))}</div><div class="kpi-sub">ريال · ${realPays.length} معاملة</div></div>
-            <div class="kpi blue"><div class="kpi-label">مشتركون جدد اليوم</div><div class="kpi-val">${fmt(signupsToday.count||0)}</div><div class="kpi-sub">+${fmt(newSignupsWeek.count||0)} هذا الأسبوع</div></div>
-            <div class="kpi orange"><div class="kpi-label">تدربوا اليوم</div><div class="kpi-val">${fmt(uniqueTrainees)}</div><div class="kpi-sub">مستخدم نشط</div></div>
-            <div class="kpi gold"><div class="kpi-label">متصلون الآن</div><div class="kpi-val">${fmt(activeToday.count||0)}</div><div class="kpi-sub">آخر 5 دقائق</div></div>
+        <!-- Top KPIs row 1 (revenue + signups + trainees + online) -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
+            <div class="kpi green">
+                <div class="kpi-label">إيراد ${rangeLabel}</div>
+                <div class="kpi-val">${fmt(Math.round(rangeRev))}</div>
+                <div class="kpi-sub">${realPays.length} معاملة · ${delta(rangeRev, prevRev)}</div>
+            </div>
+            <div class="kpi blue">
+                <div class="kpi-label">مشتركون جدد</div>
+                <div class="kpi-val">${fmt(signupCount)}</div>
+                <div class="kpi-sub">${delta(signupCount, signupCountPrev)}</div>
+            </div>
+            <div class="kpi orange">
+                <div class="kpi-label">تدربوا في الفترة</div>
+                <div class="kpi-val">${fmt(uniqueTrainees)}</div>
+                <div class="kpi-sub">مستخدم نشط</div>
+            </div>
+            <div class="kpi gold">
+                <div class="kpi-label">متصلون الآن</div>
+                <div class="kpi-val">${fmt(active5min.count||0)}</div>
+                <div class="kpi-sub">آخر 5 دقائق</div>
+            </div>
         </div>
 
-        <div class="kpi-grid2" style="grid-template-columns:repeat(3,1fr)">
-            <div class="kpi blue"><div class="kpi-label">زوار اليوم</div><div class="kpi-val">${fmt(uniqueVisitors)}</div><div class="kpi-sub">${uniqueVisitors > 0 ? 'من analytics_events' : 'لا تتبع بعد'}</div></div>
-            <div class="kpi orange"><div class="kpi-label">معدل التحويل</div><div class="kpi-val">${cvr}<small style="font-size:14px">%</small></div><div class="kpi-sub">زائر → مسجّل</div></div>
-            <div class="kpi green"><div class="kpi-label">معدل الإيراد لكل زائر</div><div class="kpi-val">${uniqueVisitors>0?(todayRev/uniqueVisitors).toFixed(2):'—'}</div><div class="kpi-sub">ريال / زائر</div></div>
+        <!-- Row 2: visitors funnel -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+            <div class="kpi blue">
+                <div class="kpi-label">زوار ${rangeLabel}</div>
+                <div class="kpi-val">${fmt(uniqueVisitors)}</div>
+                <div class="kpi-sub">${delta(uniqueVisitors, uniqueVisitorsPrev)}</div>
+            </div>
+            <div class="kpi orange">
+                <div class="kpi-label">معدل التحويل</div>
+                <div class="kpi-val">${cvr}<small style="font-size:14px">%</small></div>
+                <div class="kpi-sub">زائر → مسجّل</div>
+            </div>
+            <div class="kpi green">
+                <div class="kpi-label">إيراد لكل زائر</div>
+                <div class="kpi-val">${uniqueVisitors>0?(rangeRev/uniqueVisitors).toFixed(2):'—'}</div>
+                <div class="kpi-sub">ريال / زائر</div>
+            </div>
         </div>
 
+        <!-- Activity feed + Top trainees -->
         <div class="row c2">
-            <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><div class="card-title">آخر النشاطات</div><div class="card-sub">حقيقية — لحظية</div></div></div></div>
-            <div class="card-body" style="max-height:420px;overflow-y:auto">${
-                feed.length === 0 ? '<div class="empty-d" style="padding:20px">لا نشاطات بعد</div>' :
-                feed.slice(0,15).map(f => {
-                    const elapsed = Math.floor((Date.now() - new Date(f.time).getTime()) / 60000);
-                    const timeStr = elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : fmtDate(f.time);
-                    return '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);align-items:center"><div style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:'+f.color.replace(')',',.12)').replace('var(--','rgba(var(--')+';font-size:14px">'+f.icon+'</div><div style="flex:1"><div style="font-size:12px;line-height:1.5">'+f.text+'</div><div style="font-size:9px;color:var(--i4);margin-top:2px">'+timeStr+'</div></div></div>';
-                }).join('')
-            }</div></div>
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><div class="card-title">آخر النشاطات</div><div class="card-sub">حقيقية · لحظية · يحدّث كل 30 ثانية</div></div></div></div>
+                <div class="card-body" style="max-height:480px;overflow-y:auto">${
+                    feed.length === 0 ? '<div class="empty-d" style="padding:20px">لا نشاطات بعد</div>' :
+                    feed.slice(0,15).map(f =>
+                        '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);align-items:center">'+
+                        '<div style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:'+f.color.replace(')',',.12)').replace('var(--','rgba(var(--')+';font-size:14px">'+f.icon+'</div>'+
+                        '<div style="flex:1"><div style="font-size:12px;line-height:1.5">'+f.text+'</div><div style="font-size:9px;color:var(--i4);margin-top:2px">'+renderFeedTime(f.time)+'</div></div>'+
+                        '</div>'
+                    ).join('')
+                }</div>
+            </div>
 
-            <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="card-title">أنشط المستخدمين اليوم</div></div></div></div>
-            <div class="card-body">${
-                topTraineesData.length === 0 ? '<div class="empty-d" style="padding:20px">لا تدريب اليوم بعد</div>' :
-                topTraineesData.map((u,i) => '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)"><div style="width:22px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':'var(--acc)')+'">#'+(i+1)+'</div><div class="tbl-avatar">'+(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar, u.name, 36) : esc((u.name||'?').charAt(0)))+'</div><div style="flex:1;font-size:12px;font-weight:600">'+esc(u.name)+'</div><div style="font-size:12px;font-weight:700;color:var(--pri)">'+u.count+' سؤال</div></div>').join('')
-            }</div></div>
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="card-title">أنشط المستخدمين · ${rangeLabel}</div><div class="card-sub">${topTraineesData.length} مستخدم</div></div></div></div>
+                <div class="card-body" style="max-height:480px;overflow-y:auto">${
+                    topTraineesData.length === 0 ? '<div class="empty-d" style="padding:20px">لا تدريب في هذه الفترة</div>' :
+                    topTraineesData.map((u,i) =>
+                        '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)">'+
+                        '<div style="width:24px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':i===2?'var(--acc)':'var(--i4)')+'">#'+(i+1)+'</div>'+
+                        '<div class="tbl-avatar">'+(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar, u.name, 36) : esc((u.name||'?').charAt(0)))+'</div>'+
+                        '<div style="flex:1"><div style="font-size:12px;font-weight:600">'+esc(u.name)+'</div><div style="font-size:10px;color:var(--i4);margin-top:1px">XP: '+fmt(u.xp)+'</div></div>'+
+                        '<div style="font-size:12px;font-weight:700;color:var(--pri)">'+u.count+' سؤال</div>'+
+                        '</div>'
+                    ).join('')
+                }</div>
+            </div>
         </div>`;
-    } catch(e) { console.error(e); showToast('خطأ: '+e.message,'err'); }
+    } catch(e) { console.error('loadVisitors', e); if (!isRefresh) showToast('خطأ: '+(e.message||''),'err'); }
+};
+
+window.visSetRange = function(range) {
+    window._visState.range = range;
+    document.querySelectorAll('.vis-chip').forEach(c => c.classList.toggle('active', c.dataset.range === range));
+    loadVisitors({ refresh: true });
 };
 
 // ═══════════════════════════════════════════════════════
