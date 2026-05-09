@@ -370,6 +370,22 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <script>
+// ═══ Redirect تلقائي للروابط القديمة ═══
+// هذه الصفحة "خلك تاجر نخبة" مخصصة للزوّار الذين يبغون يصيرون محيلين.
+// لو فُتحت بـ?ref=CODE فهذا رابط من محيل لصديقه (محال) — نحوّله للصفحة المناسبة.
+(function redirectIfReferred(){
+  try {
+    var qs = new URLSearchParams(window.location.search);
+    var c = (qs.get('ref') || qs.get('r') || '').trim().toUpperCase();
+    if (c && /^MADAR-[A-Z0-9]+$/.test(c)) {
+      // نخزّن الكود قبل الـredirect لو الزائر فتح صفحة أخرى لاحقاً
+      try { localStorage.setItem('madarek_referral', c); } catch(e){}
+      window.location.replace('/r/' + encodeURIComponent(c));
+      return;
+    }
+  } catch(e){}
+})();
+
 // ═══ قراءة الكود من URL أو من localStorage (لو سبق دخل بكود) ═══
 function getReferralCode(){
   try {

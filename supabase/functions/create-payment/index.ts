@@ -74,7 +74,9 @@ serve(async (req) => {
 
     // ── Request body ──
     const body = await req.json()
-    const { plan, coupon } = body
+    const { plan, coupon, referral } = body
+    // referral (optional): { referral_id, percent } — مرّره pricing.html لو المستخدم محال
+    // النظام يتحقّق منه server-side (لا نثق بالـclient — نقرأ من DB أيضاً)
     // source:
     //   'app'    → رجوع للتطبيق عبر deep link (v2/payment-return-v2.html?src=app)
     //   'web-v2' → الموقع الجديد /v2/ (v2/payment-return-v2.html بدون src)
@@ -176,6 +178,32 @@ serve(async (req) => {
       }
 
       console.log(`[create-payment] coupon=${coupon}, discount_type=${cp.discount_type}, base=${basePrice}, final=${finalAmount}`)
+    }
+
+    // ── خصم الإحالة 10% (server-side verification) ──
+    // نقرأ من DB مباشرة بدلاً من الثقة بالـclient. لو المستخدم في إحالة awaiting_payment،
+    // نطبّق خصم 10% على السعر بعد الكوبون. cap: السعر النهائي >= 1 ر.س (متطلب MyFatoorah).
+    let referralRow: any = null
+    if (finalAmount >= 1) {
+      try {
+        const { data: refRow } = await supabaseAdmin
+          .from('referrals')
+          .select('id, discount_percent, cash_status')
+          .eq('referred_user_id', user.id)
+          .eq('cash_status', 'awaiting_payment')
+          .maybeSingle()
+
+        if (refRow) {
+          referralRow = refRow
+          const refPercent = Number(refRow.discount_percent) || 10
+          const refDiscount = Math.round(finalAmount * refPercent / 100)
+          const afterRef = Math.max(1, finalAmount - refDiscount)
+          console.log(`[create-payment] referral discount: ${refPercent}% → ${finalAmount} - ${refDiscount} = ${afterRef}`)
+          finalAmount = afterRef
+        }
+      } catch (e) {
+        console.warn('[create-payment] referral lookup failed:', (e as Error).message)
+      }
     }
 
     // ── FREE (amount = 0) → activate directly ──
