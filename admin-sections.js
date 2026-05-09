@@ -3299,52 +3299,137 @@ window.editPage = async function(id) {
 };
 
 // ═══════════════════════════════════════════════════════
-// 10. REFERRALS
+// 10. REFERRALS — النظام النقدي (إعادة بناء 2026-05-09)
 // ═══════════════════════════════════════════════════════
+// المنطق: كل إحالة = 10 ر.س للمُحيل (بعد دفع المُحال) + 10% خصم للمُحال
+// الحالات: awaiting_payment → confirmed (instant بعد الدفع) → paid_out (بعد الصرف)
 window.loadReferrals = async function() {
     const { sb } = window.A;
     $c().innerHTML = '<div id="refArea"><div class="loader">...</div></div>';
     try {
-        const [totalR, subR, daysR] = await Promise.all([
-            sb.from('referrals').select('*',{count:'exact',head:true}),
-            sb.from('referrals').select('*',{count:'exact',head:true}).eq('referred_status','subscribed'),
-            sb.from('referrals').select('bonus_days')
+        // ── جلب كل الإحالات بـcash + الـpayouts ──
+        const [refsR, payoutsR] = await Promise.all([
+            sb.from('referrals').select('id,referrer_id,referred_user_id,cash_amount,cash_status,paid_at,confirmed_at,created_at').limit(2000),
+            sb.from('referral_payouts').select('id,user_id,amount,status,requested_at,processed_at,stc_pay_number').order('requested_at',{ascending:false}).limit(500)
         ]);
-        const totalDays = (daysR.data||[]).reduce((s,r)=>s+Number(r.bonus_days||0),0);
-        const conversionRate = totalR.count > 0 ? Math.round((subR.count||0)/totalR.count*100) : 0;
+
+        const refs = refsR.data || [];
+        const payouts = payoutsR.data || [];
+
+        // ── احسب الـKPIs ──
+        const totalRefs = refs.length;
+        const paidRefs = refs.filter(r => r.cash_status === 'confirmed' || r.cash_status === 'paid_out').length;
+        const conversionRate = totalRefs > 0 ? Math.round(paidRefs / totalRefs * 100) : 0;
+
+        const sumByStatus = (status) => refs
+            .filter(r => r.cash_status === status)
+            .reduce((s,r)=>s + Number(r.cash_amount||10), 0);
+
+        const cashAwaiting  = sumByStatus('awaiting_payment'); // المحال لم يدفع بعد
+        const cashAvailable = sumByStatus('confirmed');         // متاح للصرف
+        const cashPaidOut   = sumByStatus('paid_out');          // صُرف فعلاً
+        const totalEarned   = cashAvailable + cashPaidOut;      // إجمالي ربح المُحيلين
+
+        // طلبات الصرف المعلّقة
+        const pendingPayouts = payouts.filter(p => p.status === 'pending' || p.status === 'requested' || p.status === 'processing');
 
         document.getElementById('refArea').innerHTML = `
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
-            <div class="kpi blue"><div class="kpi-label">إجمالي الإحالات</div><div class="kpi-val">${fmt(totalR.count||0)}</div><div class="kpi-sub">رابط إحالة</div></div>
-            <div class="kpi green"><div class="kpi-label">سجلوا عبر الإحالة</div><div class="kpi-val">${fmt(totalR.count||0)}</div><div class="kpi-sub">مستخدم</div></div>
-            <div class="kpi orange"><div class="kpi-label">اشتركوا</div><div class="kpi-val">${fmt(subR.count||0)}</div><div class="kpi-sub">نسبة التحويل ${conversionRate}%</div></div>
-            <div class="kpi gold"><div class="kpi-label">أيام مكتسبة</div><div class="kpi-val">${fmt(totalDays)}</div><div class="kpi-sub">يوم للمُحيلين</div></div>
+            <div class="kpi blue"><div class="kpi-label">إجمالي الإحالات</div><div class="kpi-val">${fmt(totalRefs)}</div><div class="kpi-sub">سجّلوا عبر الإحالة</div></div>
+            <div class="kpi green"><div class="kpi-label">دفعوا فعلاً</div><div class="kpi-val">${fmt(paidRefs)}</div><div class="kpi-sub">نسبة التحويل ${conversionRate}%</div></div>
+            <div class="kpi gold"><div class="kpi-label">كاش متاح للصرف</div><div class="kpi-val">${fmt(cashAvailable)} <small style="font-size:14px">ر.س</small></div><div class="kpi-sub">جاهز عند طلب الصرف</div></div>
+            <div class="kpi orange"><div class="kpi-label">كاش مصروف</div><div class="kpi-val">${fmt(cashPaidOut)} <small style="font-size:14px">ر.س</small></div><div class="kpi-sub">حوالات مكتملة</div></div>
         </div>
 
-        <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="card-title">الإحالات حسب المستخدم</div></div></div></div>
-            <div class="tbl-wrap" id="refTable"><div class="loader">...</div></div></div>`;
+        ${pendingPayouts.length > 0 ? `
+        <div class="card" style="border:1px solid #FCD34D;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);margin-bottom:16px">
+            <div class="card-hdr">
+                <div class="card-hdr-l">
+                    <div class="card-ic gold"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                    <div><div class="card-title">${pendingPayouts.length} طلب صرف بانتظار المعالجة</div>
+                    <div style="font-size:11px;color:#92400E;margin-top:2px">إجمالي: ${fmt(pendingPayouts.reduce((s,p)=>s+Number(p.amount||0),0))} ر.س</div></div>
+                </div>
+                <button class="btn btn-pri" onclick="loadPayouts()" style="margin:0">عرض طلبات الصرف</button>
+            </div>
+        </div>` : ''}
 
-        const { data: refs } = await sb.from('referrals').select('referrer_id, bonus_days, referred_status, profiles!referrals_referrer_id_fkey(full_name,referral_code,avatar_emoji)').limit(200);
+        <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="card-title">المُحيلون حسب الكاش</div></div></div></div>
+            <div class="tbl-wrap" id="refTable"><div class="loader">...</div></div></div>
+
+        <div class="card" style="margin-top:16px"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blue"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></div><div><div class="card-title">آخر 20 إحالة</div></div></div></div>
+            <div class="tbl-wrap" id="refRecentTable"><div class="loader">...</div></div></div>`;
+
+        // ── جدول 1: تجميع حسب المُحيل + جلب أسماء ──
+        const referrerIds = [...new Set(refs.map(r => r.referrer_id).filter(Boolean))];
+        let profilesMap = {};
+        if (referrerIds.length > 0) {
+            const { data: profs } = await sb.from('profiles').select('id,full_name,referral_code,avatar_emoji,email').in('id', referrerIds);
+            (profs||[]).forEach(p => { profilesMap[p.id] = p; });
+        }
+
         const byUser = {};
-        (refs||[]).forEach(r => {
+        refs.forEach(r => {
             const k = r.referrer_id;
-            if (!byUser[k]) byUser[k] = { referrer: r.profiles, total:0, subscribed:0, days:0 };
+            if (!byUser[k]) byUser[k] = { referrer: profilesMap[k]||{}, total:0, paid:0, awaiting:0, available:0, paidOut:0 };
             byUser[k].total++;
-            if (r.referred_status === 'subscribed') byUser[k].subscribed++;
-            byUser[k].days += Number(r.bonus_days||0);
+            if (r.cash_status === 'awaiting_payment') byUser[k].awaiting += Number(r.cash_amount||10);
+            else if (r.cash_status === 'confirmed') { byUser[k].paid++; byUser[k].available += Number(r.cash_amount||10); }
+            else if (r.cash_status === 'paid_out') { byUser[k].paid++; byUser[k].paidOut += Number(r.cash_amount||10); }
         });
-        const rows = Object.values(byUser).sort((a,b)=>b.subscribed-a.subscribed);
+        const rows = Object.values(byUser).sort((a,b)=>(b.available+b.paidOut)-(a.available+a.paidOut));
         const tbl = document.getElementById('refTable');
-        if (rows.length === 0) { tbl.innerHTML = '<div class="empty-d">لا إحالات بعد</div>'; return; }
-        tbl.innerHTML = '<table><thead><tr><th>الكود</th><th>المُحيل</th><th>سجلوا</th><th>اشتركوا</th><th>الأيام</th></tr></thead><tbody>' +
-            rows.map(r => `<tr>
-                <td><b style="color:var(--pri);letter-spacing:1px;font-family:monospace">${esc(r.referrer?.referral_code||'—')}</b></td>
-                <td><div style="display:flex;align-items:center;gap:8px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(r.referrer?.avatar_emoji, r.referrer?.full_name, 32) : esc((r.referrer?.full_name||'?').charAt(0)))}</div><div class="td-name">${esc(r.referrer?.full_name||'—')}</div></div></td>
-                <td>${r.total}</td>
-                <td><b style="color:var(--suc)">${r.subscribed}</b></td>
-                <td><b style="color:var(--acc)">+${r.days}</b></td>
-            </tr>`).join('') + '</tbody></table>';
-    } catch(e) { showToast('خطأ','err'); }
+        if (rows.length === 0) {
+            tbl.innerHTML = '<div class="empty-d">لا إحالات بعد</div>';
+        } else {
+            tbl.innerHTML = '<table><thead><tr><th>الكود</th><th>المُحيل</th><th>إجمالي</th><th>دفعوا</th><th>معلّق ر.س</th><th>متاح ر.س</th><th>مصروف ر.س</th></tr></thead><tbody>' +
+                rows.map(r => `<tr>
+                    <td><b style="color:var(--pri);letter-spacing:1px;font-family:monospace">${esc(r.referrer?.referral_code||'—')}</b></td>
+                    <td><div style="display:flex;align-items:center;gap:8px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(r.referrer?.avatar_emoji, r.referrer?.full_name, 32) : esc((r.referrer?.full_name||'?').charAt(0)))}</div><div><div class="td-name">${esc(r.referrer?.full_name||'—')}</div><div style="font-size:10px;color:var(--i3)">${esc(r.referrer?.email||'')}</div></div></div></td>
+                    <td>${r.total}</td>
+                    <td><b style="color:var(--suc)">${r.paid}</b></td>
+                    <td><span style="color:var(--i3)">${r.awaiting||0}</span></td>
+                    <td><b style="color:var(--gold)">${r.available||0}</b></td>
+                    <td><b style="color:var(--acc)">${r.paidOut||0}</b></td>
+                </tr>`).join('') + '</tbody></table>';
+        }
+
+        // ── جدول 2: آخر 20 إحالة (نشاط حديث) ──
+        const recent = refs.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20);
+        const referredIds = [...new Set(recent.map(r=>r.referred_user_id).filter(Boolean))];
+        let referredMap = {};
+        if (referredIds.length > 0) {
+            const { data: rps } = await sb.from('profiles').select('id,full_name,email').in('id', referredIds);
+            (rps||[]).forEach(p => { referredMap[p.id] = p; });
+        }
+        const recentTbl = document.getElementById('refRecentTable');
+        if (recent.length === 0) {
+            recentTbl.innerHTML = '<div class="empty-d">—</div>';
+        } else {
+            const statusBadge = (s) => {
+                if (s==='awaiting_payment') return '<span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">في انتظار الدفع</span>';
+                if (s==='confirmed') return '<span style="background:#D1FAE5;color:#065F46;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">دفع — كاش متاح</span>';
+                if (s==='paid_out') return '<span style="background:#FED7AA;color:#9A3412;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">صُرف</span>';
+                return '<span style="color:var(--i3)">—</span>';
+            };
+            recentTbl.innerHTML = '<table><thead><tr><th>التاريخ</th><th>المُحيل</th><th>المُحال</th><th>الحالة</th><th>المبلغ</th></tr></thead><tbody>' +
+                recent.map(r => {
+                    const referrer = profilesMap[r.referrer_id] || {};
+                    const referred = referredMap[r.referred_user_id] || {};
+                    const d = new Date(r.created_at);
+                    const dateStr = d.toLocaleDateString('en-GB') + ' ' + d.toTimeString().slice(0,5);
+                    return `<tr>
+                        <td style="font-size:11px;color:var(--i3)">${dateStr}</td>
+                        <td><span style="font-family:monospace;color:var(--pri);font-size:11px">${esc(referrer.referral_code||'—')}</span><br><span style="font-size:10.5px">${esc(referrer.full_name||'—')}</span></td>
+                        <td><div style="font-size:11.5px">${esc(referred.full_name||'مستخدم')}</div><div style="font-size:10px;color:var(--i3)">${esc(referred.email||'')}</div></td>
+                        <td>${statusBadge(r.cash_status)}</td>
+                        <td><b>${r.cash_amount||10} ر.س</b></td>
+                    </tr>`;
+                }).join('') + '</tbody></table>';
+        }
+    } catch(e) {
+        console.error('[loadReferrals] error:', e);
+        document.getElementById('refArea').innerHTML = '<div class="empty-d">تعذّر تحميل الإحالات: '+esc(e.message||'خطأ')+'</div>';
+    }
 };
 
 // ═══════════════════════════════════════════════════════

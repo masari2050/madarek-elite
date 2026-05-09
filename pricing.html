@@ -340,6 +340,15 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <div class="coupon-msg" id="couponMsg"></div>
   </div>
 
+  <!-- REFERRAL BANNER (يظهر للمستخدم المُحال) -->
+  <div id="referralBanner" style="display:none;margin:0 14px 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1px solid #6EE7B7;color:#065F46">
+    <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:800">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#059669;fill:none;stroke-width:2.5;flex-shrink:0"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      <span id="referralBannerTitle">خصم الإحالة 10% مُفعّل</span>
+    </div>
+    <div style="font-size:11.5px;font-weight:600;margin-top:4px;color:#047857;padding-right:30px" id="referralBannerSub">يُطبَّق تلقائياً على إجمالي الاشتراك</div>
+  </div>
+
   <!-- SUMMARY -->
   <div class="sum">
     <div class="sum-h">ملخّص الاشتراك</div>
@@ -350,6 +359,10 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <div class="sum-row discount" id="sumDiscountRow" style="display:none">
       <span class="sum-k">الخصم (<span id="sumCouponCode"></span>)</span>
       <span class="sum-v" id="sumDiscountAmt">-0 ر.س</span>
+    </div>
+    <div class="sum-row discount" id="sumReferralRow" style="display:none">
+      <span class="sum-k" style="color:#059669">خصم الإحالة (10%)</span>
+      <span class="sum-v" id="sumReferralAmt" style="color:#059669">-0 ر.س</span>
     </div>
     <div class="sum-divider"></div>
     <div class="sum-row total">
@@ -469,6 +482,7 @@ const sb = window.sb || (typeof supabase !== 'undefined' && typeof supabase.crea
 let plans = [];               // الخطط من DB أو defaults
 let selectedSlug = 'monthly';  // الشهري الافتراضي — يقلّل sticker shock وأقرب لتوقّع السوق
 let appliedCoupon = null;     // { code, discount_type, discount_value, final, base }
+let referralDiscount = null;  // { has: bool, percent: 10, referral_id, referrer_name } — يُحمَّل من DB في init
 let currentUser = null;       // user object
 let loadingCheckout = false;
 
@@ -564,6 +578,8 @@ async function init(){
   loadHeroStats();
   await loadPlans();
   prefillCoupon();
+  // ── خصم الإحالة 10% (لو المستخدم محال) ──
+  loadReferralDiscount();
 }
 
 async function loadHeroStats(){
@@ -709,6 +725,24 @@ window.applyCouponClick = async function(){
     }
     if (!data || data.error) throw new Error((data && data.error) || 'كوبون غير صالح');
 
+    // ── حالة خاصّة: كود إحالة (MADAR-XXX) ──
+    // الـEdge Function تستدعي apply_cash_referral وتسجّل الإحالة في DB.
+    // نعيد تحميل الخصم من DB ليظهر البنر الأخضر تلقائياً.
+    if (data.type === 'referral') {
+      input.value = '';
+      input.classList.remove('bad');
+      input.classList.add('ok');
+      btn.textContent = 'تم';
+      btn.classList.add('applied');
+      msg.textContent = 'تم تفعيل خصم الإحالة 10% — مطبَّق على إجمالي اشتراكك';
+      msg.className = 'coupon-msg on ok';
+      // أعِد تحميل خصم الإحالة من DB → يظهر البنر الأخضر + سطر الخصم في الملخّص
+      await loadReferralDiscount();
+      // أعِد ضبط الزر بعد لحظتين
+      setTimeout(()=>{ btn.textContent='تحقّق'; btn.classList.remove('applied'); btn.disabled=false; }, 2000);
+      return;
+    }
+
     // نجح — Edge Function يحسب السعر النهائي ويرجع discountType/discountValue (camelCase)
     const plan = plans.find(p => p.slug === selectedSlug);
     const base = plan ? plan.price : (data.originalPrice || 0);
@@ -772,14 +806,17 @@ function updateSummary(){
   $('sumPlanName').textContent = plan.name;
   $('sumBase').textContent = plan.price + ' ر.س';
 
-  let final = plan.price;
+  // ابدأ من السعر الكامل
+  let runningPrice = plan.price;
+
+  // ── خصم الكوبون أولاً (لو فيه) ──
   if (appliedCoupon && appliedCoupon.base === plan.price) {
-    final = appliedCoupon.final;
-    const discount = plan.price - final;
-    if (discount > 0) {
+    const couponDiscount = plan.price - appliedCoupon.final;
+    if (couponDiscount > 0) {
       $('sumDiscountRow').style.display = '';
       $('sumCouponCode').textContent = appliedCoupon.code;
-      $('sumDiscountAmt').textContent = '-' + discount + ' ر.س';
+      $('sumDiscountAmt').textContent = '-' + couponDiscount + ' ر.س';
+      runningPrice = appliedCoupon.final;
     } else {
       $('sumDiscountRow').style.display = 'none';
     }
@@ -787,8 +824,54 @@ function updateSummary(){
     $('sumDiscountRow').style.display = 'none';
   }
 
-  $('sumTotal').textContent = final + ' ر.س';
-  $('ctaPrice').textContent = final + ' ر.س';
+  // ── خصم الإحالة 10% ثانياً (يُحسب على السعر بعد الكوبون) ──
+  if (referralDiscount && referralDiscount.has && runningPrice > 1) {
+    const refPercent = Number(referralDiscount.percent) || 10;
+    const refDiscount = Math.round(runningPrice * refPercent / 100);
+    // cap: السعر النهائي >= 1 ر.س (متطلب MyFatoorah)
+    const afterRef = Math.max(1, runningPrice - refDiscount);
+    const actualRefDiscount = runningPrice - afterRef;
+
+    if (actualRefDiscount > 0) {
+      $('sumReferralRow').style.display = '';
+      $('sumReferralAmt').textContent = '-' + actualRefDiscount + ' ر.س';
+      runningPrice = afterRef;
+    } else {
+      $('sumReferralRow').style.display = 'none';
+    }
+  } else {
+    $('sumReferralRow').style.display = 'none';
+  }
+
+  $('sumTotal').textContent = runningPrice + ' ر.س';
+  $('ctaPrice').textContent = runningPrice + ' ر.س';
+}
+
+// ═══ Referral Discount — يُحمَّل عند Init ═══════════════════
+async function loadReferralDiscount(){
+  if (!currentUser) return;
+  try {
+    const { data, error } = await sb.rpc('get_referred_discount', { p_user_id: currentUser.id });
+    if (error || !data || !data.has_discount) {
+      referralDiscount = { has: false };
+      $('referralBanner').style.display = 'none';
+      return;
+    }
+    referralDiscount = {
+      has: true,
+      percent: Number(data.percent) || 10,
+      referral_id: data.referral_id,
+      referrer_name: data.referrer_name || 'صديقك',
+    };
+    // أظهر البنر
+    $('referralBannerTitle').textContent = 'خصم الإحالة ' + referralDiscount.percent + '% مُفعّل';
+    $('referralBannerSub').textContent = 'مُحال من ' + referralDiscount.referrer_name + ' — يُطبَّق تلقائياً عند الدفع';
+    $('referralBanner').style.display = '';
+    updateSummary();
+  } catch(e) {
+    console.warn('[loadReferralDiscount] ignored error:', e);
+    referralDiscount = { has: false };
+  }
 }
 
 // ═══ Subscribe (Checkout) ═════════════════════════════════
@@ -805,11 +888,16 @@ window.subscribe = async function(){
 
   try {
     const couponCode = appliedCoupon?.code || null;
+    const refDiscount = (referralDiscount && referralDiscount.has) ? {
+      referral_id: referralDiscount.referral_id,
+      percent: referralDiscount.percent,
+    } : null;
 
     const { data, error } = await sb.functions.invoke('create-payment', {
       body: {
         plan: selectedSlug,
         coupon: couponCode,
+        referral: refDiscount,  // {referral_id, percent} لو المستخدم محال
         source: 'web-v2',  // مهم: يخلّي callback يرجع لـv2/payment-return-v2.html
       }
     });

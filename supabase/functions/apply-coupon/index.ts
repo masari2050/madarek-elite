@@ -66,7 +66,47 @@ serve(async (req) => {
     console.log(`[apply-coupon] user=${user.id}, code=${couponCode}, plan=${plan || 'auto'}`)
 
     // ══════════════════════════════════════════
-    //  3. جلب الكوبون من قاعدة البيانات
+    //  3a. كود إحالة (MADAR-XXX) → fallback لـ apply_cash_referral
+    // ══════════════════════════════════════════
+    // المستخدم قد يكتب كود الإحالة في حقل الكوبون (السلوك المتوقع تسويقياً).
+    // نتعامل مع هذا قبل البحث في جدول coupons.
+    if (/^MADAR-[A-Z0-9]+$/.test(couponCode)) {
+      console.log(`[apply-coupon] referral code detected: ${couponCode}`)
+
+      // استدعِ apply_cash_referral باسم المستخدم (يتحقق من auth + الحماية كاملة)
+      // نحتاج JWT المستخدم للـRPC (مش service_role). لذلك ننشئ client بديل بـtoken المستخدم.
+      const userClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        { global: { headers: { Authorization: authHeader } } }
+      )
+      const { data: refResult, error: refErr } = await userClient
+        .rpc('apply_cash_referral', { p_new_user_id: user.id, p_referral_code: couponCode })
+
+      if (refErr) {
+        console.log(`[apply-coupon] referral RPC error: ${refErr.message}`)
+        return jsonRes({ error: 'الكود غير صحيح' }, 400)
+      }
+
+      if (!refResult || refResult.success === false) {
+        const errMsg = refResult?.error || 'الكود غير صحيح'
+        console.log(`[apply-coupon] referral rejected: ${errMsg}`)
+        return jsonRes({ error: errMsg }, 400)
+      }
+
+      // نجح — الإحالة سُجّلت. خصم 10% راح يُطبَّق تلقائياً في pricing.html
+      // (loadReferralDiscount يقرأ من DB ويظهر البنر الأخضر)
+      console.log(`[apply-coupon] referral applied successfully`)
+      return jsonRes({
+        success: true,
+        type: 'referral',
+        discount_percent: refResult.discount_percent || 10,
+        message: 'تم تفعيل خصم الإحالة 10% — أعد تحميل الصفحة لرؤيته في الملخّص'
+      })
+    }
+
+    // ══════════════════════════════════════════
+    //  3b. جلب الكوبون من قاعدة البيانات
     // ══════════════════════════════════════════
     const { data: coupon, error: cpErr } = await supabaseAdmin
       .from('coupons').select('*').eq('code', couponCode).single()
