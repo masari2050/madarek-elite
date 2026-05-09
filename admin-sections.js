@@ -2812,11 +2812,11 @@ window.loadUsersAnalytics = async function(page=1) {
         <div class="kpi gold"><div class="kpi-label">متوسط XP</div><div class="kpi-val" id="uaKpiXp">—</div><div class="kpi-sub">لكل عضو</div></div>
     </div>
 
-    <!-- Filter bar -->
+    <!-- Filter bar — autocomplete=off + selected on default option to prevent browser caching -->
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-        <div class="search-box" style="flex:1;min-width:220px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="search" id="uaSearch" placeholder="ابحث بالاسم / الإيميل / الجوال" value="${esc(f.search||'')}" oninput="uaSearchDebounce()"></div>
-        <select class="form-select" id="uaFilterSub" style="width:auto" onchange="uaApplyFilter()" title="نوع الاشتراك">
-            <option value="">كل الاشتراكات</option>
+        <div class="search-box" style="flex:1;min-width:220px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="search" id="uaSearch" autocomplete="off" placeholder="ابحث بالاسم / الإيميل / الجوال" value="${esc(f.search||'')}" oninput="uaSearchDebounce()"></div>
+        <select class="form-select" id="uaFilterSub" style="width:auto" autocomplete="off" onchange="uaApplyFilter()" title="نوع الاشتراك">
+            <option value="" ${!f.sub?'selected':''}>كل الاشتراكات</option>
             <option value="active" ${f.sub==='active'?'selected':''}>مشترك نشط</option>
             <option value="free" ${f.sub==='free'?'selected':''}>مجاني فقط</option>
             <option value="monthly" ${f.sub==='monthly'?'selected':''}>شهري</option>
@@ -2824,8 +2824,8 @@ window.loadUsersAnalytics = async function(page=1) {
             <option value="yearly" ${f.sub==='yearly'?'selected':''}>سنوي</option>
             <option value="expired" ${f.sub==='expired'?'selected':''}>اشتراك منتهي</option>
         </select>
-        <select class="form-select" id="uaFilterSource" style="width:auto" onchange="uaApplyFilter()" title="مصدر الاشتراك">
-            <option value="">كل المصادر</option>
+        <select class="form-select" id="uaFilterSource" style="width:auto" autocomplete="off" onchange="uaApplyFilter()" title="مصدر الاشتراك">
+            <option value="" ${!f.source?'selected':''}>كل المصادر</option>
             <option value="myfatoorah" ${f.source==='myfatoorah'?'selected':''}>MyFatoorah</option>
             <option value="apple_iap" ${f.source==='apple_iap'?'selected':''}>Apple IAP</option>
             <option value="google_play" ${f.source==='google_play'?'selected':''}>Google Play</option>
@@ -2834,26 +2834,27 @@ window.loadUsersAnalytics = async function(page=1) {
             <option value="coupon_free" ${f.source==='coupon_free'?'selected':''}>كوبون مجاني</option>
             <option value="coupon_discount" ${f.source==='coupon_discount'?'selected':''}>كوبون خصم</option>
         </select>
-        <select class="form-select" id="uaFilterActivity" style="width:auto" onchange="uaApplyFilter()" title="حالة النشاط">
-            <option value="">كل الحالات</option>
+        <select class="form-select" id="uaFilterActivity" style="width:auto" autocomplete="off" onchange="uaApplyFilter()" title="حالة النشاط">
+            <option value="" ${!f.activity?'selected':''}>كل الحالات</option>
             <option value="online" ${f.activity==='online'?'selected':''}>🟢 متصل الآن</option>
             <option value="week" ${f.activity==='week'?'selected':''}>🟡 نشط الأسبوع</option>
             <option value="month" ${f.activity==='month'?'selected':''}>🟡 نشط الشهر</option>
             <option value="dormant" ${f.activity==='dormant'?'selected':''}>🔴 خامد (>30 يوم)</option>
         </select>
-        <select class="form-select" id="uaFilterRegistered" style="width:auto" onchange="uaApplyFilter()" title="تاريخ الانضمام">
-            <option value="">كل التواريخ</option>
+        <select class="form-select" id="uaFilterRegistered" style="width:auto" autocomplete="off" onchange="uaApplyFilter()" title="تاريخ الانضمام">
+            <option value="" ${!f.registered?'selected':''}>كل التواريخ</option>
             <option value="today" ${f.registered==='today'?'selected':''}>اليوم</option>
             <option value="week" ${f.registered==='week'?'selected':''}>آخر 7 أيام</option>
             <option value="month" ${f.registered==='month'?'selected':''}>آخر 30 يوم</option>
         </select>
-        <select class="form-select" id="uaSort" style="width:auto" onchange="uaApplyFilter()">
-            <option value="xp" ${f.sort==='xp'?'selected':''}>الأكثر XP</option>
+        <select class="form-select" id="uaSort" style="width:auto" autocomplete="off" onchange="uaApplyFilter()">
+            <option value="xp" ${f.sort==='xp'||!f.sort?'selected':''}>الأكثر XP</option>
             <option value="new" ${f.sort==='new'?'selected':''}>الأحدث تسجيلاً</option>
             <option value="last_seen" ${f.sort==='last_seen'?'selected':''}>الأحدث دخولاً</option>
             <option value="dormant" ${f.sort==='dormant'?'selected':''}>الأقدم نشاطاً</option>
         </select>
         <button class="btn btn-ghost" onclick="exportUsers()" title="تصدير الفلتر الحالي"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
+        <button class="btn btn-ghost" onclick="uaClearFilters()" title="مسح كل الفلاتر" style="${(!f.sub&&!f.source&&!f.activity&&!f.registered&&!f.search)?'display:none':''}"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>مسح الفلاتر</button>
     </div>
     <div class="card"><div class="tbl-wrap" id="uaTable"><div class="loader">...</div></div></div>`;
 
@@ -3043,6 +3044,12 @@ window.uaApplyFilter = function() {
     window._uaFilters.activity = document.getElementById('uaFilterActivity')?.value || '';
     window._uaFilters.registered = document.getElementById('uaFilterRegistered')?.value || '';
     window._uaFilters.sort = document.getElementById('uaSort')?.value || 'xp';
+    loadUsersAnalytics(1);
+};
+
+// Clear all filters (one-click reset)
+window.uaClearFilters = function() {
+    window._uaFilters = { sub:'', source:'', activity:'', registered:'', search:'', sort:'xp' };
     loadUsersAnalytics(1);
 };
 
