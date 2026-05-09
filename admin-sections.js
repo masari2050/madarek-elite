@@ -33,67 +33,111 @@ function $c() { return document.getElementById('contentArea'); }
 // ═══════════════════════════════════════════════════════
 // 2. QUESTIONS
 // ═══════════════════════════════════════════════════════
+// Persistent filter state
+window._qFilters = window._qFilters || { section:'', topic:'', quality:'', status:'', sort:'new', search:'' };
+
 window.loadQuestions = async function(page=1) {
     const { sb } = window.A;
     const PAGE_SIZE = 20;
+    const f = window._qFilters;
+
     $c().innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
-        <div class="search-box">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="qSearch" placeholder="ابحث في الأسئلة..." oninput="qSearchDebounce()">
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <select class="form-select" id="qSectionFilter" style="width:auto" onchange="loadQuestions(1)">
-                <option value="">كل الأقسام</option>
-                <option value="quant">قدرات كمي</option>
-                <option value="verbal">قدرات لفظي</option>
-                <option value="tahsili">تحصيلي</option>
-            </select>
-            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--i2);cursor:pointer">
-                <input type="checkbox" id="qMissingOnly" onchange="loadQuestions(1)" style="cursor:pointer">
-                بدون إجابة فقط
-            </label>
-            <button class="btn btn-pri" onclick="openQuestionModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>إضافة سؤال</button>
-        </div>
+    <!-- KPIs bar (overall quality at a glance) -->
+    <div id="qKpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px">
+        <div class="kpi blue"><div class="kpi-label">المجموع</div><div class="kpi-val" id="qKpiTotal">—</div><div class="kpi-sub" id="qKpiTotalSub">سؤال نشط</div></div>
+        <div class="kpi green"><div class="kpi-label">جودة كاملة</div><div class="kpi-val" id="qKpiHealthy">—</div><div class="kpi-sub">إجابة + شرح</div></div>
+        <div class="kpi orange"><div class="kpi-label">بدون إجابة</div><div class="kpi-val" id="qKpiNoAnswer" style="color:var(--dng)">—</div><div class="kpi-sub" style="cursor:pointer;text-decoration:underline" onclick="qApplyQuickFilter('quality','no_answer')">عرض</div></div>
+        <div class="kpi gold"><div class="kpi-label">بدون شرح</div><div class="kpi-val" id="qKpiNoExplanation" style="color:var(--gold)">—</div><div class="kpi-sub" style="cursor:pointer;text-decoration:underline" onclick="qApplyQuickFilter('quality','no_explanation')">عرض</div></div>
+        <div class="kpi red"><div class="kpi-label">لها بلاغات</div><div class="kpi-val" id="qKpiReported" style="color:var(--dng)">—</div><div class="kpi-sub" style="cursor:pointer;text-decoration:underline" onclick="qApplyQuickFilter('quality','has_reports')">عرض البلاغات</div></div>
     </div>
-    <div id="qFilterCounts" class="q-filter-row"></div>
+
+    <!-- Topic breakdown (per section, click to filter) -->
+    <div id="qTopicBreakdown" style="margin-bottom:14px"></div>
+
+    <!-- Top toolbar -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap">
+        <div class="search-box" style="flex:1;min-width:240px">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="qSearch" autocomplete="off" placeholder="ابحث في نص السؤال..." value="${esc(f.search||'')}" oninput="qSearchDebounce()">
+        </div>
+        <button class="btn btn-pri" onclick="openQuestionModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>إضافة سؤال</button>
+    </div>
+
+    <!-- Filter bar -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+        <select class="form-select" id="qSectionFilter" autocomplete="off" style="width:auto" onchange="qApplyFilter()" title="القسم">
+            <option value="" ${!f.section?'selected':''}>كل الأقسام</option>
+            <option value="quant" ${f.section==='quant'?'selected':''}>قدرات كمي</option>
+            <option value="verbal" ${f.section==='verbal'?'selected':''}>قدرات لفظي</option>
+            <option value="tahsili" ${f.section==='tahsili'?'selected':''}>تحصيلي</option>
+        </select>
+        <select class="form-select" id="qTopicFilter" autocomplete="off" style="width:auto;max-width:200px" onchange="qApplyFilter()" title="الموضوع">
+            <option value="" ${!f.topic?'selected':''}>كل المواضيع</option>
+            <!-- options injected dynamically based on selected section -->
+        </select>
+        <select class="form-select" id="qQualityFilter" autocomplete="off" style="width:auto" onchange="qApplyFilter()" title="جودة السؤال">
+            <option value="" ${!f.quality?'selected':''}>كل الجودات</option>
+            <option value="no_answer" ${f.quality==='no_answer'?'selected':''}>بدون إجابة</option>
+            <option value="no_explanation" ${f.quality==='no_explanation'?'selected':''}>بدون شرح</option>
+            <option value="no_topic" ${f.quality==='no_topic'?'selected':''}>بدون موضوع</option>
+            <option value="with_image" ${f.quality==='with_image'?'selected':''}>بصورة فقط</option>
+            <option value="has_reports" ${f.quality==='has_reports'?'selected':''}>لها بلاغات معلّقة</option>
+        </select>
+        <select class="form-select" id="qStatusFilter" autocomplete="off" style="width:auto" onchange="qApplyFilter()" title="الحالة">
+            <option value="" ${!f.status?'selected':''}>نشطة فقط</option>
+            <option value="review" ${f.status==='review'?'selected':''}>تحت المراجعة</option>
+            <option value="all" ${f.status==='all'?'selected':''}>الكل (مع المعطّل)</option>
+        </select>
+        <select class="form-select" id="qSort" autocomplete="off" style="width:auto" onchange="qApplyFilter()" title="الترتيب">
+            <option value="new" ${f.sort==='new'?'selected':''}>الأحدث</option>
+            <option value="old" ${f.sort==='old'?'selected':''}>الأقدم</option>
+        </select>
+        <button class="btn btn-ghost" onclick="qClearFilters()" title="مسح الفلاتر" style="${(!f.section&&!f.topic&&!f.quality&&!f.status&&!f.search)?'display:none':''}">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>مسح
+        </button>
+    </div>
     <div id="qList"><div class="loader">جاري التحميل...</div></div>
     <div id="qPagination"></div>`;
 
+    // Load KPIs + topic breakdown + reported question IDs in parallel
+    loadQKpis();
+    loadQTopicBreakdown(f.section);
+    const reportedIdsPromise = loadReportedQuestionIds();
+
     try {
-        const section = document.getElementById('qSectionFilter').value;
-        const search = (document.getElementById('qSearch')?.value || '').trim();
-        const missingOnly = document.getElementById('qMissingOnly')?.checked;
+        let q = sb.from('questions').select('id,question_text,choices,correct_index,explanation,section,topic,sub_section,image_url,disabled,status,created_at', { count:'exact' });
 
-        let q = sb.from('questions').select('id,question_text,choices,correct_index,explanation,section,topic,image_url,disabled,created_at', { count:'exact' })
-            .eq('disabled', false);
-        if (section) q = q.eq('section', section);
-        if (search) q = q.ilike('question_text', '%'+search+'%');
-        if (missingOnly) q = q.is('correct_index', null);
+        // Status filter
+        if (f.status === 'review') q = q.eq('status','review').eq('disabled',false);
+        else if (f.status === 'all') ; // no filter
+        else q = q.eq('disabled', false); // active only (default)
 
-        const { data, count } = await q.order('created_at',{ascending:false})
-            .range((page-1)*PAGE_SIZE, page*PAGE_SIZE - 1);
+        // Section
+        if (f.section) q = q.eq('section', f.section);
+        // Topic
+        if (f.topic) q = q.eq('topic', f.topic);
+        // Quality
+        if (f.quality === 'no_answer') q = q.is('correct_index', null);
+        else if (f.quality === 'no_explanation') q = q.or('explanation.is.null,explanation.eq.');
+        else if (f.quality === 'no_topic') q = q.or('topic.is.null,topic.eq.');
+        else if (f.quality === 'with_image') q = q.not('image_url','is',null);
+        // Search
+        if (f.search) q = q.ilike('question_text', '%'+f.search+'%');
 
-        // Filter counts + عدّاد الأسئلة بدون إجابة
-        const [qc, vc, tc, mc] = await Promise.all([
-            sb.from('questions').select('*',{count:'exact',head:true}).eq('section','quant').eq('disabled',false),
-            sb.from('questions').select('*',{count:'exact',head:true}).eq('section','verbal').eq('disabled',false),
-            sb.from('questions').select('*',{count:'exact',head:true}).eq('section','tahsili').eq('disabled',false),
-            sb.from('questions').select('*',{count:'exact',head:true}).is('correct_index', null).eq('disabled',false)
-        ]);
-
-        const filterCountsEl = document.getElementById('qFilterCounts');
-        if (filterCountsEl) {
-            const missingCount = mc.count || 0;
-            const missingWarn = missingCount > 0
-                ? ` · <span style="color:var(--dng);font-weight:700">⚠️ ${fmt(missingCount)} بدون إجابة</span>`
-                : '';
-            filterCountsEl.innerHTML = `
-            <div style="font-size:11px;color:var(--i3)">
-                المجموع: <b>${fmt(count||0)}</b> سؤال ·
-                كمي: ${fmt(qc.count||0)} · لفظي: ${fmt(vc.count||0)} · تحصيلي: ${fmt(tc.count||0)}${missingWarn}
-            </div>`;
+        // Quality "has_reports" needs special handling — fetch reported IDs first then filter
+        let reportedIds = await reportedIdsPromise;
+        if (f.quality === 'has_reports') {
+            if (reportedIds.size === 0) {
+                document.getElementById('qList').innerHTML = '<div class="empty"><div class="empty-ic">✅</div><div class="empty-t">لا أسئلة لها بلاغات معلّقة</div></div>';
+                return;
+            }
+            q = q.in('id', Array.from(reportedIds));
         }
+
+        // Sort
+        const asc = f.sort === 'old';
+        const { data, count } = await q.order('created_at',{ascending:asc})
+            .range((page-1)*PAGE_SIZE, page*PAGE_SIZE - 1);
 
         const list = document.getElementById('qList');
         if (!data || data.length === 0) {
@@ -101,21 +145,36 @@ window.loadQuestions = async function(page=1) {
             return;
         }
 
+        // Build report-count map for visible cards
+        const reportCounts = await loadReportCountsForIds((data||[]).map(d => d.id));
+
         list.innerHTML = data.map(q => {
             const tagClass = q.section === 'verbal' ? 'lf' : q.section === 'tahsili' ? 'th' : '';
             const choices = q.choices || [];
             const missingCI = q.correct_index === null || q.correct_index === undefined;
-            const missingBadge = missingCI
-                ? '<span style="display:inline-block;margin-right:6px;padding:2px 8px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid var(--dng);color:var(--dng);font-size:10px;font-weight:700">⚠️ بدون إجابة</span>'
-                : '';
-            const cardBorder = missingCI ? 'border-right:3px solid var(--dng);' : '';
+            const missingExp = !q.explanation || q.explanation.trim() === '';
+            const missingTopic = !q.topic;
+            const reportCount = reportCounts[q.id] || 0;
+
+            const badges = [];
+            if (missingCI) badges.push('<span style="padding:2px 8px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid var(--dng);color:var(--dng);font-size:10px;font-weight:700">بدون إجابة</span>');
+            if (missingExp) badges.push('<span style="padding:2px 8px;border-radius:10px;background:rgba(245,158,11,.12);border:1px solid var(--gold);color:var(--gold);font-size:10px;font-weight:700">بدون شرح</span>');
+            if (missingTopic) badges.push('<span style="padding:2px 8px;border-radius:10px;background:rgba(107,114,128,.10);border:1px solid #9CA3AF;color:#6B7094;font-size:10px;font-weight:700">بدون موضوع</span>');
+            if (reportCount > 0) badges.push(`<span onclick="showQuestionReports('${q.id}')" style="cursor:pointer;padding:2px 8px;border-radius:10px;background:var(--dng);color:#fff;font-size:10px;font-weight:700" title="اضغط لعرض البلاغات">${reportCount} بلاغ</span>`);
+            if (q.disabled) badges.push('<span style="padding:2px 8px;border-radius:10px;background:#F3F4F6;color:#6B7094;font-size:10px;font-weight:700">معطّل</span>');
+            if (q.status === 'review') badges.push('<span style="padding:2px 8px;border-radius:10px;background:rgba(109,93,246,.14);color:var(--pri);font-size:10px;font-weight:700">قيد المراجعة</span>');
+
+            const cardBorder = missingCI ? 'border-right:3px solid var(--dng);'
+                : reportCount > 0 ? 'border-right:3px solid var(--dng);'
+                : missingExp ? 'border-right:3px solid var(--gold);' : '';
             return `<div class="q-card" style="${cardBorder}">
                 <div class="q-card-top">
-                    <div>
-                        <span class="q-tag ${tagClass}">${sectionTag(q.section)}${q.topic ? ' · ' + esc(q.topic) : ''}</span>
-                        ${missingBadge}
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                        <span class="q-tag ${tagClass}">${sectionTag(q.section)}${q.topic ? ' · ' + esc(q.topic) : ''}${q.sub_section ? ' · ' + esc(q.sub_section) : ''}</span>
+                        ${badges.join(' ')}
                     </div>
                     <div class="q-actions">
+                        ${reportCount > 0 ? `<button class="q-act-btn" onclick='showQuestionReports(${JSON.stringify(q.id)})' title="عرض البلاغات" style="color:var(--dng)"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></button>` : ''}
                         <button class="q-act-btn" onclick='editQuestion(${JSON.stringify(q.id)})' title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
                         <button class="q-act-btn" onclick='deleteQuestion(${JSON.stringify(q.id)})' title="حذف"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
                     </div>
@@ -144,7 +203,156 @@ window.loadQuestions = async function(page=1) {
 };
 
 let qSearchTimer;
-window.qSearchDebounce = function() { clearTimeout(qSearchTimer); qSearchTimer = setTimeout(()=>loadQuestions(1), 400); };
+window.qSearchDebounce = function() {
+    clearTimeout(qSearchTimer);
+    window._qFilters.search = (document.getElementById('qSearch')?.value || '').trim();
+    qSearchTimer = setTimeout(()=>loadQuestions(1), 400);
+};
+
+window.qApplyFilter = function() {
+    const f = window._qFilters;
+    f.section  = document.getElementById('qSectionFilter')?.value || '';
+    f.topic    = document.getElementById('qTopicFilter')?.value || '';
+    f.quality  = document.getElementById('qQualityFilter')?.value || '';
+    f.status   = document.getElementById('qStatusFilter')?.value || '';
+    f.sort     = document.getElementById('qSort')?.value || 'new';
+    loadQuestions(1);
+};
+
+window.qApplyQuickFilter = function(key, val) {
+    window._qFilters[key] = val;
+    loadQuestions(1);
+};
+
+window.qClearFilters = function() {
+    window._qFilters = { section:'', topic:'', quality:'', status:'', sort:'new', search:'' };
+    loadQuestions(1);
+};
+
+// Load top-line KPIs (parallel with main query)
+window.loadQKpis = async function() {
+    const { sb } = window.A;
+    try {
+        const [total, healthy, noAns, noExp, reportedRows] = await Promise.all([
+            sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false),
+            sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false).not('correct_index','is',null).not('explanation','is',null).not('explanation','eq',''),
+            sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false).is('correct_index',null),
+            sb.from('questions').select('*',{count:'exact',head:true}).eq('disabled',false).or('explanation.is.null,explanation.eq.'),
+            sb.from('reports').select('question_id').eq('status','pending')
+        ]);
+        const reportedCount = new Set((reportedRows.data||[]).map(r => r.question_id)).size;
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('qKpiTotal', fmt(total.count||0));
+        set('qKpiHealthy', fmt(healthy.count||0));
+        set('qKpiNoAnswer', fmt(noAns.count||0));
+        set('qKpiNoExplanation', fmt(noExp.count||0));
+        set('qKpiReported', fmt(reportedCount));
+    } catch(e) { console.error('loadQKpis', e); }
+};
+
+// Load topic breakdown for the selected section (or all 3 sections if none)
+window.loadQTopicBreakdown = async function(section) {
+    const { sb } = window.A;
+    const wrap = document.getElementById('qTopicBreakdown');
+    if (!wrap) return;
+    try {
+        // Fetch a generous sample to compute topic counts client-side
+        let q = sb.from('questions').select('section,topic').eq('disabled',false).limit(10000);
+        if (section) q = q.eq('section', section);
+        const { data } = await q;
+        const groupedBySection = { quant: {}, verbal: {}, tahsili: {} };
+        (data||[]).forEach(r => {
+            if (!groupedBySection[r.section]) return;
+            const t = r.topic || '— بدون موضوع —';
+            groupedBySection[r.section][t] = (groupedBySection[r.section][t]||0) + 1;
+        });
+        const sectionLabel = { quant:'قدرات كمي', verbal:'قدرات لفظي', tahsili:'تحصيلي' };
+        const sectionColor = { quant:'#6D5DF6', verbal:'#22C55E', tahsili:'#FF8A3D' };
+        const sectionsToShow = section ? [section] : ['quant','verbal','tahsili'];
+        const html = sectionsToShow.map(sec => {
+            const topics = groupedBySection[sec] || {};
+            const items = Object.entries(topics).sort((a,b) => b[1] - a[1]);
+            const total = items.reduce((s,[,v]) => s+v, 0);
+            if (items.length === 0) return '';
+            const chips = items.map(([t, n]) => {
+                const isActive = window._qFilters.topic === t && window._qFilters.section === sec;
+                const isNoTopic = t === '— بدون موضوع —';
+                return `<button class="topic-chip ${isActive?'active':''}" onclick="qPickTopic('${sec}', '${esc(isNoTopic?'':t).replace(/'/g,"\\'")}'); this.classList.toggle('active')" style="background:${isActive?sectionColor[sec]:'var(--s2)'};color:${isActive?'#fff':'var(--i2)'};border:1px solid ${isActive?sectionColor[sec]:'var(--ln)'};padding:5px 11px;border-radius:18px;font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:all .15s">${esc(t)} <span style="background:${isActive?'rgba(255,255,255,.25)':'#fff'};color:${isActive?'#fff':sectionColor[sec]};padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700">${fmt(n)}</span></button>`;
+            }).join(' ');
+            return `<div style="margin-bottom:10px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px"><span style="width:6px;height:6px;border-radius:50%;background:${sectionColor[sec]}"></span><b style="color:${sectionColor[sec]}">${sectionLabel[sec]}</b><span style="color:var(--i4)">${fmt(total)} سؤال · ${items.length} موضوع</span></div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">${chips}</div>
+            </div>`;
+        }).filter(Boolean).join('');
+        wrap.innerHTML = html ? `<div style="background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px 14px">${html}</div>` : '';
+
+        // Also populate the topic <select> dropdown for the section filter
+        const topicSelect = document.getElementById('qTopicFilter');
+        if (topicSelect && section) {
+            const current = window._qFilters.topic;
+            const topics = Object.keys(groupedBySection[section] || {}).filter(t => t !== '— بدون موضوع —').sort();
+            topicSelect.innerHTML = '<option value="">كل المواضيع</option>' +
+                topics.map(t => `<option value="${esc(t)}" ${current===t?'selected':''}>${esc(t)}</option>`).join('');
+        } else if (topicSelect) {
+            topicSelect.innerHTML = '<option value="">كل المواضيع</option>';
+        }
+    } catch(e) { console.error('loadQTopicBreakdown', e); }
+};
+
+window.qPickTopic = function(section, topic) {
+    window._qFilters.section = section;
+    window._qFilters.topic = topic;
+    loadQuestions(1);
+};
+
+// Load all question_ids that have at least one pending report (for filtering + counts)
+window.loadReportedQuestionIds = async function() {
+    const { sb } = window.A;
+    try {
+        const { data } = await sb.from('reports').select('question_id').eq('status','pending');
+        return new Set((data||[]).map(r => r.question_id).filter(Boolean));
+    } catch(e) { return new Set(); }
+};
+
+// Load report counts for a specific list of question_ids
+window.loadReportCountsForIds = async function(ids) {
+    if (!ids || ids.length === 0) return {};
+    const { sb } = window.A;
+    try {
+        const { data } = await sb.from('reports').select('question_id').eq('status','pending').in('question_id', ids);
+        const counts = {};
+        (data||[]).forEach(r => { counts[r.question_id] = (counts[r.question_id]||0) + 1; });
+        return counts;
+    } catch(e) { return {}; }
+};
+
+// Show all reports for a specific question in a modal
+window.showQuestionReports = async function(questionId) {
+    const { sb } = window.A;
+    try {
+        const { data } = await sb.from('reports')
+            .select('id, reason, status, reported_at, admin_notes, profiles(full_name, email)')
+            .eq('question_id', questionId)
+            .order('reported_at', {ascending:false});
+        const reports = data || [];
+        if (reports.length === 0) { showToast('لا بلاغات على هذا السؤال','suc'); return; }
+        const body = reports.map(r => {
+            const u = r.profiles || {};
+            const statusColor = r.status === 'pending' ? 'var(--dng)' : r.status === 'resolved' ? 'var(--suc)' : 'var(--i4)';
+            const statusLabel = r.status === 'pending' ? 'معلّق' : r.status === 'resolved' ? 'محلول' : r.status === 'rejected' ? 'مرفوض' : r.status;
+            return `<div style="border:1px solid var(--ln);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--s2)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <div style="font-size:12px"><b>${esc(u.full_name||'مستخدم')}</b> <span style="color:var(--i4)">· ${esc(u.email||'')}</span></div>
+                    <span style="background:${statusColor}22;color:${statusColor};padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">${statusLabel}</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--i2);margin-bottom:6px"><b>السبب:</b> ${esc(r.reason||'لم يحدّد')}</div>
+                <div style="font-size:10.5px;color:var(--i4)">${fmtDate(r.reported_at)}</div>
+                ${r.admin_notes ? `<div style="font-size:11px;color:var(--i3);margin-top:6px;padding-top:6px;border-top:1px dashed var(--ln)"><b>ملاحظات:</b> ${esc(r.admin_notes)}</div>` : ''}
+            </div>`;
+        }).join('');
+        openModal('بلاغات السؤال (' + reports.length + ')', body, '<button class="btn btn-ghost" onclick="closeModal()">إغلاق</button> <button class="btn btn-pri" onclick="closeModal();editQuestion(\'' + questionId + '\')">تعديل السؤال</button>');
+    } catch(e) { showToast('خطأ: '+e.message,'err'); }
+};
 
 window.openQuestionModal = function(existing) {
     const isEdit = !!existing;
