@@ -46,6 +46,110 @@ window.QIYAS_TOPICS = {
     tahsili: ['الرياضيات', 'الفيزياء', 'الكيمياء', 'الأحياء']
 };
 
+// ════════════════════════════════════════════════════════════
+// AUTO-CLASSIFIER — analyzes question text and suggests a Qiyas-standard topic.
+// Uses Arabic + English keyword matching with weighted scoring + conflict resolution.
+// Returns {topic, confidence, scores} where confidence ∈ 'high' | 'medium' | 'low' | 'none'
+// ════════════════════════════════════════════════════════════
+window.classifyQuestion = function(rawText, section) {
+    if (!rawText || !section) return { topic: null, confidence: 'none', scores: {} };
+    // Normalize: lowercase, strip diacritics, unify hamza forms
+    const t = String(rawText).toLowerCase()
+        .replace(/[ً-ْ]/g,'')       // tashkeel
+        .replace(/[آأإ]/g,'ا')                  // alef variants
+        .replace(/ى/g,'ي')                     // alef maksura
+        .replace(/ة/g,'ه');                    // tah marbuta
+
+    const KW = {
+        tahsili: {
+            'الكيمياء': {
+                strong: ['اكسده','اختزال','تاكسد','اختزل','مول','تركيز','مولاري','مولالي','جدول دوري','تساهميه','ايونيه','هيدروجينيه','فلزيه','حمض','قاعده','هيدروكسيد','كلوريد','سلفات','نترات','كربونات','هيدروكربون','الديهايد','كيتون','كحول','استر','ايثر','امين','اميد','بنزين','ايثان','ميثان','بروبان','بوتان','نظير','نظائر','ايون','تاين','ذوبان','مذيب','مذاب','محلول','رابطه','عنصر','مركب','جزيء','جزيئه','تفاعل','ph','حمضي','قاعدي','اس هيدروجيني','تكافؤ','اوربيتال','مدار','محتوي حراري','انثالبي','انتروبي','تركيز مولاري','جزء بالمليون','حمض كبريتيك','كلوريد الصوديوم','كحول ايثيلي','حمض خليك','صوديوم','بوتاسيوم','كالسيوم','ماغنسيوم','حديد','نحاس','زنك','الومنيوم','هيدروجين','اكسجين','نيتروجين','كربون','ميثانول','ايثانول','جلوكوز','فركتوز','خليه كهروكيميائيه','خليه جلفانيه','تحليل كهربائي','معادله كيميائيه','حاله الاكسده'],
+                weak: ['ذره']
+            },
+            'الأحياء': {
+                strong: ['dna','rna','الحمض النووي','الحمض النووي الريبوزي','جين','جينات','كروموسوم','كروموسومات','جينوم','وراثه','وراثيه','وراثي','نبات','نباتات','بناء ضوئي','تمثيل ضوئي','تنفس خلوي','ميتوكوندريا','بلاستيده','بلاستيدات','يخضور','كلوروفيل','بكتيريا','فيروس','فيروسات','حيوان','حيوانات','فقاريات','لافقاريات','نسيج','انسجه','تطفر','طفره','طفرات','الجهاز العصبي','الجهاز التنفسي','الجهاز الهضمي','الجهاز الدوري','الجهاز الاخراجي','الجهاز التناسلي','الجهاز الهيكلي','الجهاز العضلي','بيئه','نظام بيئي','سلسله غذائيه','شبكه غذائيه','منتج','مستهلك','محلل','تكاثر','انقسام متساوي','انقسام اختزالي','ميوزس','ميتوزس','بلعمه','اخراج','هضم','زهره','بذره','جذر','ساق','ورقه','حشره','ثدييات','زواحف','طيور','اسماك','برمائيات','عضله','عضلات','جلد','عظام','هيكل','اعضاء','عضو','استجابه','هرمون','هرمونات','مناعه','جهاز المناعه','اجسام مضاده','بلازما','صفائح دمويه','كريات حمراء','كريات بيضاء','شعب هوائيه','حويصلات','كلي','كبد','معده','امعاء','قلب','رئه','مخ','نخاع','اعصاب','عصبون','تركيب البروتين','نسخ','ترجمه','رايبوسوم','شبكه اندوبلازميه','جهاز جولجي','ليسوسومات','نواه','غشاء بلازمي','جدار خلوي','فجوه','فجوات','سيتوبلازم','بكتيريا','ارخبيل','اوليه','ابتدائيه'],
+                weak: ['خليه','انزيم','انزيمات']
+            },
+            'الفيزياء': {
+                strong: ['نيوتن','جول','وات','امبير','فولت','اوم','هيرتز','تسلا','m/s²','m/s','كهرومغناطيسي','كهرومغناطيسيه','مجال مغناطيسي','مجال كهربائي','تيار كهربائي','تيار متردد','تيار مستمر','مقاومه كهربائيه','جهد كهربائي','شحنه كهربائيه','اشعاع','نووي','انشطار','اندماج','فوتون','كوارك','نيوترينو','تردد','طول الموجه','الموجه','عدسه','انعكاس','انكسار','حيود','تداخل','استقطاب','ميكانيكا الكم','الكوانتم','نسبيه','اينشتاين','جاذبيه','جاذبيه ارضيه','نوويه','تاين الذره','مدار ذري','شده المجال','زخم','عجله','تسارع','قوه شد','قوه احتكاك','قوه جاذبيه','قانون نيوتن','قانون اوم','قانون كولوم','شغل','طاقه حركيه','طاقه وضع','كثافه الفيض','امواج صوتيه','امواج ضوئيه','الطيف الكهرومغناطيسي','اشعاع جاما','اشعه سينيه','اشعه فوق بنفسجيه','عدسه محدبه','عدسه مقعره','مرايا محدبه','مرايا مقعره','بؤره','بعد بؤري','عدد كم','تردد الموجه','سعه الموجه','سرعه الضوء','بلانك','بور','رذرفورد','تنغستن','مفاعل نووي','عناصر مشعه','عمر النصف','نشاط اشعاعي','جسم مقذوف','الحركه الدائريه','حركه توافقيه','نواس','بندول','زنبرك','محرك','مولد','محول','مكثف','ملف','اوميغا','احتكاك','مرونه','قوه طارده مركزيه'],
+                weak: ['قوه','سرعه','طاقه','مجال']
+            },
+            'الرياضيات': {
+                strong: ['داله','د(س)','f(x)','مشتقه','اشتقاق','تفاضل','تكامل','نهايه','نهايات','لوغاريتم','اساس اللوغاريتم','اللوغاريتم الطبيعي','متجه','متجهات','مصفوفه','مصفوفات','محدد','مثلث','مضلع','مضلعات','مستطيل','مربع','معين','شبه منحرف','دائره','قطع مكافي','قطع ناقص','قطع زائد','معادله تربيعيه','معادله تفاضليه','معادله خطيه','متباينه','متتابعه','متسلسله','متتابعه حسابيه','متتابعه هندسيه','sin','cos','tan','جا','جتا','ظا','جيب','جيب التمام','ظل','نظريه فيثاغورس','احداثيات','المستوي الاحداثي','رأس','بؤره','محور','محور التماثل','نظريه ذات الحدين','تباديل','توافيق','احتمال','مساحه','محيط','حجم','كره','اسطوانه','مخروط','هرم','منشور','زاويه','محيطيه','مركزيه','حد محدود','عدد مركب','الاعداد المركبه','الاعداد التخيليه','iota','جزء حقيقي','جزء تخيلي','المنطق','وجوب','نفي','وصل','فصل','شرط','ثنائي شرطي','نظريه فيتا','نظريه الباقي','حساب التفاضل','حساب التكامل','المعادلات الانيه','مصفوفه مربعه','تحويلات','تماثل','انعكاس','انسحاب','دوران','تقريب الاعداد','اشتقاق ضمني','قاعده السلسله','نظريه القيمه المتوسطه','نظريه رول','اسي','اسس','جذر تربيعي','جذر تكعيبي','الاعداد النسبيه','الاعداد غير النسبيه','الاعداد الحقيقيه','مجموعه','مجموعات','اتحاد','تقاطع','مكمل','المتطابقات','هويه','اقتران','تركيب الاقترانات','عمليات على الاقترانات']
+            }
+        },
+        quant: {
+            'الحساب': {
+                strong: ['نسبه مئويه','نسبه','معدل','متوسط','وسيط','منوال','كسر','كسور','عملات','تحويل','وحده','وحدات قياس','مقدار','اضعاف','اعداد اوليه','عدد اولي','قواسم','مضاعفات','قاسم مشترك','مضاعف مشترك','تربيع','جذر تربيعي','اس','اساسي','الربح','الخساره','تكلفه','بيع','شراء','الجملت','مستهلك','محتسب','معدل سرعه','زمن','مسافه','تسعيره','اشترك','عمال','انجزو','انجز','مبلغ','ريال','هلله','مبيعات','عاميل','تخفيض','اضافه','زياده','نقصان','نسبه التغير'],
+                weak: []
+            },
+            'الجبر': {
+                strong: ['معادله','متغير','مجهول','س ','ص ','ع ','هـ ','المعادله','حل المعادله','جذور المعادله','معامل','حدود','كثيره الحدود','تحليل','عوامل','فرق مربعين','فرق مكعبين','مجموع مكعبين','تربيع','مكمل المربع','قانون عام','مميز','الصيغه القياسيه','معادلتين انيتين','نظام معادلات','المتغيرين','صيغه','تبسيط','عبارت جبريه','اقترانات','اقتران خطي','اقتران تربيعي','الصورهالعامه'],
+                weak: []
+            },
+            'الهندسة': {
+                strong: ['زاويه','زوايا','مثلث','مستطيل','مربع','معين','متوازي','شبه منحرف','مضلع','رباعي','خماسي','سداسي','دائره','قطر','نصف قطر','محيط','مساحه','حجم','قاعده','ارتفاع','ضلع','وتر','زاويه قائمه','زاويه حاده','زاويه منفرجه','المثلث القائم','المثلث المتساوي','متطابق','متشابه','احداثيات','نقطه','مستقيم','مستوي','منصف','عمودي','مماس','محيطيه','مركزيه','هرم','اسطوانه','مخروط','منشور','كره','نصف الكره'],
+                weak: []
+            },
+            'الإحصاء والاحتمالات': {
+                strong: ['احتمال','احتمالات','تباديل','توافيق','مدى','تباين','انحراف معياري','وسط حسابي','تكرار','تكرارات','منحني','جدول تكراري','مدرج تكراري','عينه','مجتمع','حدث','احداث','مستقل','تبادل','مستحيل','اكيد','نرد','حجر','عمله','بطاقه','كرات','صناديق'],
+                weak: []
+            },
+            'التحليل': {
+                strong: ['نمط','انماط','الحد التالي','الحد القادم','تتابع','متتابعه','متسلسله','يلي','يأتي','المتسلسله','الحد المفقود','شكل تالي','شكل قادم','صف الاعداد','مقارنه بين','المقدار الاكبر','المقدار الاصغر','استنتاج','نتيجه','يستنتج','الاستدلال','عله ومعلول','سبب ونتيجه'],
+                weak: []
+            }
+        },
+        verbal: {
+            'إكمال الجملة': {
+                strong: ['اكمل','الفراغ','الفراغين','يكمل','يملا','........','الكلمه المناسبه','الكلمات المناسبه','الفراغ التالي','يكمل الجمله','اكمال الجمله','اكمال جمله'],
+                weak: []
+            },
+            'التناظر اللفظي': {
+                strong: [':','تناظر','يناظر','مثلما','كما','مماثل','نظير','يدل','يرمز','يعبر','تشابه','نسبه بين','علاقه بين'],
+                weak: []
+            },
+            'الخطأ السياقي': {
+                strong: ['الخطا','الخطأ','الكلمه الخاطئه','الكلمه التي لا تنتمي','غير المناسبه','غير المناسب','تحتها خط','الكلمه الشاذه','الكلمه التي لا تتناسب','المختلفه عن باقي'],
+                weak: []
+            },
+            'استيعاب المقروء': {
+                strong: ['اقرا القطعه','القطعه','النص','المقطع','يستفاد من النص','مضمون النص','الفقره','اقرا الفقره','اقرا النص','اقرا المقطع','الاديب','الكاتب','المعنى المراد','حسب النص','وفق النص'],
+                weak: []
+            },
+            'المفردة الشاذة': {
+                strong: ['مفرده شاذه','مفرده مختلفه','الكلمه الشاذه','الكلمه المختلفه','شذت','اختلفت','لا تنتمي للمجموعه','لا ينتمي للباقي','شذوذ','يختلف عن','ما عدا','عدا','ما يلي ما عدا','الكلمات التاليه ما عدا','الكلمات الاتيه ما عدا','الاتيه ما عدا','يدل علي ... ما عدا','جميعها ما عدا','كلها ما عدا'],
+                weak: []
+            }
+        }
+    };
+
+    const sectionKW = KW[section];
+    if (!sectionKW) return { topic: null, confidence: 'none', scores: {} };
+
+    const scores = {};
+    for (const [topic, kws] of Object.entries(sectionKW)) {
+        let score = 0;
+        for (const kw of (kws.strong||[])) {
+            if (t.indexOf(kw) >= 0) score += 3;
+        }
+        for (const kw of (kws.weak||[])) {
+            if (t.indexOf(kw) >= 0) score += 1;
+        }
+        scores[topic] = score;
+    }
+
+    const ranked = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+    if (ranked[0][1] === 0) return { topic: null, confidence: 'none', scores };
+
+    const top = ranked[0], second = ranked[1] || ['',0];
+    // High confidence: top score >= 6 AND clear gap (≥2x next)
+    if (top[1] >= 6 && top[1] >= second[1] * 2) return { topic: top[0], confidence: 'high', scores };
+    // Medium: top score >= 3 and beats second
+    if (top[1] >= 3 && top[1] > second[1]) return { topic: top[0], confidence: 'medium', scores };
+    return { topic: top[0], confidence: 'low', scores };
+};
+
 // Maps any legacy topic value (Arabic, English, variant) to a Qiyas-standard category
 // Returns null if the value can't be classified (will appear under 'غير مصنّف')
 window.mapToStandardTopic = function(section, raw) {
@@ -139,7 +243,10 @@ window.loadQuestions = async function(page=1) {
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="search" id="qSearch" autocomplete="off" placeholder="ابحث في نص السؤال..." value="${esc(f.search||'')}" oninput="qSearchDebounce()">
         </div>
-        <button class="btn btn-pri" onclick="openQuestionModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>إضافة سؤال</button>
+        <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" onclick="openClassifier()" title="تصنيف الأسئلة غير المصنّفة تلقائياً" style="border-color:var(--gold);color:var(--gold)"><svg viewBox="0 0 24 24"><path d="M12 2v6l3-3m-6 0 3 3 M2 12h6l-3 3m0-6 3 3 M22 12h-6l3-3m0 6-3-3 M12 22v-6l-3 3m6 0-3-3"/><circle cx="12" cy="12" r="3"/></svg>أداة التصنيف</button>
+            <button class="btn btn-pri" onclick="openQuestionModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>إضافة سؤال</button>
+        </div>
     </div>
 
     <!-- Filter bar -->
@@ -477,6 +584,177 @@ window.loadReportCountsForIds = async function(ids) {
         (data||[]).forEach(r => { counts[r.question_id] = (counts[r.question_id]||0) + 1; });
         return counts;
     } catch(e) { return {}; }
+};
+
+// ════════════════════════════════════════════════════════════
+// CLASSIFIER UI — uses classifyQuestion() to auto-tag unclassified questions
+// ════════════════════════════════════════════════════════════
+window._clState = window._clState || { all: [], idx: 0, autoApplied: 0, manualPending: [], section: 'tahsili' };
+
+window.openClassifier = function() {
+    const body = `
+    <div style="max-height:75vh;overflow-y:auto">
+        <div style="background:var(--ps);border:1px solid var(--pri-m);border-radius:10px;padding:14px;margin-bottom:14px">
+            <div style="font-size:13px;font-weight:700;color:var(--pri);margin-bottom:6px">أداة التصنيف الذكي</div>
+            <div style="font-size:11.5px;color:var(--i2);line-height:1.7">
+                تحلّل نص كل سؤال غير مصنّف وتقترح التصنيف الصحيح بناءً على الكلمات المفتاحية.<br>
+                • <b>عالية الثقة</b>: تُصنَّف تلقائياً (Auto-apply)<br>
+                • <b>متوسطة/منخفضة</b>: تظهر لك للمراجعة بنقرة واحدة<br>
+                • <b>غير قابلة للتصنيف</b>: تبقى كما هي للمراجعة اليدوية
+            </div>
+        </div>
+        <div style="margin-bottom:14px">
+            <label class="form-label">اختر القسم لتصنيفه</label>
+            <select class="form-select" id="clSection" onchange="document.getElementById('clRunBtn').disabled=!this.value">
+                <option value="">— اختر القسم —</option>
+                <option value="tahsili">تحصيلي (4 مواد)</option>
+                <option value="quant">قدرات كمي (5 تصنيفات)</option>
+                <option value="verbal">قدرات لفظي (5 تصنيفات)</option>
+            </select>
+        </div>
+        <div id="clProgress" style="display:none;margin-bottom:14px"></div>
+        <div id="clReport" style="display:none;margin-bottom:14px"></div>
+        <div id="clManual" style="display:none"></div>
+    </div>`;
+    const foot = `<button class="btn btn-ghost" onclick="closeModal()">إغلاق</button>
+                  <button class="btn btn-pri" id="clRunBtn" disabled onclick="runClassifier()">تشغيل التصنيف</button>`;
+    openModal('أداة التصنيف الذكي', body, foot);
+};
+
+window.runClassifier = async function() {
+    const { sb } = window.A;
+    const section = document.getElementById('clSection').value;
+    if (!section) return;
+
+    const progressEl = document.getElementById('clProgress');
+    const reportEl = document.getElementById('clReport');
+    progressEl.style.display = 'block';
+    progressEl.innerHTML = '<div style="text-align:center;padding:14px"><div class="loader">جاري جلب الأسئلة غير المصنّفة...</div></div>';
+
+    try {
+        // Step 1: fetch all unclassified questions for the section (paginate to bypass 1000-row cap)
+        const all = [];
+        let offset = 0;
+        const PAGE = 1000;
+        while (offset < 50000) {
+            const { data } = await sb.from('questions')
+                .select('id, question_text, choices, correct_index, explanation, topic')
+                .eq('disabled', false).eq('section', section)
+                .range(offset, offset + PAGE - 1);
+            if (!data || data.length === 0) break;
+            all.push(...data);
+            if (data.length < PAGE) break;
+            offset += PAGE;
+        }
+
+        // Filter to only those whose current topic doesn't map to a Qiyas standard
+        const unclassified = all.filter(q => !window.mapToStandardTopic(section, q.topic));
+        if (unclassified.length === 0) {
+            progressEl.innerHTML = '<div class="empty"><div class="empty-ic">✅</div><div class="empty-t">كل الأسئلة مصنّفة</div></div>';
+            return;
+        }
+
+        // Step 2: classify each + bucket by confidence
+        const buckets = { high: [], medium: [], low: [], none: [] };
+        const enriched = unclassified.map(q => {
+            const r = window.classifyQuestion(q.question_text, section);
+            return { ...q, suggested: r.topic, confidence: r.confidence, scores: r.scores };
+        });
+        enriched.forEach(q => buckets[q.confidence].push(q));
+
+        progressEl.innerHTML = `
+        <div style="background:var(--s2);border-radius:10px;padding:12px;font-size:12px">
+            <div style="margin-bottom:6px"><b>إجمالي الأسئلة غير المصنّفة:</b> ${fmt(unclassified.length)}</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;font-size:11.5px">
+                <div style="background:rgba(34,197,94,.1);border:1px solid var(--suc);padding:8px;border-radius:8px;text-align:center"><div style="color:var(--suc);font-size:18px;font-weight:800">${buckets.high.length}</div><div>عالية الثقة</div></div>
+                <div style="background:rgba(245,158,11,.1);border:1px solid var(--gold);padding:8px;border-radius:8px;text-align:center"><div style="color:var(--gold);font-size:18px;font-weight:800">${buckets.medium.length}</div><div>متوسطة</div></div>
+                <div style="background:rgba(255,138,61,.1);border:1px solid var(--acc);padding:8px;border-radius:8px;text-align:center"><div style="color:var(--acc);font-size:18px;font-weight:800">${buckets.low.length}</div><div>منخفضة</div></div>
+                <div style="background:rgba(107,114,128,.1);border:1px solid var(--i4);padding:8px;border-radius:8px;text-align:center"><div style="color:var(--i4);font-size:18px;font-weight:800">${buckets.none.length}</div><div>غير قابل للتصنيف</div></div>
+            </div>
+        </div>`;
+
+        // Step 3: auto-apply HIGH-confidence
+        if (buckets.high.length > 0) {
+            reportEl.style.display = 'block';
+            reportEl.innerHTML = `<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:10px;font-size:12px;color:var(--suc)"><div class="loader" style="display:inline">جاري تصنيف ${fmt(buckets.high.length)} سؤال عالي الثقة...</div></div>`;
+            let applied = 0, failed = 0;
+            for (const q of buckets.high) {
+                try {
+                    const { error } = await sb.from('questions').update({ topic: q.suggested }).eq('id', q.id);
+                    if (error) failed++; else applied++;
+                } catch(_) { failed++; }
+            }
+            reportEl.innerHTML = `<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:12px;font-size:12.5px;color:var(--suc)"><b>تم تصنيف ${fmt(applied)} سؤال تلقائياً.</b>${failed > 0 ? ' فشل ' + failed + ' سؤال.' : ''}</div>`;
+        }
+
+        // Step 4: build manual review queue (medium + low + none)
+        window._clState.manualPending = [...buckets.medium, ...buckets.low, ...buckets.none];
+        window._clState.idx = 0;
+        window._clState.section = section;
+        window._clState.autoApplied = (buckets.high || []).length;
+        renderManualReview();
+    } catch(e) {
+        progressEl.innerHTML = '<div style="background:var(--dng-s);border:1px solid var(--dng);border-radius:8px;padding:10px;color:var(--dng)">خطأ: '+esc(e.message||'')+'</div>';
+    }
+};
+
+window.renderManualReview = function() {
+    const wrap = document.getElementById('clManual');
+    if (!wrap) return;
+    const { manualPending: queue, idx, section, autoApplied } = window._clState;
+    if (idx >= queue.length) {
+        wrap.style.display = 'block';
+        wrap.innerHTML = `<div class="empty"><div class="empty-ic">🎉</div><div class="empty-t">انتهى التصنيف</div><div class="empty-d">صُنِّف ${fmt(autoApplied)} تلقائياً + ${fmt(queue.length)} يدوياً = ${fmt(autoApplied + queue.length)} سؤال</div></div>`;
+        return;
+    }
+    wrap.style.display = 'block';
+    const q = queue[idx];
+    const stds = window.QIYAS_TOPICS[section] || [];
+    const confLabel = { medium:'متوسطة', low:'منخفضة', none:'لا يقترح' }[q.confidence] || '';
+    const confColor = q.confidence === 'medium' ? 'var(--gold)' : q.confidence === 'low' ? 'var(--acc)' : 'var(--i4)';
+
+    wrap.innerHTML = `
+    <div style="border:1px solid var(--ln);border-radius:10px;padding:14px;background:var(--sf)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <b style="font-size:13px">المراجعة اليدوية · ${idx + 1} من ${queue.length}</b>
+            <span style="background:${confColor}22;color:${confColor};padding:3px 10px;border-radius:10px;font-size:10.5px;font-weight:700">ثقة ${confLabel}</span>
+        </div>
+        <div style="background:var(--s2);border-radius:8px;padding:12px;font-size:13.5px;line-height:1.7;margin-bottom:10px">${esc(q.question_text)}</div>
+        ${q.suggested ? `<div style="margin-bottom:10px;font-size:11.5px;color:var(--i3)">المقترح: <b style="color:${confColor}">${esc(q.suggested)}</b></div>` : ''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+            ${stds.map(s => {
+                const isPick = q.suggested === s;
+                return `<button onclick="classifyPick('${s.replace(/'/g,"\\'")}')" style="background:${isPick?'var(--pri)':'var(--s2)'};color:${isPick?'#fff':'var(--i2)'};border:1px solid ${isPick?'var(--pri)':'var(--ln)'};padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex:1;min-width:120px">${esc(s)}</button>`;
+            }).join('')}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="classifySkip()" class="btn btn-ghost" style="flex:1;min-width:120px">تخطّي</button>
+            <button onclick="classifyMarkUnclassifiable()" class="btn btn-ghost" style="flex:1;min-width:120px;color:var(--dng)">يحتاج مراجعة لاحقة</button>
+        </div>
+    </div>`;
+};
+
+window.classifyPick = async function(stdTopic) {
+    const { sb } = window.A;
+    const s = window._clState;
+    const q = s.manualPending[s.idx];
+    if (!q) return;
+    try {
+        await sb.from('questions').update({ topic: stdTopic }).eq('id', q.id);
+    } catch(e) { showToast('خطأ: '+e.message, 'err'); return; }
+    s.idx++;
+    renderManualReview();
+};
+
+window.classifySkip = function() {
+    window._clState.idx++;
+    renderManualReview();
+};
+
+window.classifyMarkUnclassifiable = async function() {
+    // Optional: tag with a special marker so it shows up in a "needs review" filter later
+    window._clState.idx++;
+    renderManualReview();
 };
 
 // Show all reports for a specific question in a modal
