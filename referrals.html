@@ -523,16 +523,22 @@ html[data-fs="large"] .wrap{zoom:1.1}
     if (noteEl) noteEl.style.display = pendingCount > 0 ? 'block' : 'none';
 
     const min = d.min_payout || 100;
-    const av = Math.min(Number(d.available_amount||0), min);
+    const realAv = Number(d.available_amount||0);
+    const av = Math.min(realAv, min);
     const pct = Math.round((av / min) * 100);
-    document.getElementById('progNum').textContent = av + ' / ' + min + ' ر.س';
+    document.getElementById('progNum').textContent = realAv + ' / ' + min + ' ر.س';
     setTimeout(() => { document.getElementById('progBf').style.width = pct + '%'; }, 200);
-    if (av >= min) {
-      document.getElementById('progTitle').textContent = 'وصلت للحد الأدنى — اطلب الصرف';
+    if (realAv >= min) {
+      document.getElementById('progTitle').textContent = 'وصلت للحد الأدنى — اطلب التحويل الآن';
       document.getElementById('payoutCta').style.display = 'flex';
+    } else if (realAv > 0) {
+      // تحفيز: يشوف المبلغ المتجمّع + كم باقي
+      const remaining = min - realAv;
+      document.getElementById('progTitle').textContent = 'متاح ' + realAv + ' ر.س — باقي ' + remaining + ' للتحويل';
+      document.getElementById('payoutCta').style.display = 'none';
     } else {
-      const remaining = min - av;
-      document.getElementById('progTitle').textContent = 'باقي ' + remaining + ' ر.س للصرف';
+      // لا متاح بعد
+      document.getElementById('progTitle').textContent = 'اجمع 100 ر.س لطلب التحويل';
       document.getElementById('payoutCta').style.display = 'none';
     }
 
