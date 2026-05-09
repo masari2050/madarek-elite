@@ -73,36 +73,53 @@ serve(async (req) => {
     if (/^MADAR-[A-Z0-9]+$/.test(couponCode)) {
       console.log(`[apply-coupon] referral code detected: ${couponCode}`)
 
-      // استدعِ apply_cash_referral باسم المستخدم (يتحقق من auth + الحماية كاملة)
-      // نحتاج JWT المستخدم للـRPC (مش service_role). لذلك ننشئ client بديل بـtoken المستخدم.
-      const userClient = createClient(
-        Deno.env.get('SUPABASE_URL') ?? '',
-        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-        { global: { headers: { Authorization: authHeader } } }
-      )
-      const { data: refResult, error: refErr } = await userClient
-        .rpc('apply_cash_referral', { p_new_user_id: user.id, p_referral_code: couponCode })
+      // الحل المُحسَّن (2026-05-09): بدل createClient جديد بـuser JWT (يسبب issues
+      // في auth.uid() context)، نستدعي PostgreSQL function عبر HTTP مع JWT المستخدم
+      // مباشرة. هذا يضمن أن auth.uid() ترجع user.id الصحيح داخل الـRPC.
+      try {
+        const rpcUrl = `${Deno.env.get('SUPABASE_URL')}/rest/v1/rpc/apply_cash_referral`
+        const rpcResp = await fetch(rpcUrl, {
+          method: 'POST',
+          headers: {
+            'apikey': Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+            'Authorization': authHeader,  // JWT المستخدم — auth.uid() يقرأ منه
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+          },
+          body: JSON.stringify({
+            p_new_user_id: user.id,
+            p_referral_code: couponCode,
+          }),
+        })
+        const refResult = await rpcResp.json()
+        console.log(`[apply-coupon] RPC response status=${rpcResp.status}, body=${JSON.stringify(refResult)}`)
 
-      if (refErr) {
-        console.log(`[apply-coupon] referral RPC error: ${refErr.message}`)
-        return jsonRes({ error: 'الكود غير صحيح' }, 400)
+        // PostgREST يرجع 200 مع object مباشرة (بدون wrapping)
+        if (!rpcResp.ok) {
+          // الـRPC رمى exception (مثلاً Function ما موجود) — نرجع رسالة واضحة
+          const errMsg = refResult?.message || refResult?.error || refResult?.details || `RPC failed (${rpcResp.status})`
+          return jsonRes({ error: 'فشل الإحالة: ' + errMsg }, 400)
+        }
+
+        // refResult هو الـjsonb من apply_cash_referral مباشرة
+        if (!refResult || refResult.success === false) {
+          const errMsg = refResult?.error || 'كود الإحالة غير صالح'
+          console.log(`[apply-coupon] referral rejected: ${errMsg}`)
+          return jsonRes({ error: errMsg }, 400)
+        }
+
+        // نجح — الإحالة سُجّلت. خصم 10% راح يُطبَّق تلقائياً في pricing.html
+        console.log(`[apply-coupon] referral applied successfully`)
+        return jsonRes({
+          success: true,
+          type: 'referral',
+          discount_percent: refResult.discount_percent || 10,
+          message: refResult.message || 'تم تفعيل خصم الإحالة 10%'
+        })
+      } catch (refExc) {
+        console.error(`[apply-coupon] referral exception:`, refExc)
+        return jsonRes({ error: 'خطأ في تفعيل الإحالة: ' + (refExc as Error).message }, 500)
       }
-
-      if (!refResult || refResult.success === false) {
-        const errMsg = refResult?.error || 'الكود غير صحيح'
-        console.log(`[apply-coupon] referral rejected: ${errMsg}`)
-        return jsonRes({ error: errMsg }, 400)
-      }
-
-      // نجح — الإحالة سُجّلت. خصم 10% راح يُطبَّق تلقائياً في pricing.html
-      // (loadReferralDiscount يقرأ من DB ويظهر البنر الأخضر)
-      console.log(`[apply-coupon] referral applied successfully`)
-      return jsonRes({
-        success: true,
-        type: 'referral',
-        discount_percent: refResult.discount_percent || 10,
-        message: 'تم تفعيل خصم الإحالة 10% — أعد تحميل الصفحة لرؤيته في الملخّص'
-      })
     }
 
     // ══════════════════════════════════════════
