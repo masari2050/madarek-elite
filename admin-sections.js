@@ -3558,7 +3558,7 @@ window.loadVisitors = async function(opts = {}) {
 
         // Current period
         const [pays, signups, active5min, trainedRange, visitorEvents] = await Promise.all([
-            sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at', rangeStartIso).lt('paid_at', rangeEndIso),
+            sb.from('payments').select('amount,payment_id,user_id').eq('status','paid').gte('paid_at', rangeStartIso).lt('paid_at', rangeEndIso),
             sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
             sb.from('profiles').select('id',{count:'exact',head:true}).gte('last_seen_at', new Date(Date.now()-5*60000).toISOString()),
             sb.from('attempts').select('user_id').gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
@@ -3568,15 +3568,28 @@ window.loadVisitors = async function(opts = {}) {
         // Aggregate visitor events
         const visEvents = visitorEvents.data || [];
         const visitorIds = new Set();
+        const trialIds = new Set();
         const deviceCounts = { desktop: 0, mobile: 0, app: 0, other: 0 };
         const refCounts = {};
         const pageCounts = {};
         const hourCounts = new Array(24).fill(0);
+        const utmSourceCounts = {};
+        const utmCampaignCounts = {};
         visEvents.forEach(e => {
             const id = e.user_id || e.anonymous_id;
-            if (id) visitorIds.add(id);
+            if (id) {
+                visitorIds.add(id);
+                // Anyone who visited /demo or /welcome counts as "started trial"
+                const p = e.page_path || '';
+                if (p.includes('demo') || p.includes('welcome')) trialIds.add(id);
+            }
             const dev = (e.device || 'other').toLowerCase();
             if (deviceCounts[dev] != null) deviceCounts[dev]++; else deviceCounts.other++;
+            // UTM tracking
+            const utmSrc = e.metadata?.utm_source;
+            if (utmSrc) utmSourceCounts[utmSrc] = (utmSourceCounts[utmSrc] || 0) + 1;
+            const utmCmp = e.metadata?.utm_campaign;
+            if (utmCmp) utmCampaignCounts[utmCmp] = (utmCampaignCounts[utmCmp] || 0) + 1;
             // Referrer parse: extract hostname from metadata.referrer
             const ref = e.metadata?.referrer || '';
             let refKey = 'مباشر';
@@ -3616,6 +3629,7 @@ window.loadVisitors = async function(opts = {}) {
         const realPaysPrev = (paysPrev.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
         const rangeRev = realPays.reduce((s,p)=>s+Number(p.amount||0),0);
         const prevRev = realPaysPrev.reduce((s,p)=>s+Number(p.amount||0),0);
+        const paidUserIds = new Set(realPays.map(p => p.user_id).filter(Boolean));
 
         const uniqueTrainees = new Set((trainedRange.data||[]).map(a=>a.user_id)).size;
         const uniqueVisitors = visitorIds.size;
@@ -3768,6 +3782,12 @@ window.loadVisitors = async function(opts = {}) {
         <div class="card" style="margin-top:14px">
             <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="card-title">أكثر الصفحات زيارة · ${rangeLabel}</div><div class="card-sub">من ${fmt(visEvents.length)} مشاهدة صفحة</div></div></div></div>
             <div class="card-body">${renderTopPages(pageCounts)}</div>
+        </div>
+
+        <!-- Phase 3: Conversion funnel + UTM -->
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:14px">
+            ${renderFunnelCard(uniqueVisitors, trialIds.size, signupCount, paidUserIds.size, rangeLabel)}
+            ${renderUtmCard(utmSourceCounts, utmCampaignCounts)}
         </div>`;
     } catch(e) { console.error('loadVisitors', e); if (!isRefresh) showToast('خطأ: '+(e.message||''),'err'); }
 };
@@ -3827,6 +3847,59 @@ function renderHourlyCard(hourCounts) {
         </div>`;
     }).join('');
     return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="card-title">التوزيع بالساعة</div><div class="card-sub">ذروة الزيارات: <b style="color:var(--acc)">${fmtHr(peakHr)}</b> (${fmt(peakVal)})</div></div></div></div><div class="card-body"><div style="display:flex;align-items:flex-end;gap:1px;direction:ltr">${bars}</div></div></div>`;
+}
+
+function renderFunnelCard(visitors, trials, signups, paid, rangeLabel) {
+    if (visitors === 0) {
+        return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></div><div><div class="card-title">قمع التحويل</div><div class="card-sub">زائر → جرّب → سجّل → اشترك</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا زوار بعد في هذه الفترة</div></div></div>';
+    }
+    const stages = [
+        { lbl: 'زائر', value: visitors, icon: '👁️', color: '#6D5DF6' },
+        { lbl: 'جرّب', value: trials, icon: '🎯', color: '#22C55E', tip: 'فتح صفحة /demo أو /welcome' },
+        { lbl: 'سجّل', value: signups, icon: '👤', color: '#F59E0B', tip: 'أنشأ حساب جديد' },
+        { lbl: 'اشترك', value: paid, icon: '⭐', color: '#EF4444', tip: 'دفع اشتراك مدفوع' }
+    ];
+    const max = stages[0].value;
+    const rows = stages.map((s, i) => {
+        const pctFromTop = max > 0 ? (s.value / max * 100) : 0;
+        const prevVal = i > 0 ? stages[i-1].value : null;
+        const dropPct = prevVal && prevVal > 0 ? (((prevVal - s.value) / prevVal) * 100).toFixed(1) : null;
+        const conversionFromPrev = prevVal && prevVal > 0 ? ((s.value / prevVal) * 100).toFixed(1) : null;
+        const tipAttr = s.tip ? ` title="${esc(s.tip)}"` : '';
+        return `<div style="margin-bottom:12px"${tipAttr}>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700"><span style="font-size:16px">${s.icon}</span>${s.lbl}</div>
+                <div style="font-size:13px;font-weight:800;color:${s.color}">${fmt(s.value)}</div>
+            </div>
+            <div style="height:24px;background:var(--s2);border-radius:6px;overflow:hidden;position:relative">
+                <div style="width:${pctFromTop}%;height:100%;background:linear-gradient(90deg,${s.color},${s.color}cc);border-radius:6px;transition:width .5s;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;color:#fff;font-size:10.5px;font-weight:700">${pctFromTop > 12 ? pctFromTop.toFixed(1)+'%' : ''}</div>
+            </div>
+            ${conversionFromPrev !== null ? `<div style="font-size:10px;color:var(--i4);margin-top:3px;display:flex;justify-content:space-between"><span>↳ ${conversionFromPrev}% تحويل من الخطوة السابقة</span><span style="color:${dropPct > 50 ? 'var(--dng)' : 'var(--i4)'}">سقوط ${dropPct}%</span></div>` : ''}
+        </div>`;
+    }).join('');
+    const overallCvr = visitors > 0 ? (paid / visitors * 100).toFixed(2) : 0;
+    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></div><div><div class="card-title">قمع التحويل · ${rangeLabel}</div><div class="card-sub">معدل التحويل النهائي: <b style="color:var(--pri)">${overallCvr}%</b></div></div></div></div><div class="card-body">${rows}</div></div>`;
+}
+
+function renderUtmCard(sources, campaigns) {
+    const totalSrc = Object.values(sources).reduce((s,v) => s+v, 0);
+    const totalCmp = Object.values(campaigns).reduce((s,v) => s+v, 0);
+    if (totalSrc === 0 && totalCmp === 0) {
+        return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic orng"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div><div class="card-title">UTM</div><div class="card-sub">حملات تسويقية</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px;font-size:11.5px;line-height:1.6">لا حملات بعد.<br><span style="color:var(--i4);font-size:10.5px">أضف <code style="background:var(--s2);padding:1px 4px;border-radius:3px">?utm_source=tiktok&utm_campaign=launch</code> للروابط الإعلانية</span></div></div></div>';
+    }
+    const buildList = (counts, total, max=5) => {
+        return Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, max).map(([k, v]) => {
+            const pct = total > 0 ? (v / total * 100).toFixed(1) : 0;
+            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:11.5px"><b style="color:var(--ink)">${esc(k)}</b><span style="color:var(--i3)">${fmt(v)} <span style="color:var(--i4);font-size:10px">(${pct}%)</span></span></div>`;
+        }).join('');
+    };
+    return `<div class="card">
+        <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic orng"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div><div class="card-title">حملات UTM</div><div class="card-sub">من الإعلانات المدفوعة</div></div></div></div>
+        <div class="card-body">
+            ${totalSrc > 0 ? `<div style="font-size:10.5px;color:var(--i4);font-weight:700;margin-bottom:4px">المصادر</div>${buildList(sources, totalSrc, 5)}` : ''}
+            ${totalCmp > 0 ? `<div style="font-size:10.5px;color:var(--i4);font-weight:700;margin:10px 0 4px;border-top:1px solid var(--ln);padding-top:10px">الحملات</div>${buildList(campaigns, totalCmp, 5)}` : ''}
+        </div>
+    </div>`;
 }
 
 function renderTopPages(pageCounts) {
