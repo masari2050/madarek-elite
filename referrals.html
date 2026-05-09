@@ -556,10 +556,15 @@ html[data-fs="large"] .wrap{zoom:1.1}
     catch(e) { M.showToast(code, 'info'); }
   };
 
+  function buildShareUrl(code){
+    // الرابط المختصر — يفتح صفحة /invite.html تلقائياً عبر vercel rewrite
+    return location.origin + '/r/' + encodeURIComponent(code);
+  }
+
   function buildShareText(){
     const code = document.getElementById('codeVal').textContent.trim();
-    const url = location.origin + '/v2/welcome-v2.html?ref=' + encodeURIComponent(code);
-    return 'جرّب مدارك النخبة — تدريب احترافي لاختبار قياس. استخدم كودي وتحصل خصم 10٪ على أول اشتراك:\n' + code + '\n' + url;
+    const url = buildShareUrl(code);
+    return 'جرّب مدارك النخبة — تدريب احترافي لاختبار قياس. استخدم كودي وتحصل خصم 10٪ على أول اشتراك:\n' + url;
   }
 
   window.shareWhatsApp = function(){
@@ -570,7 +575,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
   window.shareNative = async function(){
     const text = buildShareText();
     const code = document.getElementById('codeVal').textContent.trim();
-    const url = location.origin + '/v2/welcome-v2.html?ref=' + encodeURIComponent(code);
+    const url = buildShareUrl(code);
     if (navigator.share) {
       try { await navigator.share({ title: 'مدارك النخبة', text, url }); } catch(e){}
     } else {

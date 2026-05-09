@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/invite/:code", "destination": "/v2/invite-v2.html?code=:code" },
-    { "source": "/r/:code",       "destination": "/v2/invite-v2.html?code=:code" }
+    { "source": "/invite/:code", "destination": "/invite.html?code=:code" },
+    { "source": "/r/:code",       "destination": "/invite.html?code=:code" }
   ],
   "headers": [
     {
