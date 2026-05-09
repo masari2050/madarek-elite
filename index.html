@@ -465,10 +465,16 @@ const counterObs = new IntersectionObserver((entries) => {
 }, { threshold: 0.4 });
 document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
 
-// ═══ Live counts from get_public_stats (DB-driven) ═══
+// ═══ Live counts from get_public_stats (DB-driven, race-safe) ═══
 (function liveCounts(){
     const SB_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+    function applyValue(el, value) {
+        if (!el || !value) return;
+        el.dataset.target = value;
+        // Always sync the text to the new target — even if animation already finished or in-flight.
+        el.textContent = value.toLocaleString('ar-SA');
+    }
     fetch(SB_URL + '/rest/v1/rpc/get_public_stats', {
         method:'POST',
         headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
@@ -477,16 +483,8 @@ document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
     .then(r => r.ok ? r.json() : null)
     .then(d => {
         if (!d || !d[0]) return;
-        const q = d[0].total_questions, u = d[0].total_users;
-        const cQ = document.getElementById('cQ'), cU = document.getElementById('cU');
-        if (cQ && q) {
-            cQ.dataset.target = q;
-            if (cQ.dataset.done) cQ.textContent = q.toLocaleString('ar-SA');
-        }
-        if (cU && u) {
-            cU.dataset.target = u;
-            if (cU.dataset.done) cU.textContent = u.toLocaleString('ar-SA');
-        }
+        applyValue(document.getElementById('cQ'), d[0].total_questions);
+        applyValue(document.getElementById('cU'), d[0].total_users);
     })
     .catch(()=>{});
 })();
