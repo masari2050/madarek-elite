@@ -3557,19 +3557,59 @@ window.loadVisitors = async function(opts = {}) {
         const prevEndIso = prevEnd.toISOString();
 
         // Current period
-        const [pays, signups, active5min, trainedRange, visitors] = await Promise.all([
+        const [pays, signups, active5min, trainedRange, visitorEvents] = await Promise.all([
             sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at', rangeStartIso).lt('paid_at', rangeEndIso),
             sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
             sb.from('profiles').select('id',{count:'exact',head:true}).gte('last_seen_at', new Date(Date.now()-5*60000).toISOString()),
             sb.from('attempts').select('user_id').gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
-            sb.from('analytics_events').select('anonymous_id,user_id',{count:'exact'}).gte('created_at', rangeStartIso).lt('created_at', rangeEndIso).eq('event_type','page_view')
+            sb.from('analytics_events').select('anonymous_id,user_id,device,page_path,metadata,created_at').gte('created_at', rangeStartIso).lt('created_at', rangeEndIso).eq('event_type','page_view').limit(10000)
         ]);
 
-        // Previous period (for delta)
-        const [paysPrev, signupsPrev, visitorsPrev] = await Promise.all([
+        // Aggregate visitor events
+        const visEvents = visitorEvents.data || [];
+        const visitorIds = new Set();
+        const deviceCounts = { desktop: 0, mobile: 0, app: 0, other: 0 };
+        const refCounts = {};
+        const pageCounts = {};
+        const hourCounts = new Array(24).fill(0);
+        visEvents.forEach(e => {
+            const id = e.user_id || e.anonymous_id;
+            if (id) visitorIds.add(id);
+            const dev = (e.device || 'other').toLowerCase();
+            if (deviceCounts[dev] != null) deviceCounts[dev]++; else deviceCounts.other++;
+            // Referrer parse: extract hostname from metadata.referrer
+            const ref = e.metadata?.referrer || '';
+            let refKey = 'مباشر';
+            if (ref) {
+                try {
+                    const host = new URL(ref).hostname.replace(/^www\./, '');
+                    if (host.includes('google')) refKey = 'Google';
+                    else if (host.includes('tiktok')) refKey = 'TikTok';
+                    else if (host.includes('facebook') || host.includes('fb.com')) refKey = 'Facebook';
+                    else if (host.includes('instagram')) refKey = 'Instagram';
+                    else if (host.includes('twitter') || host.includes('x.com')) refKey = 'Twitter/X';
+                    else if (host.includes('snapchat')) refKey = 'Snapchat';
+                    else if (host.includes('whatsapp') || host.includes('wa.me')) refKey = 'WhatsApp';
+                    else if (host.includes('youtube')) refKey = 'YouTube';
+                    else if (host.includes('madarekelite')) refKey = 'داخلي';
+                    else refKey = host;
+                } catch(_) { refKey = 'مباشر'; }
+            }
+            refCounts[refKey] = (refCounts[refKey] || 0) + 1;
+            // Top pages
+            const path = e.page_path || '/';
+            pageCounts[path] = (pageCounts[path] || 0) + 1;
+            // Hourly distribution (use local hour)
+            const hr = new Date(e.created_at).getHours();
+            if (hr >= 0 && hr < 24) hourCounts[hr]++;
+        });
+        const visitors = { count: visitorIds.size };
+
+        // Previous period (for delta) — fetch unique-id list to dedupe like current period
+        const [paysPrev, signupsPrev, visitorsPrevEvents] = await Promise.all([
             sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at', prevStartIso).lt('paid_at', prevEndIso),
             sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', prevStartIso).lt('created_at', prevEndIso),
-            sb.from('analytics_events').select('anonymous_id,user_id',{count:'exact'}).gte('created_at', prevStartIso).lt('created_at', prevEndIso).eq('event_type','page_view')
+            sb.from('analytics_events').select('anonymous_id,user_id').gte('created_at', prevStartIso).lt('created_at', prevEndIso).eq('event_type','page_view').limit(10000)
         ]);
 
         const realPays = (pays.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
@@ -3578,8 +3618,10 @@ window.loadVisitors = async function(opts = {}) {
         const prevRev = realPaysPrev.reduce((s,p)=>s+Number(p.amount||0),0);
 
         const uniqueTrainees = new Set((trainedRange.data||[]).map(a=>a.user_id)).size;
-        const uniqueVisitors = visitors.count || 0;
-        const uniqueVisitorsPrev = visitorsPrev.count || 0;
+        const uniqueVisitors = visitorIds.size;
+        const prevVisIds = new Set();
+        (visitorsPrevEvents.data||[]).forEach(e => { const id = e.user_id || e.anonymous_id; if (id) prevVisIds.add(id); });
+        const uniqueVisitorsPrev = prevVisIds.size;
         const signupCount = signups.count || 0;
         const signupCountPrev = signupsPrev.count || 0;
         const cvr = uniqueVisitors > 0 ? ((signupCount) / uniqueVisitors * 100).toFixed(1) : 0;
@@ -3713,9 +3755,102 @@ window.loadVisitors = async function(opts = {}) {
                     ).join('')
                 }</div>
             </div>
+        </div>
+
+        <!-- Phase 2: Breakdowns row (devices + referrers + hourly) -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px">
+            ${renderDeviceCard(deviceCounts, uniqueVisitors)}
+            ${renderReferrerCard(refCounts)}
+            ${renderHourlyCard(hourCounts)}
+        </div>
+
+        <!-- Phase 2: Top pages -->
+        <div class="card" style="margin-top:14px">
+            <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="card-title">أكثر الصفحات زيارة · ${rangeLabel}</div><div class="card-sub">من ${fmt(visEvents.length)} مشاهدة صفحة</div></div></div></div>
+            <div class="card-body">${renderTopPages(pageCounts)}</div>
         </div>`;
     } catch(e) { console.error('loadVisitors', e); if (!isRefresh) showToast('خطأ: '+(e.message||''),'err'); }
 };
+
+// ─── Phase 2 chart helpers ───
+function renderDeviceCard(counts, totalVisitors) {
+    const total = counts.desktop + counts.mobile + counts.app + counts.other;
+    if (total === 0) return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div class="card-title">الأجهزة</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا بيانات</div></div></div>';
+    const items = [
+        { label: 'كمبيوتر', icon: '🖥️', value: counts.desktop, color: '#6D5DF6' },
+        { label: 'جوال', icon: '📱', value: counts.mobile, color: '#22C55E' },
+        { label: 'تطبيق', icon: '📲', value: counts.app, color: '#F59E0B' },
+        { label: 'أخرى', icon: '❓', value: counts.other, color: '#9CA3AF' }
+    ].filter(i => i.value > 0).sort((a,b) => b.value - a.value);
+    const bars = items.map(i => {
+        const pct = (i.value / total * 100).toFixed(1);
+        return `<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px"><span><span style="margin-left:6px">${i.icon}</span><b>${i.label}</b></span><span style="color:var(--i3);font-size:11px">${fmt(i.value)} <span style="color:var(--i4)">(${pct}%)</span></span></div>
+            <div style="height:7px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${i.color};border-radius:4px;transition:width .4s"></div></div>
+        </div>`;
+    }).join('');
+    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div class="card-title">توزيع الأجهزة</div><div class="card-sub">${fmt(totalVisitors)} زائر فريد</div></div></div></div><div class="card-body">${bars}</div></div>`;
+}
+
+function renderReferrerCard(counts) {
+    const total = Object.values(counts).reduce((s,v) => s + v, 0);
+    if (total === 0) return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><div class="card-title">مصادر الزوار</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا بيانات</div></div></div>';
+    const sourceColors = {
+        'مباشر':'#6D5DF6','Google':'#EA4335','TikTok':'#000000','Facebook':'#1877F2','Instagram':'#E4405F','Twitter/X':'#1DA1F2','Snapchat':'#FFFC00','WhatsApp':'#25D366','YouTube':'#FF0000','داخلي':'#9CA3AF'
+    };
+    const items = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+    const rows = items.map(([key, val]) => {
+        const pct = (val / total * 100).toFixed(1);
+        const color = sourceColors[key] || '#FF8A3D';
+        return `<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px"><b>${esc(key)}</b><span style="color:var(--i3);font-size:11px">${fmt(val)} <span style="color:var(--i4)">(${pct}%)</span></span></div>
+            <div style="height:7px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${color};border-radius:4px;transition:width .4s"></div></div>
+        </div>`;
+    }).join('');
+    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><div class="card-title">مصادر الزوار</div><div class="card-sub">من أين جاؤوا</div></div></div></div><div class="card-body">${rows}</div></div>`;
+}
+
+function renderHourlyCard(hourCounts) {
+    const max = Math.max(...hourCounts, 1);
+    const total = hourCounts.reduce((s,v) => s + v, 0);
+    if (total === 0) return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="card-title">التوزيع بالساعة</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا بيانات</div></div></div>';
+    // Find peak hour
+    let peakHr = 0, peakVal = 0;
+    hourCounts.forEach((v, h) => { if (v > peakVal) { peakVal = v; peakHr = h; } });
+    const fmtHr = h => (h < 12 ? h+'ص' : h === 12 ? '12م' : (h-12)+'م');
+    const bars = hourCounts.map((v, h) => {
+        const pct = (v / max * 100);
+        const isPeak = h === peakHr;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:90px" title="${fmtHr(h)}: ${v} زيارة">
+            <div style="width:80%;height:${Math.max(2, pct)}%;background:${isPeak?'var(--acc)':'var(--pri)'};border-radius:2px 2px 0 0;transition:height .4s;opacity:${v>0?1:.25}"></div>
+            ${[0,6,12,18].includes(h) ? `<div style="font-size:9px;color:var(--i4);margin-top:3px">${fmtHr(h)}</div>` : '<div style="height:12px"></div>'}
+        </div>`;
+    }).join('');
+    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="card-title">التوزيع بالساعة</div><div class="card-sub">ذروة الزيارات: <b style="color:var(--acc)">${fmtHr(peakHr)}</b> (${fmt(peakVal)})</div></div></div></div><div class="card-body"><div style="display:flex;align-items:flex-end;gap:1px;direction:ltr">${bars}</div></div></div>`;
+}
+
+function renderTopPages(pageCounts) {
+    const items = Object.entries(pageCounts).sort((a,b) => b[1] - a[1]).slice(0, 10);
+    if (items.length === 0) return '<div class="empty-d" style="padding:16px">لا بيانات</div>';
+    const max = items[0][1];
+    const labels = {
+        '/': 'الرئيسية','/dashboard': 'لوحة الطالب','/training': 'التدريب','/leaks': 'التسريبات','/practice': 'الأسئلة','/profile': 'الملف الشخصي','/reports': 'التقارير','/pricing': 'الاشتراك','/login': 'تسجيل الدخول','/register': 'إنشاء حساب','/welcome': 'الترحيب','/demo': 'تجربة مجانية','/admin': 'لوحة الإدارة','/referrals': 'الإحالات','/payment-return': 'بعد الدفع'
+    };
+    const rows = items.map(([path, val], i) => {
+        const pct = (val / max * 100);
+        const lbl = labels[path] || path;
+        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)">
+            <div style="width:22px;text-align:center;font-size:10px;font-weight:700;color:${i===0?'var(--gold)':i===1?'#9CA3AF':i===2?'var(--acc)':'var(--i4)'}">#${i+1}</div>
+            <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(path)}">${esc(lbl)}</div>
+                <div style="font-size:10px;color:var(--i4);direction:ltr;text-align:right;margin-top:2px">${esc(path)}</div>
+            </div>
+            <div style="width:130px"><div style="height:6px;background:var(--s2);border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--pri);border-radius:3px"></div></div></div>
+            <div style="font-size:12px;font-weight:700;color:var(--pri);min-width:45px;text-align:left">${fmt(val)}</div>
+        </div>`;
+    }).join('');
+    return rows;
+}
 
 window.visSetRange = function(range) {
     window._visState.range = range;
