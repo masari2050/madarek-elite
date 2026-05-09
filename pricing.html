@@ -344,9 +344,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div id="referralBanner" style="display:none;margin:0 14px 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1px solid #6EE7B7;color:#065F46">
     <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:800">
       <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#059669;fill:none;stroke-width:2.5;flex-shrink:0"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-      <span id="referralBannerTitle">خصم الإحالة 10% مُفعّل</span>
+      <span id="referralBannerTitle">هدية من صديقك</span>
     </div>
-    <div style="font-size:11.5px;font-weight:600;margin-top:4px;color:#047857;padding-right:30px" id="referralBannerSub">يُطبَّق تلقائياً على إجمالي الاشتراك</div>
+    <div style="font-size:11.5px;font-weight:600;margin-top:4px;color:#047857;padding-right:30px" id="referralBannerSub">خصم 10% مطبَّق تلقائياً على اشتراكك</div>
   </div>
 
   <!-- SUMMARY -->
@@ -361,7 +361,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
       <span class="sum-v" id="sumDiscountAmt">-0 ر.س</span>
     </div>
     <div class="sum-row discount" id="sumReferralRow" style="display:none">
-      <span class="sum-k" style="color:#059669">خصم الإحالة (10%)</span>
+      <span class="sum-k" style="color:#059669">هدية صديقك (10%)</span>
       <span class="sum-v" id="sumReferralAmt" style="color:#059669">-0 ر.س</span>
     </div>
     <div class="sum-divider"></div>
@@ -734,7 +734,7 @@ window.applyCouponClick = async function(){
       input.classList.add('ok');
       btn.textContent = 'تم';
       btn.classList.add('applied');
-      msg.textContent = 'تم تفعيل خصم الإحالة 10% — مطبَّق على إجمالي اشتراكك';
+      msg.textContent = 'تم تفعيل هدية صديقك — خصم 10% على اشتراكك';
       msg.className = 'coupon-msg on ok';
       // أعِد تحميل خصم الإحالة من DB → يظهر البنر الأخضر + سطر الخصم في الملخّص
       await loadReferralDiscount();
@@ -863,9 +863,10 @@ async function loadReferralDiscount(){
       referral_id: data.referral_id,
       referrer_name: data.referrer_name || 'صديقك',
     };
-    // أظهر البنر
-    $('referralBannerTitle').textContent = 'خصم الإحالة ' + referralDiscount.percent + '% مُفعّل';
-    $('referralBannerSub').textContent = 'مُحال من ' + referralDiscount.referrer_name + ' — يُطبَّق تلقائياً عند الدفع';
+    // أظهر البنر — صيغة دافئة (هدية من صديق)
+    var firstName = (referralDiscount.referrer_name || 'صديقك').split(' ')[0] || 'صديقك';
+    $('referralBannerTitle').textContent = 'هدية من ' + firstName;
+    $('referralBannerSub').textContent = 'خصم ' + referralDiscount.percent + '% مطبَّق تلقائياً على اشتراكك';
     $('referralBanner').style.display = '';
     updateSummary();
   } catch(e) {
