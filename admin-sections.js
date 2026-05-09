@@ -36,6 +36,85 @@ function $c() { return document.getElementById('contentArea'); }
 // Persistent filter state
 window._qFilters = window._qFilters || { section:'', topic:'', quality:'', status:'', sort:'new', search:'' };
 
+// ════════════════════════════════════════════════════════════
+// QIYAS OFFICIAL CATEGORIES — single source of truth for topics
+// Reference: قياس (qiyas.sa) — Qudurat & Tahsili question types
+// ════════════════════════════════════════════════════════════
+window.QIYAS_TOPICS = {
+    quant: ['الحساب', 'الجبر', 'الهندسة', 'الإحصاء والاحتمالات', 'التحليل'],
+    verbal: ['التناظر اللفظي', 'إكمال الجملة', 'الخطأ السياقي', 'استيعاب المقروء', 'المفردة الشاذة'],
+    tahsili: ['الرياضيات', 'الفيزياء', 'الكيمياء', 'الأحياء']
+};
+
+// Maps any legacy topic value (Arabic, English, variant) to a Qiyas-standard category
+// Returns null if the value can't be classified (will appear under 'غير مصنّف')
+window.mapToStandardTopic = function(section, raw) {
+    if (!raw) return null;
+    const t = String(raw).trim().toLowerCase();
+    const M = {
+        quant: {
+            // الحساب
+            'حساب':'الحساب','arithmetic':'الحساب','نسبة ومعدل':'الحساب','نسبة مئوية':'الحساب',
+            'النسبة المئوية':'الحساب','تناسب':'الحساب','نسبة وتناسب':'الحساب','النسب':'الحساب',
+            'متوسط حسابي':'الحساب','المتوسطات':'الحساب','منوال':'الحساب','الكسور':'الحساب',
+            'كسور':'الحساب','مقارنة كسور':'الحساب','وحدات القياس':'الحساب','مسافة':'الحساب',
+            'السرعة والمسافة':'الحساب','سرعة ومسافة':'الحساب','تحويل عملات':'الحساب',
+            'مضاعفات':'الحساب','قاسم مشترك':'الحساب','قسمة بباقي':'الحساب','أعداد':'الحساب',
+            'أعداد أولية':'الحساب','الربح والخسارة':'الحساب','مسائل حسابية':'الحساب',
+            // الجبر
+            'جبر':'الجبر','algebra':'الجبر','معادلات':'الجبر','المعادلات':'الجبر',
+            'عمليات جبرية':'الجبر','فرق مربعين':'الجبر','الجبر':'الجبر',
+            // الهندسة
+            'هندسة':'الهندسة','geometry':'الهندسة','الزوايا':'الهندسة','مثلث ودائرة':'الهندسة',
+            'مضلعات':'الهندسة','إحداثيات':'الهندسة',
+            // الإحصاء والاحتمالات
+            'إحصاء واحتمالات':'الإحصاء والاحتمالات','الإحصاء':'الإحصاء والاحتمالات',
+            'احتمالات':'الإحصاء والاحتمالات','تباديل':'الإحصاء والاحتمالات',
+            'قراءة جداول':'الإحصاء والاحتمالات','statistics':'الإحصاء والاحتمالات',
+            // التحليل
+            'أنماط':'التحليل','أنماط دورية':'التحليل','أنماط عددية':'التحليل',
+            'المتتاليات':'التحليل','متتابعات':'التحليل','patterns':'التحليل',
+            'استنتاج':'التحليل','مقارنة':'التحليل','المقارنة':'التحليل','comparison':'التحليل'
+        },
+        verbal: {
+            // إكمال الجملة
+            'إكمال جمل':'إكمال الجملة','إكمال الجمل':'إكمال الجملة','إكمال':'إكمال الجملة',
+            'completion':'إكمال الجملة','sentence_completion':'إكمال الجملة','ترادف':'إكمال الجملة',
+            // التناظر اللفظي
+            'تناظر لفظي':'التناظر اللفظي','التناظر اللفظي':'التناظر اللفظي','analogy':'التناظر اللفظي',
+            'ارتباط':'التناظر اللفظي','محتوى وحاوي':'التناظر اللفظي','جزء من كل':'التناظر اللفظي',
+            'تتابع':'التناظر اللفظي','تضاد':'التناظر اللفظي','سبب ونتيجة':'التناظر اللفظي',
+            'قواعد':'التناظر اللفظي','وصف مبالغة':'التناظر اللفظي',
+            // الخطأ السياقي
+            'خطأ سياقي':'الخطأ السياقي','الخطأ السياقي':'الخطأ السياقي','error_detection':'الخطأ السياقي',
+            // استيعاب المقروء
+            'استيعاب مقروء':'استيعاب المقروء','استيعاب المقروء':'استيعاب المقروء',
+            'comprehension':'استيعاب المقروء','قطعة':'استيعاب المقروء',
+            // المفردة الشاذة
+            'مفردة شاذة':'المفردة الشاذة','المفردة الشاذة':'المفردة الشاذة','odd_one_out':'المفردة الشاذة'
+        },
+        tahsili: {
+            // الرياضيات
+            'رياضيات':'الرياضيات','math':'الرياضيات','جبر':'الرياضيات',
+            'تفاضل وتكامل':'الرياضيات','حساب مثلثات':'الرياضيات','دوال':'الرياضيات',
+            'صيغ رياضية':'الرياضيات','متتابعات':'الرياضيات','لوغاريتمات':'الرياضيات','هندسة':'الرياضيات',
+            // الفيزياء
+            'فيزياء':'الفيزياء','physics':'الفيزياء','فيزياء نووية':'الفيزياء',
+            'فيزياء حديثة':'الفيزياء','ميكانيكا':'الفيزياء','كهرومغناطيسية':'الفيزياء',
+            'كهرباء':'الفيزياء',
+            // الكيمياء
+            'كيمياء':'الكيمياء','chemistry':'الكيمياء','كيمياء عضوية':'الكيمياء',
+            'روابط كيميائية':'الكيمياء','كيمياء حيوية':'الكيمياء','أحماض وقواعد':'الكيمياء',
+            'فصل مخاليط':'الكيمياء',
+            // الأحياء
+            'أحياء':'الأحياء','biology':'الأحياء','وراثة':'الأحياء','علم الحيوان':'الأحياء',
+            'سلوك':'الأحياء','بيئة':'الأحياء','تشريح':'الأحياء','نبات':'الأحياء',
+            'انقسام خلوي':'الأحياء'
+        }
+    };
+    return (M[section] || {})[t] || null;
+};
+
 window.loadQuestions = async function(page=1) {
     const { sb } = window.A;
     const PAGE_SIZE = 20;
@@ -114,8 +193,16 @@ window.loadQuestions = async function(page=1) {
 
         // Section
         if (f.section) q = q.eq('section', f.section);
-        // Topic
-        if (f.topic) q = q.eq('topic', f.topic);
+        // Topic — translate standard topic into all legacy raw values (inverse mapping).
+        // For "غير مصنّف" we apply it post-fetch (no server-side condition for "no match").
+        let postFilterUnclassified = false;
+        if (f.topic && f.topic !== '__unclassified__' && f.section) {
+            const rawValues = qInverseTopicMap(f.section, f.topic);
+            if (rawValues.length > 0) q = q.in('topic', rawValues);
+            else q = q.eq('id', '00000000-0000-0000-0000-000000000000'); // empty result
+        } else if (f.topic === '__unclassified__') {
+            postFilterUnclassified = true;
+        }
         // Quality
         if (f.quality === 'no_answer') q = q.is('correct_index', null);
         else if (f.quality === 'no_explanation') q = q.or('explanation.is.null,explanation.eq.');
@@ -136,8 +223,13 @@ window.loadQuestions = async function(page=1) {
 
         // Sort
         const asc = f.sort === 'old';
-        const { data, count } = await q.order('created_at',{ascending:asc})
+        let { data, count } = await q.order('created_at',{ascending:asc})
             .range((page-1)*PAGE_SIZE, page*PAGE_SIZE - 1);
+
+        // Post-filter for unclassified: keep only rows whose topic doesn't map to a standard
+        if (postFilterUnclassified && data) {
+            data = data.filter(row => !window.mapToStandardTopic(row.section, row.topic));
+        }
 
         const list = document.getElementById('qList');
         if (!data || data.length === 0) {
@@ -170,7 +262,12 @@ window.loadQuestions = async function(page=1) {
             return `<div class="q-card" style="${cardBorder}">
                 <div class="q-card-top">
                     <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                        <span class="q-tag ${tagClass}">${sectionTag(q.section)}${q.topic ? ' · ' + esc(q.topic) : ''}${q.sub_section ? ' · ' + esc(q.sub_section) : ''}</span>
+                        <span class="q-tag ${tagClass}">${sectionTag(q.section)}${(() => {
+                            const std = window.mapToStandardTopic(q.section, q.topic);
+                            if (std) return ' · ' + esc(std);
+                            if (q.topic) return ' · ' + esc(q.topic) + ' (يحتاج تصنيف)';
+                            return '';
+                        })()}</span>
                         ${badges.join(' ')}
                     </div>
                     <div class="q-actions">
@@ -250,49 +347,67 @@ window.loadQKpis = async function() {
     } catch(e) { console.error('loadQKpis', e); }
 };
 
-// Load topic breakdown for the selected section (or all 3 sections if none)
+// Load topic breakdown — uses Qiyas-standard categories only (Arabic, no English).
+// Maps every legacy DB topic to its standard via mapToStandardTopic().
+// Unmapped values are aggregated under "غير مصنّف" with a warning badge.
 window.loadQTopicBreakdown = async function(section) {
     const { sb } = window.A;
     const wrap = document.getElementById('qTopicBreakdown');
     if (!wrap) return;
     try {
-        // Fetch a generous sample to compute topic counts client-side
+        // Fetch a generous sample to compute counts client-side
         let q = sb.from('questions').select('section,topic').eq('disabled',false).limit(10000);
         if (section) q = q.eq('section', section);
         const { data } = await q;
-        const groupedBySection = { quant: {}, verbal: {}, tahsili: {} };
+
+        // Aggregate by section → standard topic
+        const counts = { quant:{}, verbal:{}, tahsili:{} };
+        const unclassified = { quant:0, verbal:0, tahsili:0 };
         (data||[]).forEach(r => {
-            if (!groupedBySection[r.section]) return;
-            const t = r.topic || '— بدون موضوع —';
-            groupedBySection[r.section][t] = (groupedBySection[r.section][t]||0) + 1;
+            if (!counts[r.section]) return;
+            const std = window.mapToStandardTopic(r.section, r.topic);
+            if (std) counts[r.section][std] = (counts[r.section][std]||0) + 1;
+            else unclassified[r.section]++;
         });
+
         const sectionLabel = { quant:'قدرات كمي', verbal:'قدرات لفظي', tahsili:'تحصيلي' };
         const sectionColor = { quant:'#6D5DF6', verbal:'#22C55E', tahsili:'#FF8A3D' };
         const sectionsToShow = section ? [section] : ['quant','verbal','tahsili'];
+
         const html = sectionsToShow.map(sec => {
-            const topics = groupedBySection[sec] || {};
-            const items = Object.entries(topics).sort((a,b) => b[1] - a[1]);
-            const total = items.reduce((s,[,v]) => s+v, 0);
-            if (items.length === 0) return '';
-            const chips = items.map(([t, n]) => {
+            const stdList = window.QIYAS_TOPICS[sec] || [];
+            const total = stdList.reduce((s,t) => s + (counts[sec][t]||0), 0) + unclassified[sec];
+            if (total === 0) return '';
+
+            // Build chips for each STANDARD topic (always shown, even if 0)
+            const chips = stdList.map(t => {
+                const n = counts[sec][t] || 0;
                 const isActive = window._qFilters.topic === t && window._qFilters.section === sec;
-                const isNoTopic = t === '— بدون موضوع —';
-                return `<button class="topic-chip ${isActive?'active':''}" onclick="qPickTopic('${sec}', '${esc(isNoTopic?'':t).replace(/'/g,"\\'")}'); this.classList.toggle('active')" style="background:${isActive?sectionColor[sec]:'var(--s2)'};color:${isActive?'#fff':'var(--i2)'};border:1px solid ${isActive?sectionColor[sec]:'var(--ln)'};padding:5px 11px;border-radius:18px;font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:all .15s">${esc(t)} <span style="background:${isActive?'rgba(255,255,255,.25)':'#fff'};color:${isActive?'#fff':sectionColor[sec]};padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700">${fmt(n)}</span></button>`;
+                const dim = n === 0 ? 'opacity:.45;' : '';
+                return `<button onclick="qPickTopic('${sec}', '${t.replace(/'/g,"\\'")}')" style="${dim}background:${isActive?sectionColor[sec]:'var(--s2)'};color:${isActive?'#fff':'var(--i2)'};border:1px solid ${isActive?sectionColor[sec]:'var(--ln)'};padding:6px 12px;border-radius:18px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit;transition:all .15s">${esc(t)} <span style="background:${isActive?'rgba(255,255,255,.25)':'#fff'};color:${isActive?'#fff':sectionColor[sec]};padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700">${fmt(n)}</span></button>`;
             }).join(' ');
-            return `<div style="margin-bottom:10px">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px"><span style="width:6px;height:6px;border-radius:50%;background:${sectionColor[sec]}"></span><b style="color:${sectionColor[sec]}">${sectionLabel[sec]}</b><span style="color:var(--i4)">${fmt(total)} سؤال · ${items.length} موضوع</span></div>
-                <div style="display:flex;flex-wrap:wrap;gap:6px">${chips}</div>
+
+            // Unclassified chip (warning, only shown if > 0)
+            const unclChip = unclassified[sec] > 0
+                ? `<button onclick="qPickTopic('${sec}', '__unclassified__')" title="أسئلة بمواضيع قديمة لم تُصنّف على معايير قياس — تحتاج إعادة تصنيف" style="background:rgba(239,68,68,.10);color:var(--dng);border:1px dashed var(--dng);padding:6px 12px;border-radius:18px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit"><svg style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.4" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>غير مصنّف <span style="background:#fff;color:var(--dng);padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700">${fmt(unclassified[sec])}</span></button>`
+                : '';
+
+            return `<div style="margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px"><span style="width:7px;height:7px;border-radius:50%;background:${sectionColor[sec]}"></span><b style="color:${sectionColor[sec]};font-size:13px">${sectionLabel[sec]}</b><span style="color:var(--i4)">${fmt(total)} سؤال · ${stdList.length} تصنيف رسمي</span></div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">${chips} ${unclChip}</div>
             </div>`;
         }).filter(Boolean).join('');
-        wrap.innerHTML = html ? `<div style="background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px 14px">${html}</div>` : '';
 
-        // Also populate the topic <select> dropdown for the section filter
+        wrap.innerHTML = html ? `<div style="background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:14px 16px">${html}</div>` : '';
+
+        // Populate the <select> with standard topics for the chosen section
         const topicSelect = document.getElementById('qTopicFilter');
         if (topicSelect && section) {
             const current = window._qFilters.topic;
-            const topics = Object.keys(groupedBySection[section] || {}).filter(t => t !== '— بدون موضوع —').sort();
+            const stds = window.QIYAS_TOPICS[section] || [];
             topicSelect.innerHTML = '<option value="">كل المواضيع</option>' +
-                topics.map(t => `<option value="${esc(t)}" ${current===t?'selected':''}>${esc(t)}</option>`).join('');
+                stds.map(t => `<option value="${esc(t)}" ${current===t?'selected':''}>${esc(t)}</option>`).join('') +
+                `<option value="__unclassified__" ${current==='__unclassified__'?'selected':''}>غير مصنّف (يحتاج مراجعة)</option>`;
         } else if (topicSelect) {
             topicSelect.innerHTML = '<option value="">كل المواضيع</option>';
         }
@@ -303,6 +418,33 @@ window.qPickTopic = function(section, topic) {
     window._qFilters.section = section;
     window._qFilters.topic = topic;
     loadQuestions(1);
+};
+
+// Inverse map: standard topic → all raw legacy values that map to it
+window.qInverseTopicMap = function(section, standardTopic) {
+    const map = {
+        quant: {
+            'الحساب': ['حساب','arithmetic','نسبة ومعدل','نسبة مئوية','النسبة المئوية','تناسب','نسبة وتناسب','النسب','متوسط حسابي','المتوسطات','منوال','الكسور','كسور','مقارنة كسور','وحدات القياس','مسافة','السرعة والمسافة','سرعة ومسافة','تحويل عملات','مضاعفات','قاسم مشترك','قسمة بباقي','أعداد','أعداد أولية','الربح والخسارة','مسائل حسابية'],
+            'الجبر': ['جبر','algebra','معادلات','المعادلات','عمليات جبرية','فرق مربعين','الجبر'],
+            'الهندسة': ['هندسة','geometry','الزوايا','مثلث ودائرة','مضلعات','إحداثيات'],
+            'الإحصاء والاحتمالات': ['إحصاء واحتمالات','الإحصاء','احتمالات','تباديل','قراءة جداول','statistics'],
+            'التحليل': ['أنماط','أنماط دورية','أنماط عددية','المتتاليات','متتابعات','patterns','استنتاج','مقارنة','المقارنة','comparison']
+        },
+        verbal: {
+            'إكمال الجملة': ['إكمال جمل','إكمال الجمل','إكمال','completion','sentence_completion','ترادف'],
+            'التناظر اللفظي': ['تناظر لفظي','التناظر اللفظي','analogy','ارتباط','محتوى وحاوي','جزء من كل','تتابع','تضاد','سبب ونتيجة','قواعد','وصف مبالغة'],
+            'الخطأ السياقي': ['خطأ سياقي','الخطأ السياقي','error_detection'],
+            'استيعاب المقروء': ['استيعاب مقروء','استيعاب المقروء','comprehension','قطعة'],
+            'المفردة الشاذة': ['مفردة شاذة','المفردة الشاذة','odd_one_out']
+        },
+        tahsili: {
+            'الرياضيات': ['رياضيات','math','جبر','تفاضل وتكامل','حساب مثلثات','دوال','صيغ رياضية','متتابعات','لوغاريتمات','هندسة'],
+            'الفيزياء': ['فيزياء','physics','فيزياء نووية','فيزياء حديثة','ميكانيكا','كهرومغناطيسية','كهرباء'],
+            'الكيمياء': ['كيمياء','chemistry','كيمياء عضوية','روابط كيميائية','كيمياء حيوية','أحماض وقواعد','فصل مخاليط'],
+            'الأحياء': ['أحياء','biology','وراثة','علم الحيوان','سلوك','بيئة','تشريح','نبات','انقسام خلوي']
+        }
+    };
+    return (map[section] || {})[standardTopic] || [];
 };
 
 // Load all question_ids that have at least one pending report (for filtering + counts)
@@ -594,9 +736,11 @@ async function loadReviewReports() {
     if (!area) return;
     area.innerHTML = '<div class="loader">جاري التحميل...</div>';
     try {
+        // The reports table uses reported_at (not created_at). Using created_at causes
+        // PostgREST to return 400 'column does not exist' which would silently empty the list.
         const { data, count } = await sb.from('reports')
-            .select('id, reason, created_at, status, user_id, questions(id,question_text,choices,correct_index,explanation,image_url,section,topic), profiles(full_name)', {count:'exact'})
-            .eq('status','pending').order('created_at',{ascending:false}).limit(50);
+            .select('id, reason, reported_at, status, user_id, questions(id,question_text,choices,correct_index,explanation,image_url,section,topic), profiles(full_name,email)', {count:'exact'})
+            .eq('status','pending').order('reported_at',{ascending:false}).limit(50);
 
         document.getElementById('tabReportsCount').textContent = count || 0;
 
@@ -610,10 +754,11 @@ async function loadReviewReports() {
             const q = r.questions;
             if (!q) return '';
             const choices = q.choices || [];
+            const u = r.profiles || {};
             return `<div class="review-q">
                 <div class="rq-top">
-                    <span class="q-tag">${sectionTag(q.section)}</span>
-                    <span style="font-size:10px;color:var(--i3)">أبلغ: <b>${esc(r.profiles?.full_name||'—')}</b> · ${fmtDate(r.created_at)}</span>
+                    <span class="q-tag">${sectionTag(q.section)}${q.topic?' · '+esc(window.mapToStandardTopic(q.section,q.topic)||q.topic):''}</span>
+                    <span style="font-size:10px;color:var(--i3)">أبلغ: <b>${esc(u.full_name||'—')}</b>${u.email?' <span style="color:var(--i4)">· '+esc(u.email)+'</span>':''} · ${fmtDate(r.reported_at)}</span>
                 </div>
                 ${q.image_url ? '<img src="'+esc(q.image_url)+'" style="max-width:300px;border-radius:8px;margin-bottom:12px" onerror="this.style.display=\'none\'">' : ''}
                 <div class="rq-txt">${esc(q.question_text)}</div>
