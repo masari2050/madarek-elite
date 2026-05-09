@@ -67,8 +67,43 @@
         } catch(e){}
     }
 
+    // ─── UTM parameters (capture once per visitor + persist for attribution) ───
+    function captureUtm(){
+        try {
+            var qs = new URLSearchParams(location.search);
+            var utm = {};
+            ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(function(k){
+                var v = qs.get(k);
+                if(v) utm[k] = v;
+            });
+            if(Object.keys(utm).length > 0){
+                // Persist first-touch attribution (don't overwrite if already set)
+                if(!localStorage.getItem('madarek_utm_first')){
+                    localStorage.setItem('madarek_utm_first', JSON.stringify(utm));
+                    localStorage.setItem('madarek_utm_first_at', new Date().toISOString());
+                }
+                // Always update last-touch
+                localStorage.setItem('madarek_utm_last', JSON.stringify(utm));
+            }
+            // Return current-touch UTM (from URL) merged with last-touch fallback
+            var lastTouch = {};
+            try { lastTouch = JSON.parse(localStorage.getItem('madarek_utm_last') || '{}'); } catch(e){}
+            return Object.keys(utm).length > 0 ? utm : lastTouch;
+        } catch(e){ return {}; }
+    }
+
+    var pageUtm = captureUtm();
+
     // ─── تتبع زيارة الصفحة ───
-    trackEvent('page_view', { referrer: document.referrer || null, title: document.title });
+    trackEvent('page_view', {
+        referrer: document.referrer || null,
+        title: document.title,
+        utm_source: pageUtm.utm_source || null,
+        utm_medium: pageUtm.utm_medium || null,
+        utm_campaign: pageUtm.utm_campaign || null,
+        utm_term: pageUtm.utm_term || null,
+        utm_content: pageUtm.utm_content || null
+    });
 
     // ─── تحديث آخر ظهور كل 2 دقيقة ───
     updateLastSeen();
