@@ -673,25 +673,49 @@ window.runClassifier = async function() {
             </div>
         </div>`;
 
-        // Step 3: auto-apply HIGH-confidence
+        // Step 3: auto-apply HIGH-confidence (always — confident enough)
+        reportEl.style.display = 'block';
+        let highApplied = 0, highFailed = 0;
         if (buckets.high.length > 0) {
-            reportEl.style.display = 'block';
             reportEl.innerHTML = `<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:10px;font-size:12px;color:var(--suc)"><div class="loader" style="display:inline">جاري تصنيف ${fmt(buckets.high.length)} سؤال عالي الثقة...</div></div>`;
-            let applied = 0, failed = 0;
             for (const q of buckets.high) {
                 try {
                     const { error } = await sb.from('questions').update({ topic: q.suggested }).eq('id', q.id);
-                    if (error) failed++; else applied++;
-                } catch(_) { failed++; }
+                    if (error) highFailed++; else highApplied++;
+                } catch(_) { highFailed++; }
             }
-            reportEl.innerHTML = `<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:12px;font-size:12.5px;color:var(--suc)"><b>تم تصنيف ${fmt(applied)} سؤال تلقائياً.</b>${failed > 0 ? ' فشل ' + failed + ' سؤال.' : ''}</div>`;
         }
 
-        // Step 4: build manual review queue (medium + low + none)
+        // Step 4: build manual review queue (medium + low + none) + offer "apply all" shortcut
         window._clState.manualPending = [...buckets.medium, ...buckets.low, ...buckets.none];
         window._clState.idx = 0;
         window._clState.section = section;
-        window._clState.autoApplied = (buckets.high || []).length;
+        window._clState.autoApplied = highApplied;
+        window._clState.highCount = buckets.high.length;
+        window._clState.mediumCount = buckets.medium.length;
+        window._clState.lowCount = buckets.low.length;
+        window._clState.noneCount = buckets.none.length;
+
+        const summaryHtml = highApplied > 0
+            ? `<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:12px;font-size:12.5px;color:var(--suc);margin-bottom:8px"><b>تم تصنيف ${fmt(highApplied)} سؤال تلقائياً (عالية الثقة).</b>${highFailed > 0 ? ' فشل ' + highFailed + '.' : ''}</div>`
+            : `<div style="background:var(--s2);border:1px solid var(--ln);border-radius:8px;padding:12px;font-size:12.5px;margin-bottom:8px">لا توجد أسئلة عالية الثقة في هذا القسم.</div>`;
+
+        const suggestable = buckets.medium.length + buckets.low.length;
+        const applyAllHtml = suggestable > 0
+            ? `<div style="background:rgba(245,158,11,.10);border:1px solid var(--gold);border-radius:8px;padding:12px;font-size:12.5px;margin-bottom:8px">
+                <div style="margin-bottom:8px"><b>${fmt(suggestable)} سؤال له اقتراح لكن بثقة أقل.</b></div>
+                <div style="font-size:11px;color:var(--i3);margin-bottom:8px">يمكنك تطبيق كل اقتراحات الذكاء الاصطناعي دفعة واحدة (بثقة متوسطة + منخفضة)، أو مراجعتها يدوياً واحد واحد.</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button onclick="applyAllSuggestions()" class="btn btn-pri" style="background:var(--gold);border:none">تطبيق كل الاقتراحات تلقائياً (${fmt(suggestable)})</button>
+                    <button onclick="document.getElementById('clManual').scrollIntoView({behavior:'smooth'})" class="btn btn-ghost">مراجعة يدوية واحد واحد</button>
+                </div>
+              </div>`
+            : '';
+        const noneHtml = buckets.none.length > 0
+            ? `<div style="background:rgba(107,114,128,.08);border:1px solid var(--ln);border-radius:8px;padding:10px;font-size:11.5px;color:var(--i3);margin-bottom:8px">${fmt(buckets.none.length)} سؤال لم يستطع الذكاء الاصطناعي اقتراح تصنيف لها — تظهر للمراجعة اليدوية فقط.</div>`
+            : '';
+        reportEl.innerHTML = summaryHtml + applyAllHtml + noneHtml;
+
         renderManualReview();
     } catch(e) {
         progressEl.innerHTML = '<div style="background:var(--dng-s);border:1px solid var(--dng);border-radius:8px;padding:10px;color:var(--dng)">خطأ: '+esc(e.message||'')+'</div>';
@@ -732,6 +756,35 @@ window.renderManualReview = function() {
             <button onclick="classifyMarkUnclassifiable()" class="btn btn-ghost" style="flex:1;min-width:120px;color:var(--dng)">يحتاج مراجعة لاحقة</button>
         </div>
     </div>`;
+};
+
+window.applyAllSuggestions = async function() {
+    const { sb } = window.A;
+    const s = window._clState;
+    // Only apply where the AI actually suggested something (skip 'none')
+    const queue = s.manualPending.filter(q => q.suggested);
+    if (queue.length === 0) { showToast('لا توجد اقتراحات لتطبيقها', 'err'); return; }
+    if (!confirm('تطبيق ' + queue.length + ' اقتراح؟ يمكنك مراجعة النتيجة لاحقاً عبر فلتر القسم.')) return;
+
+    const reportEl = document.getElementById('clReport');
+    if (reportEl) reportEl.innerHTML = '<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:12px;font-size:12.5px;color:var(--suc)"><div class="loader" style="display:inline">جاري تطبيق ' + queue.length + ' اقتراح...</div></div>';
+
+    let applied = 0, failed = 0;
+    for (const q of queue) {
+        try {
+            const { error } = await sb.from('questions').update({ topic: q.suggested }).eq('id', q.id);
+            if (error) failed++; else applied++;
+        } catch(_) { failed++; }
+    }
+
+    // Remove applied ones from manual queue (keep only 'none' confidence for manual review)
+    s.manualPending = s.manualPending.filter(q => !q.suggested);
+    s.idx = 0;
+    s.autoApplied = (s.autoApplied || 0) + applied;
+
+    if (reportEl) reportEl.innerHTML = '<div style="background:var(--ss);border:1px solid var(--suc);border-radius:8px;padding:12px;font-size:12.5px;color:var(--suc)"><b>تم تطبيق ' + fmt(applied) + ' اقتراح بنجاح.</b>' + (failed > 0 ? ' فشل ' + failed + '.' : '') + (s.manualPending.length > 0 ? ' بقي ' + s.manualPending.length + ' سؤال للمراجعة اليدوية.' : ' كل الأسئلة الآن مصنّفة.') + '</div>';
+
+    renderManualReview();
 };
 
 window.classifyPick = async function(stdTopic) {
