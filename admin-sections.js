@@ -571,7 +571,7 @@ window.loadUsers = async function(page=1) {
         const paymentMap = {};      // user_id → آخر دفعة (amount, coupon_code, status)
         try {
             const [profRes, redRes, payRes] = await Promise.all([
-                sb.from('profiles').select('id, email, subscription_source, referred_by').in('id', userIds),
+                sb.from('profiles').select('id, email, subscription_source').in('id', userIds),
                 sb.from('coupon_redemptions').select('user_id, coupon_code, discount_type, discount_value, final_amount, status, created_at').in('user_id', userIds).eq('status','success').order('created_at',{ascending:false}),
                 sb.from('payments').select('user_id, amount, coupon_code, status, created_at').in('user_id', userIds).eq('status','paid').order('created_at',{ascending:false})
             ]);
@@ -629,9 +629,7 @@ window.loadUsers = async function(page=1) {
             if (src === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) {
                 return pill('مدفوع', 'var(--suc)', 'var(--ss)', 'دفع عبر MyFatoorah');
             }
-            // 8) إحالة كـlast resort
-            if (ex.referred_by) return pill('إحالة', 'var(--pri)', 'var(--ps)', 'اشترك عبر إحالة');
-            // 9) Fallback — مشترك لكن لا أثر في أي جدول دفع/كوبون → أُضيف يدوياً
+            // 8) Fallback — مشترك لكن لا أثر في أي جدول دفع/كوبون → أُضيف يدوياً
             return pill('منحة (يدوي)', 'var(--pri)', 'var(--ps)', 'مشترك بدون payment/coupon — مفترض أُضيف يدوياً من admin');
         };
 
@@ -651,7 +649,6 @@ window.loadUsers = async function(page=1) {
             if (ex.subscription_source === 'google_play') return 'google_play';
             if (ex.subscription_source === 'admin')       return 'admin_grant';
             if (ex.subscription_source === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) return 'paid';
-            if (ex.referred_by) return 'referral';
             return 'unknown';
         };
 
@@ -979,14 +976,13 @@ window.exportUsers = async function() {
     const NOW = Date.now();
     const DAY = 86400000;
     try {
-        let q = sb.from('profiles').select('full_name,email,phone,subscription_type,subscription_end,subscription_source,referred_by,used_coupon,xp,created_at,last_seen_at');
+        let q = sb.from('profiles').select('full_name,email,phone,subscription_type,subscription_end,subscription_source,used_coupon,xp,created_at,last_seen_at');
         const nowIso = new Date().toISOString();
         if (f.sub === 'active') q = q.in('subscription_type', ['monthly','quarterly','yearly']).gt('subscription_end', nowIso);
         else if (f.sub === 'free') q = q.or('subscription_type.eq.free,subscription_type.is.null');
         else if (['monthly','quarterly','yearly'].includes(f.sub)) q = q.eq('subscription_type', f.sub).gt('subscription_end', nowIso);
         else if (f.sub === 'expired') q = q.in('subscription_type', ['monthly','quarterly','yearly']).lt('subscription_end', nowIso);
         if (['myfatoorah','apple_iap','google_play','admin'].includes(f.source)) q = q.eq('subscription_source', f.source);
-        else if (f.source === 'referral') q = q.not('referred_by','is',null);
         if (f.activity === 'online') q = q.gt('last_seen_at', new Date(NOW - 5*60000).toISOString());
         else if (f.activity === 'week') q = q.gt('last_seen_at', new Date(NOW - 7*DAY).toISOString());
         else if (f.activity === 'month') q = q.gt('last_seen_at', new Date(NOW - 30*DAY).toISOString());
@@ -2830,7 +2826,6 @@ window.loadUsersAnalytics = async function(page=1) {
             <option value="apple_iap" ${f.source==='apple_iap'?'selected':''}>Apple IAP</option>
             <option value="google_play" ${f.source==='google_play'?'selected':''}>Google Play</option>
             <option value="admin" ${f.source==='admin'?'selected':''}>منحة إدارية</option>
-            <option value="referral" ${f.source==='referral'?'selected':''}>إحالة</option>
             <option value="coupon_free" ${f.source==='coupon_free'?'selected':''}>كوبون مجاني</option>
             <option value="coupon_discount" ${f.source==='coupon_discount'?'selected':''}>كوبون خصم</option>
         </select>
@@ -2860,7 +2855,7 @@ window.loadUsersAnalytics = async function(page=1) {
 
     // ── Build query with filters ──
     try {
-        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,subscription_source,referred_by,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
+        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,subscription_source,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
 
         // Subscription filter
         const nowIso = new Date().toISOString();
@@ -2876,7 +2871,7 @@ window.loadUsersAnalytics = async function(page=1) {
         else if (f.source === 'apple_iap') q = q.eq('subscription_source','apple_iap');
         else if (f.source === 'google_play') q = q.eq('subscription_source','google_play');
         else if (f.source === 'admin') q = q.eq('subscription_source','admin');
-        else if (f.source === 'referral') q = q.not('referred_by','is',null);
+        // 'referral' option handled post-fetch via referrals table (see below)
 
         // Activity filter
         if (f.activity === 'online') q = q.gt('last_seen_at', new Date(NOW - 5*60000).toISOString());
@@ -2912,7 +2907,7 @@ window.loadUsersAnalytics = async function(page=1) {
             sb.from('attempts').select('user_id,is_correct,created_at').in('user_id', uids),
             sb.from('coupon_redemptions').select('user_id, coupon_code, discount_type, discount_value, final_amount, status, created_at').in('user_id', uids).eq('status','success').order('created_at',{ascending:false}),
             sb.from('payments').select('user_id, amount, coupon_code, status, created_at').in('user_id', uids).eq('status','paid').order('created_at',{ascending:false}),
-            sb.from('profiles').select('id, subscription_source, referred_by').in('id', uids)
+            sb.from('profiles').select('id, subscription_source').in('id', uids)
         ]);
         const stats = {};
         (attsRes.data||[]).forEach(a => {
@@ -2990,7 +2985,6 @@ window.loadUsersAnalytics = async function(page=1) {
             if (src === 'google_play') return pill('Google Play', '#1A1D2E', '#E5E7EB');
             if (src === 'admin')       return pill('منحة', 'var(--pri)', 'var(--ps)', 'منحة إدارية');
             if (src === 'myfatoorah' || (lastPay && Number(lastPay.amount) > 0)) return pill('مدفوع', 'var(--suc)', 'var(--ss)');
-            if (ex.referred_by)        return pill('إحالة', 'var(--pri)', 'var(--ps)');
             return pill('منحة (يدوي)', 'var(--pri)', 'var(--ps)', 'بدون payment/coupon — أُضيف يدوياً');
         };
 
