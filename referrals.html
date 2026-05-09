@@ -314,14 +314,19 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <div class="stat-row">
   <div class="stat-card pending">
     <div class="stat-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-    <div class="stat-lbl">معلّق</div>
-    <div class="stat-val"><span id="sPending">0</span><small>ر.س</small></div>
+    <div class="stat-lbl">قيد المعالجة</div>
+    <div class="stat-val"><span id="sPendingCount">0</span><small style="font-size:11px">إحالات</small></div>
   </div>
   <div class="stat-card available">
     <div class="stat-ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div class="stat-lbl">متاح للصرف</div>
     <div class="stat-val"><span id="sAvailable">0</span><small>ر.س</small></div>
   </div>
+</div>
+
+<!-- ملاحظة شفّافة عن فترة الـ 7 أيام -->
+<div id="pendingNote" style="display:none;margin:0 0 14px;padding:10px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;color:#92400E;font-size:11.5px;font-weight:600;line-height:1.65;text-align:center">
+  <span id="pendingNoteText">لديك إحالات قيد المعالجة — تُتاح للصرف بعد 7 أيام من تاريخ الدفع (كما بالشروط)</span>
 </div>
 
 <!-- PAYOUT CTA (يظهر فقط عند توفّر 100+) -->
@@ -467,7 +472,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
       pending_amount: 30,
       available_amount: 0,
       paid_out_amount: 0,
-      total_earned: 30,
+      total_earned: 0,
       total_referrals: 4,
       confirmed_count: 0,
       pending_count: 3,
@@ -508,8 +513,14 @@ html[data-fs="large"] .wrap{zoom:1.1}
     document.getElementById('hCash').textContent = fmt(d.total_earned);
     document.getElementById('hSubs').textContent = d.confirmed_count || 0;
     document.getElementById('hTotal').textContent = d.total_referrals || 0;
-    document.getElementById('sPending').textContent = fmt(d.pending_amount);
+    // المعلّق: نعرض العدد فقط (مش المبلغ) — قرار 2026-05-09
+    // المبلغ الفعلي للمعلّق يظهر في لوحة الإدارة فقط، حتى يكتمل تأكيد الـ7 أيام
+    var pendingCount = Number(d.pending_count || 0);
+    document.getElementById('sPendingCount').textContent = pendingCount;
     document.getElementById('sAvailable').textContent = fmt(d.available_amount);
+    // ملاحظة شفافة لو في إحالات قيد المعالجة
+    var noteEl = document.getElementById('pendingNote');
+    if (noteEl) noteEl.style.display = pendingCount > 0 ? 'block' : 'none';
 
     const min = d.min_payout || 100;
     const av = Math.min(Number(d.available_amount||0), min);
