@@ -499,7 +499,29 @@ async function loadQuestions() {
             const n = q.choices?.length || 0;
             return typeof q.correct_index === 'number' && q.correct_index >= 0 && q.correct_index < n;
         });
-        questions = shuffle(valid).slice(0, COUNT);
+
+        // ── Smart rotation للأسئلة الأكثر تكراراً ──
+        // لو المستخدم حلّ سؤالاً صح في آخر 14 يوم، نأجّله لآخر القائمة
+        // عشان كل تدريب جديد يحس بأسئلة جديدة، وما يكرر اللي اتقنها فوراً
+        const isRealUser = profile && profile.id && profile.id !== '00000000-0000-0000-0000-000000000000';
+        if (TOP_REPEATED && isRealUser) {
+            try {
+                const since = new Date(Date.now() - 14 * 864e5).toISOString();
+                const { data: recent } = await sb.from('attempts')
+                    .select('question_id')
+                    .eq('user_id', profile.id)
+                    .eq('is_correct', true)
+                    .gte('created_at', since);
+                const seenIds = new Set((recent || []).map(r => r.question_id));
+                const fresh = valid.filter(q => !seenIds.has(q.id));
+                const seen  = valid.filter(q => seenIds.has(q.id));
+                questions = [...shuffle(fresh), ...shuffle(seen)].slice(0, COUNT);
+            } catch(_) {
+                questions = shuffle(valid).slice(0, COUNT);
+            }
+        } else {
+            questions = shuffle(valid).slice(0, COUNT);
+        }
 
         if (questions.length === 0) {
             const msg = LEAK_GROUP_ID
