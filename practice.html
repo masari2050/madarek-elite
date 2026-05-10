@@ -361,6 +361,7 @@ const COUNT = parseInt(params.get('count')) || 10;
 const MODE = params.get('mode') || 'instant'; // instant | end
 const SECTION_NAME = params.get('name') || 'تدريب';
 const LEAK_GROUP_ID = params.get('leak') || null; // فلترة حسب leak_group
+const TOP_REPEATED = params.get('top_repeated') === '1' || params.get('top_repeated') === 'true'; // فلترة الأسئلة الأكثر تكراراً
 const SAFE_COLS = 'id,question_text,choices,correct_index,image_url,section,sub_section,topic,passage_id,passage_text,passage_order,explanation,leak_group_id';
 
 const sectionMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'مختلط'};
@@ -482,6 +483,11 @@ async function loadQuestions() {
             query = query.in('section', ['quant','verbal']);
         } else {
             query = query.eq('section', SECTION);
+        }
+
+        // فلتر إضافي للأسئلة الأكثر تكراراً (من حملة tahsili-top-400)
+        if (TOP_REPEATED) {
+            query = query.eq('is_top_repeated', true);
         }
 
         // Get more than needed, then shuffle & slice
