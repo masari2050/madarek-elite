@@ -345,6 +345,16 @@ async function init() {
 
     isLocked = !forceSubscriber && !M.isSubscribed(profile);
 
+    // ── حالة بنر الاشتراك من admin/البنرات (toggle from DB) ──
+    let leaksSubBannerEnabled = false;
+    try {
+        const { data: bnr } = await sb.from('banners')
+            .select('is_active')
+            .eq('banner_type', 'leaks_subscribe')
+            .maybeSingle();
+        leaksSubBannerEnabled = bnr?.is_active === true;
+    } catch (_) { leaksSubBannerEnabled = false; }
+
     // Crown pill + ticker للمشتركين
     if (!isLocked) {
         document.getElementById('crownPill').classList.add('show');
@@ -352,10 +362,11 @@ async function init() {
         // إظهار search/filters/summary
         document.getElementById('lkSearchWrap').classList.remove('hidden');
         document.getElementById('lkFiltersWrap').classList.remove('hidden');
-    } else {
-        // إظهار locked hero + pretitle
+    } else if (leaksSubBannerEnabled) {
+        // غير مشترك + admin مفعّل بنر الاشتراك → نظهر locked hero
         document.getElementById('lkLocked').classList.remove('hidden');
     }
+    // غير مشترك + admin معطّل البنر → ما نظهر شي (حسب طلب admin)
 
     loadBanner();
     loadLeaks();

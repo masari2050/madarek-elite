@@ -556,6 +556,7 @@ async function init() {
         if (!user) return;
         profile = await M.getProfile();
         if (!profile) return;
+        await loadSubBannerSetting();  // اقرأ إعداد admin قبل العرض
         applySubscriptionUI();
         applyTrainingLockUI();
         loadCounts();
@@ -579,10 +580,24 @@ function isSubscribed(p) {
     return new Date(p.subscription_end) > new Date();
 }
 
+// ── حالة بنر الاشتراك من admin/البنرات (toggle from DB) ──
+let _subBannerEnabled = false;
+async function loadSubBannerSetting() {
+    try {
+        const { data } = await sb.from('banners')
+            .select('is_active')
+            .eq('banner_type', 'training_subscribe')
+            .maybeSingle();
+        _subBannerEnabled = data?.is_active === true;
+    } catch (_) { _subBannerEnabled = false; }
+}
+
 function applySubscriptionUI() {
     const subscribed = isSubscribed(profile);
     document.getElementById('elitePill').style.display = subscribed ? '' : 'none';
-    document.getElementById('subBanner').style.display = subscribed ? 'none' : '';
+    // البنر يظهر فقط لو: المستخدم غير مشترك + admin مفعّل البنر من اللوحة
+    const showSubBanner = !subscribed && _subBannerEnabled;
+    document.getElementById('subBanner').style.display = showSubBanner ? '' : 'none';
 }
 
 async function loadCounts() {

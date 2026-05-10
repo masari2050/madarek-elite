@@ -2596,6 +2596,7 @@ window.loadBanners = async function() {
         const banners = data || [];
         const getB = type => banners.find(b => b.banner_type === type) || { banner_type:type, is_active:false, config:{}, target_pages:['dashboard'], schedule_start:null, schedule_end:null };
         const tk = getB('ticker'), img = getB('image'), mn = getB('main'), mx = getB('mock_exam');
+        const trnSub = getB('training_subscribe'), lksSub = getB('leaks_subscribe');
 
         // target_pages helper → اختيار واحد من 4
         const tgtValue = b => {
@@ -2616,6 +2617,23 @@ window.loadBanners = async function() {
             </div>`;
 
         document.getElementById('bannersArea').innerHTML = `
+        <!-- ═══ بنرات اشتراك بسيطة (toggle on/off فقط) ═══ -->
+        <div class="banner-form" style="margin-bottom:14px;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #FCD34D">
+          <div class="banner-form-top">
+            <div class="banner-form-title" style="color:#92400E">🔒 بنر "اشترك لتفتح التدريب الكامل" <span class="banner-status ${trnSub.is_active?'live':'off'}">${trnSub.is_active?'مفعّل':'مخفي'}</span></div>
+            ${_bannerToggleHTML('training_subscribe', trnSub.is_active)}
+          </div>
+          <div style="font-size:12px;color:#92400E;padding:0 4px">يظهر في صفحة التدريب للمستخدمين غير المشتركين فقط. الإيقاف يخفيه نهائياً.</div>
+        </div>
+
+        <div class="banner-form" style="margin-bottom:18px;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #FCD34D">
+          <div class="banner-form-top">
+            <div class="banner-form-title" style="color:#92400E">🔐 بنر "التسريبات حصرية للمشتركين" <span class="banner-status ${lksSub.is_active?'live':'off'}">${lksSub.is_active?'مفعّل':'مخفي'}</span></div>
+            ${_bannerToggleHTML('leaks_subscribe', lksSub.is_active)}
+          </div>
+          <div style="font-size:12px;color:#92400E;padding:0 4px">يظهر في صفحة التسريبات للزائر غير المشترك. الإيقاف يخلي الزائر يشوف القائمة بدون عرض اشتراك.</div>
+        </div>
+
         <!-- TICKER -->
         <div class="banner-form">
             <div class="banner-form-top"><div class="banner-form-title">🎯 الشريط المتحرك <span class="banner-status ${tk.is_active?'live':'off'}">${tk.is_active?'مفعّل':'معطّل'}</span></div>
@@ -2978,7 +2996,14 @@ window.saveBanner = async function(type) {
     let config = {};
     let targetSelectId = null;
     let prefix = null;
-    const labels = {ticker:'الشريط المتحرّك', main:'البنر الرئيسي', mock_exam:'بنر المحاكي', image:'بنر الصورة'};
+    const labels = {
+        ticker:'الشريط المتحرّك',
+        main:'البنر الرئيسي',
+        mock_exam:'بنر المحاكي',
+        image:'بنر الصورة',
+        training_subscribe:'بنر اشتراك التدريب',
+        leaks_subscribe:'بنر اشتراك التسريبات'
+    };
     if (type === 'ticker') {
         config = {
             keyword: document.getElementById('tk_keyword').value,
@@ -3212,10 +3237,38 @@ window.toggleBannerBig = async function(type, wrap) {
     const inner = wrap.querySelector('.toggle-big');
     if (inner) inner.classList.toggle('on');
     const active = wrap.classList.contains('is-on');
-    const labels = {ticker:'الشريط المتحرّك', main:'البنر الرئيسي', mock_exam:'بنر المحاكي', image:'بنر الصورة'};
+    const labels = {
+        ticker:'الشريط المتحرّك',
+        main:'البنر الرئيسي',
+        mock_exam:'بنر المحاكي',
+        image:'بنر الصورة',
+        training_subscribe:'بنر اشتراك التدريب',
+        leaks_subscribe:'بنر اشتراك التسريبات'
+    };
+    // مهمّ: لو الصف غير موجود في banners (مثل training_subscribe أوّل تفعيل)،
+    // نعمل INSERT بدل UPDATE صامت. defaults حسب نوع البنر.
+    const defaults = {
+        training_subscribe: { sort_order: 80, config: {}, target_pages: ['training'] },
+        leaks_subscribe:    { sort_order: 81, config: {}, target_pages: ['leaks'] },
+    };
     try {
-        const { error } = await sb.from('banners').update({is_active:active}).eq('banner_type', type);
-        if (error) throw error;
+        // فحص: الصف موجود؟
+        const { data: existing } = await sb.from('banners')
+            .select('id').eq('banner_type', type).maybeSingle();
+        if (existing) {
+            const { error } = await sb.from('banners').update({is_active:active}).eq('banner_type', type);
+            if (error) throw error;
+        } else {
+            const def = defaults[type] || { sort_order: 90, config: {}, target_pages: ['dashboard'] };
+            const { error } = await sb.from('banners').insert({
+                banner_type: type,
+                is_active: active,
+                sort_order: def.sort_order,
+                config: def.config,
+                target_pages: def.target_pages,
+            });
+            if (error) throw error;
+        }
         showSaveToast((active?'تم تفعيل ':'تم إيقاف ') + (labels[type] || type),'suc');
         loadBanners();
     } catch(e) {
