@@ -8,6 +8,22 @@
 <script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- TikTok Pixel — D6OG9VRC77UET383RRTG -->
+<script>!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};ttq.load('D6OG9VRC77UET383RRTG');ttq.page()}(window,document,'ttq');</script>
+
+<!-- ttclid capture: حفظ click id من TikTok ad للـattribution -->
+<script>
+(function(){
+  try {
+    var qs = new URLSearchParams(location.search);
+    var ttclid = qs.get('ttclid');
+    if (ttclid) localStorage.setItem('madarek_ttclid', ttclid);
+    var ttp = qs.get('ttp');
+    if (ttp) localStorage.setItem('madarek_ttp', ttp);
+  } catch(e){}
+})();
+</script>
 <style>
 :root{
 --bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
@@ -580,6 +596,69 @@ async function init(){
   prefillCoupon();
   // ── خصم الإحالة 10% (لو المستخدم محال) ──
   loadReferralDiscount();
+
+  // ── TikTok: identify المستخدم + ViewContent للخطة الافتراضية ──
+  ttIdentify(user);
+  ttViewContent();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TikTok Pixel Helpers
+// ═══════════════════════════════════════════════════════════
+function ttGetUserData(user){
+  // TikTok يقبل plain email/phone ويـhash تلقائياً عبر pixel SDK
+  try {
+    const email = user?.email || '';
+    let phone = '';
+    if (user?.phone) {
+      // E.164 format: +966XXXXXXXXX
+      phone = user.phone.startsWith('+') ? user.phone
+            : user.phone.startsWith('05') ? '+966' + user.phone.substring(1)
+            : '+' + user.phone;
+    }
+    const ttclid = localStorage.getItem('madarek_ttclid') || '';
+    const ttp = localStorage.getItem('madarek_ttp') || '';
+    return { email, phone_number: phone, external_id: user?.id || '', ttclid, ttp };
+  } catch(e) { return {}; }
+}
+
+function ttIdentify(user){
+  if (!window.ttq || !user) return;
+  try {
+    const ud = ttGetUserData(user);
+    ttq.identify({ email: ud.email, phone_number: ud.phone_number, external_id: ud.external_id });
+  } catch(e){ console.warn('[tt] identify failed:', e); }
+}
+
+function ttPlanContent(slug){
+  const plan = (plans || []).find(p => p.slug === slug) || { slug, price: slug==='yearly'?799:slug==='quarterly'?249:99 };
+  const name = slug === 'yearly' ? 'مدارك النخبة - سنوي'
+             : slug === 'quarterly' ? 'مدارك النخبة - 3 شهور'
+             : 'مدارك النخبة - شهري';
+  return {
+    content_id: 'madarek_' + slug,
+    content_type: 'product',
+    content_name: name,
+    quantity: 1,
+    price: Number(plan.price) || 99
+  };
+}
+
+function ttGenEventId(prefix){
+  // Unique ID للـdeduplication بين client و server-side events
+  return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+}
+
+function ttViewContent(){
+  if (!window.ttq) return;
+  try {
+    const c = ttPlanContent(selectedSlug);
+    ttq.track('ViewContent', {
+      contents: [c],
+      value: c.price,
+      currency: 'SAR'
+    }, { event_id: ttGenEventId('vc') });
+  } catch(e){ console.warn('[tt] ViewContent failed:', e); }
 }
 
 async function loadHeroStats(){
@@ -885,7 +964,23 @@ window.subscribe = async function(){
   loadingCheckout = true;
   $('ctaBtn').disabled = true;
 
+  // ── TikTok: AddToCart عند ضغط زر الاشتراك ──
+  try {
+    if (window.ttq) {
+      const c = ttPlanContent(selectedSlug);
+      ttq.track('AddToCart', {
+        contents: [c],
+        value: c.price,
+        currency: 'SAR'
+      }, { event_id: ttGenEventId('atc') });
+    }
+  } catch(e){ console.warn('[tt] AddToCart failed:', e); }
+
   showOverlay(true, 'جاري تجهيز الدفع…', 'انتظر لحظة، نوصلك لبوابة الدفع الآمنة');
+
+  // ── Generate event_id ثابت للـcheckout (نفس الـid يُستخدم client + server) ──
+  const checkoutEventId = ttGenEventId('co');
+  try { sessionStorage.setItem('madarek_checkout_event_id', checkoutEventId); } catch(_){}
 
   try {
     const couponCode = appliedCoupon?.code || null;
@@ -900,6 +995,9 @@ window.subscribe = async function(){
         coupon: couponCode,
         referral: refDiscount,  // {referral_id, percent} لو المستخدم محال
         source: 'web-v2',  // مهم: يخلّي callback يرجع لـv2/payment-return-v2.html
+        event_id: checkoutEventId,  // للـTikTok deduplication بين client و server
+        ttp: localStorage.getItem('madarek_ttp') || '',
+        ttclid: localStorage.getItem('madarek_ttclid') || '',
       }
     });
 
@@ -921,6 +1019,21 @@ window.subscribe = async function(){
     // ── حالة 2: مدفوع → MyFatoorah URL ──
     const url = data.paymentUrl || data.url || data.invoiceURL || data.InvoiceURL;
     if (!url) throw new Error('رابط الدفع غير متوفر');
+
+    // ── TikTok: InitiateCheckout قبل redirect لـMyFatoorah ──
+    try {
+      if (window.ttq) {
+        const c = ttPlanContent(data.plan || selectedSlug);
+        // السعر الفعلي بعد الكوبون والإحالة (من الـserver response لو متاح)
+        const finalValue = Number(data.amount || data.value) || c.price;
+        c.price = finalValue;
+        ttq.track('InitiateCheckout', {
+          contents: [c],
+          value: finalValue,
+          currency: 'SAR'
+        }, { event_id: checkoutEventId });
+      }
+    } catch(e){ console.warn('[tt] InitiateCheckout failed:', e); }
 
     // ينقل المستخدم لـMyFatoorah مباشرة
     window.location.href = url;

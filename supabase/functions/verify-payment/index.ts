@@ -228,12 +228,17 @@ serve(async (req) => {
       if (bodyClone.ttclid) ttUser.ttclid = bodyClone.ttclid
     } catch (_) {}
 
-    // CompletePayment فقط — Subscribe ترسل من create-payment (funnel order)
-    await sendTikTokEvent('CompletePayment', ttUser, {
+    // ── TikTok Purchase event (الاسم الرسمي = Purchase، مش CompletePayment) ──
+    // event_id = 'purchase_' + paymentId → نفس الصيغة في client (payment-callback.html
+    // و payment-return-v2.html). الـclient يستخدم paymentId من URL (?paymentId=...)
+    // والـserver يستلم نفس القيمة في body — يضمن deduplication بين server و client events.
+    const purchaseEventId = 'purchase_' + String(paymentId)
+    await sendTikTokEvent('Purchase', ttUser, {
       value: invoiceData.InvoiceValue,
       currency: 'SAR',
-      content_id: plan,
-      description: plan === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري',
+      content_id: 'madarek_' + plan,
+      description: plan === 'yearly' ? 'مدارك النخبة - سنوي' : plan === 'quarterly' ? 'مدارك النخبة - 3 شهور' : 'مدارك النخبة - شهري',
+      event_id: purchaseEventId,
     })
 
     // ── إرجاع النتيجة ──

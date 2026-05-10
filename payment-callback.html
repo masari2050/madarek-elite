@@ -122,7 +122,40 @@
         if(data.status === 'paid'){
             show('state-success');
             gtag('event','conversion',{'send_to':'AW-17989685111/9KtnCO6fkIUcEPeek4JD','value':parseFloat(data.amount)||1.0,'currency':'SAR','transaction_id':paymentId||''});
-            ttq.track('CompletePayment',{value:parseFloat(data.amount)||1.0,currency:'SAR',content_name:data.plan==='yearly'?'Yearly Plan':'Monthly Plan'});
+
+            // ── TikTok Purchase event (الاسم الرسمي = Purchase، مش CompletePayment) ──
+            // event_id: نستخدم paymentId للـdeduplication مع server-side event من verify-payment
+            try {
+                if (window.ttq) {
+                    var planSlug = data.plan || 'monthly';
+                    var planName = planSlug === 'yearly' ? 'مدارك النخبة - سنوي'
+                                 : planSlug === 'quarterly' ? 'مدارك النخبة - 3 شهور'
+                                 : 'مدارك النخبة - شهري';
+                    var amount = parseFloat(data.amount) || 1.0;
+                    // identify المستخدم لـEvent Match Quality
+                    try {
+                        var sess2 = await sb.auth.getSession();
+                        var u2 = sess2 && sess2.data && sess2.data.session ? sess2.data.session.user : null;
+                        if (u2) {
+                            ttq.identify({ email: u2.email || '', external_id: u2.id });
+                        }
+                    } catch(_){}
+                    ttq.track('Purchase', {
+                        contents: [{
+                            content_id: 'madarek_' + planSlug,
+                            content_type: 'product',
+                            content_name: planName,
+                            quantity: 1,
+                            price: amount
+                        }],
+                        value: amount,
+                        currency: 'SAR'
+                    }, {
+                        event_id: 'purchase_' + (paymentId || Date.now())
+                    });
+                }
+            } catch(e){ console.warn('[tt] Purchase failed:', e); }
+
             // إنشاء فاتورة ضريبية تلقائياً — جلب الجوال من profiles
             if(typeof saveInvoice==='function'){try{var sess=await sb.auth.getSession();var uid=sess&&sess.data&&sess.data.session?sess.data.session.user.id:null;var userPhone=null;var userName=sess&&sess.data&&sess.data.session?sess.data.session.user.email:'عميل';if(uid){try{var{data:prof}=await sb.from('profiles').select('phone,full_name').eq('id',uid).single();if(prof){userPhone=prof.phone||null;if(prof.full_name)userName=prof.full_name}}catch(_){}}saveInvoice({userId:uid,customerName:userName,customerPhone:userPhone,planName:data.plan==='yearly'?'سنوي':'شهري',totalAmount:parseFloat(data.amount)||0,paymentId:paymentId||''});}catch(invErr){console.warn('[payment-callback] فاتورة:',invErr);}}
             var planName = data.plan === 'yearly' ? 'سنوي' : 'شهري';

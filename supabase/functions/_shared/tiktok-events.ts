@@ -34,6 +34,7 @@ export interface TikTokEventOptions {
   content_id?: string
   description?: string
   test_event_code?: string  // كود اختبار من Events Manager
+  event_id?: string  // للـdeduplication مع client-side event (نفس الـid يُمنع تكرار العدّ)
 }
 
 export async function sendTikTokEvent(
@@ -112,7 +113,9 @@ export async function sendTikTokEvent(
     // ═══════════════════════════════════════════
     // بناء بيانات الحدث
     // ═══════════════════════════════════════════
-    const eventId = `${eventName}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
+    // event_id: لو مرّره الـcaller (مثل verify-payment يمرّر paymentId)، نستخدمه للـ
+    // deduplication مع client-side event. وإلا نولّد جديد عشوائي.
+    const eventId = options?.event_id || `${eventName}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
 
     const eventData: Record<string, any> = {
       event: eventName,
