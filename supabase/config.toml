@@ -1,0 +1,19 @@
+# Supabase CLI config
+# نوقف تحقق الـ gateway من JWT لأن Supabase الآن يستخدم ES256 (asymmetric)
+# غير المدعوم في supabase-js الحالي. دوالنا تفحص JWT يدوياً ثم تتحقق من
+# المستخدم عبر admin.getUserById(...) — أكثر أماناً من الـ gateway الذي
+# كان يرفض ES256 بـ "Unsupported JWT algorithm ES256"
+
+project_id = "czzcmbxejxbotjemyuqf"
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
+[functions.apply-coupon]
+verify_jwt = false
+
+[functions.track-event]
+verify_jwt = false

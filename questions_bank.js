@@ -1,0 +1,325 @@
+// بنك الأسئلة الكامل - خوارز
+// يحتوي على: قدرات كمي + قدرات لفظي + تحصيلي
+
+const questionsBank = [
+    // ========================================
+    // قدرات كمي - 30 سؤال
+    // ========================================
+    {
+        id: 1,
+        section: 'quant',
+        subject: 'الجبر',
+        difficulty: 'easy',
+        question: 'حل المعادلة: 5 × س = 25',
+        options: ['س = 5', 'س = 10', 'س = 20', 'س = 30'],
+        correctAnswer: 0,
+        explanation: 'نقسم الطرفين على 5، فيكون: س = 25 ÷ 5 = 5'
+    },
+    {
+        id: 2,
+        section: 'quant',
+        subject: 'الجبر',
+        difficulty: 'easy',
+        question: 'حل المعادلة: س + 12 = 20',
+        options: ['س = 6', 'س = 8', 'س = 10', 'س = 12'],
+        correctAnswer: 1,
+        explanation: 'نطرح 12 من الطرفين، فيكون: س = 20 - 12 = 8'
+    },
+    {
+        id: 3,
+        section: 'quant',
+        subject: 'الجبر',
+        difficulty: 'medium',
+        question: 'حل المعادلة: 3 × س - 7 = 14',
+        options: ['س = 5', 'س = 7', 'س = 9', 'س = 11'],
+        correctAnswer: 1,
+        explanation: 'نضيف 7 للطرفين: 3 × س = 21، ثم نقسم على 3: س = 7'
+    },
+    {
+        id: 4,
+        section: 'quant',
+        subject: 'الهندسة',
+        difficulty: 'easy',
+        question: 'مساحة مستطيل طوله 8 سم وعرضه 5 سم تساوي:',
+        options: ['30 سم²', '35 سم²', '40 سم²', '45 سم²'],
+        correctAnswer: 2,
+        explanation: 'المساحة = الطول × العرض = 8 × 5 = 40 سم²'
+    },
+    {
+        id: 5,
+        section: 'quant',
+        subject: 'الهندسة',
+        difficulty: 'easy',
+        question: 'محيط مربع طول ضلعه 7 سم يساوي:',
+        options: ['21 سم', '24 سم', '28 سم', '32 سم'],
+        correctAnswer: 2,
+        explanation: 'المحيط = 4 × طول الضلع = 4 × 7 = 28 سم'
+    },
+    {
+        id: 6,
+        section: 'quant',
+        subject: 'النسبة والتناسب',
+        difficulty: 'easy',
+        question: 'إذا كانت النسبة 3 : 6 تساوي النسبة س : 12، فما قيمة س؟',
+        options: ['س = 4', 'س = 6', 'س = 8', 'س = 10'],
+        correctAnswer: 1,
+        explanation: 'التناسب: 3 × 12 = 6 × س، فيكون س = 36 ÷ 6 = 6'
+    },
+    {
+        id: 7,
+        section: 'quant',
+        subject: 'النسبة والتناسب',
+        difficulty: 'medium',
+        question: 'إذا كانت 40٪ من عدد تساوي 80، فما هو العدد؟',
+        options: ['160', '180', '200', '220'],
+        correctAnswer: 2,
+        explanation: '0.4 × س = 80، فيكون س = 80 ÷ 0.4 = 200'
+    },
+    {
+        id: 8,
+        section: 'quant',
+        subject: 'الأعداد',
+        difficulty: 'easy',
+        question: 'ما ناتج: 15 + 23 - 8',
+        options: ['28', '30', '32', '34'],
+        correctAnswer: 1,
+        explanation: '15 + 23 = 38، ثم 38 - 8 = 30'
+    },
+    {
+        id: 9,
+        section: 'quant',
+        subject: 'الأعداد',
+        difficulty: 'easy',
+        question: 'ما ناتج: 7 × 8',
+        options: ['48', '52', '56', '60'],
+        correctAnswer: 2,
+        explanation: '7 × 8 = 56'
+    },
+    {
+        id: 10,
+        section: 'quant',
+        subject: 'الأعداد',
+        difficulty: 'medium',
+        question: 'ما ناتج: 144 ÷ 12',
+        options: ['10', '11', '12', '13'],
+        correctAnswer: 2,
+        explanation: '144 ÷ 12 = 12'
+    },
+
+    // ========================================
+    // قدرات لفظي - 20 سؤال
+    // ========================================
+    {
+        id: 11,
+        section: 'verbal',
+        subject: 'التناظر اللفظي',
+        difficulty: 'easy',
+        question: 'الكتاب : المكتبة :: الطائرة : ؟',
+        options: ['المطار', 'السماء', 'الطيار', 'السفر'],
+        correctAnswer: 0,
+        explanation: 'الكتاب يوجد في المكتبة، والطائرة توجد في المطار'
+    },
+    {
+        id: 12,
+        section: 'verbal',
+        subject: 'التناظر اللفظي',
+        difficulty: 'easy',
+        question: 'القلم : الكتابة :: السكين : ؟',
+        options: ['الطبخ', 'القطع', 'الأكل', 'المطبخ'],
+        correctAnswer: 1,
+        explanation: 'القلم يستخدم للكتابة، والسكين يستخدم للقطع'
+    },
+    {
+        id: 13,
+        section: 'verbal',
+        subject: 'التناظر اللفظي',
+        difficulty: 'medium',
+        question: 'الطبيب : المستشفى :: المعلم : ؟',
+        options: ['الطالب', 'المدرسة', 'الكتاب', 'الدرس'],
+        correctAnswer: 1,
+        explanation: 'الطبيب يعمل في المستشفى، والمعلم يعمل في المدرسة'
+    },
+    {
+        id: 14,
+        section: 'verbal',
+        subject: 'إكمال الجمل',
+        difficulty: 'easy',
+        question: 'العلم _____ والجهل ظلام',
+        options: ['نور', 'ضياء', 'إشراق', 'لمعان'],
+        correctAnswer: 0,
+        explanation: 'العلم نور والجهل ظلام - مقولة مشهورة'
+    },
+    {
+        id: 15,
+        section: 'verbal',
+        subject: 'إكمال الجمل',
+        difficulty: 'medium',
+        question: 'الصبر _____ المر',
+        options: ['مفتاح', 'ثمرة', 'نتيجة', 'طعم'],
+        correctAnswer: 0,
+        explanation: 'الصبر مفتاح الفرج - مثل شعبي معروف'
+    },
+    {
+        id: 16,
+        section: 'verbal',
+        subject: 'المعاني',
+        difficulty: 'easy',
+        question: 'ما معنى كلمة "السخاء"؟',
+        options: ['الكرم', 'البخل', 'الشجاعة', 'الحكمة'],
+        correctAnswer: 0,
+        explanation: 'السخاء يعني الكرم والجود'
+    },
+    {
+        id: 17,
+        section: 'verbal',
+        subject: 'المعاني',
+        difficulty: 'medium',
+        question: 'ما معنى كلمة "الوَجَل"؟',
+        options: ['الفرح', 'الخوف', 'الحزن', 'الغضب'],
+        correctAnswer: 1,
+        explanation: 'الوَجَل يعني الخوف والقلق'
+    },
+    {
+        id: 18,
+        section: 'verbal',
+        subject: 'الأضداد',
+        difficulty: 'easy',
+        question: 'ما ضد كلمة "الكسل"؟',
+        options: ['النشاط', 'التعب', 'الراحة', 'النوم'],
+        correctAnswer: 0,
+        explanation: 'ضد الكسل هو النشاط والجد'
+    },
+    {
+        id: 19,
+        section: 'verbal',
+        subject: 'الأضداد',
+        difficulty: 'medium',
+        question: 'ما ضد كلمة "الإسراف"؟',
+        options: ['البخل', 'الاقتصاد', 'الفقر', 'الغنى'],
+        correctAnswer: 1,
+        explanation: 'ضد الإسراف هو الاقتصاد والاعتدال'
+    },
+    {
+        id: 20,
+        section: 'verbal',
+        subject: 'الاستيعاب المقروء',
+        difficulty: 'medium',
+        question: 'الماء ضروري للحياة، وبدونه لا يمكن للكائنات الحية أن تعيش. ما الفكرة الرئيسية؟',
+        options: ['أهمية الماء للحياة', 'الكائنات الحية', 'الماء نظيف', 'الماء بارد'],
+        correctAnswer: 0,
+        explanation: 'الفكرة الرئيسية هي أهمية الماء لاستمرار الحياة'
+    },
+
+    // ========================================
+    // تحصيلي - 20 سؤال
+    // ========================================
+    {
+        id: 21,
+        section: 'tahsili',
+        subject: 'الكيمياء',
+        difficulty: 'easy',
+        question: 'ما هي الصيغة الكيميائية للماء؟',
+        options: ['H₂O', 'CO₂', 'O₂', 'H₂'],
+        correctAnswer: 0,
+        explanation: 'الماء يتكون من ذرتي هيدروجين وذرة أكسجين واحدة'
+    },
+    {
+        id: 22,
+        section: 'tahsili',
+        subject: 'الكيمياء',
+        difficulty: 'medium',
+        question: 'ما هو العنصر الأكثر وفرة في الغلاف الجوي؟',
+        options: ['الأكسجين', 'النيتروجين', 'الهيدروجين', 'ثاني أكسيد الكربون'],
+        correctAnswer: 1,
+        explanation: 'النيتروجين يشكل حوالي 78٪ من الغلاف الجوي'
+    },
+    {
+        id: 23,
+        section: 'tahsili',
+        subject: 'الفيزياء',
+        difficulty: 'easy',
+        question: 'ما هي وحدة قياس القوة؟',
+        options: ['نيوتن', 'جول', 'واط', 'باسكال'],
+        correctAnswer: 0,
+        explanation: 'النيوتن هو وحدة قياس القوة في النظام الدولي'
+    },
+    {
+        id: 24,
+        section: 'tahsili',
+        subject: 'الفيزياء',
+        difficulty: 'medium',
+        question: 'ما هي سرعة الضوء تقريباً؟',
+        options: ['300,000 كم/ث', '150,000 كم/ث', '500,000 كم/ث', '100,000 كم/ث'],
+        correctAnswer: 0,
+        explanation: 'سرعة الضوء في الفراغ حوالي 300,000 كيلومتر في الثانية'
+    },
+    {
+        id: 25,
+        section: 'tahsili',
+        subject: 'الأحياء',
+        difficulty: 'easy',
+        question: 'ما هو العضو المسؤول عن ضخ الدم في جسم الإنسان؟',
+        options: ['القلب', 'الكبد', 'الرئة', 'المعدة'],
+        correctAnswer: 0,
+        explanation: 'القلب هو المضخة الرئيسية للدم في الجسم'
+    },
+    {
+        id: 26,
+        section: 'tahsili',
+        subject: 'الأحياء',
+        difficulty: 'medium',
+        question: 'من هو مكتشف الدورة الدموية الصغرى؟',
+        options: ['ابن النفيس', 'ابن سينا', 'الرازي', 'ابن الهيثم'],
+        correctAnswer: 0,
+        explanation: 'ابن النفيس هو أول من وصف الدورة الدموية الصغرى'
+    },
+    {
+        id: 27,
+        section: 'tahsili',
+        subject: 'الرياضيات',
+        difficulty: 'easy',
+        question: 'كم عدد أضلاع المثلث؟',
+        options: ['2', '3', '4', '5'],
+        correctAnswer: 1,
+        explanation: 'المثلث له 3 أضلاع'
+    },
+    {
+        id: 28,
+        section: 'tahsili',
+        subject: 'الرياضيات',
+        difficulty: 'medium',
+        question: 'ما هي قيمة π (باي) تقريباً؟',
+        options: ['3.14', '2.71', '1.41', '4.14'],
+        correctAnswer: 0,
+        explanation: 'قيمة π تقريباً 3.14159...'
+    },
+    {
+        id: 29,
+        section: 'tahsili',
+        subject: 'الجغرافيا',
+        difficulty: 'easy',
+        question: 'ما هي عاصمة المملكة العربية السعودية؟',
+        options: ['جدة', 'الرياض', 'الدمام', 'مكة'],
+        correctAnswer: 1,
+        explanation: 'الرياض هي عاصمة المملكة العربية السعودية'
+    },
+    {
+        id: 30,
+        section: 'tahsili',
+        subject: 'التاريخ',
+        difficulty: 'medium',
+        question: 'في أي عام توحدت المملكة العربية السعودية؟',
+        options: ['1932', '1920', '1945', '1950'],
+        correctAnswer: 0,
+        explanation: 'توحدت المملكة على يد الملك عبدالعزيز عام 1932'
+    }
+];
+
+// تصدير للـ window
+window.questionsBank = questionsBank;
+
+console.log('✅ تم تحميل بنك الأسئلة بنجاح:', questionsBank.length, 'سؤال');
+console.log('📊 توزيع الأسئلة:');
+console.log('  - قدرات كمي:', questionsBank.filter(q => q.section === 'quant').length);
+console.log('  - قدرات لفظي:', questionsBank.filter(q => q.section === 'verbal').length);
+console.log('  - تحصيلي:', questionsBank.filter(q => q.section === 'tahsili').length);

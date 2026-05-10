@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>دعوة — مدارك النخبة</title>
+
+<!-- Universal Link: iOS يفتح التطبيق مباشرة لو مثبّت (يحتاج apple-app-site-association + scheme) -->
+<meta name="apple-itunes-app" content="app-id=0000000000, app-argument=madarekelite://r/CODE_PLACEHOLDER">
+
+<!-- OG للمشاركة في واتساب -->
+<meta property="og:title" content="دعوة خاصة — مدارك النخبة">
+<meta property="og:description" content="كود دعوة شخصي + خصم 10 ر.س على الاشتراك الأول">
+<meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;
+  --pri:#6D5DF6;--pri2:#8B7FFF;--pri3:#5B4DD4;
+  --ps:rgba(109,93,246,.07);
+  --acc:#FF8A3D;
+  --suc:#22C55E;--ss:rgba(34,197,94,.07);
+  --gold:#F59E0B;
+  --ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+  --ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+  --r:14px;--r2:20px;
+  --ease:cubic-bezier(.25,.8,.25,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;line-height:1.6}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+
+.wrap{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:20px 20px 32px}
+
+/* ── Hero gradient card ── */
+.hero{
+  background:linear-gradient(135deg,var(--pri2) 0%,var(--pri) 55%,var(--pri3) 100%);
+  border-radius:var(--r2);
+  padding:30px 24px 28px;
+  color:#fff;
+  margin-bottom:18px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 12px 40px rgba(109,93,246,.32);
+}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.14)}
+.hero::before{top:-44px;right:-44px;width:130px;height:130px}
+.hero::after{bottom:-60px;left:-60px;width:170px;height:170px;border-color:rgba(255,255,255,.09)}
+
+.hero-logo{width:62px;height:62px;border-radius:16px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;position:relative;z-index:2;backdrop-filter:blur(6px)}
+.hero-logo img{width:46px;height:46px;border-radius:12px}
+.hero-logo .fallback{font-size:28px;font-weight:700}
+
+.hero-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(255,215,0,.18);border:1px solid rgba(255,215,0,.35);border-radius:20px;font-size:11px;font-weight:700;color:#FFD700;margin-bottom:14px;position:relative;z-index:2}
+.hero-badge svg{width:12px;height:12px;fill:#FFD700}
+
+.hero h1{font-size:22px;font-weight:700;line-height:1.4;margin-bottom:6px;position:relative;z-index:2}
+.hero h1 strong{color:#FFD700}
+.hero p{font-size:13px;opacity:.95;line-height:1.75;position:relative;z-index:2}
+
+/* ── كرت الكود ── */
+.code-card{background:var(--sf);border-radius:var(--r2);padding:22px 20px;margin-bottom:14px;border:2px dashed rgba(109,93,246,.28);text-align:center}
+.code-card-lbl{font-size:11px;color:var(--i3);font-weight:600;margin-bottom:8px;letter-spacing:.3px}
+.code-box{font-size:24px;font-weight:700;color:var(--pri);letter-spacing:1.5px;font-family:monospace,sans-serif;margin-bottom:14px;direction:ltr;background:var(--ps);padding:12px 14px;border-radius:12px;user-select:all}
+.copy-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:var(--pri);color:#fff;border-radius:10px;font-size:12px;font-weight:700;transition:transform .15s}
+.copy-btn:active{transform:scale(.96)}
+.copy-btn.ok{background:var(--suc)}
+.copy-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.2}
+
+/* ── مميزات ── */
+.feats{background:var(--sf);border-radius:var(--r2);padding:18px 18px 14px;margin-bottom:18px;border:1px solid var(--ln)}
+.feats h3{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;text-align:center}
+.feat{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--ln)}
+.feat:last-child{border-bottom:none}
+.feat-ic{width:32px;height:32px;border-radius:9px;background:var(--ps);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat-ic svg{width:15px;height:15px;stroke:var(--pri);fill:none;stroke-width:2}
+.feat-tx{font-size:12px;color:var(--i2);line-height:1.65;flex:1}
+
+/* ── زر التحميل ── */
+.dl-btn{width:100%;padding:16px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri2),var(--pri),var(--pri3));color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:10px;box-shadow:0 6px 20px rgba(109,93,246,.35);transition:transform .15s}
+.dl-btn:active{transform:scale(.98)}
+.dl-btn svg{width:18px;height:18px;fill:#fff}
+.dl-ln{width:100%;padding:13px;border-radius:var(--r);border:1.5px solid var(--ln2);color:var(--i2);font-size:13px;font-weight:600;text-align:center;display:block;margin-bottom:16px;background:var(--sf)}
+
+/* ── Steps ── */
+.steps{background:var(--ss);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
+.steps h4{font-size:12px;font-weight:700;color:var(--suc);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.steps h4 svg{width:13px;height:13px;stroke:var(--suc);fill:none;stroke-width:2.4}
+.steps ol{padding-right:18px;font-size:12px;color:var(--i2);line-height:1.85}
+.steps ol li{margin-bottom:2px}
+
+/* ── Footer ── */
+.foot{margin-top:auto;padding-top:18px;text-align:center;font-size:11px;color:var(--i4);line-height:1.7}
+.foot a{color:var(--pri);font-weight:600}
+.foot .sep{margin:0 8px;color:var(--i4)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:24px;font-size:12px;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.3);transition:transform .3s var(--ease);z-index:100;display:flex;align-items:center;gap:7px}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.toast svg{width:14px;height:14px;stroke:var(--suc);fill:none;stroke-width:2.5}
+
+/* ── رسالة الخطأ (كود غير صالح) ── */
+.err-card{background:var(--sf);border-radius:var(--r2);padding:32px 22px;text-align:center;border:1px solid rgba(239,68,68,.2)}
+.err-ic{width:56px;height:56px;border-radius:50%;background:rgba(239,68,68,.09);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.err-ic svg{width:28px;height:28px;stroke:#EF4444;fill:none;stroke-width:2}
+.err-card h2{font-size:18px;font-weight:700;margin-bottom:8px}
+.err-card p{font-size:13px;color:var(--i3);margin-bottom:16px}
+
+@media (max-width:340px){
+  .hero h1{font-size:19px}
+  .code-box{font-size:20px;padding:10px}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <!-- ═══ المحتوى يُوَلَّد من JS حسب صلاحية الكود ═══ -->
+  <div id="root"></div>
+
+  <div class="foot">
+    مدارك النخبة © — منصة قياس معتمدة
+    <br>
+    <a href="/v2/terms-v2.html">الشروط</a>
+    <span class="sep">·</span>
+    <a href="/v2/privacy-v2.html">الخصوصية</a>
+    <span class="sep">·</span>
+    <a href="https://wa.me/966553339885">تواصل معنا</a>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <span id="toast-msg">تم نسخ الكود</span>
+</div>
+
+<script>
+(function(){
+  // ═══ استخراج الكود من الرابط ═══
+  // يدعم: /invite/CODE (rewrite)، /v2/invite-v2.html?code=CODE، #CODE
+  function getCode(){
+    // 1) من query string
+    const qs = new URLSearchParams(window.location.search);
+    let c = qs.get('code') || qs.get('r');
+    if (c) return c.toUpperCase().trim();
+
+    // 2) من hash (#CODE)
+    if (window.location.hash && window.location.hash.length > 1){
+      c = window.location.hash.slice(1);
+      if (c && /^[A-Z0-9-]{3,20}$/i.test(c)) return c.toUpperCase().trim();
+    }
+
+    // 3) من الـpath: /invite/CODE
+    const m = window.location.pathname.match(/\/(?:invite|r)\/([A-Z0-9-]+)/i);
+    if (m && m[1]) return m[1].toUpperCase().trim();
+
+    return null;
+  }
+
+  // ═══ كشف المنصة ═══
+  function getPlatform(){
+    const ua = (navigator.userAgent || '').toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) return 'ios';
+    if (/android/.test(ua)) return 'android';
+    return 'other';
+  }
+
+  // ═══ الروابط — ستُستبدل بالحقيقية عند النشر ═══
+  const STORE_URLS = {
+    ios:     'https://apps.apple.com/sa/app/madarek-elite/id000000000',  // TODO: حدّث id
+    android: 'https://play.google.com/store/apps/details?id=com.madarekelite.app',
+    other:   'https://madarekelite.com/v2/welcome-v2.html'
+  };
+
+  // Deep link schema للتطبيق — لو مثبّت يفتح فوراً
+  function appUrl(code){
+    return 'madarekelite://r/' + encodeURIComponent(code);
+  }
+
+  // ═══ نسخ للحافظة ═══
+  async function copyToClipboard(text){
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch(e){ /* fallthrough */ }
+
+    // Fallback: textarea trick
+    try {
+      const t = document.createElement('textarea');
+      t.value = text;
+      t.style.position = 'fixed';
+      t.style.opacity = '0';
+      document.body.appendChild(t);
+      t.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(t);
+      return ok;
+    } catch(e){ return false; }
+  }
+
+  // ═══ Toast ═══
+  let toastTimer = null;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    const m = document.getElementById('toast-msg');
+    if (!t || !m) return;
+    m.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('on'), 2500);
+  }
+
+  // ═══ رسم صفحة "كود غير صالح" ═══
+  function renderError(){
+    const root = document.getElementById('root');
+    root.innerHTML = `
+      <div class="err-card">
+        <div class="err-ic">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h2>رابط الدعوة غير صالح</h2>
+        <p>يبدو أن رابط الدعوة تالف أو منتهي. تقدر تحمّل التطبيق مباشرة وتسجّل بدون كود.</p>
+        <a href="${STORE_URLS[getPlatform()]}" class="dl-btn" style="display:inline-flex">
+          <svg viewBox="0 0 24 24"><path d="M12 2v13M5 10l7 7 7-7M5 20h14" fill="none" stroke="#fff" stroke-width="2"/></svg>
+          <span>حمّل التطبيق</span>
+        </a>
+      </div>
+    `;
+  }
+
+  // ═══ رسم الصفحة الأساسية ═══
+  function renderInvite(code){
+    const platform = getPlatform();
+    const storeUrl = STORE_URLS[platform];
+    const storeLabel = platform === 'ios' ? 'حمّل من App Store' :
+                       platform === 'android' ? 'حمّل من Google Play' :
+                       'حمّل التطبيق';
+
+    const root = document.getElementById('root');
+    root.innerHTML = `
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-logo">
+          <img src="../icons/icon-192.png" alt="مدارك" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=fallback>م</div>'">
+        </div>
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          <span>دعوة خاصة لك</span>
+        </div>
+        <h1>صديقك عزمك على <strong>مدارك النخبة</strong></h1>
+        <p>احصل على <strong>خصم 10 ر.س</strong> على أول اشتراك — الكود جاهز أدناه</p>
+      </div>
+
+      <!-- كرت الكود -->
+      <div class="code-card">
+        <div class="code-card-lbl">كود الدعوة الخاص بك</div>
+        <div class="code-box" id="code">${code}</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span id="copyBtnTxt">انسخ الكود</span>
+        </button>
+      </div>
+
+      <!-- الخطوات -->
+      <div class="steps">
+        <h4>
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          خطوتك بعد التحميل
+        </h4>
+        <ol>
+          <li>حمّل التطبيق من الزر أدناه</li>
+          <li>افتح التطبيق وسجّل حساب جديد</li>
+          <li>الكود يُعبّأ تلقائياً (أو الصقه من الحافظة)</li>
+          <li>اشترك بأول باقة وخصمك مطبّق فوراً</li>
+        </ol>
+      </div>
+
+      <!-- أزرار التحميل -->
+      <a href="${storeUrl}" class="dl-btn" id="dlBtn">
+        <svg viewBox="0 0 24 24">
+          <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+        </svg>
+        <span>${storeLabel}</span>
+      </a>
+
+      <!-- زر فتح التطبيق لو مثبّت -->
+      <a href="${appUrl(code)}" class="dl-ln">
+        عندي التطبيق — افتحه الآن
+      </a>
+
+      <!-- رابط المتصفح للـ desktop -->
+      <a href="/v2/welcome-v2.html?ref=${encodeURIComponent(code)}" class="dl-ln" style="margin-bottom:0">
+        أو تصفّح من المتصفح
+      </a>
+    `;
+
+    // ═══ أحداث ═══
+    const btn = document.getElementById('copyBtn');
+    const btnTxt = document.getElementById('copyBtnTxt');
+    btn.addEventListener('click', async ()=>{
+      const ok = await copyToClipboard(code);
+      if (ok){
+        btn.classList.add('ok');
+        btnTxt.textContent = 'نُسخ ✓';
+        showToast('تم نسخ الكود: ' + code);
+        setTimeout(()=>{
+          btn.classList.remove('ok');
+          btnTxt.textContent = 'انسخ الكود';
+        }, 2200);
+      } else {
+        showToast('افتح لوحة المفاتيح — الكود ${code}'.replace('${code}', code));
+      }
+    });
+
+    // ═══ نسخ تلقائي للحافظة عند التحميل ═══
+    // يحترم الخصوصية: لا ينسخ إلا عند interaction (some browsers block)
+    // نحاول مرة خفيفة، ولو فشلنا ما نضغط على المستخدم
+    setTimeout(async ()=>{
+      const ok = await copyToClipboard(code);
+      if (ok){
+        showToast('كود الدعوة جاهز في الحافظة');
+      }
+    }, 600);
+  }
+
+  // ═══ نقطة البداية ═══
+  const code = getCode();
+  if (!code || code.length < 3 || code.length > 20){
+    renderError();
+  } else {
+    renderInvite(code);
+  }
+})();
+</script>
+</body>
+</html>

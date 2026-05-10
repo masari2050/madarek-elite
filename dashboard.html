@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — الرئيسية</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:80px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* TICKER — direction:ltr container makes transform math predictable.
+   Arabic text inside each .seg uses dir=rtl to keep bidi correct.
+   4 identical segs + slide one-seg-width (-25%) = perfectly seamless loop, no gap. */
+.ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;direction:ltr}
+.ticker .kw{font-weight:700;margin-inline-end:6px}
+.ticker-in{display:inline-block;animation:tick 22s linear infinite;will-change:transform}
+.ticker-in > .seg{display:inline-block;padding-inline-end:60px;direction:rtl}
+@keyframes tick{from{transform:translateX(-25%)}to{transform:translateX(0)}}
+
+/* HEADER */
+.hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.av{width:40px;height:40px;border-radius:50%;background:var(--pri);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden}
+.hdr-nm{font-size:15px;font-weight:700}.hdr-sub{font-size:11px;color:var(--i3);margin-top:1px}
+.sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;margin-right:6px;vertical-align:middle;letter-spacing:.3px}
+.sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
+.sub-badge.yearly{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#1A1230;border:1px solid rgba(245,158,11,.5);box-shadow:0 2px 8px rgba(245,158,11,.35)}
+.sub-badge.coupon{background:var(--as);color:var(--acc)}
+.sub-badge.free{background:var(--s2);color:var(--i4)}
+.hb{width:34px;height:34px;border-radius:10px;background:var(--sf);border:1px solid var(--ln2);display:grid;place-items:center;position:relative;cursor:pointer;transition:background .18s}
+.hb:active{background:var(--s2)}
+.hb svg{width:15px;height:15px;stroke:var(--i3);fill:none;stroke-width:2;stroke-linecap:round}
+.dot{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--acc);border:1.5px solid var(--sf)}
+
+/* AD BANNER */
+.ad-ban{margin:0 6px 14px;border-radius:var(--r2);overflow:hidden;color:#fff;padding:14px 16px;display:none}
+/* mainBanner: مخفي افتراضياً (display:none في .ad-ban). يُعرض عبر JS لو is_active في DB ومدرج في schedule */
+.ad-tag{font-size:10px;font-weight:700;background:rgba(255,215,0,.2);color:#FFD700;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px}
+.ad-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.ad-sub{font-size:11px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:10px}
+.ad-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-size:11px;font-weight:700;border-radius:7px;font-family:inherit;cursor:pointer;border:none}
+
+/* MOCK EXAM BANNER (للجميع) — hidden by default, shown only after loadMockExamBanner confirms an active exam */
+.mock-ban{display:none;margin:0 6px 14px;padding:18px 18px 16px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 55%,#8B7FFF 100%);
+  color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 8px 24px rgba(109,93,246,.3);
+}
+.mock-ban::before{content:"";position:absolute;top:-60px;right:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
+.mock-ban::after{content:"";position:absolute;bottom:-70px;left:-60px;width:160px;height:160px;border-radius:50%;background:rgba(255,215,0,.06);pointer-events:none}
+.mock-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+  background:rgba(255,215,0,.18);color:#FFD700;
+  padding:4px 11px;border-radius:14px;margin-bottom:10px;
+  border:1px solid rgba(255,215,0,.32);position:relative;z-index:1;
+}
+.mock-tag svg{width:12px;height:12px;fill:#FFD700;stroke:none}
+.mock-ttl{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:5px;position:relative;z-index:1;letter-spacing:-.01em}
+.mock-meta{font-size:12px;color:rgba(255,255,255,.88);line-height:1.6;margin-bottom:14px;position:relative;z-index:1;font-weight:500}
+.mock-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;
+  background:#FF8A3D;color:#fff;font-size:13px;font-weight:700;
+  border-radius:11px;border:none;font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 14px rgba(255,138,61,.4);position:relative;z-index:1;
+  transition:transform .15s;
+}
+.mock-cta:hover{transform:translateY(-1px)}
+.mock-cta:active{transform:scale(.97)}
+
+/* REFERRAL CASH BANNER (مطابق Hook الذهبي بالتطبيق) */
+.ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 50%,#FDE68A 100%);
+  color:#1A1230;display:flex;align-items:center;gap:12px;cursor:pointer;
+  position:relative;overflow:hidden;
+  box-shadow:0 6px 22px rgba(245,158,11,.35);transition:transform .15s;
+}
+.ref-cash-ban::before{content:"";position:absolute;top:-30px;right:-20px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.18);pointer-events:none}
+.ref-cash-ban:hover{transform:translateY(-1px)}
+.ref-cash-ban:active{transform:scale(.98)}
+.ref-cash-ic{width:44px;height:44px;border-radius:14px;
+  background:rgba(26,18,48,.18);
+  border:1px solid rgba(26,18,48,.25);
+  display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1;
+}
+.ref-cash-ic svg{width:22px;height:22px;fill:#1A1230;stroke:none}
+.ref-cash-body{flex:1;min-width:0;position:relative;z-index:1}
+.ref-cash-ttl{font-size:13.5px;font-weight:800;line-height:1.4;margin-bottom:2px;letter-spacing:-.01em;color:#1A1230}
+.ref-cash-sub{font-size:11px;color:rgba(26,18,48,.78);line-height:1.55;font-weight:600}
+.ref-cash-arr{font-size:18px;color:#1A1230;font-weight:700;flex-shrink:0;position:relative;z-index:1}
+
+/* STREAK */
+.streak{margin:0 6px 14px;padding:14px 16px}
+.stk-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.stk-l{display:flex;align-items:center;gap:8px}
+.stk-ic{width:32px;height:32px;border-radius:9px;background:var(--as);display:grid;place-items:center}
+.stk-ic svg{width:16px;height:16px;stroke:var(--acc);fill:none;stroke-width:2}
+.stk-ttl{font-size:14px;font-weight:700}
+.stk-b{font-size:11px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 10px;border-radius:20px}
+.days{display:flex;justify-content:space-between}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px}
+.dd{width:28px;height:28px;border-radius:50%;background:var(--s2);border:1px solid var(--ln2);display:grid;place-items:center;transition:all .3s}
+.dd svg{width:12px;height:12px;stroke:var(--i4);fill:none;stroke-width:2.5}
+.dd.done{background:var(--pri);border-color:var(--pri)}.dd.done svg{stroke:#fff}
+.dd.today{border:2px solid var(--pri);background:transparent}.dd.today svg{stroke:var(--pri)}
+.dl{font-size:10px;color:var(--i4)}.day.cur .dl{color:var(--pri);font-weight:700}
+
+/* PLAN */
+.plan-card{margin:0 6px 14px;overflow:hidden}
+.plan-bar{height:3px;background:linear-gradient(90deg,var(--pri),var(--acc))}
+.plan-in{padding:16px}
+.plan-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.plan-ttl{font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px}
+.plan-ttl svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.plan-b{font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 9px;border-radius:20px}
+.task{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:background .18s}
+.task:hover{background:var(--ps)}.task:last-of-type{margin-bottom:12px}
+.ti{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.ti svg{width:15px;height:15px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ti.a{background:var(--ps)}.ti.a svg{stroke:var(--pri)}
+.ti.b{background:var(--ds)}.ti.b svg{stroke:var(--dng)}
+.ti.c{background:var(--as)}.ti.c svg{stroke:var(--acc)}
+.tn{font-size:13px;font-weight:600}.td{font-size:11px;color:var(--i3);margin-top:1px}
+.tc{font-size:13px;font-weight:700;color:var(--i4)}
+.sbtn{width:100%;padding:12px;border-radius:11px;background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s}
+.sbtn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
+.sbtn:active{transform:scale(.98)}
+
+/* PROGRESS RING */
+.prog{margin:0 6px 14px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.prog-r{position:relative;flex-shrink:0}
+.prog-svg{width:58px;height:58px;transform:rotate(-90deg)}
+.prog-bg{fill:none;stroke:var(--ln2);stroke-width:4}
+.prog-fill{fill:none;stroke:var(--pri);stroke-width:4;stroke-linecap:round;stroke-dasharray:157;stroke-dashoffset:157;transition:stroke-dashoffset 1.2s var(--ease)}
+.prog-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.prog-lbl{font-size:11px;color:var(--i3)}.prog-lv{font-size:14px;font-weight:700;margin:2px 0 6px}
+.prog-bar{height:4px;border-radius:2px;background:var(--ln2);overflow:hidden}
+.prog-bf{height:100%;border-radius:2px;background:var(--pri);width:0;transition:width 1.2s var(--ease)}
+.prog-xp{font-size:10px;color:var(--i4);margin-top:3px}
+
+/* AI BOX */
+.ai-box{margin:0 6px 14px;padding:14px 16px}
+.ai-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--pri);display:inline-block;margin-left:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-ttl{font-size:14px;font-weight:700;color:var(--pri);display:flex;align-items:center}
+.ai-ring{width:44px;height:44px;border-radius:50%;border:2.5px solid var(--pri);display:grid;place-items:center;flex-shrink:0;font-size:14px;font-weight:700;color:var(--pri)}
+.ai-body{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ai-sub{font-size:10px;color:var(--i4)}.ai-nm{font-size:14px;font-weight:700;margin:2px 0 3px}.ai-desc{font-size:11px;color:var(--i3);line-height:1.55}
+.cta{padding:8px 14px;border-radius:9px;border:1.5px solid var(--pm);color:var(--pt);font-size:12px;font-weight:600;transition:all .2s}
+.cta:hover{background:var(--pri);color:#fff;border-color:var(--pri)}
+.cta-full{width:100%;display:flex;justify-content:center;margin-top:8px;padding:10px}
+
+/* LEADERBOARD PODIUM */
+.lead-box{margin:0 6px 8px;padding:14px 14px 10px;background:#F4F3FF;border:.5px solid #9D95F5;border-radius:var(--r2);width:calc(100% - 16px)}
+.lead-title{font-size:14px;font-weight:700;color:#6D5DF6;text-align:center;margin-bottom:12px}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:6px;margin-bottom:10px}
+.pd-col{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
+.pd-medal{font-size:22px;margin-bottom:4px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+.pd-av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800;margin:0 auto 6px;position:relative}
+.pd-1 .pd-av{width:54px;height:54px;font-size:18px;background:linear-gradient(135deg,#FFD700,#F59E0B);box-shadow:0 4px 14px rgba(245,158,11,.5)}
+.pd-2 .pd-av{background:linear-gradient(135deg,#E5E7EB,#C0C0C0);color:#1A1D2E;box-shadow:0 3px 10px rgba(192,192,192,.45)}
+.pd-3 .pd-av{background:linear-gradient(135deg,#CD7F32,#92400E);box-shadow:0 3px 10px rgba(205,127,50,.45)}
+.pd-crown{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:20px;height:20px}
+.pd-crown svg{width:100%;height:100%;stroke:#F59E0B;fill:#F59E0B;stroke-width:1.5}
+.pd-av-mini{position:absolute;bottom:-3px;right:-3px;width:18px;height:18px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:9px;font-weight:800;border:2px solid #F4F3FF}
+.pd-2 .pd-av-mini{color:#9CA3AF}
+.pd-3 .pd-av-mini{color:#92400E}
+.pd-name{font-size:10.5px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3;min-height:28px;padding:0 2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;width:100%}
+.pd-xp{font-size:10px;font-weight:600;color:var(--i2);margin-bottom:5px}
+.pd-pillar{width:100%;border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-size:14px;font-weight:800;letter-spacing:.5px}
+.pd-1 .pd-pillar{background:#7C3AED;color:#fff;height:88px;box-shadow:0 -2px 8px rgba(124,58,237,.2)}
+.pd-2 .pd-pillar{background:#C4B5FD;color:#4C1D95;height:66px}
+.pd-3 .pd-pillar{background:#DDD6FE;color:#4C1D95;height:50px}
+.lead-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:.5px solid rgba(157,149,245,.35);font-size:11.5px;gap:10px}
+.lead-footer .my-rank{font-weight:600;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lead-footer .full-link{color:#6D5DF6;font-weight:700;text-decoration:none;flex-shrink:0;cursor:pointer;padding:4px 0}
+.lead-footer .full-link:hover{text-decoration:underline}
+
+/* SECTION HEADERS */
+.sh{display:flex;align-items:center;justify-content:space-between;padding:0 16px;margin-bottom:10px}
+.sh .t{font-size:14px;font-weight:700}.sh .a{font-size:12px;font-weight:600;color:var(--pt);cursor:pointer}
+
+/* TIPS — نصيحة واحدة يومياً */
+.tips{padding:0 16px;margin-bottom:14px}
+.tip{padding:14px 16px;background:var(--s2);border-radius:var(--r2);border:1px solid var(--ln);display:flex;gap:12px;align-items:flex-start;animation:si .4s var(--ease)}
+.tip-ic{width:36px;height:36px;border-radius:10px;background:var(--ps);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.tip-body{flex:1;min-width:0}
+.tip-ttl{font-size:13px;font-weight:700;margin-bottom:3px;color:var(--ink)}
+.tip-txt{font-size:12px;color:var(--i3);line-height:1.7}
+
+/* FOOTER */
+.ftr{padding:12px 16px;text-align:center;font-size:10px;color:var(--i4);border-top:1px solid var(--ln)}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:82px;left:16px;width:46px;height:46px;border-radius:50%;background:#25D366;display:grid;place-items:center;z-index:90;box-shadow:0 4px 16px rgba(37,211,102,.4);cursor:pointer;transition:transform .18s}
+.wa-float:active{transform:scale(.92)}
+.wa-float svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* SUBSCRIPTION BANNER */
+.sub-banner{margin:0 6px 14px;padding:12px 16px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff;display:none;align-items:center;gap:10px}
+.sub-banner svg{width:18px;height:18px;stroke:#FFD700;fill:none;stroke-width:2;flex-shrink:0}
+.sub-banner .t{font-size:12px;font-weight:600;flex:1}
+.sub-banner .btn{padding:6px 12px;background:rgba(255,255,255,.2);border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap}
+
+/* SKELETON */
+.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* FONT-SIZE PREF */
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+/* ── PHONE-FRAME على التابلت + الديسك توب (≥768px) ── */
+@media (min-width:768px){
+  body{
+    background:
+      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
+      var(--bg);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(circle at top right,rgba(155,140,255,.18),transparent 55%),
+      radial-gradient(circle at bottom left,rgba(255,138,61,.1),transparent 55%),
+      var(--bg);
+  }
+  html[data-fs]:not([data-fs="medium"]) .wrap,html .wrap{zoom:1}
+  .wrap{
+    max-width:520px;width:520px;
+    height:min(900px,calc(100vh - 48px));
+    min-height:680px;overflow-y:auto;
+    border-radius:30px;
+    box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
+    border:1px solid var(--ln);
+  }
+  [data-t="d"] .wrap,html.dark .wrap{
+    box-shadow:0 24px 64px rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.35);
+  }
+  .wrap::-webkit-scrollbar{width:5px}
+  .wrap::-webkit-scrollbar-track{background:transparent}
+  .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
+  .nav{
+    bottom:max(24px,calc((100dvh - min(900px,calc(100dvh - 48px))) / 2)) !important;
+    max-width:520px !important;
+  }
+}
+@media (min-width:1024px){
+  body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.32),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.26),transparent 60%),
+      radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.12),transparent 70%),
+      var(--bg);
+  }
+  [data-t="d"] body,html.dark body{
+    background:
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(155,140,255,.32),transparent 60%),
+      radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.18),transparent 60%),
+      var(--bg);
+  }
+  .wrap{
+    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(109,93,246,.12);
+  }
+}
+
+</style>
+<script src="/analytics.js" async></script>
+</head>
+<body>
+<div class="wrap" id="app">
+
+<!-- TICKER -->
+<div class="ticker" id="tickerBar" style="display:none">
+  <span class="ticker-in" id="tickerText"></span>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <a href="profile.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;cursor:pointer">
+    <div class="av" id="userAvatar">—</div>
+    <div>
+      <div class="hdr-nm"><span id="userName">مرحباً</span> <span class="sub-badge" id="subBadge" style="display:none"></span></div>
+      <div class="hdr-sub" id="userSub">جاري التحميل...</div>
+    </div>
+  </a>
+  <div style="display:flex;gap:6px">
+    <button class="hb" onclick="toggleDark()" id="thBtn">
+      <svg id="thIco" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="hb" onclick="alert('الإشعارات قريباً')">
+      <div class="dot" id="notifDot" style="display:none"></div>
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- AD BANNER (main - from banners table) -->
+<div class="ad-ban" id="mainBanner"></div>
+
+<!-- IMAGE BANNER (from banners table) -->
+<div class="ad-ban" id="imageBanner"></div>
+
+<!-- MOCK EXAM BANNER (يقرأ من mock_exams + RPC) -->
+<div class="mock-ban" id="mockBan">
+  <div class="mock-tag">
+    <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+    <span>اختبار محاكي</span>
+  </div>
+  <div class="mock-ttl" id="mockTitle">محاكي التحصيلي — الفترة الأولى</div>
+  <div class="mock-meta" id="mockMeta">يبدأ 13 مايو — 160 سؤال في 125 دقيقة</div>
+  <div class="mock-count" id="mockCount" style="display:none;font-size:11px;opacity:.85;margin-top:6px"></div>
+  <button class="mock-cta" id="mockCta" onclick="mockExamRegister()">سجّل الآن</button>
+</div>
+
+<!-- REFERRAL CASH BANNER (للجميع — يحوّل لـreferrals dashboard) -->
+<div class="ref-cash-ban" id="refCashBan" onclick="location.href='/referrals.html'">
+  <div class="ref-cash-ic">
+    <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9 M22 7H2v5h20V7 M12 22V7 M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+  </div>
+  <div class="ref-cash-body">
+    <div class="ref-cash-ttl">خلّك تاجر نخبة</div>
+    <div class="ref-cash-sub">اربح 10 ر.س كاش لكل صديق يشترك عبرك</div>
+  </div>
+  <div class="ref-cash-arr">←</div>
+</div>
+
+<!-- SUBSCRIPTION BANNER (free users only) -->
+<a class="sub-banner" id="subBanner" href="/pricing.html" style="text-decoration:none;cursor:pointer">
+  <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  <div class="t" id="subBannerText"></div>
+  <span class="btn">اشترك الآن</span>
+</a>
+
+<!-- STREAK -->
+<div class="streak card" id="streakCard">
+  <div class="stk-h">
+    <div class="stk-l"><div class="stk-ic"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="stk-ttl">سلسلة الإنجاز</div></div>
+    <div class="stk-b" id="streakBadge">0 أيام</div>
+  </div>
+  <div class="days" id="streakDays"></div>
+</div>
+
+<!-- DAILY PLAN -->
+<div class="plan-card card">
+  <div class="plan-bar"></div>
+  <div class="plan-in">
+    <div class="plan-h">
+      <div class="plan-ttl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>خطة اليوم</div>
+      <div class="plan-b">مخصصة لك</div>
+    </div>
+    <div id="planTasks"></div>
+    <button class="sbtn" id="planCta" onclick="location.href='training.html'"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ خطتك اليوم</button>
+  </div>
+</div>
+
+<!-- PROGRESS RING -->
+<div class="prog card" id="progCard">
+  <div class="prog-r">
+    <svg class="prog-svg" viewBox="0 0 58 58"><circle class="prog-bg" cx="29" cy="29" r="25"/><circle class="prog-fill" id="pFill" cx="29" cy="29" r="25"/></svg>
+    <div class="prog-val" id="progPct">0%</div>
+  </div>
+  <div class="prog-info">
+    <div class="prog-lbl">التقدم العام</div>
+    <div class="prog-lv" id="progLevel">المستوى 1 — مبتدئ</div>
+    <div class="prog-bar"><div class="prog-bf" id="xFill"></div></div>
+    <div class="prog-xp" id="progXP">0 / 200 XP للمستوى التالي</div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT -->
+<div class="ai-box card" id="aiBox">
+  <div class="ai-h">
+    <div class="ai-ttl"><span class="ai-dot"></span>مساعدك الذكي</div>
+    <button class="cta" onclick="location.href='reports.html?tab=ai'">تقرير كامل</button>
+  </div>
+  <div class="ai-body">
+    <div class="ai-ring" id="aiPct">—</div>
+    <div>
+      <div class="ai-sub">نقطة تحتاج تركيزاً</div>
+      <div class="ai-nm" id="aiTopic">جاري التحليل...</div>
+      <div class="ai-desc" id="aiDesc">نحلل أداءك لنعطيك توصيات مخصصة</div>
+    </div>
+  </div>
+  <button class="cta cta-full" id="aiCta" onclick="location.href='training.html'" style="display:none">ابدأ تدريباً مخصصاً</button>
+</div>
+
+<!-- LEADERBOARD PODIUM -->
+<div class="lead-box" id="leadBox">
+  <div class="lead-title">متصدرو هذا الأسبوع</div>
+  <div class="podium">
+    <div class="pd-col pd-2" id="pd2"><div class="pd-av" id="pd2Av">—<div class="pd-av-mini">2</div></div><div class="pd-name">—</div><div class="pd-xp">—</div><div class="pd-pillar">2</div></div>
+    <div class="pd-col pd-1" id="pd1"><div class="pd-av" id="pd1Av"><div class="pd-crown"><svg viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></div>—</div><div class="pd-name">—</div><div class="pd-xp">—</div><div class="pd-pillar">1</div></div>
+    <div class="pd-col pd-3" id="pd3"><div class="pd-av" id="pd3Av">—<div class="pd-av-mini">3</div></div><div class="pd-name">—</div><div class="pd-xp">—</div><div class="pd-pillar">3</div></div>
+  </div>
+  <div class="lead-footer">
+    <span class="my-rank" id="myRank">أنت في المرتبة —</span>
+    <a class="full-link" href="/profile.html#leaderboard">القائمة الكاملة ←</a>
+  </div>
+</div>
+
+<!-- TIP — واحدة يومياً -->
+<div class="sh"><div class="t">نصيحة اليوم</div></div>
+<div class="tips" id="tipsArea">
+  <div class="tip"><div class="tip-ic">💡</div><div class="tip-body"><div class="tip-ttl">جاري التحميل</div><div class="tip-txt">...</div></div></div>
+</div>
+
+<div class="ftr">مدارك النخبة · حيث يُصنع التميّز</div>
+
+<!-- WA FLOAT — يُحقن بواسطة whatsapp-float.js -->
+
+</div><!-- /wrap -->
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="ni" href="training.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="leaks.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni on" href="dashboard.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni" href="reports.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="profile.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="v2/preview-mock.js"></script>
+<script src="v2/supabase-helpers-v2.js"></script>
+<script src="v2/whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+
+const M = window.MadarekV2;
+const sb = M.getSb();
+let profile = null;
+let homeStats = null;
+
+// ── Init ──
+// ── Optimistic header from cache (يلغي flash "جاري التحميل") ──
+(function paintHeaderFromCache(){
+    try {
+        const cached = JSON.parse(localStorage.getItem('madarek_cached_profile') || 'null');
+        if (cached && cached.full_name) {
+            const firstName = (cached.full_name || '').split(' ')[0] || 'مستخدم';
+            const nameEl = document.getElementById('userName');
+            const subEl  = document.getElementById('userSub');
+            const avEl   = document.getElementById('userAvatar');
+            if (nameEl) nameEl.textContent = 'أهلاً، ' + firstName;
+            if (subEl)  subEl.textContent = '';
+            if (avEl) {
+                const v = cached.avatar_emoji || '';
+                if (v.startsWith('photo:')) avEl.innerHTML = '<img src="'+v.slice(6).replace(/"/g,'&quot;')+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+                else if (v.startsWith('dice:')) {
+                    const p = v.split(':'); const style = p[1]||'avataaars'; const seed = p.slice(2).join(':') || firstName;
+                    avEl.innerHTML = '<img src="https://api.dicebear.com/7.x/'+encodeURIComponent(style)+'/svg?seed='+encodeURIComponent(seed)+'" style="width:100%;height:100%;border-radius:50%">';
+                }
+                else avEl.textContent = v || firstName.charAt(0);
+            }
+            // Sub badge من الـcache (لو فيه)
+            if (cached.subscription_type === 'monthly' || cached.subscription_type === 'yearly') {
+                const b = document.getElementById('subBadge');
+                if (b) {
+                    if (cached.subscription_type === 'monthly') { b.textContent='Pro'; b.className='sub-badge monthly'; }
+                    else { b.textContent='✦ Elite'; b.className='sub-badge yearly'; }
+                    b.style.display = '';
+                }
+            }
+        }
+    } catch(_) { /* corrupt cache → نتجاهل ونكمّل عادي */ }
+})();
+
+init();
+
+async function init() {
+    const qs = new URLSearchParams(window.location.search);
+    const isPreview = qs.has('preview');
+    const forceSubscriber = qs.get('force_subscriber') === 'true';
+
+    // Banners are public content — start fetching ASAP, parallel with auth/profile.
+    // This shaves ~500-1000ms off ticker first-paint time.
+    const bannersPromise = (isPreview && !forceSubscriber)
+        ? null  // preview-mock handles this in loadPreviewMode()
+        : loadBanners().catch(() => {});
+
+    if (forceSubscriber) {
+        // وضع هجين: Supabase حقيقي + profile وهمي كمشترك
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            avatar_emoji: 'م',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            role: 'user',
+            xp: 560, level: 3, level_name: 'متدرب', streak_days: 5,
+            total_questions_solved: 488, total_correct: 320, total_sessions: 12,
+            referral_code: 'MADAR-PREVIEW'
+        };
+        window.A = window.A || {};
+        window.A.profile = profile;
+    } else if (isPreview) {
+        loadPreviewMode();
+        return;
+    } else {
+        const user = await M.requireAuth('/login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+
+        // مستخدم جديد لم يُكمل/يتخطى التشخيص → onboarding
+        if (profile.onboarding_completed === false && profile.onboarding_skipped === false) {
+            location.replace('v2/onboarding-v2.html');
+            return;
+        }
+    }
+
+    // Init dark mode
+    if (localStorage.getItem('madarek_dark_mode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Render header immediately
+    renderHeader();
+    showSubBadge();
+
+    // Load everything in parallel (banners already started above)
+    Promise.all([
+        loadHomeStats(),
+        bannersPromise || loadBanners(),
+        loadStreak(),
+        loadTips(),
+        loadWeakTopics(),
+        checkNotifications(),
+        checkSubscription()
+    ]);
+}
+
+// ── Header ──
+function renderHeader() {
+    const name = profile.full_name || 'مستخدم';
+    const firstName = name.split(' ')[0];
+    document.getElementById('userName').textContent = 'أهلاً، ' + firstName;
+    renderAvatar(document.getElementById('userAvatar'), profile.avatar_emoji, firstName);
+    // حدّث الـcache للزيارة القادمة (إلغاء flash)
+    try {
+        localStorage.setItem('madarek_cached_profile', JSON.stringify({
+            full_name: profile.full_name || null,
+            avatar_emoji: profile.avatar_emoji || null,
+            subscription_type: profile.subscription_type || null
+        }));
+    } catch(_) {}
+}
+
+// يعرض صورة (photo:URL) أو Dicebear (dice:style:seed) أو نص (حرف/إيموجي)
+function renderAvatar(el, value, fallbackName) {
+    if (!el) return;
+    const v = value || '';
+    if (v.startsWith('photo:')) {
+        const url = v.slice(6);
+        el.innerHTML = '<img src="' + url.replace(/"/g,'&quot;') + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+    } else if (v.startsWith('dice:')) {
+        const parts = v.split(':');
+        const style = parts[1] || 'avataaars';
+        const seed = parts.slice(2).join(':') || (fallbackName || 'user');
+        const url = 'https://api.dicebear.com/7.x/' + encodeURIComponent(style) + '/svg?seed=' + encodeURIComponent(seed);
+        el.innerHTML = '<img src="' + url + '" alt="" style="width:100%;height:100%;border-radius:50%">';
+    } else {
+        el.textContent = v || (fallbackName ? fallbackName.charAt(0) : '—');
+    }
+}
+
+// ── Sub Badge ──
+function showSubBadge() {
+    const b = document.getElementById('subBadge');
+    const t = profile.subscription_type;
+    if (t === 'monthly') { b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = ''; }
+    else if (t === 'yearly') { b.textContent = '✦ Elite'; b.className = 'sub-badge yearly'; b.style.display = ''; }
+    else if (profile.used_coupon) { b.textContent = 'كوبون'; b.className = 'sub-badge coupon'; b.style.display = ''; }
+}
+
+// ── Mock Exam Registration ──
+let _mockExamId = null;
+let _mockExamMeta = null;     // { starts_at, duration_min }
+let _mockTickInterval = null; // عدّاد كل ثانية
+let _mockCurrentPhase = null;
+
+function _mockGetPhase() {
+    const meta = _mockExamMeta || {};
+    const start = meta.starts_at ? new Date(meta.starts_at).getTime() : 0;
+    const end = start + (parseInt(meta.duration_min,10) || 0) * 60000;
+    const now = Date.now();
+    if (now >= end && start) return 'ended';
+    if (now >= start && start) return 'live';
+    return 'upcoming';
+}
+
+function applyMockExamRegistered() {
+    const btn = document.getElementById('mockCta');
+    if (!btn) return;
+    btn.style.display = 'none';
+
+    let badge = document.getElementById('mockRegBadge');
+    if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'mockRegBadge';
+        btn.parentNode.appendChild(badge);
+    }
+
+    _renderMockBadge(badge);
+
+    // ابدأ tick كل ثانية (مرة وحدة)
+    if (!_mockTickInterval) {
+        _mockTickInterval = setInterval(_mockTick, 1000);
+    }
+}
+
+function _mockTick() {
+    const badge = document.getElementById('mockRegBadge');
+    if (!badge) { clearInterval(_mockTickInterval); _mockTickInterval = null; return; }
+    if (!_mockExamMeta || !_mockExamMeta.starts_at) return;
+    const newPhase = _mockGetPhase();
+    if (newPhase !== _mockCurrentPhase) {
+        // الحالة تغيّرت → render كامل
+        _renderMockBadge(badge);
+    } else if (newPhase === 'upcoming') {
+        // فقط حدّث نص العدّاد (السطر الثاني)
+        const txtEl = document.getElementById('mockBadgeTxt');
+        if (txtEl) {
+            const start = new Date(_mockExamMeta.starts_at).getTime();
+            txtEl.textContent = 'يبدأ خلال ' + formatRemaining(start - Date.now());
+        }
+    } else if (newPhase === 'live') {
+        // فقط حدّث نص الوقت المتبقّي
+        const txtEl = document.getElementById('mockBadgeTxt');
+        if (txtEl) {
+            const start = new Date(_mockExamMeta.starts_at).getTime();
+            const end = start + (parseInt(_mockExamMeta.duration_min,10) || 0) * 60000;
+            txtEl.textContent = 'متبقّي ' + formatRemaining(end - Date.now()) + ' من وقت الاختبار';
+        }
+    }
+}
+
+function _examTypeLabel() {
+    const t = (_mockExamMeta && _mockExamMeta.exam_type) || 'tahsili';
+    return (t === 'tahsili') ? 'للتحصيلي' : 'للقدرات';
+}
+
+function _renderMockBadge(badge) {
+    const phase = _mockGetPhase();
+    _mockCurrentPhase = phase;
+
+    if (!document.getElementById('liveKf')) {
+        const s = document.createElement('style');
+        s.id = 'liveKf';
+        s.textContent = '@keyframes livePulse{0%,100%{box-shadow:0 6px 20px rgba(22,163,74,.55)}50%{box-shadow:0 10px 30px rgba(22,163,74,.9)}}';
+        document.head.appendChild(s);
+    }
+
+    const examLabel = _examTypeLabel();
+
+    if (phase === 'live') {
+        // وقت الاختبار → CTA لبدء الأسئلة
+        const start = new Date(_mockExamMeta.starts_at).getTime();
+        const end = start + (parseInt(_mockExamMeta.duration_min,10) || 0) * 60000;
+        const remaining = formatRemaining(end - Date.now());
+        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:14px;font-weight:800;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 20px rgba(22,163,74,.55);cursor:pointer;animation:livePulse 1.4s infinite';
+        badge.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;font-size:14.5px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>ابدأ الاختبار المحاكي ' + examLabel + ' — اضغط هنا للدخول</span></div>'
+          + '<div id="mockBadgeTxt" style="font-size:11.5px;font-weight:600;opacity:.95">متبقّي ' + remaining + ' من وقت الاختبار</div>';
+        badge.onclick = () => { if (_mockExamId) location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId); };
+    } else if (phase === 'ended') {
+        badge.style.cssText = 'margin-top:14px;padding:13px 16px;background:#9EA2B8;border:none;border-radius:12px;font-size:13.5px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer';
+        badge.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>انتهى الاختبار — شوف نتيجتك</span>';
+        badge.onclick = () => { if (_mockExamId) location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId); };
+        if (_mockTickInterval) { clearInterval(_mockTickInterval); _mockTickInterval = null; }
+    } else { // upcoming — تأكيد دائم + countdown
+        const start = new Date(_mockExamMeta.starts_at).getTime();
+        const remaining = formatRemaining(start - Date.now());
+        badge.style.cssText = 'margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,#22C55E,#16A34A);border:none;border-radius:14px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(22,163,74,.45);cursor:default';
+        badge.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>تم تسجيلك بنجاح في الاختبار المحاكي ' + examLabel + '</span></div>'
+          + '<div id="mockBadgeTxt" style="font-size:12.5px;font-weight:600;opacity:.95">يبدأ خلال ' + remaining + '</div>';
+        badge.onclick = null;  // ما يضغط لين يبدأ الاختبار
+    }
+}
+
+function formatRemaining(ms) {
+    if (ms <= 0) return '0 ثانية';
+    const totalSec = Math.floor(ms / 1000);
+    const d = Math.floor(totalSec / 86400);
+    const h = Math.floor((totalSec % 86400) / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    if (d > 0) return d + ' ' + (d===1?'يوم':'أيام') + (h ? ' و' + h + ' ساعة' : '');
+    if (h > 0) return h + ' ساعة' + (m ? ' و' + m + ' دقيقة' : '');
+    if (m > 0) return m + ':' + String(s).padStart(2,'0') + ' دقيقة';
+    return s + ' ثانية';
+}
+window.mockExamRegister = async function() {
+    // 1) زائر → login مع redirect
+    const user = window.MadarekV2 ? await window.MadarekV2.getUser() : null;
+    if (!user) {
+        location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname);
+        return;
+    }
+
+    // 2) فحص الاشتراك
+    const isPro = profile && M.isSubscribed(profile);
+    if (!isPro) {
+        location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname);
+        return;
+    }
+
+    // 3) لا يوجد اختبار محاكي نشط → toast فقط
+    if (!_mockExamId) {
+        if (M && typeof M.showToast === 'function') M.showToast('لا يوجد اختبار محاكي نشط حالياً', 'err');
+        else alert('لا يوجد اختبار محاكي نشط حالياً');
+        return;
+    }
+
+    // 4) مشترك Pro + اختبار نشط → تسجيل inline (بدون navigation)
+    const btn = document.getElementById('mockCta');
+    const origLabel = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'جاري التسجيل...'; btn.style.opacity = '0.7'; }
+    try {
+        const { error } = await sb.rpc('register_for_active_mock_exam');
+        // الـRPC لا يفشل لو المستخدم مسجّل بالفعل في النسخة الحالية، لكن نتعامل مع الحالات الشاذّة
+        if (error) {
+            const msg = String(error.message || '');
+            if (!msg.includes('no_active_exam') && !msg.includes('already_registered')) throw error;
+        }
+        // ✓ تسجيل ناجح → بدّل الـUI من زر "سجّل الآن" → badge أخضر دائم (التأكيد داخل البادج، بدون toast مكرّر)
+        applyMockExamRegistered();
+    } catch(e) {
+        // إعادة الزر لحالته الأصلية
+        if (btn) { btn.disabled = false; btn.textContent = origLabel || 'سجّل الآن'; btn.style.opacity = ''; }
+        const msg = (e && e.message) ? e.message : 'تعذّر التسجيل';
+        if (M && typeof M.showToast === 'function') M.showToast('خطأ: ' + msg, 'err');
+        else alert('خطأ: ' + msg);
+    }
+};
+
+// ── Home Stats ──
+async function loadHomeStats() {
+    try {
+        homeStats = await M.getHomeStats();
+        if (!homeStats) return;
+
+        // Total attempts + mistakes (تُستخدم لتحديد حالة المستخدم الجديد)
+        const [{ count: totalAttempts }, { count: mistakeCount }] = await Promise.all([
+            sb.from('attempts').select('*', { count: 'exact', head: true }).eq('user_id', profile.id),
+            sb.from('attempts').select('*', { count: 'exact', head: true }).eq('user_id', profile.id).eq('is_correct', false)
+        ]);
+        window.__attemptsTotal = totalAttempts || 0;
+        window.__mistakesTotal = mistakeCount || 0;
+
+        const isNewUser = (totalAttempts || 0) === 0 || profile.onboarding_skipped === true;
+
+        // Streak subtitle
+        const streak = homeStats.streak_days || 0;
+        if (isNewUser) {
+            document.getElementById('userSub').textContent = 'أهلاً بك — ابدأ رحلتك';
+        } else if (streak > 0) {
+            document.getElementById('userSub').textContent = 'واصل سلسلتك — اليوم ' + (streak > 7 ? streak : toArabicOrdinal(streak));
+        } else {
+            document.getElementById('userSub').textContent = 'ابدأ سلسلتك اليوم';
+        }
+
+        // Progress ring
+        const totalQ = homeStats.total_solved || 0;
+        const totalC = homeStats.total_correct || 0;
+        const accuracy = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0;
+        document.getElementById('progPct').textContent = accuracy + '%';
+        const offset = 157 - (157 * accuracy / 100);
+        setTimeout(() => { document.getElementById('pFill').style.strokeDashoffset = offset; }, 300);
+
+        // Level & XP
+        const level = homeStats.level || 1;
+        const levelName = homeStats.level_name || 'مبتدئ';
+        const xp = homeStats.xp || 0;
+        const xpForNext = level * 200;
+        const xpProgress = Math.min(100, (xp % 200) / 200 * 100);
+        document.getElementById('progLevel').textContent = 'المستوى ' + level + ' — ' + levelName;
+        document.getElementById('progXP').textContent = xp + ' / ' + xpForNext + ' XP للمستوى التالي';
+        setTimeout(() => { document.getElementById('xFill').style.width = xpProgress + '%'; }, 400);
+
+        // Rank + Weekly podium
+        const rank = homeStats.rank;
+        document.getElementById('myRank').textContent = isNewUser
+            ? 'ابدأ التدريب لتظهر في الترتيب'
+            : (rank ? 'أنت في المرتبة #' + rank : 'لم تدخل الترتيب بعد');
+        try {
+            const top = await M.getLeaderboard('week');
+            renderPodium(Array.isArray(top) ? top : []);
+        } catch(_){}
+
+        // ابنِ خطة اليوم حسب حالة المستخدم
+        await renderPlan(isNewUser, mistakeCount || 0);
+
+        // أخفِ مساعد AI للمستخدم الجديد (لا يوجد تاريخ لتحليله)
+        if (isNewUser) {
+            const aiBox = document.getElementById('aiBox');
+            if (aiBox) aiBox.style.display = 'none';
+        }
+
+    } catch(e) {
+        console.error('Stats error:', e);
+    }
+}
+
+// ── خطة اليوم الديناميكية ──
+// المشترك الجديد: اختبر مستواك (15 سؤال كمي+لفظي) + اختبار سريع مختلط + استكشف الأقسام
+// المشترك بأخطاء: تدريب على نقطة ضعف + مراجعة الأخطاء + اختبار سريع مختلط
+async function renderPlan(isNewUser, mistakeCount) {
+    const container = document.getElementById('planTasks');
+    if (!container) return;
+
+    let tasks = [];
+    if (isNewUser) {
+        // المشترك الجديد: اختبر مستواك (15 سؤال) + اختبار سريع مختلط + استكشف الأقسام
+        tasks = [
+            {
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                title: 'اختبر مستواك',
+                desc: '15 سؤال كمي + لفظي لتحديد مستواك',
+                href: '/practice.html?section=mixed&count=15&mode=instant&diag=1',
+                num: 5
+            },
+            {
+                cls: 'c',
+                icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+                title: 'اختبار سريع مختلط',
+                desc: '10 أسئلة — 10 دقائق',
+                href: '/practice.html?section=mixed&count=10&mode=instant',
+                num: 1
+            },
+            {
+                cls: 'b',
+                icon: '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+                title: 'استكشف الأقسام',
+                desc: 'اختر القسم اللي يناسبك',
+                href: 'training.html',
+                num: 3
+            }
+        ];
+        const cta = document.getElementById('planCta');
+        if (cta) {
+            cta.innerHTML = '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>اختبر مستواك';
+            cta.setAttribute('onclick', "location.href='/practice.html?section=mixed&count=15&mode=instant&diag=1'");
+        }
+    } else {
+        // ── مشترك له بيانات: 3 خيارات مُخصّصة حسب أدائه ──
+        // 1. تدريب على نقطة ضعف (من تحليل attempts)
+        // 2. مراجعة الأخطاء
+        // 3. اختبار سريع مختلط
+        let weakTopicKey = null;
+        let weakTopicName = null;
+        try {
+            const since = new Date(Date.now() - 30 * 864e5).toISOString();
+            const { data: atts } = await sb.from('attempts')
+                .select('is_correct, questions!inner(topic,section)')
+                .eq('user_id', profile.id).gte('created_at', since);
+            const topicMap = {
+                algebra:'الجبر', geometry:'الهندسة', arithmetic:'الحساب', statistics:'الإحصاء',
+                percent:'النسب', percentage:'النسب', ratios:'النسب والتناسب', ratio:'النسب والتناسب',
+                fractions:'الكسور', word_problems:'المسائل اللفظية', equations:'المعادلات',
+                probability:'الاحتمالات', analogy:'التناظر', sentence_completion:'إكمال الجمل',
+                reading:'الاستيعاب', reading_comp:'الاستيعاب', antonyms:'المتضادات', synonyms:'المترادفات',
+                biology:'الأحياء', chemistry:'الكيمياء', physics:'الفيزياء', math:'الرياضيات'
+            };
+            const topicStats = {};
+            (atts || []).forEach(a => {
+                const t = a.questions?.topic;
+                if (!t) return;
+                if (!topicStats[t]) topicStats[t] = { c:0, tt:0 };
+                topicStats[t].tt++; if (a.is_correct) topicStats[t].c++;
+            });
+            const ranked = Object.entries(topicStats)
+                .filter(([,v]) => v.tt >= 3)
+                .map(([k,v]) => ({ key:k, acc: v.c/v.tt, count:v.tt }))
+                .sort((a,b) => a.acc - b.acc);
+            if (ranked.length > 0 && ranked[0].acc < 0.7) {
+                weakTopicKey = ranked[0].key;
+                weakTopicName = topicMap[ranked[0].key] || ranked[0].key;
+            }
+        } catch(e){}
+
+        // 1. تدريب على نقطة ضعف (أو تدريب مخصص إذا ما فيه نقطة واضحة)
+        if (weakTopicKey) {
+            tasks.push({
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                title: 'تدريب على ' + weakTopicName,
+                desc: 'نقطة ضعفك الأولى — من AI',
+                href: '/practice.html?section=mixed&count=10&mode=instant&topic=' + encodeURIComponent(weakTopicKey),
+                num: 5
+            });
+        } else {
+            tasks.push({
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                title: 'تدريب مخصص',
+                desc: 'ابدأ التدريب اليوم',
+                href: 'training.html',
+                num: 5
+            });
+        }
+
+        // 2. مراجعة الأخطاء (إن وجدت)
+        if (mistakeCount > 0) {
+            tasks.push({
+                cls: 'b',
+                icon: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+                title: 'مراجعة الأخطاء',
+                desc: mistakeCount + ' خطأ في انتظارك',
+                href: 'reports.html?tab=err',
+                num: 3
+            });
+        }
+
+        // 3. اختبار سريع مختلط (دائماً)
+        tasks.push({
+            cls: 'c',
+            icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            title: 'اختبار سريع مختلط',
+            desc: '10 أسئلة — 10 دقائق',
+            href: '/practice.html?section=mixed&count=10&mode=instant',
+            num: 1
+        });
+    }
+
+    container.innerHTML = tasks.map(t => {
+        const idAttr = t.id ? (' id="' + t.id + '"') : '';
+        return '<div class="task"' + idAttr + ' onclick="location.href=\'' + t.href + '\'">'
+            + '<div class="ti ' + t.cls + '">' + t.icon + '</div>'
+            + '<div style="flex:1"><div class="tn">' + esc(t.title) + '</div><div class="td">' + esc(t.desc) + '</div></div>'
+            + '<div class="tc">' + t.num + '</div>'
+            + '</div>';
+    }).join('');
+}
+
+// ── Banners ──
+async function loadBanners() {
+    try {
+        const banners = await M.getActiveBanners('dashboard');
+
+        banners.forEach(b => {
+            const cfg = b.config || {};
+            if (b.banner_type === 'ticker') {
+                const ticker = document.getElementById('tickerBar');
+                const kwColor = cfg.keyword_color || '#FF6B35';
+                const text = cfg.text || '';
+                const kw = cfg.keyword || '';
+                const content = (kw ? '<span class="kw" style="color:' + kwColor + '">' + esc(kw) + '</span>' : '') + esc(text);
+                document.getElementById('tickerText').innerHTML = '<span class="seg">' + content + '</span><span class="seg">' + content + '</span><span class="seg">' + content + '</span><span class="seg">' + content + '</span>';
+                ticker.style.display = 'block';
+                if (cfg.bg_color) ticker.style.background = cfg.bg_color;
+                if (cfg.text_color) ticker.style.color = cfg.text_color;
+                if (cfg.speed) {
+                    // Same formula as admin's applyTickerSpeedPreview: slider 10..100 → duration 60s..8s
+                    const dur = Math.max(8, Math.round((110 - cfg.speed) * 0.6));
+                    const el = document.querySelector('.ticker-in');
+                    if (el) el.style.animationDuration = dur + 's';
+                }
+            }
+            else if (b.banner_type === 'main') {
+                const ban = document.getElementById('mainBanner');
+                const bgL = cfg.bg_left || '#1A1230';
+                const bgR = cfg.bg_right || '#2D1B69';
+                ban.style.background = 'linear-gradient(135deg,' + bgL + ',' + bgR + ')';
+                ban.style.display = 'block';
+                ban.innerHTML = '<div class="ad-tag">' + esc(cfg.tag || '') + '</div>'
+                    + '<div class="ad-title">' + esc(cfg.title || '') + '</div>'
+                    + '<div class="ad-sub">' + esc(cfg.subtitle || '') + '</div>'
+                    + '<button class="ad-btn" style="background:' + (cfg.btn_color || '#F59E0B') + ';color:' + (cfg.btn_text_color || '#1A1230') + '">' + esc(cfg.cta_text || 'المزيد') + '</button>';
+            }
+            else if (b.banner_type === 'image' && cfg.image_url) {
+                const ban = document.getElementById('imageBanner');
+                ban.style.display = 'block';
+                ban.style.padding = '0';
+                ban.style.cursor = cfg.link ? 'pointer' : 'default';
+                const img = '<img src="' + esc(cfg.image_url) + '" style="width:100%;border-radius:var(--r2);display:block" alt="">';
+                if (cfg.link && cfg.link_type === 'external') {
+                    ban.innerHTML = '<a href="'+esc(cfg.link)+'" target="_blank" rel="noopener" style="display:block">'+img+'</a>';
+                } else if (cfg.link && cfg.link_type === 'internal') {
+                    ban.innerHTML = '<a href="'+esc(cfg.link)+'" style="display:block">'+img+'</a>';
+                } else {
+                    ban.innerHTML = img;
+                }
+            }
+        });
+    } catch(e) {}
+    loadMockExamBanner();
+}
+
+async function loadMockExamBanner() {
+    const m = document.getElementById('mockBan');
+    if (!m) return;
+
+    // Source of truth: mock_exams table. Each exam has its own is_active toggle
+    // (controlled per-row from admin "الاختبارات المحاكية" tab).
+    // get_active_mock_exam_status() filters by is_active=true automatically.
+    try {
+        const { data: exam } = await sb.rpc('get_active_mock_exam_status');
+        if (!exam || !exam.length) {
+            // No active exam (none scheduled or all toggled off) → hide
+            m.style.display = 'none';
+            return;
+        }
+        const e = exam[0];
+        const startsTs = new Date(e.starts_at).getTime();
+        const endsTs = startsTs + (parseInt(e.duration_min,10) || 0) * 60000;
+        // Auto-hide 6 hours after exam ended (results window closed)
+        if (Date.now() > endsTs + 6 * 60 * 60 * 1000) {
+            m.style.display = 'none';
+            return;
+        }
+        _mockExamId = e.exam_id;
+        _mockExamMeta = { starts_at: e.starts_at, duration_min: e.duration_min, exam_type: e.exam_type };
+        applyMockExamConfig({
+            title: e.title,
+            exam_date: e.starts_at,
+            questions: e.questions_count,
+            duration_min: e.duration_min,
+            total_registered: e.total_registered
+        });
+        if (e.user_registered) applyMockExamRegistered();
+    } catch(_) {
+        m.style.display = 'none';
+    }
+}
+
+// ── Mock Exam Banner Config ──
+const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function formatExamDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.getDate() + ' ' + AR_MONTHS[d.getMonth()];
+}
+function applyMockExamConfig(cfg) {
+    const ttl = document.getElementById('mockTitle');
+    const meta = document.getElementById('mockMeta');
+    const cta = document.getElementById('mockCta');
+    const cntEl = document.getElementById('mockCount');
+    const ban = document.getElementById('mockBan');
+    if (!ttl || !meta || !cta) return;
+    // Reveal banner (hidden by default in CSS to prevent flash on page load)
+    if (ban) ban.style.display = 'block';
+    if (cfg.title) ttl.textContent = cfg.title;
+    const dateStr = formatExamDate(cfg.exam_date);
+    const q = parseInt(cfg.questions, 10);
+    const dur = parseInt(cfg.duration_min, 10);
+    const parts = [];
+    // حالة الاختبار حسب الوقت
+    let examPhase = 'upcoming';
+    if (cfg.exam_date) {
+        const start = new Date(cfg.exam_date).getTime();
+        const end = start + (parseInt(cfg.duration_min,10) || 0) * 60000;
+        const now = Date.now();
+        if (now >= start && now < end) examPhase = 'live';
+        else if (now >= end) examPhase = 'ended';
+    }
+
+    if (examPhase === 'live') parts.push('مباشر الآن');
+    else if (dateStr) parts.push('يبدأ ' + dateStr);
+
+    if (q && dur) parts.push(q + ' سؤال في ' + dur + ' دقيقة');
+    else if (q) parts.push(q + ' سؤال');
+    if (parts.length) meta.textContent = parts.join(' — ');
+    if (cfg.cta_text && !cta.disabled) cta.textContent = cfg.cta_text;
+    if (cntEl) {
+        const n = parseInt(cfg.total_registered, 10);
+        if (n > 0) {
+            cntEl.textContent = 'انضمّ ' + n + ' ' + (n === 1 ? 'طالب' : 'طالباً');
+            cntEl.style.display = 'block';
+        } else {
+            cntEl.style.display = 'none';
+        }
+    }
+
+    // البنر كله قابل للضغط — يفتح صفحة الاختبار (تتعامل مع كل الحالات: عدّاد/تسجيل/مباشر/نتيجة)
+    if (ban && _mockExamId) {
+        ban.style.cursor = 'pointer';
+        ban.onclick = function(ev){
+            // لا تتداخل مع زر "سجّل الآن" أو الشارة الخضراء
+            if (ev.target.closest('#mockCta') || ev.target.closest('#mockRegBadge')) return;
+            location.href = '/mock-exam.html?exam_id=' + encodeURIComponent(_mockExamId);
+        };
+    }
+}
+
+// ── Streak ──
+async function loadStreak() {
+    const dayNames = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+    const today = new Date();
+    const todayDay = today.getDay(); // 0=Sunday
+    const streakDays = homeStats?.streak_days || profile?.streak_days || 0;
+
+    document.getElementById('streakBadge').textContent = streakDays + ' ' + (streakDays === 1 ? 'يوم' : 'أيام');
+
+    // Get last 7 days of streak data
+    let completedDates = new Set();
+    try {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const { data } = await sb.from('daily_streaks')
+            .select('streak_date,completed')
+            .eq('user_id', profile.id)
+            .eq('completed', true)
+            .gte('streak_date', weekAgo.toISOString().split('T')[0]);
+        if (data) data.forEach(d => completedDates.add(d.streak_date));
+    } catch(e) {}
+
+    // Build week display (Saturday to Friday)
+    const container = document.getElementById('streakDays');
+    container.innerHTML = '';
+    // Start from Saturday (6)
+    const satOrder = [6, 0, 1, 2, 3, 4, 5];
+    const satNames = ['سبت', 'أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'];
+
+    for (let i = 0; i < 7; i++) {
+        const dayIdx = satOrder[i];
+        const diff = dayIdx - todayDay;
+        const date = new Date(today);
+        date.setDate(today.getDate() + diff);
+        const dateStr = date.toISOString().split('T')[0];
+        const isToday = diff === 0;
+        const isDone = completedDates.has(dateStr);
+        const isPast = date < today && !isToday;
+
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day' + (isToday ? ' cur' : '');
+
+        let ddClass = 'dd';
+        let icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>';
+        if (isDone) {
+            ddClass += ' done';
+            icon = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+        } else if (isToday) {
+            ddClass += ' today';
+            icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+        }
+
+        dayEl.innerHTML = '<div class="' + ddClass + '">' + icon + '</div><span class="dl">' + satNames[i] + '</span>';
+        container.appendChild(dayEl);
+    }
+}
+
+// ── Weak Topics (AI Assistant) ──
+async function loadWeakTopics() {
+    try {
+        // Find weakest topic from attempts
+        const { data: attempts } = await sb
+            .from('attempts')
+            .select('question_id, is_correct, questions(section, topic)')
+            .eq('user_id', profile.id)
+            .order('created_at', { ascending: false })
+            .limit(200);
+
+        // المستخدم الجديد (0 محاولات أو تخطى التشخيص) — AI مخفي أصلاً، نتوقف هنا
+        if (window.__attemptsTotal === 0 || profile.onboarding_skipped === true) return;
+
+        if (!attempts || attempts.length < 5) {
+            const aiTopicEl = document.getElementById('aiTopic');
+            const aiDescEl = document.getElementById('aiDesc');
+            if (aiTopicEl) aiTopicEl.textContent = 'ابدأ التدريب';
+            if (aiDescEl) aiDescEl.textContent = 'حل 5 أسئلة على الأقل وسنحلل أداءك ونعطيك توصيات مخصصة';
+            return;
+        }
+
+        // Group by topic
+        const topicStats = {};
+        attempts.forEach(a => {
+            const topic = a.questions?.topic || a.questions?.section || 'عام';
+            if (!topicStats[topic]) topicStats[topic] = { correct: 0, total: 0 };
+            topicStats[topic].total++;
+            if (a.is_correct) topicStats[topic].correct++;
+        });
+
+        // Find weakest (min accuracy, at least 3 attempts)
+        let weakest = null;
+        let weakestAcc = 100;
+        for (const [topic, stats] of Object.entries(topicStats)) {
+            if (stats.total < 3) continue;
+            const acc = Math.round((stats.correct / stats.total) * 100);
+            if (acc < weakestAcc) {
+                weakestAcc = acc;
+                weakest = topic;
+            }
+        }
+
+        if (weakest) {
+            const sectionMap = { quant: 'قدرات كمي', verbal: 'قدرات لفظي', tahsili: 'تحصيلي' };
+            const displayName = sectionMap[weakest] || weakest;
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            set('aiPct', weakestAcc + '%');
+            set('aiTopic', displayName);
+            set('aiDesc', 'أداؤك ' + weakestAcc + '% في هذا القسم. ننصح بـ 5 أسئلة يومياً هذا الأسبوع.');
+            const aiCta = document.getElementById('aiCta');
+            if (aiCta) { aiCta.style.display = ''; aiCta.textContent = 'ابدأ تدريباً مخصصاً على ' + displayName; }
+
+            // Update plan task 1 if rendered (returning user)
+            const t1 = document.querySelector('#planTask1 .tn');
+            const d1 = document.querySelector('#planTask1 .td');
+            if (t1) t1.textContent = 'تدريب على ' + displayName;
+            if (d1) d1.textContent = 'مختارة حسب أخطاءك الفعلية';
+        }
+    } catch(e) {
+        console.error('AI analysis error:', e);
+    }
+}
+
+// ── Tip — نصيحة واحدة يومياً (ثابتة للتاريخ، تتغير كل يوم) ──
+async function loadTips() {
+    try {
+        const tips = await M.getTips();
+        if (!tips || tips.length === 0) return;
+
+        // اختيار نصيحة بناءً على اليوم — ثابتة خلال اليوم الواحد، تتغير تلقائياً كل يوم
+        const now = new Date();
+        const dayKey = now.getFullYear() * 1000 + Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+        const tip = tips[dayKey % tips.length];
+
+        document.getElementById('tipsArea').innerHTML =
+            '<div class="tip"><div class="tip-ic">' + (tip.emoji || '💡') + '</div>'
+            + '<div class="tip-body"><div class="tip-ttl">' + esc(tip.title) + '</div>'
+            + '<div class="tip-txt">' + esc(tip.body) + '</div></div></div>';
+    } catch(e) {}
+}
+
+// ── Notifications ──
+async function checkNotifications() {
+    try {
+        const count = await M.getUnreadCount();
+        if (count > 0) {
+            document.getElementById('notifDot').style.display = 'block';
+        }
+    } catch(e) {}
+}
+
+// ── Subscription Check ──
+async function checkSubscription() {
+    const banner = document.getElementById('subBanner');
+    if (!M.isSubscribed(profile)) {
+        // مستخدم مجاني → اعرض البنر
+        banner.style.display = 'flex';
+        document.getElementById('subBannerText').textContent = 'اشترك الآن للوصول لجميع الأسئلة والتسريبات';
+        return;
+    }
+    // مشترك نشط → اخفِ البنر كلياً (لا "جدّد الآن")
+    banner.style.display = 'none';
+}
+
+// ── Dark Mode ──
+window.toggleDark = function() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('madarek_dark_mode', isDark);
+    // Update icon
+    const ico = document.getElementById('thIco');
+    if (isDark) {
+        ico.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    } else {
+        ico.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    }
+    // Save to profile
+    sb.from('profiles').update({ dark_mode: isDark }).eq('id', profile.id);
+};
+
+// ── Utils ──
+function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function toArabicOrdinal(n) {
+    const ordinals = ['', 'الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع'];
+    return ordinals[n] || n;
+}
+
+function renderPodium(list) {
+    const slots = { pd1: list[0], pd2: list[1], pd3: list[2] };
+    const crownSvg = '<div class="pd-crown"><svg viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></div>';
+    Object.keys(slots).forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const p = slots[id];
+        const nameEl = el.querySelector('.pd-name');
+        const xpEl = el.querySelector('.pd-xp');
+        const avEl = el.querySelector('.pd-av');
+        if (!p) {
+            if (nameEl) nameEl.textContent = '—';
+            if (xpEl) xpEl.textContent = '—';
+            if (avEl) {
+                if (id === 'pd1') avEl.innerHTML = crownSvg + '—';
+                else avEl.innerHTML = '—<div class="pd-av-mini">'+(id==='pd2'?'2':'3')+'</div>';
+            }
+            return;
+        }
+        const parts = (p.name || '').trim().split(/\s+/).filter(Boolean);
+        const disp = parts.slice(0, 2).join(' ') || '—';
+        const letter = (p.name || '?').charAt(0);
+        if (nameEl) nameEl.textContent = disp;
+        if (xpEl) xpEl.textContent = (p.xp || 0) + ' نقطة';
+        if (avEl) {
+            const escLetter = letter.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+            if (id === 'pd1') avEl.innerHTML = crownSvg + escLetter;
+            else avEl.innerHTML = escLetter + '<div class="pd-av-mini">'+(id==='pd2'?'2':'3')+'</div>';
+        }
+    });
+}
+
+// ── Preview Mode (demo data, no auth needed) ──
+function loadPreviewMode() {
+    profile = { id: 'demo', full_name: 'عبدالله', avatar_emoji: 'ع', streak_days: 5, xp: 560, level: 3, level_name: 'متدرب' };
+    document.getElementById('userName').innerHTML = 'أهلاً، عبدالله <span class="sub-badge monthly" style="display:inline">Pro</span>';
+    document.getElementById('userAvatar').textContent = 'ع';
+    document.getElementById('userSub').textContent = 'واصل سلسلتك — اليوم الخامس';
+
+    // Ticker
+    const ticker = document.getElementById('tickerBar');
+    ticker.style.display = 'block';
+    (() => { const c = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل'; const seg = '<span class="seg">'+c+'</span>'; document.getElementById('tickerText').innerHTML = seg+seg+seg+seg; })();
+
+    // Main Banner
+    const ban = document.getElementById('mainBanner');
+    ban.style.background = 'linear-gradient(135deg,#1A1230,#2D1B69)';
+    ban.style.display = 'block';
+    ban.innerHTML = '<div class="ad-tag">اختبار محاكي أسبوعي</div><div class="ad-title">السبت القادم — القدرات</div><div class="ad-sub">اختبار جماعي بنفس الوقت لكل المشتركين — أعلى 3 يُعلَن عنهم</div><button class="ad-btn" style="background:#F59E0B;color:#1A1230">سجّل مشاركتي</button>';
+
+    // Streak
+    document.getElementById('streakBadge').textContent = '5 أيام';
+    const days = document.getElementById('streakDays');
+    const satNames = ['سبت','أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة'];
+    const states = ['done','done','done','done','today','',''];
+    days.innerHTML = satNames.map((n,i) => {
+        let cls = 'dd' + (states[i] === 'done' ? ' done' : states[i] === 'today' ? ' today' : '');
+        let ico = states[i] === 'done' ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+                : states[i] === 'today' ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>'
+                : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>';
+        return '<div class="day' + (states[i]==='today'?' cur':'') + '"><div class="'+cls+'">'+ico+'</div><span class="dl">'+n+'</span></div>';
+    }).join('');
+
+    // Progress
+    document.getElementById('progPct').textContent = '78%';
+    setTimeout(() => { document.getElementById('pFill').style.strokeDashoffset = 157 - (157 * 0.78); }, 300);
+    document.getElementById('progLevel').textContent = 'المستوى 3 — متدرب';
+    document.getElementById('progXP').textContent = '560 / 1000 XP للمستوى التالي';
+    setTimeout(() => { document.getElementById('xFill').style.width = '56%'; }, 400);
+
+    // AI
+    document.getElementById('aiPct').textContent = '38%';
+    document.getElementById('aiTopic').textContent = 'النسب والتناسب';
+    document.getElementById('aiDesc').textContent = 'أداؤك 38% في هذا القسم. ننصح بـ 5 أسئلة يومياً هذا الأسبوع.';
+    document.getElementById('aiCta').style.display = '';
+    document.getElementById('aiCta').textContent = 'ابدأ تدريباً مخصصاً على النسب';
+
+    // Plan — preview كمستخدم عائد (عنده أخطاء)
+    window.__attemptsTotal = 488; window.__mistakesTotal = 303;
+    renderPlan(false, 303);
+    const t1 = document.querySelector('#planTask1 .tn');
+    const d1 = document.querySelector('#planTask1 .td');
+    if (t1) t1.textContent = 'تدريب على النسب والتناسب';
+    if (d1) d1.textContent = 'مختارة حسب أخطاءك الفعلية';
+
+    // Rank + Podium (preview)
+    document.getElementById('myRank').textContent = 'أنت في المرتبة #8';
+    renderPodium([
+        { name: 'عبدالعزيز الزهراني', xp: 523 },
+        { name: 'محمد السبيعي', xp: 481 },
+        { name: 'فهد الحربي', xp: 412 }
+    ]);
+
+    // Notif dot
+    document.getElementById('notifDot').style.display = 'block';
+
+    // Tip — نصيحة واحدة يومياً
+    const demoTips = [
+        { ic:'⏰', ttl:'نظّم وقتك', txt:'خصص 30 دقيقة يومياً للتدريب — الاستمرارية أهم من الكثافة' },
+        { ic:'🎯', ttl:'ركّز على الضعف', txt:'راجع أخطاءك أولاً — التعلم من الخطأ أسرع طريق للتحسن' },
+        { ic:'📊', ttl:'تابع تقدمك', txt:'راقب إحصائياتك أسبوعياً — الأرقام ما تكذب' }
+    ];
+    const now = new Date();
+    const dayKey = now.getFullYear() * 1000 + Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+    const t = demoTips[dayKey % demoTips.length];
+    document.getElementById('tipsArea').innerHTML =
+        '<div class="tip"><div class="tip-ic">' + t.ic + '</div>'
+        + '<div class="tip-body"><div class="tip-ttl">' + t.ttl + '</div>'
+        + '<div class="tip-txt">' + t.txt + '</div></div></div>';
+}
+
+})();
+</script>
+</body>
+</html>

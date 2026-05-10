@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — اختبار محاكي</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}}catch(e){}})();</script>
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--gold:#F59E0B;
+}
+.dark,[data-t="d"]{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:560px;margin:0 auto;min-height:100dvh;padding:14px 16px 30px}
+
+/* PRE-EXAM (countdown) */
+.pre{padding:18px;background:linear-gradient(135deg,#5B4DD4,#6D5DF6);border-radius:18px;color:#fff;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
+.pre::before{content:"";position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.08)}
+.pre-tag{display:inline-block;padding:5px 12px;background:rgba(255,215,0,.22);border:1px solid rgba(255,215,0,.4);border-radius:14px;font-size:11.5px;font-weight:700;margin-bottom:10px;position:relative;z-index:1}
+.pre-h{font-size:18px;font-weight:800;margin-bottom:6px;position:relative;z-index:1}
+.pre-s{font-size:12.5px;opacity:.9;margin-bottom:18px;position:relative;z-index:1}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;position:relative;z-index:1}
+.cd-cell{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:10px}
+.cd-v{font-size:24px;font-weight:800;line-height:1;letter-spacing:-.02em}
+.cd-l{font-size:10px;opacity:.85;margin-top:3px}
+
+/* DETAILS CARD */
+.det{padding:16px;background:var(--sf);border:1px solid var(--ln);border-radius:18px;margin-bottom:12px}
+.det-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln);font-size:13px}
+.det-row:last-child{border-bottom:none}
+.det-l{color:var(--i3);font-weight:600;font-size:12px}
+.det-v{font-weight:700}
+
+/* CTA */
+.cta{width:100%;padding:14px;border-radius:14px;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta.go{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;box-shadow:0 6px 18px rgba(34,197,94,.32)}
+.cta.go:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.cta.fail{background:var(--ds);color:var(--dng);border:1px solid rgba(239,68,68,.3)}
+
+/* IN-EXAM */
+.exam-bar{position:sticky;top:0;background:var(--sf);border-bottom:1px solid var(--ln);z-index:50;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin:-14px -16px 14px;border-radius:0 0 14px 14px;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+.exam-bar .timer{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;background:var(--ps);color:var(--pri);font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+.exam-bar .timer.warn{background:rgba(245,158,11,.15);color:var(--gold)}
+.exam-bar .timer.danger{background:var(--ds);color:var(--dng);animation:tickPulse 1s infinite}
+@keyframes tickPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.exam-bar .timer svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.exam-bar .progress{font-size:12px;color:var(--i2);font-weight:600}
+
+.q-card{padding:18px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;margin-bottom:14px}
+.q-num{font-size:11.5px;color:var(--i3);font-weight:700;margin-bottom:6px;letter-spacing:.04em}
+.q-tag{display:inline-block;padding:3px 9px;border-radius:8px;background:var(--ps);color:var(--pri);font-size:10.5px;font-weight:700;margin-bottom:10px}
+.q-text{font-size:15px;line-height:1.8;font-weight:600;margin-bottom:14px}
+.q-text p,.q-text br{margin-top:6px}
+.q-img{max-width:100%;border-radius:10px;margin-bottom:12px}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{padding:13px 14px;background:var(--s2);border:1.5px solid var(--ln);border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;text-align:right}
+.choice:hover{background:var(--ps);border-color:var(--pm)}
+.choice.sel{background:var(--ps);border-color:var(--pri);color:var(--pri);font-weight:700}
+.choice .ch-letter{width:28px;height:28px;border-radius:50%;background:var(--sf);border:1.5px solid var(--ln);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;transition:all .15s}
+.choice.sel .ch-letter{background:var(--pri);border-color:var(--pri);color:#fff}
+.choice .ch-text{flex:1;font-size:14px;line-height:1.6}
+
+/* NAV BTNS */
+.nav-row{display:flex;gap:8px;margin-top:14px}
+.nav-btn{flex:1;padding:13px;border-radius:12px;font-size:13.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+.nav-btn.prev{background:var(--s2);color:var(--ink)}
+.nav-btn.prev:disabled{opacity:.4;cursor:not-allowed}
+.nav-btn.next{background:var(--pri);color:#fff}
+.nav-btn.submit{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff}
+
+/* QUESTION GRID (overview) */
+.qgrid-toggle{margin-top:10px;text-align:center;font-size:12px;color:var(--pri);font-weight:700;cursor:pointer}
+.qgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:12px;padding:12px;background:var(--s2);border-radius:12px}
+.qgrid-cell{padding:8px 0;border-radius:8px;background:var(--sf);font-size:11px;font-weight:700;text-align:center;cursor:pointer;border:1px solid var(--ln)}
+.qgrid-cell.answered{background:var(--ss);color:var(--suc);border-color:rgba(34,197,94,.3)}
+.qgrid-cell.current{background:var(--pri);color:#fff;border-color:var(--pri)}
+
+/* RESULT */
+.res-hero{padding:24px;background:linear-gradient(135deg,#5B4DD4,#6D5DF6);border-radius:18px;color:#fff;text-align:center;margin-bottom:14px;position:relative;overflow:hidden}
+.res-hero::before{content:"";position:absolute;top:-60px;left:-40px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.1)}
+.res-pct{font-size:48px;font-weight:800;line-height:1;margin:8px 0;position:relative;z-index:1}
+.res-score{font-size:14px;opacity:.92;position:relative;z-index:1}
+.res-rank{display:inline-block;padding:6px 14px;background:rgba(255,215,0,.22);border:1px solid rgba(255,215,0,.4);border-radius:14px;font-size:13px;font-weight:800;margin-top:12px;position:relative;z-index:1}
+
+.res-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.res-stat{padding:14px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;text-align:center}
+.res-sv{font-size:22px;font-weight:800}
+.res-sl{font-size:11px;color:var(--i3);margin-top:3px;font-weight:600}
+
+/* LEADERBOARD */
+.lb-card{background:var(--sf);border:1px solid var(--ln);border-radius:18px;margin-bottom:14px;overflow:hidden}
+.lb-h{padding:14px 16px;border-bottom:1px solid var(--ln);font-size:14px;font-weight:800}
+.lb-row{padding:11px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--ln);font-size:13px}
+.lb-row:last-child{border-bottom:none}
+.lb-row.me{background:var(--ps)}
+.lb-rank{width:34px;height:34px;border-radius:50%;background:var(--s2);display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0}
+.lb-rank.gold{background:linear-gradient(135deg,#FFD700,#FFA500);color:#fff}
+.lb-rank.silver{background:linear-gradient(135deg,#C0C0C0,#A0A0A0);color:#fff}
+.lb-rank.bronze{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#fff}
+.lb-name{flex:1;font-weight:600}
+.lb-score{font-weight:800;color:var(--pri)}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:12px 18px;background:var(--ink);color:#fff;border-radius:12px;font-size:13px;font-weight:600;z-index:300;display:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.show{display:block;animation:toastIn .3s}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,15px)}to{opacity:1;transform:translate(-50%,0)}}
+
+@media (min-width:768px){
+  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;padding:24px 16px;background:radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),radial-gradient(circle at bottom left,rgba(245,158,11,.14),transparent 55%),var(--bg)}
+  .wrap{border-radius:24px;background:var(--sf);box-shadow:0 24px 64px rgba(20,17,52,.16);padding:24px;border:1px solid var(--ln)}
+  .exam-bar{margin:-24px -24px 16px;border-radius:24px 24px 14px 14px}
+}
+</style>
+<script src="/analytics.js" async></script>
+</head>
+<body>
+<div class="wrap" id="root">
+  <div style="text-align:center;padding:60px 20px;color:var(--i3)">جارٍ التحميل...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="v2/supabase-helpers-v2.js"></script>
+<script>
+(async function(){
+  const M = window.MadarekV2;
+  const sb = M.getSb();
+  const params = new URLSearchParams(location.search);
+  const examId = params.get('exam_id') || params.get('id');
+  const isPreview = params.has('preview');
+
+  let user = null, examState = null, regId = null;
+  let questions = [], curIdx = 0, answers = {}, timerInterval = null, autosaveQueue = {};
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function pad(n){ return n<10 ? '0'+n : ''+n; }
+  function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2400); }
+
+  // ════ Bootstrap ════
+  if (!examId) {
+    $('root').innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--dng)"><h2 style="margin-bottom:8px">رابط غير صحيح</h2><p style="font-size:13px;color:var(--i3)">معرّف الاختبار مفقود — ارجع للرئيسية</p><a href="/dashboard.html" style="display:inline-block;margin-top:16px;color:var(--pri);font-weight:700">الرئيسية</a></div>';
+    return;
+  }
+
+  if (isPreview) {
+    // mock preview
+    const startsIn30s = new Date(Date.now() + 30000).toISOString();
+    examState = { exam_id: examId, exam_type: 'tahsili', title: 'محاكي التحصيلي — تجربة', starts_at: startsIn30s, duration_min: 125, questions_count: 160, total_registered: 28, user_registered: true };
+    renderPreExam();
+    return;
+  }
+
+  user = await M.getUser();
+  if (!user) { location.href = '/login.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
+
+  // ── 🔒 Subscription gate (يحمي من الوصول المباشر بدون اشتراك) ──
+  const profile = await M.getProfile();
+  if (!profile) { location.href = '/login.html'; return; }
+  if (!M.isSubscribed(profile)) {
+    location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname + location.search);
+    return;
+  }
+
+  await loadExamMeta();
+
+  // ════ تحميل بيانات الاختبار العامة (قبل البدء) ════
+  async function loadExamMeta(){
+    try {
+      const { data: examRow, error: examErr } = await sb.from('mock_exams').select('*').eq('id', examId).single();
+      if (examErr || !examRow) throw new Error(examErr?.message || 'الاختبار غير موجود');
+
+      const { data: regRow } = await sb.from('mock_exam_registrations').select('*').eq('exam_id', examId).eq('user_id', user.id).maybeSingle();
+
+      examState = {
+        exam_id: examRow.id,
+        exam_type: examRow.exam_type,
+        title: examRow.title,
+        starts_at: examRow.starts_at,
+        duration_min: examRow.duration_min,
+        questions_count: examRow.questions_count,
+        user_registered: !!regRow,
+        registration: regRow
+      };
+
+      // لو سلّم بالفعل → عرض النتيجة
+      if (regRow && regRow.submitted_at) {
+        await showResult();
+        return;
+      }
+
+      const now = new Date();
+      const starts = new Date(examRow.starts_at);
+      const ends = new Date(starts.getTime() + examRow.duration_min * 60000);
+
+      if (now < starts) {
+        renderPreExam();
+      } else if (now >= ends) {
+        renderEndedNoSubmit();
+      } else {
+        // وقت الاختبار — ابدأ مباشرة
+        await startExam();
+      }
+    } catch(e) {
+      $('root').innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--dng)"><h2>تعذّر تحميل الاختبار</h2><p style="font-size:13px;margin-top:8px">'+esc(e.message||'')+'</p></div>';
+    }
+  }
+
+  // ════ شاشة قبل البدء (عدّاد) ════
+  function renderPreExam(){
+    const e = examState;
+    const t = examTypeName(e.exam_type);
+    const registered = e.user_registered;
+
+    $('root').innerHTML = `
+      <div class="pre">
+        <div class="pre-tag">اختبار محاكي</div>
+        <div class="pre-h">${esc(e.title)}</div>
+        <div class="pre-s">${esc(t)}</div>
+        <div class="cd" id="cd">
+          <div class="cd-cell"><div class="cd-v" id="cdD">--</div><div class="cd-l">يوم</div></div>
+          <div class="cd-cell"><div class="cd-v" id="cdH">--</div><div class="cd-l">ساعة</div></div>
+          <div class="cd-cell"><div class="cd-v" id="cdM">--</div><div class="cd-l">دقيقة</div></div>
+          <div class="cd-cell"><div class="cd-v" id="cdS">--</div><div class="cd-l">ثانية</div></div>
+        </div>
+      </div>
+
+      <div class="det">
+        <div class="det-row"><div class="det-l">نوع الاختبار</div><div class="det-v">${esc(t)}</div></div>
+        <div class="det-row"><div class="det-l">عدد الأسئلة</div><div class="det-v">${e.questions_count}</div></div>
+        <div class="det-row"><div class="det-l">المدة</div><div class="det-v">${e.duration_min} دقيقة</div></div>
+        <div class="det-row"><div class="det-l">الموعد</div><div class="det-v">${new Date(e.starts_at).toLocaleString('ar-SA',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}</div></div>
+        <div class="det-row"><div class="det-l">حالتك</div><div class="det-v" style="color:${registered?'#22C55E':'#F59E0B'}">${registered ? 'مسجّل' : 'غير مسجّل'}</div></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${registered
+          ? `<button class="cta go" id="startBtn" disabled><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>سيُفتح الاختبار عند الموعد</button>`
+          : `<button class="cta go" onclick="window.regNow()"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>سجّل الآن للاختبار</button>`
+        }
+        <a href="/dashboard.html" style="text-align:center;font-size:12.5px;color:var(--i3);font-weight:600;padding:8px">الرجوع للرئيسية</a>
+      </div>`;
+
+    startCountdown();
+  }
+
+  function startCountdown(){
+    if (timerInterval) clearInterval(timerInterval);
+    const target = new Date(examState.starts_at).getTime();
+    const tick = async () => {
+      const now = Date.now();
+      const diff = target - now;
+      if (diff <= 0) {
+        clearInterval(timerInterval);
+        if (examState.user_registered) {
+          // ابدأ تلقائياً
+          await startExam();
+        } else {
+          // أعد التحميل
+          location.reload();
+        }
+        return;
+      }
+      const d = Math.floor(diff / (864e5));
+      const h = Math.floor((diff % 864e5) / 36e5);
+      const m = Math.floor((diff % 36e5) / 6e4);
+      const s = Math.floor((diff % 6e4) / 1000);
+      $('cdD') && ($('cdD').textContent = pad(d));
+      $('cdH') && ($('cdH').textContent = pad(h));
+      $('cdM') && ($('cdM').textContent = pad(m));
+      $('cdS') && ($('cdS').textContent = pad(s));
+
+      // فعّل الزر إذا الوقت قارب
+      const startBtn = $('startBtn');
+      if (startBtn && diff <= 60000 && examState.user_registered) {
+        startBtn.disabled = false;
+        startBtn.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><polygon points="5 3 19 12 5 21 5 3"/></svg>ابدأ الاختبار الآن';
+        startBtn.onclick = startExam;
+      }
+    };
+    tick();
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  // ════ تسجيل الآن ════
+  window.regNow = async function(){
+    try {
+      const { error } = await sb.rpc('register_for_active_mock_exam');
+      if (error && !String(error.message||'').includes('no_active_exam')) throw error;
+      // أعد التحميل لتأكيد
+      await loadExamMeta();
+      showToast('تم التسجيل بنجاح');
+    } catch(e) {
+      showToast('تعذّر التسجيل: ' + (e.message||''));
+    }
+  };
+
+  // ════ بدء الاختبار → جلب الأسئلة ════
+  async function startExam(){
+    try {
+      $('root').innerHTML = '<div style="padding:60px 20px;text-align:center;color:var(--i3)">جارٍ تحضير الأسئلة...</div>';
+      const { data, error } = await sb.rpc('start_mock_exam_attempt', { p_exam_id: examId });
+      if (error) {
+        if (String(error.message||'').includes('not_registered')) { showToast('يجب التسجيل أوّلاً'); await loadExamMeta(); return; }
+        if (String(error.message||'').includes('exam_ended')) { renderEndedNoSubmit(); return; }
+        if (String(error.message||'').includes('exam_not_started_yet')) { await loadExamMeta(); return; }
+        if (String(error.message||'').includes('already_submitted')) { await showResult(); return; }
+        throw error;
+      }
+      regId = data.registration_id;
+      questions = data.questions || [];
+      // قراءة الإجابات السابقة (لو موجودة من جلسة سابقة)
+      questions.forEach((q, i) => {
+        if (q.selected_index != null) answers[i] = q.selected_index;
+      });
+      curIdx = 0;
+      examState.remaining_min = data.remaining_min;
+      examState.started_at = data.started_at;
+      examState.duration_min = data.duration_min;
+      renderExam();
+      startTimer();
+    } catch(e) {
+      $('root').innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--dng)"><h2>تعذّر بدء الاختبار</h2><p style="font-size:13px;margin-top:8px">'+esc(e.message||'')+'</p><a href="/dashboard.html" style="display:inline-block;margin-top:16px;color:var(--pri);font-weight:700">الرئيسية</a></div>';
+    }
+  }
+
+  // ════ عرض الاختبار ════
+  function renderExam(){
+    const q = questions[curIdx];
+    const total = questions.length;
+    const sectionTag = q.section === 'quant' ? 'قدرات كمي' : q.section === 'verbal' ? 'قدرات لفظي' : q.section === 'tahsili' ? 'تحصيلي' : '';
+    $('root').innerHTML = `
+      <div class="exam-bar">
+        <div class="timer" id="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="timerVal">--:--</span></div>
+        <div class="progress">${curIdx+1} / ${total}</div>
+      </div>
+
+      <div class="q-card">
+        <div class="q-num">السؤال ${curIdx+1} من ${total}</div>
+        ${sectionTag ? '<div class="q-tag">'+esc(sectionTag)+'</div>' : ''}
+        <div class="q-text">${safeHtml(q.text||'')}</div>
+        ${q.image_url ? '<img src="'+esc(q.image_url)+'" class="q-img" alt="">' : ''}
+        <div class="choices">
+          ${(q.choices||[]).map((c, i) => `
+            <button class="choice ${answers[curIdx]===i?'sel':''}" onclick="window.pickChoice(${i})">
+              <div class="ch-letter">${['أ','ب','ج','د','هـ'][i] || (i+1)}</div>
+              <div class="ch-text">${safeHtml(c)}</div>
+            </button>`).join('')}
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn prev" id="prevBtn" ${curIdx===0?'disabled':''} onclick="window.prevQ()">السابق</button>
+        ${curIdx===total-1
+          ? '<button class="nav-btn submit" onclick="window.submitExam()">إنهاء وتسليم</button>'
+          : '<button class="nav-btn next" onclick="window.nextQ()">التالي</button>'
+        }
+      </div>
+
+      <div class="qgrid-toggle" onclick="window.toggleGrid()" id="gridToggle">عرض شبكة الأسئلة</div>
+      <div id="qgrid" style="display:none"></div>`;
+  }
+
+  window.pickChoice = function(idx){
+    const cur = curIdx;
+    answers[cur] = idx;
+    renderExam();
+    saveAnswer(cur, idx);
+  };
+
+  function saveAnswer(idx, chosen){
+    if (!regId) return;
+    const qid = questions[idx].id;
+    autosaveQueue[qid] = chosen;
+    sb.rpc('save_mock_exam_answer', { p_registration_id: regId, p_question_id: qid, p_selected_index: chosen })
+      .then(() => { delete autosaveQueue[qid]; })
+      .catch(() => {});
+  }
+
+  window.prevQ = () => { if (curIdx>0) { curIdx--; renderExam(); } };
+  window.nextQ = () => { if (curIdx < questions.length-1) { curIdx++; renderExam(); } };
+
+  window.toggleGrid = function(){
+    const g = $('qgrid');
+    if (!g) return;
+    if (g.style.display === 'none') {
+      g.innerHTML = '<div class="qgrid">' + questions.map((q,i) => {
+        const cls = answers[i]!=null?'answered':'' + (i===curIdx?' current':'');
+        return `<div class="qgrid-cell ${i===curIdx?'current':answers[i]!=null?'answered':''}" onclick="window.gotoQ(${i})">${i+1}</div>`;
+      }).join('') + '</div>';
+      g.style.display = 'block';
+      $('gridToggle').textContent = 'إخفاء الشبكة';
+    } else {
+      g.style.display = 'none';
+      $('gridToggle').textContent = 'عرض شبكة الأسئلة';
+    }
+  };
+  window.gotoQ = function(i){ curIdx = i; renderExam(); };
+
+  // ════ المؤقّت ════
+  function startTimer(){
+    if (timerInterval) clearInterval(timerInterval);
+    const startTs = new Date(examState.started_at).getTime();
+    const totalMs = examState.duration_min * 60000;
+    const endTs = new Date(examState.starts_at).getTime() + totalMs; // لا تتجاوز نهاية الجدولة
+    const tick = async () => {
+      const now = Date.now();
+      const remaining = Math.max(0, Math.min(endTs, startTs + totalMs) - now);
+      const m = Math.floor(remaining / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
+      const v = $('timerVal');
+      const t = $('timer');
+      if (v) v.textContent = pad(m) + ':' + pad(s);
+      if (t) {
+        t.classList.toggle('warn', remaining < 600000 && remaining >= 60000);
+        t.classList.toggle('danger', remaining < 60000);
+      }
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        showToast('انتهى الوقت — جارٍ التسليم تلقائياً');
+        await window.submitExam(true);
+      }
+    };
+    tick();
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  // ════ التسليم ════
+  let submitting = false;
+  window.submitExam = async function(auto){
+    if (submitting) return;
+    if (!auto) {
+      const unanswered = questions.length - Object.keys(answers).length;
+      const msg = unanswered > 0
+        ? 'متبقّي ' + unanswered + ' سؤال بدون إجابة. تأكيد التسليم؟'
+        : 'تأكيد التسليم النهائي؟';
+      if (!confirm(msg)) return;
+    }
+    submitting = true;
+    if (timerInterval) clearInterval(timerInterval);
+    try {
+      const { data, error } = await sb.rpc('submit_mock_exam', { p_registration_id: regId });
+      if (error) throw error;
+      await showResult();
+    } catch(e) {
+      submitting = false;
+      showToast('تعذّر التسليم: ' + (e.message||''));
+    }
+  };
+
+  // ════ شاشة النتيجة + المتصدرون ════
+  async function showResult(){
+    try {
+      const { data: result, error } = await sb.rpc('get_my_mock_exam_result', { p_exam_id: examId });
+      if (error || !result) throw error || new Error('لا توجد نتيجة');
+
+      const { data: lb } = await sb.rpc('mock_exam_leaderboard', { p_exam_id: examId, p_limit: 20 });
+      const leaders = lb || [];
+      const myUid = user?.id;
+
+      $('root').innerHTML = `
+        <div class="res-hero">
+          <div style="font-size:13px;opacity:.92;position:relative;z-index:1">${esc(examState?.title || 'الاختبار المحاكي')}</div>
+          <div class="res-pct">${result.score_pct != null ? result.score_pct + '%' : '—'}</div>
+          <div class="res-score">${result.score_correct} / ${result.score_total} إجابة صحيحة</div>
+          ${result.rank_position ? '<div class="res-rank">المرتبة #' + result.rank_position + '</div>' : ''}
+        </div>
+
+        <div class="res-stats">
+          <div class="res-stat"><div class="res-sv" style="color:var(--suc)">${result.score_correct}</div><div class="res-sl">صحيحة</div></div>
+          <div class="res-stat"><div class="res-sv" style="color:var(--dng)">${result.score_total - result.score_correct}</div><div class="res-sl">خاطئة</div></div>
+        </div>
+
+        <div class="lb-card">
+          <div class="lb-h">المتصدّرون</div>
+          ${leaders.length ? leaders.map(r => {
+            const cls = r.rank===1?'gold':r.rank===2?'silver':r.rank===3?'bronze':'';
+            const isMe = r.user_id === myUid;
+            return `<div class="lb-row ${isMe?'me':''}">
+              <div class="lb-rank ${cls}">${r.rank}</div>
+              <div class="lb-name">${esc(r.full_name||'مستخدم')}${isMe?' <span style="color:var(--pri);font-size:10px">(أنت)</span>':''}</div>
+              <div class="lb-score">${r.score_pct}%</div>
+            </div>`;
+          }).join('') : '<div style="padding:24px;text-align:center;color:var(--i3);font-size:12.5px">لا متصدّرون بعد</div>'}
+        </div>
+
+        <a href="/dashboard.html" class="cta go" style="text-decoration:none;display:flex">الرجوع للرئيسية</a>`;
+    } catch(e) {
+      $('root').innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--dng)"><h2>تعذّر تحميل النتيجة</h2></div>';
+    }
+  }
+
+  function renderEndedNoSubmit(){
+    $('root').innerHTML = '<div style="padding:50px 20px;text-align:center"><h2 style="font-size:18px;margin-bottom:8px">انتهى وقت الاختبار</h2><p style="font-size:13px;color:var(--i3);margin-bottom:18px">لم يتم التسليم — لا تظهر النتيجة</p><a href="/dashboard.html" style="color:var(--pri);font-weight:700">الرجوع للرئيسية</a></div>';
+  }
+
+  function examTypeName(t){
+    return ({tahsili:'محاكي التحصيلي',qudurat_computer:'محاكي القدرات (محوسب)',qudurat_paper:'محاكي القدرات (ورقي)',custom:'اختبار مخصّص'})[t] || t;
+  }
+
+  function safeHtml(s){
+    if (!s) return '';
+    const allowed = /<\/?(br|p|strong|em|u|b|i|sup|sub|span|div|hr)\b[^>]*>/gi;
+    const div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML.replace(/&lt;(\/?(br|p|strong|em|u|b|i|sup|sub|span|div|hr))(\s[^&]*?)?&gt;/gi, (m) => m.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"'));
+  }
+})();
+</script>
+</body>
+</html>

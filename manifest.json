@@ -1,0 +1,49 @@
+{
+  "name": "مدارك النخبة — منصة القدرات والتحصيلي",
+  "short_name": "مدارك النخبة",
+  "description": "منصة تقنية سعودية ذكية للاستعداد لاختبارات القدرات والتحصيلي",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "theme_color": "#0f0a2e",
+  "background_color": "#0d0825",
+  "categories": ["education"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "ابدأ التدريب",
+      "short_name": "تدريب",
+      "url": "/select-section.html",
+      "icons": [{ "src": "favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "لوحة التحكم",
+      "short_name": "لوحتي",
+      "url": "/dashboard.html",
+      "icons": [{ "src": "favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

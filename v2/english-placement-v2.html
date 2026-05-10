@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Placement Test — Madarek Elite</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}}catch(e){}})();</script>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.18);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--gold:#F59E0B;
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.25);--pt:#9B8CFF;
+--as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;min-height:100dvh}
+.ar{font-family:'IBM Plex Sans Arabic',sans-serif}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:480px;margin:0 auto;min-height:100dvh;padding-bottom:24px;background:var(--bg);position:relative}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--ln)}
+.x-btn{width:36px;height:36px;border-radius:10px;background:var(--sf);border:1px solid var(--ln);display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.x-btn svg{width:18px;height:18px;stroke:var(--i2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hdr-c{flex:1;text-align:center}
+.hdr-t{font-size:14px;font-weight:700;color:var(--ink);font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+.hdr-s{font-size:11px;color:var(--i3);margin-top:2px;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+.hdr-spc{width:36px}
+
+/* PROGRESS */
+.pr-track{height:3px;background:var(--s3);margin:0 14px;border-radius:3px;overflow:hidden}
+.pr-fill{height:100%;background:var(--pri);border-radius:3px;transition:width .3s var(--ease)}
+
+/* CONTENT */
+.scroll{padding:14px;display:flex;flex-direction:column;gap:14px;flex:1}
+
+/* QUESTION CARD */
+.q-card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln);padding:18px;display:flex;flex-direction:column;gap:10px;animation:fadeIn .25s var(--ease)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.q-badge{align-self:flex-start;display:flex;align-items:center;gap:6px;background:var(--ps);padding:5px 10px;border-radius:20px}
+.q-badge svg{width:12px;height:12px;stroke:var(--pri);fill:none;stroke-width:2}
+.q-badge span{font-size:11px;font-weight:700;color:var(--pri)}
+.q-text{font-size:18px;font-weight:600;color:var(--ink);line-height:1.55;text-align:left;direction:ltr}
+.q-hint{font-size:12px;color:var(--i3);line-height:1.6;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+
+/* CHOICES */
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r);border:1.5px solid var(--ln2);background:var(--sf);cursor:pointer;transition:all .18s;text-align:left}
+.choice:active{transform:scale(.99)}
+.choice.on{border-color:var(--pri);background:var(--ps)}
+.choice .letter{width:32px;height:32px;border-radius:8px;background:var(--s3);display:grid;place-items:center;color:var(--i3);font-size:13px;font-weight:700;flex-shrink:0;transition:all .18s}
+.choice.on .letter{background:var(--pri);color:#fff}
+.choice .ctxt{flex:1;font-size:15px;font-weight:500;color:var(--ink);direction:ltr}
+
+/* FOOTER */
+.footer{padding:14px;border-top:1px solid var(--ln);background:var(--sf);position:sticky;bottom:0;left:0;right:0}
+.next-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r);background:var(--s3);color:var(--i3);font-size:15px;font-weight:700;cursor:not-allowed;transition:all .2s}
+.next-btn.ready{background:var(--pri);color:#fff;cursor:pointer}
+.next-btn.ready:active{transform:scale(.98)}
+.next-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5}
+
+/* RESULT — HERO */
+.hero{padding:36px 28px;border-radius:var(--r2);align-items:center;display:flex;flex-direction:column;position:relative;overflow:hidden;text-align:center}
+.hero::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::after{content:"";position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.22);padding:5px 12px;border-radius:20px;margin-bottom:18px;position:relative;z-index:1}
+.hero-badge svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5}
+.hero-badge span{color:#fff;font-size:11px;font-weight:700;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+.lvl-circle{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.22);border:3px solid rgba(255,255,255,.9);display:grid;place-items:center;margin-bottom:14px;position:relative;z-index:1}
+.lvl-circle span{color:#fff;font-size:42px;font-weight:700;letter-spacing:1px}
+.lvl-title{color:#fff;font-size:22px;font-weight:700;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl;position:relative;z-index:1}
+.lvl-title-en{color:rgba(255,255,255,.85);font-size:13px;font-weight:500;margin-top:2px;margin-bottom:14px;position:relative;z-index:1}
+.score-pill{background:rgba(255,255,255,.22);padding:7px 14px;border-radius:20px;position:relative;z-index:1}
+.score-pill span{color:#fff;font-size:12px;font-weight:700;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+
+/* RESULT CARDS */
+.r-card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln);padding:16px;display:flex;flex-direction:column;gap:12px}
+.r-title{font-size:14px;font-weight:700;color:var(--ink);font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+.r-desc{font-size:13px;color:var(--i2);line-height:1.7;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+
+/* CEFR LADDER */
+.ladder{display:flex;gap:6px;padding:4px 0}
+.ladder-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ladder-box{width:100%;padding:10px 0;border-radius:10px;text-align:center;font-size:13px;font-weight:700;background:var(--s3);color:var(--i3);border:1px solid var(--ln2)}
+.ladder-box.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.ladder-arrow{width:14px;height:14px}
+.ladder-arrow svg{stroke:var(--pri);fill:none;stroke-width:2.5;width:100%;height:100%}
+
+/* STAT BANNER */
+.stat-banner{display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--r);background:var(--ps);border:1px solid var(--pm)}
+.stat-icon-box{width:32px;height:32px;border-radius:10px;background:var(--sf);display:grid;place-items:center;flex-shrink:0}
+.stat-icon-box svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.stat-txt{flex:1;font-size:12px;color:var(--ink);font-weight:500;line-height:1.7;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+.stat-bold{font-weight:700;color:var(--pri)}
+
+/* TEASER */
+.teaser{display:flex;align-items:flex-start;gap:8px;padding:0 6px}
+.teaser svg{width:14px;height:14px;stroke:var(--i3);fill:none;stroke-width:2;flex-shrink:0;margin-top:3px}
+.teaser-txt{flex:1;font-size:11px;color:var(--i3);line-height:1.7;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+
+/* REVIEW */
+.rev-row{display:flex;gap:10px;padding-top:10px;border-top:1px solid var(--ln)}
+.rev-row:first-of-type{border-top:none;padding-top:0}
+.rev-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;margin-top:2px}
+.rev-icon.ok{background:var(--ss)}
+.rev-icon.ko{background:var(--ds)}
+.rev-icon svg{width:14px;height:14px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.rev-icon.ok svg{stroke:var(--suc)}
+.rev-icon.ko svg{stroke:var(--dng)}
+.rev-body{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.rev-prompt{font-size:13px;font-weight:600;color:var(--ink);line-height:1.55;text-align:left;direction:ltr}
+.rev-meta{font-size:11px;color:var(--i2);line-height:1.6;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+.rev-meta b{font-weight:700}
+.rev-meta .ok-c{color:var(--suc)}
+.rev-meta .ko-c{color:var(--dng)}
+.rev-explain{font-size:11px;color:var(--i3);font-style:italic;line-height:1.6;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl}
+
+/* BUTTONS */
+.btns-col{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--r);font-size:13px;font-weight:700;font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl;cursor:pointer;transition:all .15s;border:none}
+.btn:active{transform:scale(.98)}
+.btn svg{width:15px;height:15px;fill:none;stroke-width:2.2}
+.btn-share{background:var(--pri);color:#fff}
+.btn-share svg{stroke:#fff}
+.btn-sec{background:var(--ps);border:1.5px solid var(--pm);color:var(--pri)}
+.btn-sec svg{stroke:var(--pri)}
+.btn-ghost{background:var(--s2);border:1px solid var(--ln2);color:var(--i2)}
+.btn-ghost svg{stroke:var(--i2)}
+
+/* LEVEL GRADIENTS */
+.hero.A1{background:linear-gradient(135deg,#6B7280,#9CA3AF)}
+.hero.A2{background:linear-gradient(135deg,#EF4444,#F87171)}
+.hero.B1{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.hero.B2{background:linear-gradient(135deg,#7C3AED,#A78BFA)}
+.hero.C1{background:linear-gradient(135deg,#059669,#10B981)}
+.hero.C2{background:linear-gradient(135deg,#1E40AF,#3B82F6)}
+
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <button class="x-btn" id="exitBtn" aria-label="Exit">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="hdr-c">
+      <div class="hdr-t" id="hdrT">اختبار تحديد المستوى</div>
+      <div class="hdr-s" id="hdrS">سؤال 1 من 5</div>
+    </div>
+    <div class="hdr-spc"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="pr-track" id="prTrack">
+    <div class="pr-fill" id="prFill" style="width:0%"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="scroll" id="quizScreen">
+    <div class="q-card">
+      <div class="q-badge">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>English</span>
+      </div>
+      <div class="q-text" id="qText">—</div>
+      <div class="q-hint" id="qHint" style="display:none"></div>
+    </div>
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="scroll hidden" id="resultScreen"></div>
+
+  <!-- FOOTER (only during quiz) -->
+  <div class="footer" id="footer">
+    <button class="next-btn" id="nextBtn" disabled>
+      <span id="nextLabel">Next</span>
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+// ── البيانات (نفس placementQuiz.ts من التطبيق) ──
+const PLACEMENT_QUESTIONS = [
+  {
+    id: 'p1',
+    prompt: 'My sister _____ in London.',
+    hint: 'اختر الفعل المناسب في المضارع البسيط.',
+    choices: [
+      { text: 'live' },
+      { text: 'lives', correct: true },
+      { text: 'living' },
+      { text: 'to live' },
+    ],
+    explainAr: 'الفاعل "My sister" مفرد غائب، فالفعل يأخذ "s" في المضارع البسيط: lives.',
+  },
+  {
+    id: 'p2',
+    prompt: 'We _____ to Dubai last summer.',
+    hint: 'حدث في الماضي (last summer).',
+    choices: [
+      { text: 'go' },
+      { text: 'goes' },
+      { text: 'went', correct: true },
+      { text: 'gone' },
+    ],
+    explainAr: '"last summer" إشارة زمنية للماضي البسيط، وصيغة go في الماضي هي went.',
+  },
+  {
+    id: 'p3',
+    prompt: 'If it _____ tomorrow, we will cancel the trip.',
+    hint: 'جملة شرطية من النوع الأول (First Conditional).',
+    choices: [
+      { text: 'rain' },
+      { text: 'rains', correct: true },
+      { text: 'rained' },
+      { text: 'will rain' },
+    ],
+    explainAr: 'في الشرطية الأولى: if + مضارع بسيط، ثم will + فعل. الفاعل "it" مفرد، فالفعل: rains.',
+  },
+  {
+    id: 'p4',
+    prompt: 'She _____ already finished her homework when I called.',
+    hint: 'ماضي تام — حدث سبق حدثاً آخر في الماضي.',
+    choices: [
+      { text: 'has' },
+      { text: 'have' },
+      { text: 'had', correct: true },
+      { text: 'having' },
+    ],
+    explainAr: 'الماضي التام: had + past participle. "finished" سبقت "called" في الماضي.',
+  },
+  {
+    id: 'p5',
+    prompt: '_____ I known about the traffic, I would have left earlier.',
+    hint: 'شرطية مقلوبة (Inverted third conditional).',
+    choices: [
+      { text: 'If' },
+      { text: 'Had', correct: true },
+      { text: 'Have' },
+      { text: 'Would' },
+    ],
+    explainAr: 'عند حذف "if" في الشرطية الثالثة يُقلب الفعل المساعد: "Had I known" = "If I had known".',
+  },
+];
+
+const CEFR_META = {
+  A1: { titleAr:'مبتدئ',          titleEn:'Beginner',           descAr:'تبدأ رحلتك — تتعرّف على الكلمات الأساسية والجمل البسيطة.', pctBelow:0  },
+  A2: { titleAr:'أساسي',          titleEn:'Elementary',         descAr:'تفهم العبارات اليومية وتعبّر عن نفسك في مواقف مألوفة.',     pctBelow:18 },
+  B1: { titleAr:'متوسّط',         titleEn:'Intermediate',       descAr:'تتعامل مع معظم المواقف وتتحدّث عن اهتماماتك وخبراتك.',      pctBelow:42 },
+  B2: { titleAr:'متوسّط مرتفع',   titleEn:'Upper Intermediate', descAr:'تفهم الأفكار الرئيسية في النصوص المعقّدة وتتواصل بطلاقة.', pctBelow:67 },
+  C1: { titleAr:'متقدّم',         titleEn:'Advanced',           descAr:'تستخدم الإنجليزية بفعالية في الدراسة والعمل والحياة الاجتماعية.', pctBelow:86 },
+  C2: { titleAr:'متميّز',         titleEn:'Proficient',         descAr:'تتقن الإنجليزية بمستوى قريب من المتحدّث الأصلي — إبداعاً ودقّة.', pctBelow:96 },
+};
+const LADDER = ['A1','A2','B1','B2','C1','C2'];
+
+const PLACEMENT_LEVEL_KEY    = 'madarek.placement.lastLevel.v1';
+const PLACEMENT_TAKEN_AT_KEY = 'madarek.placement.takenAt.v1';
+
+// ── State ──
+let idx = 0;
+let selected = null;
+let answers = [];
+const total = PLACEMENT_QUESTIONS.length;
+
+// ── Render ──
+function renderQuestion() {
+  const q = PLACEMENT_QUESTIONS[idx];
+  document.getElementById('hdrS').textContent = `سؤال ${idx + 1} من ${total}`;
+  document.getElementById('qText').textContent = q.prompt;
+  const hintEl = document.getElementById('qHint');
+  if (q.hint) { hintEl.textContent = q.hint; hintEl.style.display = ''; }
+  else { hintEl.style.display = 'none'; }
+
+  const cs = document.getElementById('choices');
+  cs.innerHTML = '';
+  q.choices.forEach((ch, i) => {
+    const div = document.createElement('div');
+    div.className = 'choice' + (selected === i ? ' on' : '');
+    div.innerHTML = `<div class="letter">${String.fromCharCode(65 + i)}</div><div class="ctxt">${escapeHtml(ch.text)}</div>`;
+    div.onclick = () => pick(i);
+    cs.appendChild(div);
+  });
+
+  updateProgress();
+  updateNextBtn();
+}
+
+function updateProgress() {
+  const pct = ((idx + (selected !== null ? 1 : 0)) / total) * 100;
+  document.getElementById('prFill').style.width = pct + '%';
+}
+
+function updateNextBtn() {
+  const btn = document.getElementById('nextBtn');
+  const label = document.getElementById('nextLabel');
+  label.textContent = idx + 1 === total ? 'See Result' : 'Next';
+  if (selected !== null) {
+    btn.classList.add('ready');
+    btn.disabled = false;
+  } else {
+    btn.classList.remove('ready');
+    btn.disabled = true;
+  }
+}
+
+function pick(i) {
+  selected = i;
+  document.querySelectorAll('.choice').forEach((el, n) => {
+    el.classList.toggle('on', n === i);
+  });
+  updateProgress();
+  updateNextBtn();
+}
+
+function next() {
+  if (selected === null) return;
+  const q = PLACEMENT_QUESTIONS[idx];
+  const correctIdx = q.choices.findIndex(c => c.correct);
+  const isCorrect = selected === correctIdx;
+  answers.push({ qId: q.id, selectedIdx: selected, isCorrect });
+
+  if (idx + 1 >= total) {
+    showResult();
+    return;
+  }
+  idx++;
+  selected = null;
+  renderQuestion();
+}
+
+function scoreToLevel(correct) {
+  const c = Math.max(0, Math.min(5, correct));
+  return LADDER[c];
+}
+
+function showResult() {
+  document.getElementById('quizScreen').classList.add('hidden');
+  document.getElementById('footer').classList.add('hidden');
+  document.getElementById('prTrack').classList.add('hidden');
+  document.getElementById('hdrS').textContent = 'النتيجة';
+
+  const correct = answers.filter(a => a.isCorrect).length;
+  const level = scoreToLevel(correct);
+  const meta = CEFR_META[level];
+
+  // احفظ المستوى محلياً
+  try {
+    localStorage.setItem(PLACEMENT_LEVEL_KEY, level);
+    localStorage.setItem(PLACEMENT_TAKEN_AT_KEY, new Date().toISOString());
+  } catch(e){}
+
+  const ladderHtml = LADDER.map(lv => {
+    const active = lv === level;
+    return `<div class="ladder-col">
+      <div class="ladder-box${active?' on':''}">${lv}</div>
+      <div class="ladder-arrow">${active ? '<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>' : ''}</div>
+    </div>`;
+  }).join('');
+
+  const statBanner = meta.pctBelow > 0
+    ? `<div class="stat-banner">
+        <div class="stat-icon-box"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div class="stat-txt">مستواك أعلى من <span class="stat-bold">${meta.pctBelow}%</span> من المختبرين</div>
+      </div>`
+    : `<div class="stat-banner">
+        <div class="stat-icon-box"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div class="stat-txt">بداية جميلة — كل خبير كان مبتدئاً في يوم ما.</div>
+      </div>`;
+
+  const reviewHtml = answers.map((a, i) => {
+    const q = PLACEMENT_QUESTIONS.find(x => x.id === a.qId);
+    const correctText = q.choices.find(c => c.correct)?.text || '—';
+    const userText = q.choices[a.selectedIdx]?.text || '—';
+    const num = i + 1;
+    return `<div class="rev-row">
+      <div class="rev-icon ${a.isCorrect?'ok':'ko'}">
+        <svg viewBox="0 0 24 24">${a.isCorrect ? '<polyline points="20 6 9 17 4 12"/>' : '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'}</svg>
+      </div>
+      <div class="rev-body">
+        <div class="rev-prompt">${num}. ${escapeHtml(q.prompt)}</div>
+        <div class="rev-meta"><b>الإجابة الصحيحة: </b><span class="ok-c">${escapeHtml(correctText)}</span>${!a.isCorrect ? ` · <b>اخترت: </b><span class="ko-c">${escapeHtml(userText)}</span>` : ''}</div>
+        ${q.explainAr ? `<div class="rev-explain">${escapeHtml(q.explainAr)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('resultScreen').innerHTML = `
+    <div class="hero ${level}">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>اكتمل الاختبار</span>
+      </div>
+      <div class="lvl-circle"><span>${level}</span></div>
+      <div class="lvl-title">${meta.titleAr}</div>
+      <div class="lvl-title-en">${meta.titleEn}</div>
+      <div class="score-pill"><span>${correct} / ${total} إجابة صحيحة</span></div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-title">مكانك على سلّم CEFR</div>
+      <div class="ladder">${ladderHtml}</div>
+      <div class="r-desc">${meta.descAr}</div>
+      ${statBanner}
+    </div>
+
+    <div class="teaser">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <div class="teaser-txt">هذه نسخة مصغّرة (5 أسئلة). النسخة الكاملة قريباً — 30 سؤال أكاديمي مع شهادة مستوى مفصّلة.</div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-title">مراجعة إجاباتك</div>
+      ${reviewHtml}
+    </div>
+
+    <div class="btns-col">
+      <button class="btn btn-share" id="shareBtn">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span>شارك نتيجتك</span>
+      </button>
+      <button class="btn btn-sec" id="retakeBtn">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>أعد الاختبار</span>
+      </button>
+      <button class="btn btn-ghost" id="homeBtn">
+        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>الرجوع للتدريب</span>
+      </button>
+    </div>
+  `;
+  document.getElementById('resultScreen').classList.remove('hidden');
+  window.scrollTo(0, 0);
+
+  // wire result buttons
+  document.getElementById('shareBtn').onclick = () => {
+    const msg = `حصلت على مستوى ${level} — ${meta.titleAr} (${meta.titleEn})\n` +
+                `في اختبار تحديد المستوى من مدارك النخبة.\n\n` +
+                `جرّب الاختبار:\nhttps://www.madarekelite.com/v2/english-placement-v2.html`;
+    if (navigator.share) {
+      navigator.share({ title:'مدارك النخبة — مستوى الإنجليزية', text: msg }).catch(()=>{});
+    } else {
+      navigator.clipboard.writeText(msg).then(() => alert('تم نسخ النتيجة'));
+    }
+  };
+  document.getElementById('retakeBtn').onclick = () => {
+    idx = 0; selected = null; answers = [];
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('quizScreen').classList.remove('hidden');
+    document.getElementById('footer').classList.remove('hidden');
+    document.getElementById('prTrack').classList.remove('hidden');
+    document.getElementById('hdrS').textContent = `سؤال 1 من ${total}`;
+    renderQuestion();
+  };
+  document.getElementById('homeBtn').onclick = () => {
+    window.location.href = '/training.html';
+  };
+}
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function exitConfirm() {
+  if (answers.length === 0 && selected === null) {
+    window.location.href = '/training.html';
+    return;
+  }
+  if (confirm('هل أنت متأكد؟ لن تُحفظ إجاباتك.')) {
+    window.location.href = '/training.html';
+  }
+}
+
+// ── Init ──
+document.getElementById('exitBtn').onclick = exitConfirm;
+document.getElementById('nextBtn').onclick = next;
+renderQuestion();
+</script>
+</body>
+</html>

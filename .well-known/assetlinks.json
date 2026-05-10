@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.madarekelite.app",
+        "sha256_cert_fingerprints": ["AE:FF:54:7B:7D:D3:A5:54:13:AD:D3:A7:A8:C3:9C:B8:ED:9F:26:A8:51:87:6B:B4:5F:AA:75:08:CE:21:93:C7"]
+      }
+    }]

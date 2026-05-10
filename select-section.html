@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0a2e">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختيار القسم - مدارك النخبة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .section-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.5rem;transition:all .4s ease;position:relative;overflow:hidden}
+        .section-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:1.5rem 1.5rem 0 0;opacity:0;transition:opacity .4s ease;pointer-events:none}
+        .section-card:hover::before{opacity:1}
+        .section-card:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+        .card-quant::before{background:linear-gradient(90deg,#3b82f6,#6366f1)}
+        .card-quant:hover{border-color:rgba(59,130,246,0.3);box-shadow:0 20px 60px rgba(59,130,246,0.15)}
+        .card-verbal::before{background:linear-gradient(90deg,#10b981,#14b8a6)}
+        .card-verbal:hover{border-color:rgba(16,185,129,0.3);box-shadow:0 20px 60px rgba(16,185,129,0.15)}
+        .card-tahsili::before{background:linear-gradient(90deg,#a855f7,#8b5cf6)}
+        .card-tahsili:hover{border-color:rgba(168,85,247,0.3);box-shadow:0 20px 60px rgba(168,85,247,0.15)}
+        .icon-circle{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+        .icon-quant{background:linear-gradient(135deg,#3b82f6,#6366f1)}
+        .icon-verbal{background:linear-gradient(135deg,#10b981,#14b8a6)}
+        .icon-tahsili{background:linear-gradient(135deg,#a855f7,#8b5cf6)}
+        .subject-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:500}
+        .tag-quant{background:rgba(59,130,246,0.1);color:#93c5fd}
+        .tag-verbal{background:rgba(16,185,129,0.1);color:#6ee7b7}
+        .tag-tahsili{background:rgba(168,85,247,0.1);color:#d8b4fe}
+        .count-badge{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;text-align:center}
+        .btn-start{width:100%;padding:14px;border-radius:14px;font-weight:800;font-size:.95rem;color:white;cursor:pointer;transition:all .3s ease;border:none;position:relative;overflow:hidden}
+        .btn-start:hover{transform:translateY(-2px)}
+        .btn-start:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+        .btn-quant{background:linear-gradient(135deg,#3b82f6,#6366f1);box-shadow:0 8px 25px rgba(59,130,246,0.25)}
+        .btn-verbal{background:linear-gradient(135deg,#10b981,#14b8a6);box-shadow:0 8px 25px rgba(16,185,129,0.25)}
+        .btn-tahsili{background:linear-gradient(135deg,#a855f7,#8b5cf6);box-shadow:0 8px 25px rgba(168,85,247,0.25)}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}.delay-4{animation-delay:.4s;opacity:0}
+        .tasreeb-card{background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(245,158,11,0.03));border:1px solid rgba(251,191,36,0.15);border-radius:1rem;padding:14px 18px;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:space-between}
+        .tasreeb-card:hover{background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.06));border-color:rgba(251,191,36,0.35);transform:translateY(-3px);box-shadow:0 10px 35px rgba(251,191,36,0.12)}
+        .tasreeb-card.locked{opacity:0.55;cursor:pointer}
+        .tasreeb-card.locked:hover{transform:none;box-shadow:none}
+        .tasreeb-card.tasreeb-new{border-color:rgba(245,158,11,0.4);box-shadow:0 0 20px rgba(245,158,11,0.1)}
+        .tasreeb-skeleton{background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);border-radius:1rem;padding:14px 18px;height:58px;position:relative;overflow:hidden}
+        .tasreeb-skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent);animation:skeletonShimmer 1.5s infinite}
+        @keyframes skeletonShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        .tasreeb-hidden{display:none !important}
+        .tasreeb-toggle-btn{text-align:center;margin-top:10px;padding:10px 20px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:rgba(251,191,36,0.7);background:rgba(251,191,36,0.05);border:1px dashed rgba(251,191,36,0.2);transition:all .3s ease}
+        .tasreeb-toggle-btn:hover{background:rgba(251,191,36,0.1);color:#fbbf24;border-color:rgba(251,191,36,0.4)}
+        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
+        .modal-card{width:100%;max-width:440px;background:linear-gradient(135deg,#1a1145,#1e1550,#0f0a2e);border:1px solid rgba(139,92,246,0.25);border-radius:1.5rem;padding:28px;position:relative;overflow:hidden}
+        .count-option{padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;transition:all .2s ease;text-align:center;flex:1}
+        .count-option:hover{border-color:rgba(139,92,246,0.4);background:rgba(139,92,246,0.1)}
+        .count-option.active{border-color:#8b5cf6;background:rgba(139,92,246,0.2);box-shadow:0 0 20px rgba(139,92,246,0.15)}
+        .count-option .num{font-size:1.5rem;font-weight:900;display:block}
+        .count-option .label{font-size:.65rem;color:rgba(196,181,253,0.6);display:block;margin-top:2px}
+        .time-display{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:12px;text-align:center}
+        @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .modal-animate{animation:modalIn .3s ease forwards}
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+    </style>
+</head>
+<body class="font-tajawal text-white">
+
+    
+
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between animate-in delay-1">
+        <a href="dashboard.html" class="flex items-center gap-2 text-purple-300/70 hover:text-white transition text-sm">
+            <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            <span>الرئيسية</span>
+        </a>
+        <a href="dashboard.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="17" height="17" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <span class="name">مدارك النخبة</span>
+        </a>
+        <h1 class="text-sm font-bold text-purple-300/70">اختر القسم</h1>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 pb-12">
+        <div class="animate-in delay-1 text-center mb-10">
+            <h2 class="text-3xl sm:text-4xl font-black mb-2">اختر القسم للتدريب</h2>
+            <p class="text-purple-200/60 text-sm">اختر القسم وعدد الأسئلة اللي تبيها</p>
+            <div class="mt-3 flex items-center justify-center gap-2">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <p class="text-green-400/80 text-xs font-medium">نضيف أسئلة جديدة كل أسبوع</p>
+            </div>
+        </div>
+
+        <!-- 🔥 تجميعات اختبارات سابقة -->
+        <div id="tasreebatSection" class="animate-in delay-1 mb-8">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-lg">🔥</span>
+                <h3 class="font-black">تسريبات اختبارات سابقة</h3>
+                <span class="text-[10px] px-2.5 py-1 rounded-full font-bold" style="background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.15));border:1px solid rgba(251,191,36,0.3);color:#fbbf24">مع شرح</span>
+            </div>
+            <p class="text-purple-200/50 text-xs mb-3">تدرّب عليها بشرح مفصّل وتنحسب في إحصائياتك 🎯</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="tasreebatGrid"></div>
+            <p id="tasreebLockMsg" class="hidden text-center text-amber-400/60 text-xs mt-3 cursor-pointer hover:text-amber-300 transition" onclick="location.href='pricing.html'">🔒 اشترك عشان تتدرب على التسريبات مع الشرح</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+            <!-- كمي -->
+            <div class="animate-in delay-2 section-card card-quant p-6">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="icon-circle icon-quant">📊</div>
+                    <div><h3 class="text-xl font-black">قدرات كمي</h3><p class="text-purple-200/60 text-xs">الرياضيات والحساب</p></div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag tag-quant">✓ الجبر والمعادلات</span>
+                    <span class="subject-tag tag-quant">✓ الهندسة</span>
+                    <span class="subject-tag tag-quant">✓ النسبة والتناسب</span>
+                    <span class="subject-tag tag-quant">✓ الإحصاء</span>
+                </div>
+                <div class="count-badge mb-4">
+                    <span class="text-2xl font-black text-blue-400" id="quantCount">—</span>
+                    <span class="text-purple-200/60 text-xs block">سؤال متاح</span>
+                </div>
+                <button id="quantBtn" class="btn-start btn-quant" onclick="openModal('quant')">ابدأ التدريب</button>
+            </div>
+
+            <!-- لفظي -->
+            <div class="animate-in delay-3 section-card card-verbal p-6">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="icon-circle icon-verbal">📖</div>
+                    <div><h3 class="text-xl font-black">قدرات لفظي</h3><p class="text-purple-200/60 text-xs">اللغة العربية</p></div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag tag-verbal">✓ التناظر اللفظي</span>
+                    <span class="subject-tag tag-verbal">✓ إكمال الجمل</span>
+                    <span class="subject-tag tag-verbal">✓ الخطأ السياقي</span>
+                    <span class="subject-tag tag-verbal">✓ الاستيعاب المقروء</span>
+                </div>
+                <div class="count-badge mb-4">
+                    <span class="text-2xl font-black text-emerald-400" id="verbalCount">—</span>
+                    <span class="text-purple-200/60 text-xs block">سؤال متاح</span>
+                </div>
+                <button id="verbalBtn" class="btn-start btn-verbal" onclick="openModal('verbal')">ابدأ التدريب</button>
+            </div>
+
+            <!-- تحصيلي -->
+            <div class="animate-in delay-4 section-card card-tahsili p-6">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="icon-circle icon-tahsili">🎓</div>
+                    <div><h3 class="text-xl font-black">التحصيلي</h3><p class="text-purple-200/60 text-xs">المواد الدراسية</p></div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag tag-tahsili">✓ الرياضيات</span>
+                    <span class="subject-tag tag-tahsili">✓ الفيزياء</span>
+                    <span class="subject-tag tag-tahsili">✓ الكيمياء</span>
+                    <span class="subject-tag tag-tahsili">✓ الأحياء</span>
+                </div>
+                <div class="count-badge mb-4">
+                    <span class="text-2xl font-black text-purple-400" id="tahsiliCount">—</span>
+                    <span class="text-purple-200/60 text-xs block">سؤال متاح</span>
+                </div>
+                <button id="tahsiliBtn" class="btn-start btn-tahsili" onclick="openModal('tahsili')">ابدأ التدريب</button>
+            </div>
+        </div>
+
+        <!-- الصف الثاني: مكس + STEP -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <!-- مكس: كمي + لفظي -->
+            <div class="animate-in delay-4 section-card card-mix p-6" style="--mix-color1:#f59e0b;--mix-color2:#ef4444">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="icon-circle" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔀</div>
+                    <div>
+                        <h3 class="text-xl font-black">كمي + لفظي</h3>
+                        <p class="text-purple-200/60 text-xs">كمي ولفظي مع بعض بشكل عشوائي</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag" style="background:rgba(245,158,11,0.1);color:#fcd34d">✓ أسئلة كمية</span>
+                    <span class="subject-tag" style="background:rgba(239,68,68,0.1);color:#fca5a5">✓ أسئلة لفظية</span>
+                    <span class="subject-tag" style="background:rgba(139,92,246,0.1);color:#d8b4fe">✓ خلط عشوائي</span>
+                </div>
+                <div class="count-badge mb-4">
+                    <span class="text-2xl font-black text-amber-400" id="mixCount">—</span>
+                    <span class="text-purple-200/60 text-xs block">سؤال متاح</span>
+                </div>
+                <button id="mixBtn" class="btn-start" style="background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 8px 25px rgba(245,158,11,0.25)" onclick="openModal('mix')">ابدأ التدريب المختلط</button>
+            </div>
+
+            <!-- STEP قريباً -->
+            <div class="animate-in delay-4 section-card p-6 relative" style="border-color:rgba(255,255,255,0.06);opacity:0.8">
+                <!-- بادج قريباً -->
+                <div class="absolute top-4 left-4">
+                    <span class="text-xs font-black px-3 py-1.5 rounded-full" style="background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.2));border:1px solid rgba(251,191,36,0.4);color:#fbbf24">
+                        🔒 قريباً
+                    </span>
+                </div>
+                <div class="flex items-center gap-4 mb-5 mt-2">
+                    <div class="icon-circle" style="background:linear-gradient(135deg,#1e40af,#3b82f6)">🌍</div>
+                    <div>
+                        <h3 class="text-xl font-black">STEP</h3>
+                        <p class="text-purple-200/60 text-xs">كفايات اللغة الإنجليزية</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ فهم المقروء</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ القواعد النحوية</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ فهم المسموع</span>
+                    <span class="subject-tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">✓ التحليل الكتابي</span>
+                </div>
+                <div class="count-badge mb-4" style="background:rgba(255,255,255,0.03)">
+                    <span class="text-lg font-black text-blue-400/60">قادم قريباً</span>
+                    <span class="text-purple-200/40 text-xs block">سجّل اهتمامك</span>
+                </div>
+                <button onclick="notifyStep()" class="btn-start" style="background:rgba(59,130,246,0.15);border:1.5px solid rgba(59,130,246,0.3);color:#93c5fd">
+                    🔔 أبغى أعرف لما ينطلق</button>
+            </div>
+        </div>
+
+        <p class="text-center text-purple-200/30 text-xs mt-10">مدارك النخبة v1.0</p>
+    </div>
+
+    <!-- Modal -->
+    <div id="trainingModal" class="modal-overlay hidden">
+        <div class="modal-card modal-animate relative z-10">
+            <button onclick="closeModal()" class="absolute top-4 left-4 text-purple-300/40 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="text-center mb-6">
+                <span id="modalIcon" class="text-4xl block mb-2">📊</span>
+                <h3 id="modalTitle" class="text-xl font-black">قدرات كمي</h3>
+                <p class="text-purple-200/50 text-xs mt-1">حدد إعدادات التدريب</p>
+            </div>
+            <div class="mb-5">
+                <label class="text-purple-200/70 text-xs font-medium block mb-3">عدد الأسئلة</label>
+                <div class="flex gap-2">
+                    <div class="count-option" data-count="10" onclick="selectCount(10)"><span class="num text-purple-300">10</span><span class="label">سريع</span></div>
+                    <div class="count-option" data-count="20" onclick="selectCount(20)"><span class="num text-purple-300">20</span><span class="label">متوسط</span></div>
+                    <div class="count-option" data-count="30" onclick="selectCount(30)"><span class="num text-purple-300">30</span><span class="label">مكثّف</span></div>
+                    <div class="count-option" data-count="50" onclick="selectCount(50)"><span class="num text-purple-300">50</span><span class="label">ماراثون</span></div>
+                </div>
+            </div>
+            <div class="time-display mb-6">
+                <div class="flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                    <span class="text-indigo-300 text-sm font-bold">الوقت:</span>
+                    <span id="timePreview" class="text-white font-black text-lg">10 دقائق</span>
+                </div>
+                <p class="text-purple-200/40 text-[10px] mt-1">دقيقة واحدة لكل سؤال — مثل الاختبار الحقيقي</p>
+            </div>
+            <div id="countWarning" class="hidden text-center mb-4">
+                <p class="text-yellow-400/80 text-xs">⚠️ عدد الأسئلة المتاحة: <span id="availableNum">0</span> سؤال فقط</p>
+            </div>
+            <button id="modalStartBtn" onclick="startFromModal()" class="w-full py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:translate-y-[-2px]" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 25px rgba(99,102,241,0.3)">
+                🚀 ابدأ التدريب
+            </button>
+            <p class="text-center text-purple-200/30 text-[10px] mt-4">💡 الأسئلة تجي عشوائية من بنك الأسئلة</p>
+        </div>
+    </div>
+
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="session-keeper.js"></script>
+    <script src="biometric.js"></script>
+    <script>
+        const sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+        let questionCounts={quant:0,verbal:0,tahsili:0,mix:0},selectedSection='',selectedCount=10;
+        const sectionMeta={quant:{name:'قدرات كمي',icon:'📊'},verbal:{name:'قدرات لفظي',icon:'📖'},tahsili:{name:'التحصيلي',icon:'🎓'},mix:{name:'كمي + لفظي 🔀',icon:'🔀'}};
+        async function loadQuestionCounts(){try{const[{count:qc},{count:vc},{count:tc}]=await Promise.all([sb.from('questions').select('id',{count:'exact',head:true}).eq('section','quant').neq('disabled',true),sb.from('questions').select('id',{count:'exact',head:true}).eq('section','verbal').neq('disabled',true),sb.from('questions').select('id',{count:'exact',head:true}).eq('section','tahsili').neq('disabled',true)]);questionCounts.quant=qc||0;questionCounts.verbal=vc||0;questionCounts.tahsili=tc||0;questionCounts.mix=questionCounts.quant+questionCounts.verbal;document.getElementById('quantCount').textContent=questionCounts.quant;document.getElementById('verbalCount').textContent=questionCounts.verbal;document.getElementById('tahsiliCount').textContent=questionCounts.tahsili;document.getElementById('mixCount').textContent=questionCounts.mix;document.getElementById('quantBtn').disabled=(questionCounts.quant===0);document.getElementById('verbalBtn').disabled=(questionCounts.verbal===0);document.getElementById('tahsiliBtn').disabled=(questionCounts.tahsili===0);document.getElementById('mixBtn').disabled=(questionCounts.mix===0)}catch(e){}}
+        function notifyStep(){alert('تم تسجيل اهتمامك، بنخبرك أول ما ينطلق قسم STEP');}
+        function openModal(section){selectedSection=section;const meta=sectionMeta[section];document.getElementById('modalIcon').textContent=meta.icon;document.getElementById('modalTitle').textContent=meta.name;selectCount(10);checkAvailableCount();document.getElementById('trainingModal').classList.remove('hidden')}
+        function closeModal(){document.getElementById('trainingModal').classList.add('hidden')}
+        document.getElementById('trainingModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+        function selectCount(count){selectedCount=count;document.querySelectorAll('.count-option').forEach(function(el){el.classList.remove('active');if(parseInt(el.dataset.count)===count)el.classList.add('active')});var t=count+' دقيقة';if(count>=60){var h=Math.floor(count/60),m=count%60;t=h+' ساعة';if(m>0)t+=' و '+m+' دقيقة'}document.getElementById('timePreview').textContent=t;checkAvailableCount()}
+        function checkAvailableCount(){var avail=selectedSection==='mix'?(questionCounts.quant+questionCounts.verbal):questionCounts[selectedSection]||0;var warn=document.getElementById('countWarning');if(selectedCount>avail&&avail>0){document.getElementById('availableNum').textContent=avail;warn.classList.remove('hidden')}else warn.classList.add('hidden')}
+        function startFromModal(){var avail=selectedSection==='mix'?(questionCounts.quant+questionCounts.verbal):questionCounts[selectedSection]||0;var actual=Math.min(selectedCount,avail);if(actual===0){alert('ما فيه أسئلة متاحة لهذا القسم');return}localStorage.setItem('khawariz_selected_section',selectedSection);localStorage.setItem('khawariz_question_count',actual);localStorage.setItem('khawariz_time_seconds',actual*60);window.location.href='practice.html'}
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+
+        // 🔥 تسريبات حصرية للمشتركين
+        var TASREEBAT_SETS=[
+            {id:'tasreeb-14-apr-2026',name:'تسريبات ١٤ أبريل',date:'١٤ أبريل ٢٠٢٦',emoji:'🔥',count:21,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-13T20:59:59',createdBefore:'2026-04-13T21:00:01'},
+            {id:'tasreeb-13-apr-2026',name:'تسريبات ١٣ أبريل',date:'١٣ أبريل ٢٠٢٦',emoji:'⚡',count:54,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-12T20:59:59',createdBefore:'2026-04-12T21:00:01'},
+            {id:'tasreeb-12-apr-2026',name:'تسريبات ١٢ أبريل',date:'١٢ أبريل ٢٠٢٦',emoji:'🚀',count:50,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-11T20:59:59',createdBefore:'2026-04-11T21:00:01'},
+            {id:'tasreeb-11-apr-2026',name:'تسريبات ١١ أبريل',date:'١١ أبريل ٢٠٢٦',emoji:'🌟',count:42,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-10T20:59:59',createdBefore:'2026-04-10T21:00:01'},
+            {id:'tasreeb-9-apr-2026',name:'تسريبات ٩ أبريل',date:'٩ أبريل ٢٠٢٦',emoji:'🔥',count:67,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-08T20:59:59',createdBefore:'2026-04-08T21:00:01'},
+            {id:'tasreeb-8-apr-2026',name:'تسريبات ٨ أبريل',date:'٨ أبريل ٢٠٢٦',emoji:'⚡',count:71,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-07T20:59:59',createdBefore:'2026-04-07T21:00:01'},
+            {id:'tasreeb-7-apr-2026',name:'تسريبات ٧ أبريل',date:'٧ أبريل ٢٠٢٦',emoji:'🚀',count:66,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-06T20:59:59',createdBefore:'2026-04-06T21:00:01'},
+            {id:'tasreeb-6-apr-2026',name:'تسريبات ٦ أبريل',date:'٦ أبريل ٢٠٢٦',emoji:'🔥',count:80,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-05T20:59:59',createdBefore:'2026-04-05T21:00:01'},
+            {id:'tasreeb-5-apr-2026',name:'تسريبات ٥ أبريل',date:'٥ أبريل ٢٠٢٦',emoji:'⚡',count:92,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-04T20:59:59',createdBefore:'2026-04-04T21:00:01'},
+            {id:'tasreeb-4-apr-2026',name:'تسريبات ٤ أبريل',date:'٤ أبريل ٢٠٢٦',emoji:'🔥',count:12,desc:'كمي — مع شرح مفصّل',createdAfter:'2026-04-03T23:59:59',createdBefore:'2026-04-04T00:00:01'},
+            {id:'tasreeb-2-apr-2026',name:'تسريبات ٢ أبريل',date:'٢ أبريل ٢٠٢٦',emoji:'⚡',count:113,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-04-01T23:59:59',createdBefore:'2026-04-02T07:00:01'},
+            {id:'tasreeb-1-apr-2026',name:'تسريبات ١ أبريل',date:'١ أبريل ٢٠٢٦',emoji:'🚀',count:93,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-31T23:59:59',createdBefore:'2026-04-01T07:00:01'},
+            {id:'tasreeb-31-mar-2026',name:'تسريبات ٣١ مارس',date:'٣١ مارس ٢٠٢٦',emoji:'🔥',count:92,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-31T11:59:59',createdBefore:'2026-03-31T12:00:01'},
+            {id:'tasreeb-30-mar-2026',name:'تسريبات ٣٠ مارس',date:'٣٠ مارس ٢٠٢٦',emoji:'⚡',count:70,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-30T11:59:59',createdBefore:'2026-03-30T12:00:01'},
+            {id:'tasreeb-29-mar-2026',name:'تسريبات ٢٩ مارس',date:'٢٩ مارس ٢٠٢٦',emoji:'⚡',count:75,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-29T11:59:59',createdBefore:'2026-03-29T12:00:01'},
+            {id:'tasreeb-28-mar-2026',name:'تسريبات ٢٨ مارس',date:'٢٨ مارس ٢٠٢٦',emoji:'🚀',count:23,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-28T11:59:59',createdBefore:'2026-03-28T12:00:01'},
+            {id:'tasreeb-26-mar-2026',name:'تسريبات ٢٦ مارس',date:'٢٦ مارس ٢٠٢٦',emoji:'🌟',count:26,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-26T11:59:59',createdBefore:'2026-03-26T12:00:01'},
+            {id:'tasreeb-24-mar-2026',name:'تسريبات ٢٤ مارس',date:'٢٤ مارس ٢٠٢٦',emoji:'🚀',count:6,desc:'كمي — مع شرح مفصّل',createdAfter:'2026-03-24T11:59:59',createdBefore:'2026-03-24T12:00:01'},
+            {id:'tasreeb-18-mar-2026',name:'تسريبات ١٨ مارس',date:'١٨ مارس ٢٠٢٦',emoji:'🔥',count:56,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-18T06:59:59',createdBefore:'2026-03-18T07:00:01'},
+            {id:'tasreeb-17-mar-2026',name:'تسريبات ١٧ مارس',date:'١٧ مارس ٢٠٢٦',emoji:'⚡',count:60,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-17T06:59:59',createdBefore:'2026-03-17T07:00:01'},
+            {id:'tasreeb-16-mar-2026',name:'تسريبات ١٦ مارس',date:'١٦ مارس ٢٠٢٦',emoji:'🚀',count:51,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-16T06:59:59',createdBefore:'2026-03-16T07:00:01'},
+            {id:'tasreeb-15-mar-2026',name:'تسريبات ١٥ مارس',date:'١٥ مارس ٢٠٢٦',emoji:'🌟',count:68,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-15T06:59:59',createdBefore:'2026-03-15T07:00:01'},
+            {id:'tasreeb-12-mar-2026',name:'تسريبات ١٢ مارس',date:'١٢ مارس ٢٠٢٦',emoji:'🔥',count:71,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-12T21:36:04',createdBefore:'2026-03-12T21:36:06'},
+            {id:'tasreeb-11-mar-hema',name:'تسريبات ١١ مارس (١)',date:'١١ مارس ٢٠٢٦',emoji:'🔥',count:38,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-11T21:36:04',createdBefore:'2026-03-11T21:36:06'},
+            {id:'tasreeb-11-mar-yelo',name:'تسريبات ١١ مارس (٢)',date:'١١ مارس ٢٠٢٦',emoji:'⚡',count:27,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-11T21:59:59',createdBefore:'2026-03-11T22:00:01'},
+            {id:'tasreeb-10-mar-2026',name:'تسريبات ١٠ مارس',date:'١٠ مارس ٢٠٢٦',emoji:'🚀',count:66,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-10T21:36:04',createdBefore:'2026-03-10T21:36:06'},
+            {id:'tasreeb-9-mar-2026',name:'تسريبات ٩ مارس',date:'٩ مارس ٢٠٢٦',emoji:'🌟',count:84,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-09T21:36:04',createdBefore:'2026-03-09T21:36:06'},
+            {id:'tasreeb-8-mar-yelo',name:'تسريبات ٨ مارس (٢)',date:'٨ مارس ٢٠٢٦',emoji:'⚡',count:58,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-08T21:59:59',createdBefore:'2026-03-08T22:00:01'},
+            {id:'tasreeb-8-mar-hema',name:'تسريبات ٨ مارس (١)',date:'٨ مارس ٢٠٢٦',emoji:'🔥',count:44,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-08T21:36:05',createdBefore:'2026-03-08T21:36:06'},
+            {id:'tasreeb-7-mar-2026',name:'تسريبات ٧ مارس',date:'٧ مارس ٢٠٢٦',emoji:'📋',count:28,desc:'كمي ولفظي — مع شرح مفصّل',createdAfter:'2026-03-07T21:36:04',createdBefore:'2026-03-07T21:36:06'}
+        ];
+        var TASREEB_SHOW_INITIAL=3; // عدد التسريبات المعروضة مبدئياً
+        var userSub='free';
+        var tasreebProgress={};
+        // ✅ كاش الاشتراك — صلاحية ٢٤ ساعة
+        var SUB_CACHE_KEY='madarek_sub_cache';
+        function getCachedSub(){
+            try{var c=JSON.parse(localStorage.getItem(SUB_CACHE_KEY));if(c&&c.type&&(Date.now()-c.ts)<86400000)return c.type;}catch(e){}return null;
+        }
+        function setCachedSub(type){
+            try{localStorage.setItem(SUB_CACHE_KEY,JSON.stringify({type:type,ts:Date.now()}));}catch(e){}
+        }
+
+        // ✅ بناء كروت التسريبات
+        function buildTasreebatCards(isPro){
+            var grid=document.getElementById('tasreebatGrid');
+            grid.innerHTML='';
+            // إزالة زر toggle القديم لو موجود
+            var oldToggle=document.getElementById('tasreebToggleBtn');
+            if(oldToggle)oldToggle.remove();
+            var showCount=TASREEB_SHOW_INITIAL||3;
+            TASREEBAT_SETS.forEach(function(set,idx){
+                var card=document.createElement('div');
+                card.className='tasreeb-card'+(isPro?'':' locked');
+                card.setAttribute('data-tasreeb-idx',idx);
+                if(idx>=showCount)card.classList.add('tasreeb-hidden');
+                if(idx===0)card.classList.add('tasreeb-new');
+                var prog=tasreebProgress[set.id];
+                var descText=set.desc;
+                var actionText='ابدأ ←';
+                if(isPro && prog && prog.done>0){
+                    if(prog.remaining>0){
+                        descText='باقي '+prog.remaining+' سؤال من '+prog.total+' — أكمل من وين وقفت';
+                        actionText='أكمل ←';
+                    }else{
+                        descText='خلّصت الـ '+prog.total+' كلها ✅ — عيد للمراجعة';
+                        actionText='عيد ←';
+                    }
+                }
+                card.innerHTML='<div class="flex items-center gap-3"><span class="text-2xl">'+set.emoji+'</span><div><h4 class="font-black text-sm">'+set.name+(idx===0?' <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px">جديد</span>':'')+'</h4><p class="text-purple-200/50" style="font-size:10px">'+descText+'</p></div></div>'+(isPro?'<span class="text-xs text-amber-300 font-bold">'+actionText+'</span>':'<span class="text-purple-200/40 text-sm">🔒</span>');
+                card.onclick=isPro?function(){startTasreeb(idx)}:function(){location.href='pricing.html'};
+                grid.appendChild(card);
+            });
+            if(TASREEBAT_SETS.length>showCount){
+                var toggleBtn=document.createElement('div');
+                toggleBtn.id='tasreebToggleBtn';
+                toggleBtn.className='tasreeb-toggle-btn';
+                var hiddenCount=TASREEBAT_SETS.length-showCount;
+                toggleBtn.innerHTML='<span>📂 عرض '+hiddenCount+' تسريبات أقدم</span>';
+                toggleBtn.onclick=function(){
+                    var hidden=grid.querySelectorAll('.tasreeb-hidden');
+                    if(hidden.length>0){
+                        hidden.forEach(function(c){c.classList.remove('tasreeb-hidden');c.style.animation='fadeSlideIn 0.3s ease forwards'});
+                        toggleBtn.innerHTML='<span>📁 إخفاء التسريبات الأقدم</span>';
+                    }else{
+                        var cards=grid.querySelectorAll('.tasreeb-card');
+                        cards.forEach(function(c,i){if(i>=showCount)c.classList.add('tasreeb-hidden')});
+                        toggleBtn.innerHTML='<span>📂 عرض '+hiddenCount+' تسريبات أقدم</span>';
+                    }
+                };
+                grid.parentNode.insertBefore(toggleBtn,grid.nextSibling);
+            }
+            var lockMsg=document.getElementById('tasreebLockMsg');
+            if(isPro){lockMsg.classList.add('hidden')}else{lockMsg.classList.remove('hidden')}
+        }
+
+        // ✅ الخطوة ١: رسم فوري من الكاش (صلاحية ٢٤ ساعة)
+        if(TASREEBAT_SETS.length){
+            var cachedSub=getCachedSub();
+            var cachedIsPro=(cachedSub&&cachedSub!=='free');
+            buildTasreebatCards(cachedIsPro);
+        }else{
+            document.getElementById('tasreebatSection').style.display='none';
+        }
+
+        // ✅ الخطوة ٢: تحقق server-side (RPC) + تحديث الكروت
+        async function loadTasreebat(){
+            if(!TASREEBAT_SETS.length)return;
+            var userId=null;
+            // 1. جلب الجلسة
+            try{
+                if(window._madarekRestoreSession){
+                    var session=await window._madarekRestoreSession(sb);
+                    if(session && session.user) userId=session.user.id;
+                }
+                if(!userId){
+                    var gs=await sb.auth.getSession();
+                    if(gs.data && gs.data.session && gs.data.session.user) userId=gs.data.session.user.id;
+                }
+            }catch(e){console.log('tasreebat session:',e)}
+            if(!userId){
+                // مو مسجل — الكروت مقفلة
+                setCachedSub('free');
+                if(userSub==='free') return;
+                userSub='free';
+                buildTasreebatCards(false);
+                return;
+            }
+            // 2. تحقق server-side من الاشتراك (RPC) + جلب التقدم بالتوازي
+            try{
+                var subPromise=sb.rpc('get_my_subscription');
+                var minDate=TASREEBAT_SETS[TASREEBAT_SETS.length-1].createdAfter;
+                var maxDate=TASREEBAT_SETS[0].createdBefore;
+                var questionsPromise=sb.from('questions').select('id,created_at').gte('created_at',minDate).lt('created_at',maxDate).neq('disabled',true);
+                var results=await Promise.all([subPromise,questionsPromise]);
+                // معالجة الاشتراك — من السيرفر مباشرة
+                var subData=results[0].data;
+                if(subData&&subData.status&&subData.status!=='free'){
+                    userSub=subData.status;
+                }else{
+                    userSub='free';
+                }
+                setCachedSub(userSub);
+                var isPro=(userSub!=='free');
+                // معالجة التقدم للمشتركين
+                if(isPro){
+                    var allQData=results[1].data||[];
+                    var allIds=allQData.map(function(q){return q.id;});
+                    var doneMap={};
+                    if(allIds.length){
+                        var attemptChunks=[];
+                        for(var chunk=0;chunk<allIds.length;chunk+=500){
+                            attemptChunks.push(sb.from('attempts').select('question_id').eq('user_id',userId).in('question_id',allIds.slice(chunk,chunk+500)));
+                        }
+                        var attemptResults=await Promise.all(attemptChunks);
+                        attemptResults.forEach(function(r){(r.data||[]).forEach(function(a){doneMap[a.question_id]=true;});});
+                    }
+                    TASREEBAT_SETS.forEach(function(set){
+                        var setQs=allQData.filter(function(q){return q.created_at>=set.createdAfter&&q.created_at<set.createdBefore;});
+                        var total=setQs.length;
+                        var doneCount=setQs.filter(function(q){return doneMap[q.id];}).length;
+                        if(total)tasreebProgress[set.id]={total:total,done:doneCount,remaining:total-doneCount};
+                    });
+                }
+                // 3. إعادة بناء الكروت بالبيانات الكاملة (لو تغيّر شي)
+                buildTasreebatCards(isPro);
+            }catch(e){console.log('tasreebat load error:',e)}
+        }
+        function startTasreeb(idx){
+            var set=TASREEBAT_SETS[idx];
+            localStorage.setItem('khawariz_selected_section','tasreeb');
+            localStorage.setItem('khawariz_tasreeb_set',JSON.stringify(set));
+            localStorage.setItem('khawariz_question_count',set.count);
+            localStorage.setItem('khawariz_time_seconds',set.count*60);
+            window.location.href='practice.html';
+        }
+
+        window.addEventListener('DOMContentLoaded',function(){loadQuestionCounts();loadTasreebat()});
+    </script>
+    <script src="banner.js"></script>
+    <script src="app-install-bar.js"></script>
+    <script src="whatsapp-widget.js"></script>
+<script src="analytics.js"></script>
+<script src="engagement.js"></script></body>
+</html>

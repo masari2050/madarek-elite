@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — التقارير</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
+<style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#7C3AED;--ps:rgba(124,58,237,.07);--pm:rgba(124,58,237,.18);--pt:#5B21B6;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#10B981;--ss:rgba(16,185,129,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--gold:#F59E0B;--gs:rgba(245,158,11,.1);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#94A3B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;
+--ease:cubic-bezier(.25,.8,.25,1);
+--navy:#0F1128;
+}
+.dark{
+--bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
+--ps:rgba(124,58,237,.14);--pm:rgba(124,58,237,.28);--pt:#A78BFA;
+--as:rgba(255,138,61,.12);--ss:rgba(16,185,129,.12);--ds:rgba(239,68,68,.1);
+--gs:rgba(245,158,11,.15);
+--ink:#F0F0F6;--i2:#C4C6D6;--i3:#94A3B8;--i4:#555872;
+--ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;padding-bottom:90px;background:var(--bg)}
+.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* HEADER */
+.ph{padding:18px 16px 6px;display:flex;align-items:center;gap:10px}
+.ph .title{font-size:24px;font-weight:800;flex:1;display:flex;align-items:center;gap:10px}
+.crown-pill{width:30px;height:30px;border-radius:9px;background:var(--pri);display:none;place-items:center;flex-shrink:0}
+.crown-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2}
+.crown-pill.show{display:grid}
+
+/* SEGMENT — period filter */
+.seg{display:flex;margin:8px 16px 14px;background:var(--sf);border-radius:14px;padding:5px;border:1px solid var(--ln);box-shadow:0 1px 2px rgba(0,0,0,.02)}
+.seg-b{flex:1;padding:10px 4px;border-radius:10px;text-align:center;font-size:13px;font-weight:600;color:var(--i3);cursor:pointer;transition:all .2s}
+.seg-b.on{background:var(--pri);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+
+/* PILL TABS */
+.rtabs{display:flex;gap:8px;padding:0 16px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.rtabs::-webkit-scrollbar{display:none}
+.rtab{padding:9px 18px;border-radius:22px;background:var(--sf);border:1px solid var(--ln);font-size:13px;font-weight:600;color:var(--i3);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .18s}
+.rtab.on{background:var(--pri);color:#fff;border-color:var(--pri);box-shadow:0 2px 8px rgba(124,58,237,.25)}
+
+/* TAB PANELS */
+.rp{display:none;animation:si .25s var(--ease)}
+.rp.on{display:block}
+
+/* GAUGE — accuracy circle */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 16px 18px;animation:si .35s var(--ease)}
+.gauge{position:relative;width:200px;height:200px}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.gauge-bg{fill:none;stroke:var(--s3);stroke-width:14}
+.gauge-fg{fill:none;stroke:url(#gaugeGrad);stroke-width:14;stroke-linecap:round;transition:stroke-dasharray .9s var(--ease);filter:drop-shadow(0 0 14px rgba(124,58,237,.45))}
+.gauge-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge-pct{font-size:50px;font-weight:800;color:var(--ink);letter-spacing:-1.5px;line-height:1}
+.gauge-pct .pc{font-size:24px;font-weight:600;color:var(--i3);margin-right:2px}
+.gauge-lbl{font-size:12px;color:var(--i3);margin-top:6px;font-weight:600;letter-spacing:.3px}
+
+/* STATS GRID — 3 cards row (correct/solved/days) */
+.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 16px 12px}
+.sgrid.two{grid-template-columns:1fr 1fr}
+.sc{padding:14px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:96px}
+.sc .lbl{font-size:11px;color:var(--i3);margin-bottom:8px;font-weight:500}
+.sc .val{font-size:24px;font-weight:800;line-height:1;letter-spacing:-.5px}
+.sc .val small{font-size:13px;font-weight:600;margin-right:2px}
+.sc.purple .val{color:var(--pri)}
+.sc.green .val{color:var(--suc)}
+.sc.orange .val{color:var(--acc)}
+.sc.gold .val{color:var(--gold)}
+.sc.ink .val{color:var(--ink)}
+.sc .ch{font-size:10px;color:var(--i4);margin-top:6px;font-weight:500}
+.sc.wide{min-height:104px;align-items:center}
+.sc.wide .val{font-size:26px}
+.sc.wide .val.txt{font-size:17px;line-height:1.3}
+
+/* CHART CARD */
+.chart-card{margin:0 16px 12px;padding:16px}
+.chart-card h4{font-size:14px;font-weight:700;margin-bottom:14px}
+.wk-chart{display:flex;align-items:flex-end;gap:6px;height:130px;padding:6px 4px 0}
+.wk-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.wk-num{font-size:11px;color:var(--i3);margin-bottom:6px;font-weight:700;opacity:0;animation:si .3s var(--ease) .9s both}
+.wk-bar{width:100%;border-radius:6px 6px 0 0;animation:grow .9s var(--ease) both}
+.wk-bar.today{outline:2px solid var(--acc);outline-offset:1px}
+.wk-labels{display:flex;gap:6px;padding:8px 4px 0;font-size:10px;color:var(--i4);font-weight:500}
+.wk-labels > div{flex:1;text-align:center}
+@keyframes grow{from{height:0}to{height:var(--final-h)}}
+
+/* FOCUS HEATMAP — "ركّز عليها" */
+.focus-card{margin:0 16px 12px;padding:16px}
+.focus-card h4{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.focus-card h4 .fic{width:24px;height:24px;border-radius:8px;background:var(--gs);display:grid;place-items:center}
+.focus-card h4 .fic svg{width:13px;height:13px;stroke:var(--gold);fill:none;stroke-width:2.5}
+.focus-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--ln)}
+.focus-row:last-child{border-bottom:none}
+.focus-row .fn{flex:1.4;font-size:13px;font-weight:600;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.focus-row .fb{flex:2;height:8px;border-radius:4px;background:var(--s3);overflow:hidden}
+.focus-row .fbf{height:100%;border-radius:4px;transition:width .8s var(--ease)}
+.focus-row .fp{font-size:13px;font-weight:800;min-width:46px;text-align:left;letter-spacing:-.3px}
+.heat-0{background:#EF4444}
+.heat-1{background:#F97316}
+.heat-2{background:#F59E0B}
+.heat-3{background:#84CC16}
+.heat-4{background:#10B981}
+.col-0{color:#EF4444}.col-1{color:#F97316}.col-2{color:#D97706}.col-3{color:#65A30D}.col-4{color:#10B981}
+
+/* TOPIC PERFORMANCE (full list with progress bars) */
+.topic-card{margin:0 16px 12px;padding:16px}
+.topic-card h4{font-size:14px;font-weight:700;margin-bottom:12px}
+.topic-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--ln)}
+.topic-row:last-child{border-bottom:none}
+.topic-row .tn{flex:1.4;font-size:13px;font-weight:600;text-align:right}
+.topic-row .tp{flex:2;height:6px;background:var(--s3);border-radius:3px;overflow:hidden}
+.topic-row .tpf{height:100%;border-radius:3px}
+.topic-row .tv{font-size:12px;font-weight:700;min-width:42px;text-align:left}
+
+/* LEADERBOARD INLINE */
+.lead-block{margin:0 16px 14px;padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.lead-block .li{width:28px;height:28px;border-radius:9px;background:var(--gs);display:grid;place-items:center;flex-shrink:0}
+.lead-block .li svg{width:15px;height:15px;stroke:var(--gold);fill:none;stroke-width:2}
+.lead-block .lt{flex:1;font-size:14px;font-weight:700}
+.lead-block .ar{width:18px;height:18px;stroke:var(--i3);fill:none;stroke-width:2;transition:transform .2s}
+.lead-block.open .ar{transform:rotate(180deg)}
+.lead-content{margin:0 16px 14px;display:none}
+.lead-content.show{display:block}
+
+/* AI MODAL-STYLE — dark navy header */
+.ai-rpt{padding:0 16px}
+.ai-modal{margin:0 0 16px;border-radius:var(--r2);overflow:hidden;animation:si .35s var(--ease)}
+.ai-modal-head{background:linear-gradient(135deg,#0F1128 0%,#1E1E5C 50%,#7C3AED 100%);padding:22px 18px 20px;color:#fff;position:relative;overflow:hidden}
+.ai-modal-head::before{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.07);top:-50px;left:-40px}
+.ai-modal-head::after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.05);bottom:-30px;right:-20px}
+.ai-modal-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.85);position:relative;z-index:1;display:flex;align-items:center;gap:6px}
+.ai-modal-name svg{width:13px;height:13px;stroke:#FBBF24;fill:none;stroke-width:2.5}
+.ai-modal-h{font-size:18px;font-weight:800;margin-top:6px;position:relative;z-index:1;line-height:1.5}
+.ai-modal-lvl{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);padding:6px 12px;border-radius:14px;margin-top:12px;font-size:12px;font-weight:700;position:relative;z-index:1;backdrop-filter:blur(4px)}
+.ai-modal-lvl svg{width:13px;height:13px;stroke:#FBBF24;fill:#FBBF24;stroke-width:1.8}
+.ai-modal-body{background:var(--sf);padding:18px 16px;border:1px solid var(--ln);border-top:none;border-radius:0 0 var(--r2) var(--r2)}
+
+/* AI Performance Badge */
+.perf-row{display:flex;align-items:center;justify-content:space-between;padding:14px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);margin-bottom:14px}
+.perf-row .pl{font-size:13px;font-weight:700}
+.perf-badge{font-size:12px;font-weight:800;padding:6px 14px;border-radius:14px;letter-spacing:.3px}
+.perf-badge.ok{background:rgba(245,158,11,.15);color:#92400E;border:1px solid rgba(245,158,11,.3)}
+.perf-badge.good{background:rgba(16,185,129,.15);color:#065F46;border:1px solid rgba(16,185,129,.3)}
+.perf-badge.great{background:rgba(124,58,237,.15);color:#5B21B6;border:1px solid rgba(124,58,237,.3)}
+.dark .perf-badge.ok{color:#FBBF24}.dark .perf-badge.good{color:#6EE7B7}.dark .perf-badge.great{color:#C4B5FD}
+
+/* AI 3 metric cards */
+.ai-metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.ai-mc{padding:14px 8px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);text-align:center}
+.ai-mc .mc-ic{width:32px;height:32px;border-radius:10px;margin:0 auto 8px;display:grid;place-items:center}
+.ai-mc .mc-ic svg{width:16px;height:16px;fill:none;stroke-width:2}
+.ai-mc.purple .mc-ic{background:var(--ps)}.ai-mc.purple .mc-ic svg{stroke:var(--pri)}
+.ai-mc.green .mc-ic{background:var(--ss)}.ai-mc.green .mc-ic svg{stroke:var(--suc)}
+.ai-mc.gold .mc-ic{background:var(--gs)}.ai-mc.gold .mc-ic svg{stroke:var(--gold)}
+.ai-mc .mc-v{font-size:20px;font-weight:800;color:var(--ink);line-height:1}
+.ai-mc .mc-l{font-size:10px;color:var(--i3);font-weight:600;margin-top:4px}
+
+/* AI Plan rows */
+.plan-section-ttl{font-size:13px;font-weight:700;color:var(--ink);margin:6px 0 10px;display:flex;align-items:center;gap:8px}
+.plan-section-ttl svg{width:14px;height:14px;stroke:var(--pri);fill:none;stroke-width:2.5}
+.plan-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.plan-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);animation:si .3s var(--ease) backwards}
+.plan-row:nth-child(1){animation-delay:.05s}.plan-row:nth-child(2){animation-delay:.1s}.plan-row:nth-child(3){animation-delay:.15s}.plan-row:nth-child(4){animation-delay:.2s}
+.plan-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex-shrink:0}
+.plan-ic svg{width:18px;height:18px;fill:none;stroke-width:2}
+.plan-row.purple .plan-ic{background:rgba(124,58,237,.12)}.plan-row.purple .plan-ic svg{stroke:#7C3AED}
+.plan-row.gold .plan-ic{background:rgba(245,158,11,.12)}.plan-row.gold .plan-ic svg{stroke:#F59E0B}
+.plan-row.green .plan-ic{background:rgba(16,185,129,.12)}.plan-row.green .plan-ic svg{stroke:#10B981}
+.plan-row.blue .plan-ic{background:rgba(59,130,246,.12)}.plan-row.blue .plan-ic svg{stroke:#3B82F6}
+.plan-row .pb{flex:1;min-width:0}
+.plan-row .pt{font-size:13px;font-weight:700;color:var(--ink)}
+.plan-row .pd{font-size:11px;color:var(--i3);margin-top:2px;line-height:1.55}
+
+/* AI CTA Button */
+.ai-cta{width:100%;padding:14px;border-radius:13px;background:linear-gradient(135deg,#3B82F6 0%,#7C3AED 100%);color:#fff;font-size:14px;font-weight:700;border:none;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,box-shadow .25s;box-shadow:0 6px 20px rgba(124,58,237,.4);position:relative;overflow:hidden}
+.ai-cta:hover{box-shadow:0 8px 26px rgba(124,58,237,.55)}
+.ai-cta:active{transform:scale(.98)}
+.ai-cta svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;animation:slideRight 1.8s ease-in-out infinite}
+@keyframes slideRight{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
+
+/* AI hero (welcome state) */
+.ai-hero{margin:0 0 16px;padding:18px 16px;border-radius:var(--r2);background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid rgba(245,158,11,.25);position:relative;overflow:hidden}
+.dark .ai-hero{background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.08));border-color:rgba(245,158,11,.3)}
+.ai-hero::before{content:"";position:absolute;top:-30px;left:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.4);opacity:.4}
+.dark .ai-hero::before{background:rgba(245,158,11,.15)}
+.ai-hero .hh{font-size:12px;font-weight:700;color:#92400E;margin-bottom:6px;letter-spacing:.3px;position:relative;z-index:1}
+.dark .ai-hero .hh{color:#FCD34D}
+.ai-hero .ht{font-size:15px;font-weight:700;color:var(--ink);line-height:1.7;position:relative;z-index:1}
+.ai-feat-row{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.ai-feat{display:flex;align-items:center;gap:12px;padding:12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);text-align:right}
+.ai-feat .ic{width:36px;height:36px;border-radius:11px;background:var(--ps);display:grid;place-items:center;flex-shrink:0}
+.ai-feat .ic svg{width:18px;height:18px;stroke:var(--pri);fill:none;stroke-width:2}
+.ai-feat .b{flex:1;min-width:0}
+.ai-feat .b .tt{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.ai-feat .b .dd{font-size:11px;color:var(--i3);line-height:1.6}
+
+/* AI PAYWALL */
+.ai-locked{margin:0 0 16px;padding:32px 22px;border-radius:var(--r2);background:var(--ps);border:1px solid var(--pm);text-align:center;animation:si .3s var(--ease)}
+.ai-locked-ic{width:78px;height:78px;border-radius:22px;background:var(--pm);display:grid;place-items:center;margin:0 auto 18px}
+.ai-locked-ic svg{width:38px;height:38px;stroke:var(--pri);fill:none;stroke-width:2.2}
+.ai-locked h3{font-size:17px;font-weight:800;color:var(--ink);margin-bottom:10px}
+.ai-locked p{font-size:13px;color:var(--i2);line-height:1.85;margin-bottom:22px;max-width:320px;margin-left:auto;margin-right:auto}
+.ai-locked-cta{display:inline-block;padding:12px 36px;background:var(--pri);color:#fff;border-radius:13px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:transform .15s}
+.ai-locked-cta:active{transform:scale(.97)}
+
+/* ACHIEVEMENTS */
+.ach-summary{margin:0 16px 14px;padding:14px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--ps),rgba(124,58,237,.04));border:1px solid var(--pm);border-radius:var(--r2)}
+.ach-summary .as-ic{width:42px;height:42px;border-radius:12px;background:var(--gold);display:grid;place-items:center;flex-shrink:0;box-shadow:0 4px 12px rgba(245,158,11,.35)}
+.ach-summary .as-ic svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.2}
+.ach-summary .as-b{flex:1;min-width:0}
+.ach-summary .as-t{font-size:14px;font-weight:800;color:var(--ink)}
+.ach-summary .as-d{font-size:11px;color:var(--i3);margin-top:2px}
+.ach-summary .as-pct{font-size:22px;font-weight:800;color:var(--pri);letter-spacing:-.5px}
+
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 14px}
+.ach{padding:18px 12px;border-radius:var(--r2);text-align:center;cursor:pointer;transition:all .25s var(--ease);position:relative;animation:si .3s var(--ease) backwards}
+.ach:nth-child(1){animation-delay:.04s}.ach:nth-child(2){animation-delay:.08s}.ach:nth-child(3){animation-delay:.12s}.ach:nth-child(4){animation-delay:.16s}.ach:nth-child(5){animation-delay:.2s}.ach:nth-child(6){animation-delay:.24s}
+.ach.unlocked{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.35);box-shadow:0 2px 8px rgba(245,158,11,.1)}
+.ach.unlocked .ach-ic{filter:drop-shadow(0 0 10px rgba(245,158,11,.55))}
+.ach.locked{background:var(--s2);border:1px solid var(--ln);opacity:.5}
+.ach:active{transform:scale(.97)}
+.ach-ic{width:54px;height:54px;margin:0 auto 12px;display:grid;place-items:center}
+.ach-ic svg{width:38px;height:38px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ach.unlocked .ach-ic svg{stroke:#F59E0B}
+.ach.locked .ach-ic svg{stroke:#4B5563}
+.ach .nm{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.ach.locked .nm{color:var(--i3)}
+.ach .desc{font-size:10px;color:var(--i3);line-height:1.55;min-height:28px}
+.ach .pb{height:5px;border-radius:3px;background:var(--s3);margin-top:10px;overflow:hidden;display:none}
+.ach.in-progress .pb{display:block}
+.ach .pb-fill{height:100%;background:linear-gradient(90deg,#F59E0B,#FBBF24);transition:width .8s var(--ease);border-radius:3px}
+.ach .pb-pct{font-size:9px;color:var(--i3);font-weight:700;margin-top:4px;display:none}
+.ach.in-progress .pb-pct{display:block}
+.ach.unlocked .check{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:50%;background:#F59E0B;display:grid;place-items:center;box-shadow:0 2px 6px rgba(245,158,11,.4)}
+.ach.unlocked .check svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3.5}
+
+/* ACH MODAL (tooltip) */
+.ach-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.ach-modal.show{display:flex;animation:si .2s var(--ease)}
+.ach-mcard{background:var(--sf);border-radius:22px;padding:28px 24px 22px;max-width:330px;width:100%;text-align:center;animation:si .3s var(--ease);position:relative}
+.ach-mcard .ach-ic{width:88px;height:88px}
+.ach-mcard .ach-ic svg{width:60px;height:60px}
+.ach-mcard.unlocked .ach-ic{filter:drop-shadow(0 0 14px rgba(245,158,11,.6))}
+.ach-mcard.unlocked .ach-ic svg{stroke:#F59E0B}
+.ach-mcard.locked .ach-ic svg{stroke:#4B5563}
+.ach-mcard h3{font-size:19px;font-weight:800;margin:8px 0 4px}
+.ach-mcard .ach-cond{font-size:13px;color:var(--i2);line-height:1.7;margin-bottom:14px}
+.ach-mcard .ach-status{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:14px;font-size:12px;font-weight:700;margin-bottom:14px}
+.ach-mcard .ach-status.unlocked{background:var(--gs);color:#92400E}
+.dark .ach-mcard .ach-status.unlocked{color:#FBBF24}
+.ach-mcard .ach-status.locked{background:var(--s2);color:var(--i3)}
+.ach-mcard .ach-status svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5}
+.ach-mcard .ach-prog-detail{margin-bottom:14px}
+.ach-mcard .ach-prog-bar{height:8px;border-radius:4px;background:var(--s3);overflow:hidden;margin-bottom:6px}
+.ach-mcard .ach-prog-fill{height:100%;background:linear-gradient(90deg,#F59E0B,#FBBF24);border-radius:4px}
+.ach-mcard .ach-prog-txt{font-size:11px;color:var(--i3);font-weight:700}
+.ach-mclose{padding:10px 28px;background:var(--s2);border:1px solid var(--ln);border-radius:11px;font-size:13px;font-weight:700;color:var(--i2);cursor:pointer;font-family:inherit}
+.ach-mclose:hover{background:var(--s3)}
+
+/* ERR / SAVED */
+.filter-row{display:flex;gap:8px;padding:0 16px 14px;overflow-x:auto;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filt{padding:7px 14px;border-radius:20px;border:1.5px solid var(--ln2);font-size:12px;font-weight:600;color:var(--i3);white-space:nowrap;flex-shrink:0;cursor:pointer;transition:all .18s;background:var(--sf)}
+.filt.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.err-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
+.err{padding:14px}
+.err-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.err-tag{font-size:10px;font-weight:700;color:var(--pri);background:var(--ps);padding:3px 9px;border-radius:10px}
+.err-dt{font-size:10px;color:var(--i4)}
+.err-q{font-size:14px;font-weight:600;line-height:1.7;margin-bottom:10px}
+.err-img{width:100%;border-radius:8px;margin-bottom:8px;cursor:pointer}
+.err-ans{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.err-a{padding:8px 12px;border-radius:8px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.err-a.wrong{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.35);color:var(--dng)}
+.err-a.right{background:rgba(16,185,129,.12);border:2px solid rgba(16,185,129,.35);color:var(--suc)}
+.err-a .lbl{font-size:10px;font-weight:700}
+.err-exp{background:#FEFCE8;border:1px solid #FDE68A;border-radius:9px;padding:10px 12px;font-size:12px;color:var(--i2);line-height:1.7}
+.err-exp .lbl{font-size:10px;font-weight:700;color:#92400E;margin-bottom:4px}
+.dark .err-exp{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:#E8EAF6}
+.dark .err-exp .lbl{color:#FCD34D}
+.err-total{font-size:12px;color:var(--i3);padding:0 16px 12px;font-weight:600}
+
+/* PODIUM */
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:20px 16px 10px;align-items:end}
+.pod{text-align:center}
+.pod-av{width:56px;height:56px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:700;margin:0 auto 6px;position:relative}
+.pod.p1 .pod-av{width:64px;height:64px;font-size:22px;background:linear-gradient(135deg,#FFD700,#FFA500)}
+.pod-crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:20px}
+.pod-nm{font-size:13px;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod-xp{font-size:11px;color:var(--i3)}
+.pod-bar{height:0;background:var(--s2);border:1px solid var(--ln);border-radius:8px 8px 0 0;margin-top:8px;display:flex;align-items:flex-end;justify-content:center;font-size:13px;font-weight:700;color:var(--i3);padding-bottom:6px}
+.pod.p1 .pod-bar{height:60px;background:linear-gradient(180deg,rgba(255,215,0,.15),var(--s2))}
+.pod.p2 .pod-bar{height:40px}
+.pod.p3 .pod-bar{height:25px}
+.lead-list{padding:10px 16px 14px;display:flex;flex-direction:column;gap:6px}
+.lead-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r)}
+.lead-item.me{background:var(--ps);border-color:var(--pm)}
+.lead-rank{width:24px;text-align:center;font-size:13px;font-weight:700;color:var(--i3)}
+.lead-item.me .lead-rank{color:var(--pri)}
+.lead-av{width:32px;height:32px;border-radius:50%;background:var(--s2);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--i2);flex-shrink:0}
+.lead-nm{flex:1;font-size:13px;font-weight:600}
+.lead-xp{font-size:12px;font-weight:700;color:var(--pri)}
+.lead-empty{padding:24px 16px;text-align:center;color:var(--i3);font-size:13px;background:var(--sf);border:1px solid var(--ln);border-radius:var(--r2)}
+
+/* EMPTY */
+.empty{padding:60px 16px;text-align:center;color:var(--i3);font-size:13px}
+.empty-big{margin:16px;padding:32px 20px;text-align:center;background:linear-gradient(135deg,var(--ps),var(--pm));border-radius:var(--r2);border:1px solid var(--pm);animation:si .4s var(--ease)}
+.empty-big .em-ic{font-size:48px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+.empty-big .em-t{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.empty-big .em-d{font-size:13px;color:var(--i2);line-height:1.8;margin-bottom:16px}
+.empty-big .em-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:var(--pri);color:#fff;border-radius:22px;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 12px rgba(124,58,237,.3);transition:transform .15s}
+.empty-big .em-btn:active{transform:scale(.97)}
+.empty-big .em-btn svg{width:14px;height:14px;stroke:#fff;fill:#fff;stroke-width:2}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(124,58,237,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
+.ni.on{background:rgba(124,58,237,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;display:none;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.on{display:flex}
+.lightbox img{max-width:95%;max-height:90vh;border-radius:8px}
+
+.loader{display:flex;align-items:center;justify-content:center;padding:60px;gap:8px}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--pri);animation:bounce .6s infinite alternate}
+.loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{opacity:.3;transform:translateY(-6px)}}
+
+html[data-fs="small"] .wrap{zoom:0.93}
+html[data-fs="large"] .wrap{zoom:1.1}
+@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="ph">
+  <div class="title">
+    التقارير
+    <span class="crown-pill" id="crownPill">
+      <svg viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+    </span>
+  </div>
+</div>
+
+<!-- PERIOD SEGMENT -->
+<div class="seg">
+  <div class="seg-b on" data-period="week" onclick="setPeriod(this,'week')">الأسبوع</div>
+  <div class="seg-b" data-period="month" onclick="setPeriod(this,'month')">الشهر</div>
+  <div class="seg-b" data-period="all" onclick="setPeriod(this,'all')">الكل</div>
+</div>
+
+<!-- PILL TABS -->
+<div class="rtabs">
+  <div class="rtab on" data-tab="stats" onclick="setTab(this,'stats')">إحصائياتي</div>
+  <div class="rtab" data-tab="ai" onclick="setTab(this,'ai')">تقرير ذكي</div>
+  <div class="rtab" data-tab="err" onclick="setTab(this,'err')">أخطائي</div>
+  <div class="rtab" data-tab="saved" onclick="setTab(this,'saved')">المحفوظة</div>
+</div>
+
+<!-- STATS TAB -->
+<div class="rp on" id="rp-stats">
+  <!-- BIG GAUGE -->
+  <div class="gauge-wrap">
+    <div class="gauge">
+      <svg viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#14B8A6"/>
+          </linearGradient>
+        </defs>
+        <circle class="gauge-bg" cx="100" cy="100" r="84"/>
+        <circle class="gauge-fg" id="gaugeFg" cx="100" cy="100" r="84" stroke-dasharray="0 528"/>
+      </svg>
+      <div class="gauge-text">
+        <div class="gauge-pct"><span id="gaugePct">0</span><span class="pc">%</span></div>
+        <div class="gauge-lbl">نسبة الدقة</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 stat cards -->
+  <div class="sgrid">
+    <div class="sc card green"><div class="lbl">الإجابات الصحيحة</div><div class="val" id="stCorrect">—</div></div>
+    <div class="sc card ink"><div class="lbl">الأسئلة المحلولة</div><div class="val" id="stSolved">—</div></div>
+    <div class="sc card orange"><div class="lbl">أيام التدريب</div><div class="val" id="stDays">—</div></div>
+  </div>
+
+  <div class="sgrid two">
+    <div class="sc card wide ink">
+      <div class="lbl">متوسط وقت الإجابة</div>
+      <div class="val" id="stAvgTime">—<small>ث</small></div>
+      <div class="ch" id="stAvgTimeHint"></div>
+    </div>
+    <div class="sc card wide">
+      <div class="lbl">أكثر قسم درّبت عليه</div>
+      <div class="val txt" id="stTopSection">—</div>
+      <div class="ch" id="stTopSectionCount"></div>
+    </div>
+  </div>
+
+  <div class="chart-card card">
+    <h4>نشاطك في آخر 7 أيام</h4>
+    <div class="wk-chart" id="weekChart">
+      <div class="loader" style="width:100%"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+    </div>
+    <div class="wk-labels" id="weekLabels"></div>
+  </div>
+
+  <!-- FOCUS CARD — heatmap-colored weak topics -->
+  <div class="focus-card card" id="focusCard" style="display:none">
+    <h4>
+      <span class="fic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+      ركّز عليها
+    </h4>
+    <div id="focusRows"></div>
+  </div>
+
+  <div class="topic-card card" id="topicCard" style="display:none">
+    <h4>الأداء حسب الموضوع</h4>
+    <div id="topicRows"></div>
+  </div>
+
+</div>
+
+<!-- AI TAB -->
+<div class="rp" id="rp-ai">
+  <div class="ai-rpt" id="aiArea">
+    <div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>
+  </div>
+</div>
+
+<!-- SAVED TAB -->
+<div class="rp" id="rp-saved">
+  <div class="err-total" id="savedTotal">—</div>
+  <div class="err-list" id="savedList"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+</div>
+
+<!-- ERRORS TAB -->
+<div class="rp" id="rp-err">
+  <div class="err-total" id="errTotal">—</div>
+  <div class="filter-row">
+    <button class="filt on" data-f="all" onclick="setErrFilter(this,'all')">الكل</button>
+    <button class="filt" data-f="quant" onclick="setErrFilter(this,'quant')">قدرات كمي</button>
+    <button class="filt" data-f="verbal" onclick="setErrFilter(this,'verbal')">قدرات لفظي</button>
+    <button class="filt" data-f="tahsili" onclick="setErrFilter(this,'tahsili')">تحصيلي</button>
+  </div>
+  <div class="err-list" id="errList"><div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div></div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ACHIEVEMENT MODAL -->
+<div class="ach-modal" id="achModal" onclick="if(event.target===this)closeAchModal()">
+  <div class="ach-mcard" id="achMcard"></div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')">
+  <img id="lbImg" src="" alt="">
+</div>
+
+<nav class="nav">
+  <a class="ni" href="/training.html"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></a>
+  <a class="ni" href="/leaks.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></a>
+  <a class="ni" href="/dashboard.html"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></a>
+  <a class="ni on" href="/reports.html"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></a>
+  <a class="ni" href="/profile.html"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="preview-mock.js"></script>
+<script src="supabase-helpers-v2.js"></script>
+<script src="whatsapp-float.js"></script>
+<script>
+(function(){
+'use strict';
+const M = window.MadarekV2;
+const sb = M.getSb();
+const sectionMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'مختلط'};
+const topicMap = {
+    algebra:'الجبر', geometry:'الهندسة', arithmetic:'الحساب', statistics:'الإحصاء',
+    percent:'النسب المئوية', percentage:'النسب المئوية', percentages:'النسب المئوية',
+    ratios:'النسب والتناسب', ratio:'النسب والتناسب', proportion:'النسب والتناسب',
+    fractions:'الكسور', fraction:'الكسور', decimals:'الأعداد العشرية',
+    word_problems:'المسائل اللفظية', word_problem:'المسائل اللفظية',
+    equations:'المعادلات', equation:'المعادلات', inequalities:'المتباينات',
+    probability:'الاحتمالات', combinations:'التوافيق', permutations:'التباديل',
+    sequences:'المتتابعات', sequence:'المتتابعات', series:'المتسلسلات',
+    functions:'الاقترانات', graphs:'الرسوم البيانية', coordinates:'الإحداثيات',
+    numbers:'الأعداد', integers:'الأعداد الصحيحة', primes:'الأعداد الأولية',
+    powers:'القوى والأسس', exponents:'الأسس', roots:'الجذور', radicals:'الجذور',
+    logarithms:'اللوغاريتمات', factorial:'المضروب',
+    area:'المساحة', perimeter:'المحيط', volume:'الحجم', angles:'الزوايا',
+    triangles:'المثلثات', circles:'الدوائر', polygons:'المضلعات',
+    rate:'المعدل', speed:'السرعة', distance:'المسافة', time:'الزمن', work:'الشغل',
+    mixture:'المخاليط', profit:'الربح والخسارة', loss:'الربح والخسارة',
+    interest:'الفائدة', discount:'الخصم',
+    mean:'المتوسط', median:'الوسيط', mode:'المنوال', range:'المدى',
+    analogy:'التناظر اللفظي', analogies:'التناظر اللفظي',
+    sentence_completion:'إكمال الجمل', completion:'إكمال الجمل',
+    reading:'الاستيعاب المقروء', reading_comp:'الاستيعاب المقروء', reading_comprehension:'الاستيعاب المقروء', comprehension:'الاستيعاب المقروء',
+    antonyms:'المتضادات', antonym:'المتضادات',
+    synonyms:'المترادفات', synonym:'المترادفات',
+    contextual:'سياق الجمل', context:'سياق الجمل',
+    grammar:'القواعد', vocabulary:'المفردات', error:'الخطأ السياقي',
+    biology:'الأحياء', chemistry:'الكيمياء', physics:'الفيزياء',
+    math:'الرياضيات', mathematics:'الرياضيات',
+    history:'التاريخ', geography:'الجغرافيا',
+    islamic:'الدراسات الإسلامية', arabic:'اللغة العربية', english:'اللغة الإنجليزية',
+    general:'عام', other:'غير مصنّف', misc:'متنوع', mixed:'مختلط'
+};
+function arTopic(t){
+    if(!t) return 'عام';
+    if(/[؀-ۿ]/.test(t)) return t;
+    const k = String(t).trim().toLowerCase().replace(/\s+/g,'_');
+    if(topicMap[k]) return topicMap[k];
+    if(sectionMap[k]) return sectionMap[k];
+    return 'غير مصنّف';
+}
+
+// ── Achievement SVG icons (Lucide-style stroke) ──
+const ACH_SVG = {
+    'البرق':         '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    'عبقري':         '<svg viewBox="0 0 24 24"><path d="M12 2a4.5 4.5 0 0 0-4.5 4.5c0 .9.3 1.7.7 2.4A4.5 4.5 0 0 0 4 13.5a4.5 4.5 0 0 0 1.7 3.5A4.5 4.5 0 0 0 8.5 22h7a4.5 4.5 0 0 0 2.8-5 4.5 4.5 0 0 0 1.7-3.5 4.5 4.5 0 0 0-4.2-4.6c.4-.7.7-1.5.7-2.4A4.5 4.5 0 0 0 12 2z"/><path d="M12 22V2"/></svg>',
+    'مشتعل':         '<svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+    'قناص':          '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+    'أسطورة':        '<svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6m12 5h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>',
+    'النخبة':        '<svg viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>',
+    'المحارب':       '<svg viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/></svg>',
+    'المئوي':        '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="9" y1="15" x2="15" y2="9"/><circle cx="9.5" cy="9.5" r="1.2" fill="currentColor"/><circle cx="14.5" cy="14.5" r="1.2" fill="currentColor"/></svg>',
+    'بطل الأسبوع':   '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polygon points="12 13 13.2 15.6 16 16 13.8 17.7 14.6 20.4 12 19 9.4 20.4 10.2 17.7 8 16 10.8 15.6"/></svg>',
+    'شامل':          '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    'بلا أخطاء':     '<svg viewBox="0 0 24 24"><polygon points="12 2 4 8 6 22 18 22 20 8 12 2"/></svg>',
+    'الخطوة الأولى': '<svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22 22 0 0 1-4 2zm0 0c.85.85 2.07 2.66 3 4M9 12c-.85-.85-2.66-2.07-4-3"/></svg>',
+    'المتطور':       '<svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+    'الألف':         '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>',
+    'مستمر':         '<svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+    'متفوق':         '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    'لا يوقفك شيء':  '<svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6m12 5h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>',
+    'الخبير':        '<svg viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>'
+};
+const DEFAULT_ACH_SVG = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>';
+function achSvg(name){ return ACH_SVG[name] || DEFAULT_ACH_SVG; }
+
+let profile = null;
+let isSubscriber = false;
+let period = 'week';
+let currentTab = 'stats';
+let errFilter = 'all';
+let loaded = { stats:false, err:false, saved:false, ai:false, lead:false, ach:false };
+
+init();
+
+async function init() {
+    if (localStorage.getItem('madarek_dark_mode')==='true') document.documentElement.classList.add('dark');
+
+    const params = new URLSearchParams(window.location.search);
+    const isPreview = params.has('preview');
+    const forceSubscriber = params.get('force_subscriber') === 'true';
+    const forceFree = params.get('force_free') === 'true';
+
+    if (forceSubscriber) {
+        profile = {
+            id: '00000000-0000-0000-0000-000000000000',
+            full_name: 'مشترك تجريبي',
+            subscription_type: 'monthly',
+            subscription_end: new Date(Date.now() + 30*864e5).toISOString(),
+            xp: 560, level: 3, level_name: 'متدرب', streak_days: 5,
+            referral_code: 'MADAR-PREVIEW'
+        };
+    } else if (forceFree) {
+        profile = { id:'free-user', full_name:'مستخدم مجاني', subscription_type:'free', xp:0, level:1, level_name:'مبتدئ', streak_days:0 };
+    } else if (isPreview) {
+        await loadPreviewProfile();
+    } else {
+        const user = await M.requireAuth('/login.html');
+        if (!user) return;
+        profile = await M.getProfile();
+        if (!profile) return;
+    }
+
+    isSubscriber = forceSubscriber || (M.isSubscribed && M.isSubscribed(profile));
+    if (isSubscriber) document.getElementById('crownPill').classList.add('show');
+
+    M.injectGlobalTicker('reports');
+
+    const tab = params.get('tab');
+    const validTabs = ['stats','ai','ach','saved','err','lead'];
+    if (tab && validTabs.includes(tab)) {
+        const tabEl = document.querySelector('[data-tab="'+tab+'"]');
+        if (tabEl) setTab(tabEl, tab);
+        else loadStatsTab();
+    } else {
+        loadStatsTab();
+    }
+}
+
+async function loadPreviewProfile() {
+    const { data: p } = await sb.from('profiles').select('*').eq('id','mock-user-00000000').single();
+    profile = p || { id:'mock-user-00000000', full_name:'عبدالله الزهراني', xp:560, subscription_type:'monthly', level:3, level_name:'متدرب' };
+}
+
+window.setPeriod = function(el, p) {
+    document.querySelectorAll('.seg-b').forEach(s => s.classList.remove('on'));
+    el.classList.add('on');
+    period = p;
+    loaded = { stats:false, err:false, saved:false, ai:false, lead:false, ach:false };
+    loadCurrentTab();
+};
+
+window.setTab = function(el, tab) {
+    document.querySelectorAll('.rtab').forEach(r => r.classList.remove('on'));
+    document.querySelectorAll('.rp').forEach(r => r.classList.remove('on'));
+    el.classList.add('on');
+    document.getElementById('rp-' + tab).classList.add('on');
+    currentTab = tab;
+    loadCurrentTab();
+};
+
+function loadCurrentTab() {
+    if (currentTab === 'stats' && !loaded.stats) loadStatsTab();
+    else if (currentTab === 'err' && !loaded.err) loadErrTab();
+    else if (currentTab === 'saved' && !loaded.saved) loadSavedTab();
+    else if (currentTab === 'ai' && !loaded.ai) loadAITab();
+    else if (currentTab === 'ach' && !loaded.ach) loadAchTab();
+    else if (currentTab === 'lead' && !loaded.lead) loadLeadTab();
+}
+
+window.toggleLeadInline = function(el) {
+    el.classList.toggle('open');
+    const c = document.getElementById('leadInline');
+    if (c.classList.contains('show')) {
+        c.classList.remove('show');
+    } else {
+        c.classList.add('show');
+        loadLeadInline();
+    }
+};
+
+function getPeriodStart() {
+    const d = new Date();
+    if (period === 'week') d.setDate(d.getDate() - 7);
+    else if (period === 'month') d.setDate(d.getDate() - 30);
+    else d.setFullYear(2020);
+    return d.toISOString();
+}
+
+// ── GAUGE animation ──
+function animateGauge(pct) {
+    const fg = document.getElementById('gaugeFg');
+    const txt = document.getElementById('gaugePct');
+    if (!fg || !txt) return;
+    const circumference = 2 * Math.PI * 84; // ≈ 528
+    const offset = (Math.max(0, Math.min(100, pct)) / 100) * circumference;
+    // animate dasharray
+    setTimeout(() => { fg.style.strokeDasharray = offset + ' ' + (circumference - offset); }, 50);
+    // count up text
+    let target = pct;
+    let started = false;
+    const fb = setTimeout(() => { if (!started) txt.textContent = target; }, 100);
+    const start = performance.now();
+    function tick(now) {
+        started = true; clearTimeout(fb);
+        const p = Math.min(1, (now - start) / 1100);
+        const eased = 1 - Math.pow(1 - p, 3);
+        txt.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+// ── STATS TAB ──
+async function loadStatsTab() {
+    try {
+        const since = getPeriodStart();
+        const { data: atts } = await sb.from('attempts')
+            .select('is_correct, created_at, questions(section,topic)')
+            .eq('user_id', profile.id).gte('created_at', since);
+        const all = atts || [];
+        const total = all.length;
+        const correct = all.filter(a => a.is_correct).length;
+        const acc = total > 0 ? Math.round(correct/total*100) : 0;
+
+        animateGauge(acc);
+        countUp('stCorrect', correct, { dur: 900 });
+        countUp('stSolved', total, { dur: 1100 });
+
+        const { data: streaks } = await sb.from('daily_streaks')
+            .select('streak_date').eq('user_id', profile.id).eq('completed', true).gte('streak_date', since.split('T')[0]);
+        const days = streaks?.length || 0;
+        countUp('stDays', days, { dur: 800 });
+
+        try {
+            const { data: sessions } = await sb.from('practice_sessions')
+                .select('total_questions,started_at,completed_at')
+                .eq('user_id', profile.id).gte('started_at', since).not('completed_at','is',null);
+            let totalSecs = 0, totalQs = 0;
+            (sessions||[]).forEach(s => {
+                if (s.completed_at && s.started_at && s.total_questions > 0) {
+                    const dur = (new Date(s.completed_at) - new Date(s.started_at)) / 1000;
+                    if (dur > 0 && dur < 7200) { totalSecs += dur; totalQs += s.total_questions; }
+                }
+            });
+            const avgSec = totalQs > 0 ? Math.round(totalSecs / totalQs) : 0;
+            if (avgSec) countUp('stAvgTime', avgSec, { suffix: '<small>ث</small>', dur: 800 });
+            else document.getElementById('stAvgTime').innerHTML = '—<small>ث</small>';
+            document.getElementById('stAvgTimeHint').textContent = avgSec > 0 ? ('من ' + sessions.length + ' جلسة') : 'لا جلسات مكتملة';
+        } catch(e){}
+
+        const secCounts = {};
+        all.forEach(a => {
+            const s = a.questions?.section;
+            if (s) secCounts[s] = (secCounts[s]||0) + 1;
+        });
+        const topSec = Object.entries(secCounts).sort((a,b)=>b[1]-a[1])[0];
+        if (topSec) {
+            document.getElementById('stTopSection').textContent = sectionMap[topSec[0]] || topSec[0];
+            document.getElementById('stTopSectionCount').textContent = topSec[1] + ' سؤال';
+        } else {
+            document.getElementById('stTopSection').textContent = '—';
+            document.getElementById('stTopSectionCount').textContent = 'ابدأ التدريب';
+        }
+
+        // 7-day chart
+        const days7 = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(); d.setDate(d.getDate() - i);
+            days7.push({ date: d.toISOString().split('T')[0], label: ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'][d.getDay()].substring(0,3), count: 0 });
+        }
+        const weekAgo = new Date(Date.now()-7*864e5).toISOString();
+        const { data: weekAtts } = await sb.from('attempts')
+            .select('created_at').eq('user_id', profile.id).gte('created_at', weekAgo);
+        (weekAtts||[]).forEach(a => {
+            const d = a.created_at.split('T')[0];
+            const day = days7.find(x => x.date === d);
+            if (day) day.count++;
+        });
+        const maxCount = Math.max(1, ...days7.map(d=>d.count));
+        const chart = document.getElementById('weekChart');
+        const labelsDiv = document.getElementById('weekLabels');
+        const todayStr = new Date().toISOString().split('T')[0];
+        chart.innerHTML = days7.map((d, i) => {
+            const h = Math.max(4, (d.count/maxCount) * 100);
+            const today = d.date === todayStr;
+            const bg = d.count > 0 ? 'var(--pri)' : 'var(--s3)';
+            return '<div class="wk-col"><div class="wk-num">'+d.count+'</div><div class="wk-bar'+(today?' today':'')+'" style="background:'+bg+';--final-h:'+h+'%;animation-delay:'+(i*60)+'ms"></div></div>';
+        }).join('');
+        labelsDiv.innerHTML = days7.map(d => '<div>'+d.label+'</div>').join('');
+
+        // Topic breakdown — sorted ASC for focus + DESC for full list
+        const topicStats = {};
+        all.forEach(a => {
+            const t = arTopic(a.questions?.topic) || sectionMap[a.questions?.section] || 'عام';
+            if (!topicStats[t]) topicStats[t] = {c:0,t:0};
+            topicStats[t].t++; if (a.is_correct) topicStats[t].c++;
+        });
+        // أخفِ "غير مصنّف" بالكامل إذا دقتها 0% (لا قيمة معلوماتية)
+        const topics = Object.entries(topicStats)
+            .map(([k,v])=>({k,acc:Math.round(v.c/v.t*100),count:v.t}))
+            .filter(t => !(t.k === 'غير مصنّف' && t.acc === 0));
+
+        // Focus card: sort ASC by acc, top 5 weakest
+        const weakest = [...topics].sort((a,b)=>a.acc-b.acc).slice(0, 5);
+        if (weakest.length > 0) {
+            document.getElementById('focusCard').style.display = '';
+            document.getElementById('focusRows').innerHTML = weakest.map(t => {
+                const heat = heatBucket(t.acc);
+                return '<div class="focus-row"><div class="fn">'+esc(t.k)+'</div><div class="fb"><div class="fbf heat-'+heat+'" style="width:'+Math.max(3,t.acc)+'%"></div></div><div class="fp col-'+heat+'">'+t.acc+'%</div></div>';
+            }).join('');
+        }
+
+        // Topic card: full list sorted by count
+        const topicsSorted = [...topics].sort((a,b)=>b.count-a.count).slice(0,8);
+        const tc = document.getElementById('topicCard');
+        if (topicsSorted.length === 0) {
+            tc.style.display = 'none';
+        } else {
+            tc.style.display = '';
+            document.getElementById('topicRows').innerHTML = topicsSorted.map(t => {
+                const heat = heatBucket(t.acc);
+                return '<div class="topic-row"><div class="tn">'+esc(t.k)+'</div><div class="tp"><div class="tpf heat-'+heat+'" style="width:'+Math.max(3,t.acc)+'%"></div></div><div class="tv col-'+heat+'">'+t.acc+'%</div></div>';
+            }).join('');
+        }
+        loaded.stats = true;
+    } catch(e){console.error(e);}
+}
+
+function heatBucket(acc) {
+    if (acc <= 0) return 0;
+    if (acc <= 25) return 1;
+    if (acc <= 50) return 2;
+    if (acc <= 75) return 3;
+    return 4;
+}
+
+// ── AI TAB — modal-style with dark navy header ──
+async function loadAITab() {
+    const area = document.getElementById('aiArea');
+
+    if (!isSubscriber) {
+        area.innerHTML = `
+            <div class="ai-locked">
+                <div class="ai-locked-ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                <h3>التقرير الذكي للمشتركين</h3>
+                <p>تحليل شخصي يكشف نقاط ضعفك، يتوقع تطورك، ويرسم خطة أسبوعية مفصّلة بناءً على أدائك الفعلي</p>
+                <a class="ai-locked-cta" href="/pricing.html">اشترك الآن</a>
+            </div>
+            <div class="ai-feat-row">
+                <div class="ai-feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="b"><div class="tt">يكتشف نقاط ضعفك</div><div class="dd">يحلل كل موضوع لوحده ويحدد اللي محتاج تركيز</div></div></div>
+                <div class="ai-feat"><div class="ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="b"><div class="tt">يتوقع تطورك</div><div class="dd">بناءً على أدائك يخبرك كم راح تتقدم إذا التزمت</div></div></div>
+                <div class="ai-feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="b"><div class="tt">يرسم خطة أسبوعية</div><div class="dd">عدد أسئلة محدد لكل قسم حسب مستواك</div></div></div>
+            </div>`;
+        loaded.ai = true;
+        return;
+    }
+
+    try {
+        const since = getPeriodStart();
+        const { data: atts } = await sb.from('attempts')
+            .select('is_correct, created_at, questions(section,topic)')
+            .eq('user_id', profile.id).gte('created_at', since);
+        const all = atts || [];
+
+        if (all.length < 5) {
+            area.innerHTML = `
+                <div class="ai-hero">
+                    <div class="hh">مرحباً بك</div>
+                    <div class="ht">كل بطل بدأ من صفر. اليوم أنت على بعد 5 أسئلة من أول تقرير ذكي يكشف نقاط قوتك ويرسم لك الطريق.</div>
+                </div>
+                <div class="ai-feat-row">
+                    <div class="ai-feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="b"><div class="tt">يكتشف نقاط ضعفك</div><div class="dd">يحلل كل موضوع لوحده ويحدد اللي محتاج تركيز</div></div></div>
+                    <div class="ai-feat"><div class="ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="b"><div class="tt">يتوقع تطورك</div><div class="dd">بناءً على أدائك يخبرك كم راح تتقدم إذا التزمت</div></div></div>
+                    <div class="ai-feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="b"><div class="tt">يرسم خطة أسبوعية</div><div class="dd">عدد أسئلة محدد لكل قسم حسب مستواك</div></div></div>
+                </div>`;
+            loaded.ai = true;
+            return;
+        }
+
+        const total = all.length;
+        const correct = all.filter(a => a.is_correct).length;
+        const overallAcc = Math.round(correct / total * 100);
+
+        const topicStats = {};
+        all.forEach(a => {
+            const t = a.questions?.topic;
+            if (!t) return;
+            if (!topicStats[t]) topicStats[t] = {c:0,t:0,section:a.questions?.section};
+            topicStats[t].t++; if (a.is_correct) topicStats[t].c++;
+        });
+        const topicRanked = Object.entries(topicStats)
+            .filter(([,v]) => v.t >= 3)
+            .map(([k,v]) => ({ key:k, name:arTopic(k), section:v.section, acc:Math.round(v.c/v.t*100), count:v.t }))
+            // أخفِ "غير مصنّف" إذا دقتها 0% — لا قيمة معلوماتية
+            .filter(t => !(t.name === 'غير مصنّف' && t.acc === 0))
+            .sort((a,b) => a.acc - b.acc);
+        const weakTopics = topicRanked.filter(t => t.acc < 60).slice(0, 3);
+
+        // Performance badge
+        let perfClass = 'ok', perfTxt = 'مقبول';
+        if (overallAcc >= 75) { perfClass = 'great'; perfTxt = 'ممتاز'; }
+        else if (overallAcc >= 50) { perfClass = 'good'; perfTxt = 'جيد'; }
+
+        // Hero summary
+        let heroHeadline = '';
+        if (overallAcc >= 80) heroHeadline = 'أداؤك ممتاز — دقتك الإجمالية <b>' + overallAcc + '%</b> من ' + total + ' سؤال. تحافظ على مستوى عالٍ.';
+        else if (overallAcc >= 65) heroHeadline = 'أداؤك جيد — دقتك <b>' + overallAcc + '%</b> من ' + total + ' سؤال. خطوة صغيرة كل يوم تكفي للوصول للامتياز.';
+        else if (overallAcc >= 50) heroHeadline = 'أنت في المنتصف — دقتك <b>' + overallAcc + '%</b>. معالجة نقطتين فقط قد ترفعك فوق 70%.';
+        else heroHeadline = 'بداية الرحلة — دقتك <b>' + overallAcc + '%</b>. لا تقلق، الأرقام تصعد بسرعة عندما تعرف أين تركّز.';
+
+        // Plan rows (4 actionable items)
+        const planRows = [];
+        if (weakTopics.length >= 1) {
+            planRows.push({ cls:'gold', icon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>', t:'ركّز على '+esc(weakTopics[0].name), d:'5 أسئلة يومياً — ضعفك الحالي '+weakTopics[0].acc+'%' });
+        }
+        if (weakTopics.length >= 2) {
+            planRows.push({ cls:'purple', icon:'<svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>', t:'تحسين '+esc(weakTopics[1].name), d:'3 أسئلة يومياً — ضعفك الحالي '+weakTopics[1].acc+'%' });
+        }
+        planRows.push({ cls:'green', icon:'<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>', t:'مراجعة الأخطاء', d:'افتح "أخطائي" قبل النوم — يثبّت المعلومة' });
+        planRows.push({ cls:'blue', icon:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>', t:'محاكاة الاختبار', d:'نهاية الأسبوع — 50 سؤال مختلط لقياس تقدمك' });
+
+        const userName = profile.full_name || 'صديقي';
+        const lvlName = profile.level_name || 'متدرب';
+
+        area.innerHTML = `
+            <div class="ai-modal">
+                <div class="ai-modal-head">
+                    <div class="ai-modal-name"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>تقريرك الذكي</div>
+                    <div class="ai-modal-h">${heroHeadline}</div>
+                    <div class="ai-modal-lvl"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${esc(userName)} · المستوى ${esc(lvlName)}</div>
+                </div>
+                <div class="ai-modal-body">
+                    <div class="perf-row">
+                        <div class="pl">الأداء العام</div>
+                        <div class="perf-badge ${perfClass}">${perfTxt}</div>
+                    </div>
+                    <div class="ai-metrics-row">
+                        <div class="ai-mc purple"><div class="mc-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="mc-v">${overallAcc}<small>%</small></div><div class="mc-l">نسبة الدقة</div></div>
+                        <div class="ai-mc gold"><div class="mc-ic"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="mc-v">${total}</div><div class="mc-l">الإجمالي</div></div>
+                        <div class="ai-mc green"><div class="mc-ic"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="mc-v">${correct}</div><div class="mc-l">الصحيح</div></div>
+                    </div>
+                    <div class="plan-section-ttl">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        خطة تدريبك للأسبوع
+                    </div>
+                    <div class="plan-rows">
+                        ${planRows.map(r => `<div class="plan-row ${r.cls}"><div class="plan-ic">${r.icon}</div><div class="pb"><div class="pt">${esc(r.t)}</div><div class="pd">${esc(r.d)}</div></div></div>`).join('')}
+                    </div>
+                    <button class="ai-cta" onclick="location.href='/training.html'">
+                        فهمت — يلا نتدرب
+                        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                </div>
+            </div>`;
+        loaded.ai = true;
+    } catch(e){console.error(e);}
+}
+
+// ── ACHIEVEMENTS TAB ──
+async function loadAchTab() {
+    const area = document.getElementById('achArea');
+    try {
+        const { data: allAch } = await sb.from('achievements').select('*').eq('is_active',true).order('sort_order');
+        const { data: userAch } = await sb.from('user_achievements').select('*').eq('user_id', profile.id);
+        const userMap = {};
+        (userAch||[]).forEach(u => userMap[u.achievement_id] = u);
+
+        if (!allAch || allAch.length === 0) {
+            area.innerHTML = '<div class="empty">لا توجد إنجازات متاحة بعد</div>';
+            loaded.ach = true;
+            return;
+        }
+
+        const unlockedCount = (userAch || []).filter(u => u.unlocked).length;
+        const total = allAch.length;
+        const pct = Math.round((unlockedCount / total) * 100);
+
+        const summary = `
+            <div class="ach-summary">
+                <div class="as-ic"><svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6m12 5h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
+                <div class="as-b">
+                    <div class="as-t">إنجازاتك المحققة</div>
+                    <div class="as-d">${unlockedCount} من ${total} إنجاز</div>
+                </div>
+                <div class="as-pct">${pct}<small style="font-size:14px">%</small></div>
+            </div>`;
+
+        const grid = '<div class="ach-grid">' + allAch.map(a => {
+            const u = userMap[a.id];
+            const unlocked = u && u.unlocked;
+            const cur = u?.current_value || 0;
+            const targ = a.target_value || 100;
+            const progPct = Math.min(100, Math.round((cur / targ) * 100));
+            const isInProgress = !unlocked && cur > 0;
+            const cls = unlocked ? 'unlocked' : (isInProgress ? 'in-progress' : 'locked');
+            const svg = achSvg(a.name);
+            const checkBadge = unlocked ? '<div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' : '';
+            const progress = isInProgress ? '<div class="pb"><div class="pb-fill" style="width:'+progPct+'%"></div></div><div class="pb-pct">'+cur+' من '+targ+'</div>' : '';
+            return '<div class="ach '+cls+'" onclick="openAchModal(\''+esc(a.id)+'\','+(unlocked?'true':'false')+','+cur+','+targ+',\''+esc(a.name)+'\',\''+esc(a.description||'')+'\')">'
+                +    checkBadge
+                +    '<div class="ach-ic">'+svg+'</div>'
+                +    '<div class="nm">'+esc(a.name)+'</div>'
+                +    '<div class="desc">'+esc(a.description||'')+'</div>'
+                +    progress
+                +  '</div>';
+        }).join('') + '</div>';
+
+        area.innerHTML = summary + grid;
+        loaded.ach = true;
+    } catch(e){console.error(e); area.innerHTML = '<div class="empty">تعذّر تحميل الإنجازات</div>';}
+}
+
+window.openAchModal = function(id, unlocked, cur, targ, name, desc) {
+    const card = document.getElementById('achMcard');
+    const cls = unlocked ? 'unlocked' : 'locked';
+    const svg = achSvg(name);
+    const isInProgress = !unlocked && cur > 0;
+    const progPct = targ > 0 ? Math.min(100, Math.round((cur / targ) * 100)) : 0;
+    const statusHtml = unlocked
+        ? '<div class="ach-status unlocked"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>محقق</div>'
+        : '<div class="ach-status locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>غير محقق</div>';
+    const progressHtml = isInProgress
+        ? '<div class="ach-prog-detail"><div class="ach-prog-bar"><div class="ach-prog-fill" style="width:'+progPct+'%"></div></div><div class="ach-prog-txt">'+cur+' من '+targ+' — '+progPct+'%</div></div>'
+        : '';
+    card.className = 'ach-mcard ' + cls;
+    card.innerHTML = '<div class="ach-ic">'+svg+'</div>'
+                  + '<h3>'+esc(name)+'</h3>'
+                  + statusHtml
+                  + '<div class="ach-cond">'+esc(desc)+'</div>'
+                  + progressHtml
+                  + '<button class="ach-mclose" onclick="closeAchModal()">إغلاق</button>';
+    document.getElementById('achModal').classList.add('show');
+};
+window.closeAchModal = function() { document.getElementById('achModal').classList.remove('show'); };
+
+// ── ERRORS TAB ──
+window.setErrFilter = function(el, f) {
+    document.querySelectorAll('.filt').forEach(x => x.classList.remove('on'));
+    el.classList.add('on');
+    errFilter = f;
+    loadErrTab();
+};
+
+async function loadErrTab() {
+    const list = document.getElementById('errList');
+    list.innerHTML = '<div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>';
+    try {
+        const since = getPeriodStart();
+        let q = sb.from('attempts')
+            .select('id, selected_answer, created_at, questions!inner(id,question_text,choices,correct_index,explanation,image_url,section,topic)')
+            .eq('user_id', profile.id).eq('is_correct', false)
+            .gte('created_at', since).order('created_at',{ascending:false}).limit(50);
+        const { data } = await q;
+        const filtered = errFilter === 'all' ? (data || []) : (data || []).filter(a => a.questions?.section === errFilter);
+        document.getElementById('errTotal').textContent = 'إجمالي الأخطاء: ' + filtered.length;
+
+        if (filtered.length === 0) {
+            list.innerHTML =
+                '<div class="empty-big"><div class="em-ic">🎯</div><div class="em-t">لا أخطاء في الفترة المحددة</div><div class="em-d">إما أنك لم تتدرب بعد، أو أن إجاباتك كلها صحيحة — الحالتان تستحقان التدريب</div><a class="em-btn" href="/training.html"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التدريب</a></div>';
+            loaded.err = true; return;
+        }
+        list.innerHTML = filtered.map(a => renderErrCard(a.questions, a.selected_answer, a.created_at)).join('');
+        loaded.err = true;
+    } catch(e){console.error(e);}
+}
+
+function renderErrCard(q, selectedIdx, dt) {
+    if (!q) return '';
+    const tag = sectionMap[q.section] || q.section || 'عام';
+    const dtStr = new Date(dt).toLocaleDateString('ar-SA', {month:'short',day:'numeric'});
+    const choices = q.choices || [];
+    const userAns = choices[selectedIdx] || '—';
+    const rightAns = choices[q.correct_index] || '—';
+    const hasImg = q.image_url && q.image_url.trim();
+    let html = '<div class="err card"><div class="err-head"><span class="err-tag">'+esc(tag)+'</span><span class="err-dt">'+dtStr+'</span></div>';
+    if (hasImg) html += '<img class="err-img" src="'+esc(q.image_url)+'" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';
+    html += '<div class="err-q">'+esc(q.question_text)+'</div><div class="err-ans"><div class="err-a wrong"><span class="lbl">إجابتك</span><span>'+esc(userAns)+'</span></div><div class="err-a right"><span class="lbl">الصحيحة</span><span>'+esc(rightAns)+'</span></div></div>';
+    if (q.explanation) html += '<div class="err-exp"><div class="lbl">الشرح</div>'+esc(q.explanation)+'</div>';
+    html += '</div>';
+    return html;
+}
+
+// ── SAVED TAB ──
+async function loadSavedTab() {
+    const list = document.getElementById('savedList');
+    list.innerHTML = '<div class="loader"><div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div></div>';
+    try {
+        const { data } = await sb.from('saved_questions')
+            .select('saved_at, questions(id,question_text,choices,correct_index,explanation,image_url,section,topic)')
+            .eq('user_id', profile.id).order('saved_at',{ascending:false}).limit(50);
+        const arr = data || [];
+        document.getElementById('savedTotal').textContent = 'إجمالي المحفوظة: ' + arr.length;
+        if (arr.length === 0) {
+            list.innerHTML =
+                '<div class="empty-big"><div class="em-ic">🔖</div><div class="em-t">لا أسئلة محفوظة بعد</div><div class="em-d">أثناء التدريب، اضغط أيقونة الحفظ على أي سؤال مهم وسيظهر هنا لمراجعته لاحقاً</div><a class="em-btn" href="/training.html"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ التدريب</a></div>';
+            loaded.saved = true; return;
+        }
+        list.innerHTML = arr.map(s => {
+            const q = s.questions;
+            if (!q) return '';
+            const tag = sectionMap[q.section] || q.section || 'عام';
+            const dt = new Date(s.saved_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+            const hasImg = q.image_url && q.image_url.trim();
+            let html = '<div class="err card"><div class="err-head"><span class="err-tag">'+esc(tag)+'</span><span class="err-dt">'+dt+'</span></div>';
+            if (hasImg) html += '<img class="err-img" src="'+esc(q.image_url)+'" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';
+            html += '<div class="err-q">'+esc(q.question_text)+'</div>';
+            const rightAns = (q.choices||[])[q.correct_index] || '—';
+            html += '<div class="err-ans"><div class="err-a right"><span class="lbl">الإجابة الصحيحة</span><span>'+esc(rightAns)+'</span></div></div>';
+            if (q.explanation) html += '<div class="err-exp"><div class="lbl">الشرح</div>'+esc(q.explanation)+'</div>';
+            html += '</div>';
+            return html;
+        }).join('');
+        loaded.saved = true;
+    } catch(e){console.error(e);}
+}
+
+// ── LEADERBOARD ──
+async function loadLeadTab() {
+    try {
+        const board = await M.getLeaderboard(period);
+        const myRank = board.find(b => b.user_id === profile.id)?.rank;
+        const myXP = profile.xp || 0;
+
+        const top3 = board.slice(0, 3);
+        const pod = document.getElementById('podium');
+        pod.innerHTML = '';
+        if (top3.length >= 1) {
+            const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+            const classes = ['p2','p1','p3'];
+            const crowns = ['','👑',''];
+            pod.innerHTML = order.map((p,i) => {
+                const cls = classes[i];
+                const pos = cls === 'p1' ? '1' : cls === 'p2' ? '2' : '3';
+                return '<div class="pod '+cls+'"><div class="pod-av">'+(crowns[i] ? '<div class="pod-crown">'+crowns[i]+'</div>' : '')+esc((p.name||'?').charAt(0))+'</div><div class="pod-nm">'+esc(p.name||'—')+'</div><div class="pod-xp">'+(p.xp||0)+' XP</div><div class="pod-bar">'+pos+'</div></div>';
+            }).join('');
+        }
+
+        const rest = board.slice(3, 20);
+        const list = document.getElementById('leadList');
+        if (board.length === 0) {
+            list.innerHTML = '<div class="lead-empty">لا توجد بيانات للمتصدرين بعد — ابدأ التدريب لتظهر هنا</div>';
+        } else {
+            let html = '';
+            const inBoard = board.find(b => b.user_id === profile.id);
+            rest.forEach(p => {
+                const isMe = p.user_id === profile.id;
+                html += '<div class="lead-item'+(isMe?' me':'')+'"><div class="lead-rank">#'+p.rank+'</div><div class="lead-av">'+esc((p.name||'?').charAt(0))+'</div><div class="lead-nm">'+esc(p.name||'—')+(isMe?' (أنت)':'')+'</div><div class="lead-xp">'+(p.xp||0)+' XP</div></div>';
+            });
+            if (!inBoard && myRank) html += '<div class="lead-item me" style="margin-top:8px"><div class="lead-rank">#'+myRank+'</div><div class="lead-av">أنت</div><div class="lead-nm">'+esc(profile.full_name||'أنت')+' (أنت)</div><div class="lead-xp">'+myXP+' XP</div></div>';
+            list.innerHTML = html || '<div class="lead-empty">الصدارة فقط — انضم للمنافسة</div>';
+        }
+        loaded.lead = true;
+    } catch(e){console.error(e);}
+}
+
+async function loadLeadInline() {
+    const c = document.getElementById('leadInline');
+    c.innerHTML = '<div class="lead-empty">جاري التحميل...</div>';
+    try {
+        const board = await M.getLeaderboard(period);
+        if (!board || board.length === 0) { c.innerHTML = '<div class="lead-empty">لا توجد بيانات للمتصدرين بعد — ابدأ التدريب لتظهر هنا</div>'; return; }
+        const top5 = board.slice(0, 5);
+        c.innerHTML = top5.map(p => {
+            const isMe = p.user_id === profile.id;
+            return '<div class="lead-item'+(isMe?' me':'')+'" style="margin-bottom:6px"><div class="lead-rank">#'+p.rank+'</div><div class="lead-av">'+esc((p.name||'?').charAt(0))+'</div><div class="lead-nm">'+esc(p.name||'—')+(isMe?' (أنت)':'')+'</div><div class="lead-xp">'+(p.xp||0)+' XP</div></div>';
+        }).join('');
+    } catch(e){ c.innerHTML = '<div class="lead-empty">تعذّر تحميل البيانات</div>'; }
+}
+
+// ── Utils ──
+window.openLB = function(src){document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('on');};
+function esc(s){if(s===null||s===undefined)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+function countUp(elId, target, opts) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const dur = (opts && opts.dur) || 900;
+    const suffix = (opts && opts.suffix) || '';
+    let animating = false;
+    const fallback = setTimeout(() => { if (!animating) el.innerHTML = target + suffix; }, 100);
+    const start = performance.now();
+    function tick(now) {
+        animating = true;
+        clearTimeout(fallback);
+        const p = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = Math.round(target * eased);
+        el.innerHTML = val + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+})();
+</script>
+</body>
+</html>

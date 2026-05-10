@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>تحديث الموقع - خوارز</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>* { font-family: 'Tajawal', sans-serif; }</style>
+</head>
+<body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
+        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 animate-bounce">
+            ✨
+        </div>
+        <h1 class="text-3xl font-black text-gray-900 mb-4">تم التحديث!</h1>
+        <p class="text-gray-600 mb-6">الموقع محدّث بأحدث الميزات</p>
+        
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6 text-right">
+            <h3 class="font-bold text-blue-900 mb-2">📋 التحديثات:</h3>
+            <ul class="text-sm text-blue-800 space-y-1">
+                <li>✓ الأسعار محدثة: 19 ريال شهري / 228 ريال سنوي</li>
+                <li>✓ إخلاء مسؤولية محسّن</li>
+                <li>✓ صفحات قانونية محدثة</li>
+                <li>✓ تحسينات الأداء</li>
+            </ul>
+        </div>
+
+        <a href="index.html" class="block w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all hover:scale-105 mb-3">
+            انتقل للموقع
+        </a>
+        
+        <button onclick="clearAllCache()" class="w-full bg-amber-100 text-amber-900 py-3 rounded-xl font-bold hover:bg-amber-200 transition">
+            🔄 مسح الذاكرة المؤقتة
+        </button>
+        
+        <p class="text-xs text-gray-500 mt-4">إذا لم تشاهد التحديثات، اضغط "مسح الذاكرة المؤقتة"</p>
+    </div>
+
+    <script>
+        function clearAllCache() {
+            // Clear localStorage
+            localStorage.clear();
+            
+            // Clear sessionStorage  
+            sessionStorage.clear();
+            
+            // Force reload
+            window.location.href = 'index.html?v=' + Date.now();
+        }
+        
+        // Auto redirect after 3 seconds
+        setTimeout(() => {
+            window.location.href = 'index.html?v=' + Date.now();
+        }, 3000);
+    </script>
+</body>
+</html>

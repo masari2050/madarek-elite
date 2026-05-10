@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+<title>جاري العودة للتطبيق… — مدارك النخبة</title>
+<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");}}catch(e){}})();</script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- TikTok Pixel — D6OG9VRC77UET383RRTG (للـPurchase event عند نجاح الدفع) -->
+<script>!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};ttq.load('D6OG9VRC77UET383RRTG');ttq.page()}(window,document,'ttq');</script>
+<style>
+:root{
+    --pri:#6D5DF6; --pri-d:#5B4DD4; --pri-l:#8B7FFF;
+    --suc:#10B981; --dng:#EF4444; --gold:#F59E0B;
+    --bg:#F5F3EF; --sf:#FFFFFF;
+    --ink:#111827; --i2:#4B5563; --i3:#9CA3AF;
+    --ln:#E5E7EB;
+}
+[data-t="d"]{
+    --bg:#0E1019; --sf:#1A1D2E;
+    --ink:#F0F0F6; --i2:#C4C6D6; --i3:#8A8DA6;
+    --ln:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+    font-family:'IBM Plex Sans Arabic',system-ui,-apple-system,sans-serif;
+    background:linear-gradient(135deg,#8B7FFF 0%,#6D5DF6 45%,#5B4DD4 100%);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:20px;color:var(--ink);
+}
+.card{
+    width:100%;max-width:420px;background:var(--sf);
+    border-radius:24px;padding:32px 24px;text-align:center;
+    box-shadow:0 20px 60px rgba(109,93,246,.35);
+    animation:slideUp .5s cubic-bezier(.16,1,.3,1);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Icons ── */
+.ic-wrap{
+    width:96px;height:96px;margin:0 auto 22px;
+    border-radius:50%;display:grid;place-items:center;position:relative;
+}
+.ic-wrap.loading{background:rgba(109,93,246,.12)}
+.ic-wrap.suc{background:rgba(16,185,129,.12);border:3px solid rgba(16,185,129,.25)}
+.ic-wrap.err{background:rgba(239,68,68,.12);border:3px solid rgba(239,68,68,.25)}
+
+.spinner{
+    width:44px;height:44px;border:4px solid rgba(109,93,246,.2);
+    border-top-color:var(--pri);border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.ic-suc svg{width:52px;height:52px;stroke:var(--suc)}
+.ic-err svg{width:48px;height:48px;stroke:var(--dng)}
+.check{stroke-dasharray:48;stroke-dashoffset:48;animation:draw .6s ease .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ── Text ── */
+.title{font-size:22px;font-weight:700;margin-bottom:6px}
+.sub{font-size:14px;color:var(--i2);line-height:1.6;margin-bottom:20px}
+.sub-small{font-size:12px;color:var(--i3);margin-top:10px}
+
+.amount-box{
+    background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);
+    border-radius:14px;padding:14px;margin:16px 0;
+}
+.amount-lbl{font-size:12px;color:var(--i2);margin-bottom:4px}
+.amount-val{font-size:28px;font-weight:800;color:var(--suc)}
+.amount-plan{font-size:13px;color:var(--i2);margin-top:4px}
+
+/* ── جملة تحفيزية بعد الدفع ── */
+.motiv-box{
+  background:linear-gradient(135deg,rgba(255,138,61,.08),rgba(245,158,11,.08));
+  border:1px solid rgba(255,138,61,.22);
+  border-radius:14px;padding:14px;margin:6px 0 16px;
+  display:flex;align-items:center;gap:11px;text-align:right;
+}
+.motiv-ic{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,138,61,.18),rgba(245,158,11,.2));
+  display:grid;place-items:center;flex-shrink:0;
+}
+.motiv-ic svg{width:19px;height:19px;fill:#D97706;stroke:none}
+.motiv-tx{
+  font-size:12.5px;font-weight:600;color:var(--ink);
+  line-height:1.7;flex:1;
+}
+.motiv-tx b{color:#92400E;font-weight:700}
+[data-t="d"] .motiv-box{
+  background:linear-gradient(135deg,rgba(255,138,61,.12),rgba(245,158,11,.12));
+  border-color:rgba(255,138,61,.28);
+}
+[data-t="d"] .motiv-tx b{color:#FCD34D}
+
+/* ── Buttons ── */
+.btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:14px 20px;border-radius:12px;
+    font-family:inherit;font-size:15px;font-weight:700;
+    border:none;cursor:pointer;text-decoration:none;
+    transition:all .15s;
+}
+.btn-pri{background:var(--pri);color:#fff;box-shadow:0 4px 14px rgba(109,93,246,.3)}
+.btn-pri:active{transform:scale(.98);box-shadow:0 2px 8px rgba(109,93,246,.3)}
+.btn-ghost{background:transparent;color:var(--i2);font-weight:500;font-size:13px;margin-top:10px}
+
+.countdown{
+    display:inline-block;background:rgba(109,93,246,.12);color:var(--pri);
+    padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;
+    margin-right:6px;
+}
+
+/* ── App-open hint ── */
+.hint{
+    background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);
+    border-radius:12px;padding:12px 14px;margin-top:14px;
+    font-size:12px;color:#92400E;line-height:1.7;text-align:right;
+}
+.hint b{color:#78350F}
+[data-t="d"] .hint{color:#FCD34D;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)}
+[data-t="d"] .hint b{color:#FBBF24}
+
+/* ── يُخفى عند فتح الصفحة من ديسك توب (لا تطبيق متاح) ── */
+.app-only{display:block}
+body.no-app .app-only{display:none}
+.web-only{display:none}
+body.no-app .web-only{display:block}
+
+/* ── Desktop: container أوسع قليلاً + padding أنعم ── */
+@media (min-width:768px){
+    body{padding:32px 20px}
+    .card{max-width:480px;padding:40px 32px;border-radius:28px}
+    .ic-wrap{width:108px;height:108px;margin-bottom:26px}
+    .title{font-size:24px;margin-bottom:8px}
+    .sub{font-size:15px}
+    .amount-val{font-size:32px}
+    .btn{padding:15px 22px;font-size:16px;border-radius:14px}
+}
+@media (min-width:1024px){
+    body{
+        background:
+          radial-gradient(ellipse 800px 600px at 80% 10%,rgba(155,140,255,.4),transparent 60%),
+          radial-gradient(ellipse 700px 500px at 15% 90%,rgba(245,158,11,.18),transparent 60%),
+          linear-gradient(135deg,#8B7FFF 0%,#6D5DF6 45%,#5B4DD4 100%);
+    }
+    .card{box-shadow:0 30px 90px rgba(20,17,52,.35),0 12px 32px rgba(109,93,246,.18)}
+}
+[data-t="d"] body{
+    background:linear-gradient(135deg,#3B2F8F 0%,#2A1F66 45%,#1F1850 100%);
+}
+[data-t="d"] .card{box-shadow:0 20px 60px rgba(0,0,0,.55)}
+</style>
+</head>
+<body>
+<div class="card">
+    <!-- ── Loading ── -->
+    <div id="state-loading">
+        <div class="ic-wrap loading"><div class="spinner"></div></div>
+        <h1 class="title">جاري التحقق من الدفع…</h1>
+        <p class="sub">انتظر لحظة، نؤكّد حالة الدفع مع ماي فاتورة</p>
+    </div>
+
+    <!-- ── Success ── -->
+    <div id="state-success" style="display:none">
+        <div class="ic-wrap suc ic-suc">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path class="check" d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
+        <h1 class="title" style="color:var(--suc)">تم الدفع بنجاح</h1>
+        <p class="sub">اشتراكك مفعّل في مدارك النخبة</p>
+
+        <div class="amount-box">
+            <div class="amount-lbl">المبلغ المدفوع</div>
+            <div class="amount-val" id="suc-amount">—</div>
+            <div class="amount-plan" id="suc-plan">—</div>
+        </div>
+
+        <!-- جملة تحفيزية -->
+        <div class="motiv-box">
+            <div class="motiv-ic">
+                <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>
+            </div>
+            <div class="motiv-tx">
+                <b>كل سؤال تحلّه</b> يقرّبك من النتيجة اللي تستحقها — والانضباط اليومي هو السرّ
+            </div>
+        </div>
+
+        <!-- زائر من تطبيق: deep link -->
+        <button class="btn btn-pri app-only" id="btn-return-app" onclick="returnToApp()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <span id="btn-label">العودة للتطبيق</span>
+        </button>
+
+        <div class="hint app-only" id="app-hint">
+            <b>تلميح:</b> إذا ما انفتح التطبيق تلقائياً، اضغط الزر أعلاه أو افتح التطبيق يدوياً — اشتراكك فعّال بكل الأحوال.
+        </div>
+
+        <button class="btn btn-ghost app-only" onclick="window.location.href='/v2/welcome-v2.html'">
+            أو الانتقال للموقع ←
+        </button>
+
+        <!-- زائر من ويب: داش بورد بدل deep link -->
+        <button class="btn btn-pri web-only" onclick="window.location.href='/v2/dashboard-v2.html'">
+            <span>ابدأ التدريب الآن</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ── Failure ── -->
+    <div id="state-error" style="display:none">
+        <div class="ic-wrap err ic-err">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </div>
+        <h1 class="title" style="color:var(--dng)">لم يكتمل الدفع</h1>
+        <p class="sub" id="err-msg">حدث خطأ أو تم إلغاء العملية. يمكنك المحاولة مرة ثانية من التطبيق.</p>
+
+        <button class="btn btn-pri app-only" onclick="returnToApp()" style="background:var(--i2)">
+            العودة للتطبيق
+        </button>
+        <button class="btn btn-ghost app-only" onclick="window.location.href='/v2/welcome-v2.html'">
+            أو الذهاب للموقع ←
+        </button>
+
+        <!-- زائر من ويب: رجوع للموقع مباشرة -->
+        <button class="btn btn-pri web-only" onclick="window.location.href='/v2/welcome-v2.html'" style="background:var(--i2)">
+            الرجوع للصفحة الرئيسية
+        </button>
+        <button class="btn btn-ghost web-only" onclick="window.location.href='/v2/login-v2.html'">
+            أو سجّل دخول ←
+        </button>
+    </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+ * payment-return-v2.html — صفحة رجوع الدفع
+ *
+ * مسارات:
+ *  أ) ?src=app  → الزائر من تطبيق Expo
+ *     - عرض UI نجاح/فشل
+ *     - فتح deep link تلقائياً → التطبيق نفسه يستدعي verify-payment
+ *
+ *  ب) بدون src=app → الزائر من ويب (دفع من /v2/pricing-v2.html)
+ *     - استدعاء verify-payment من المتصفح بـAuthorization من Supabase session
+ *     - الاشتراك يتفعّل في DB → عرض UI نجاح + زر "اذهب لحسابك"
+ *
+ * Deep link (للتطبيق فقط):
+ *   madarekelite://payment?paymentId=XXX&status=paid|failed
+ * ═══════════════════════════════════════════════════════════ */
+
+const params = new URLSearchParams(window.location.search);
+const paymentId = params.get('paymentId') || params.get('Id') || '';
+const isError = params.get('error') === 'true';
+// كشف المصدر: ?src=app يعني الدفع جاء من التطبيق → نحاول deep link
+// بدون src=app → الزائر دخل من ويب (نادر، لكن نتعامل معه بأناقة)
+const fromApp = params.get('src') === 'app';
+if (!fromApp) document.body.classList.add('no-app');
+
+// نحتاج بيانات الدفع لعرض المبلغ — نستدعي verify-payment anonymously (فقط للقراءة).
+// الـRLS عادةً يمنع — لكن verify-payment هو edge function (SECURITY DEFINER).
+// لكن عملياً: verify-payment يطلب Authorization header → هنا ما عندنا.
+// الحل: نعرض "تم الدفع" عامة، والتفعيل الفعلي يتم من التطبيق عبر verify-payment.
+
+const SUPABASE_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+
+const sb = (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function')
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { persistSession: true, autoRefreshToken: true } })
+  : null;
+
+let paymentInfo = { amount: null, plan: null };
+
+async function fetchPaymentInfo() {
+    if (!paymentId) return;
+    try {
+        // محاولة قراءة سجل الدفع من جدول payments (RLS قد يسمح أو لا يسمح)
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/payments?payment_id=eq.${encodeURIComponent(paymentId)}&select=amount,plan_type,status`, {
+            headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+        });
+        if (r.ok) {
+            const data = await r.json();
+            if (data && data.length > 0) {
+                paymentInfo.amount = Number(data[0].amount || 0);
+                paymentInfo.plan = data[0].plan_type;
+                return data[0];
+            }
+        }
+    } catch (_) { /* silent */ }
+    return null;
+}
+
+function buildDeepLink(status) {
+    const qs = new URLSearchParams({ paymentId: paymentId, status: status }).toString();
+    return 'madarekelite://payment?' + qs;
+}
+
+function returnToApp() {
+    const status = isError ? 'failed' : 'paid';
+    const dl = buildDeepLink(status);
+    window.location.href = dl;
+}
+
+function showSuccess(info) {
+    document.getElementById('state-loading').style.display = 'none';
+    document.getElementById('state-success').style.display = '';
+    const amountEl = document.getElementById('suc-amount');
+    const planEl = document.getElementById('suc-plan');
+    if (info && info.amount) {
+        amountEl.textContent = Number(info.amount).toFixed(0) + ' ر.س';
+    } else {
+        amountEl.textContent = '—';
+        amountEl.style.fontSize = '18px';
+        amountEl.parentElement.style.display = 'none';
+    }
+    if (info && info.plan) {
+        planEl.textContent = info.plan === 'yearly' ? 'اشتراك سنوي (12 شهر)' : 'اشتراك شهري';
+    } else {
+        planEl.style.display = 'none';
+    }
+
+    // ── TikTok Purchase event (web flow فقط — التطبيق يبعثها بنفسه) ──
+    // event_id = paymentId → deduplication مع server-side event من verify-payment
+    try {
+        if (window.ttq && info && info.amount && !fromApp) {
+            var planSlug = info.plan || 'monthly';
+            var planName = planSlug === 'yearly' ? 'مدارك النخبة - سنوي'
+                         : planSlug === 'quarterly' ? 'مدارك النخبة - 3 شهور'
+                         : 'مدارك النخبة - شهري';
+            var amount = Number(info.amount) || 1.0;
+            // identify المستخدم
+            try {
+                if (sb) {
+                    sb.auth.getSession().then(function(sess){
+                        var u = sess && sess.data && sess.data.session ? sess.data.session.user : null;
+                        if (u) ttq.identify({ email: u.email || '', external_id: u.id });
+                    });
+                }
+            } catch(_){}
+            ttq.track('Purchase', {
+                contents: [{
+                    content_id: 'madarek_' + planSlug,
+                    content_type: 'product',
+                    content_name: planName,
+                    quantity: 1,
+                    price: amount
+                }],
+                value: amount,
+                currency: 'SAR'
+            }, {
+                event_id: 'purchase_' + (paymentId || Date.now())
+            });
+        }
+    } catch(e){ console.warn('[tt] Purchase failed:', e); }
+}
+
+function showError(msg) {
+    document.getElementById('state-loading').style.display = 'none';
+    document.getElementById('state-error').style.display = '';
+    if (msg) document.getElementById('err-msg').textContent = msg;
+}
+
+// ── verify-payment للزائر من ويب: يفعّل الاشتراك في DB ──
+// المستخدم بالضرورة مسجّل دخول (create-payment تشترط ذلك قبل ما يصل MyFatoorah)
+async function verifyForWebUser() {
+    if (!sb || !paymentId) {
+        showSuccess(null);
+        return;
+    }
+    try {
+        const { data, error } = await sb.functions.invoke('verify-payment', {
+            body: { paymentId }
+        });
+        if (error) throw new Error(error.message || 'فشل التحقق');
+        if (data?.error) throw new Error(data.error);
+
+        // نجح → الاشتراك مفعّل في DB، اعرض المبلغ والخطة
+        paymentInfo.amount = data?.amount || data?.invoice_value;
+        paymentInfo.plan = data?.plan || data?.plan_type;
+        showSuccess(paymentInfo);
+    } catch (e) {
+        console.error('verify-payment failed:', e);
+        // الدفعة في MyFatoorah نجحت، لكن التفعيل التلقائي فشل
+        // نعرض success بسيط + نوجّه للداش بورد (الـsystem يحاول مرة ثانية عند الدخول)
+        showSuccess(null);
+    }
+}
+
+// ── Main ──
+(async function() {
+    if (isError) {
+        setTimeout(() => showError(), 300);
+        // الزائر من تطبيق نرجّعه عبر deep link؛ الزائر من ويب يبقى في الصفحة
+        if (fromApp) setTimeout(() => returnToApp(), 2500);
+        return;
+    }
+
+    // مسار التطبيق: ما نستدعي verify (التطبيق نفسه يفعله بعد الـdeep link)
+    if (fromApp) {
+        const info = await fetchPaymentInfo();
+        setTimeout(() => {
+            showSuccess(info);
+            setTimeout(() => {
+                const dl = buildDeepLink('paid');
+                const ifr = document.createElement('iframe');
+                ifr.style.display = 'none';
+                ifr.src = dl;
+                document.body.appendChild(ifr);
+                setTimeout(() => { try { ifr.remove(); } catch(_){} }, 500);
+            }, 1800);
+        }, 900);
+        return;
+    }
+
+    // مسار الويب: نفعّل الاشتراك عبر verify-payment باستخدام Supabase session
+    await verifyForWebUser();
+})();
+</script>
+</body>
+</html>

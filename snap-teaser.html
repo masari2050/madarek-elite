@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قريباً...</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
+:root{
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+  height:100%;
+  font-family:'Tajawal', system-ui, sans-serif;
+  background:#06020e;
+  overflow:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+.story{
+  position:relative;
+  height:100%;
+  padding-top:calc(var(--safe-top) + 12px);
+  padding-bottom:calc(var(--safe-bot) + 12px);
+  overflow:hidden;
+}
+
+/* ===== BACKGROUND GLOW ===== */
+canvas#bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+/* ===== QUESTION MARK SECTION ===== */
+.q-section{
+  position:absolute;
+  top:calc(var(--safe-top) + 9vh);
+  left:50%;
+  transform:translateX(-50%);
+  width:min(65vw,360px);
+  height:min(65vw,360px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.q-mark{
+  font-size:min(45vw,240px);
+  font-weight:900;
+  line-height:0.9;
+  background:linear-gradient(140deg,#a855f7,#38e6d2,#fbbf72);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradMove 4s ease-in-out infinite;
+  filter:drop-shadow(0 0 40px rgba(168,85,247,0.35));
+}
+
+@keyframes gradMove{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+/* ===== TEXT ===== */
+.content{
+  position:absolute;
+  top:60%;
+  left:0;
+  right:0;
+  text-align:center;
+  padding:0 8%;
+}
+
+.hero{
+  margin-bottom:20px;
+}
+
+.hero-l1{
+  font-size:clamp(44px,11vw,85px);
+  font-weight:900;
+  color:#ffffff;
+  line-height:1.1;
+}
+
+.hero-l2{
+  font-size:clamp(54px,14vw,105px);
+  font-weight:900;
+  background:linear-gradient(135deg,#a855f7,#38e6d2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.desc{
+  margin-top:15px;
+  font-size:clamp(16px,4vw,24px);
+  color:rgba(255,255,255,0.65);
+  line-height:1.9;
+}
+
+.desc em{
+  color:#38e6d2;
+  font-style:normal;
+  font-weight:600;
+}
+
+/* ===== PILL ===== */
+.pill{
+  margin-top:28px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 28px;
+  border-radius:40px;
+  background:rgba(168,85,247,0.08);
+  border:1px solid rgba(168,85,247,0.15);
+  backdrop-filter:blur(8px);
+}
+
+.pill-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#38e6d2;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.5);opacity:0.4}
+}
+
+.pill span{
+  color:rgba(255,255,255,0.8);
+  font-size:clamp(14px,3.5vw,20px);
+  font-weight:500;
+}
+
+/* ===== BOTTOM ===== */
+.bottom{
+  position:absolute;
+  bottom:calc(var(--safe-bot) + 22px);
+  left:0;
+  right:0;
+  text-align:center;
+}
+
+.follow{
+  font-size:clamp(14px,3vw,18px);
+  color:rgba(255,255,255,0.35);
+  margin-bottom:8px;
+}
+
+.sig{
+  font-size:clamp(16px,4vw,22px);
+  font-weight:600;
+  color:rgba(255,255,255,0.6);
+}
+
+/* ===== SUBTLE BG ORBS ===== */
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+</style>
+</head>
+
+<body>
+<div class="story">
+
+  <canvas id="bg"></canvas>
+
+  <div class="q-section">
+    <div class="q-mark">؟</div>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="hero-l1">شي كبير</div>
+      <div class="hero-l2">قادم</div>
+    </div>
+
+    <div class="desc">
+      فكرة بتغيّر <em>قواعد اللعبة</em><br>
+      وبتخليك تسأل ليش ما كانت من قبل
+    </div>
+
+    <div class="pill">
+      <div class="pill-dot"></div>
+      <span>الكشف قريب جداً...</span>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="follow">خلّك قريب منّا</div>
+    <div class="sig">عبدالله الزهراني</div>
+  </div>
+
+</div>
+
+<script>
+// Background subtle moving glow
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+let t = 0;
+function draw(){
+  t += 0.002;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const w = canvas.width;
+  const h = canvas.height;
+
+  const orb = ctx.createRadialGradient(
+    w*0.7 + Math.sin(t)*50,
+    h*0.2 + Math.cos(t)*30,
+    0,
+    w*0.7,
+    h*0.2,
+    400
+  );
+  orb.addColorStop(0,"rgba(168,85,247,0.15)");
+  orb.addColorStop(1,"transparent");
+
+  ctx.fillStyle = orb;
+  ctx.fillRect(0,0,w,h);
+
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>

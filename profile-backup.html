@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0a2e">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - مدارك النخبة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
+    <style>
+        *{font-family:'Tajawal',sans-serif}
+        body{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 30%,#1e1550 50%,#151040 70%,#0d0825 100%);min-height:100vh}
+        .toggle-switch{position:relative;width:52px;height:28px;background:#374151;border-radius:9999px;cursor:pointer;transition:background .3s ease;flex-shrink:0}
+        .toggle-switch.active{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
+        .toggle-switch::after{content:'';position:absolute;top:3px;right:3px;width:22px;height:22px;background:white;border-radius:50%;transition:transform .3s ease;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
+        .toggle-switch.active::after{transform:translateX(-24px)}
+        .card-glow{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px)}
+        .input-field{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;transition:all .3s ease}
+        .input-field:focus{outline:none;border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,0.2);background:rgba(255,255,255,0.1)}
+        .input-field::placeholder{color:rgba(255,255,255,0.35)}
+        .btn-primary{background:linear-gradient(135deg,#8b5cf6,#6366f1,#4f46e5);transition:all .3s ease;cursor:pointer}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(139,92,246,0.4)}
+        .btn-primary:disabled{opacity:.7;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);transition:all .3s ease;cursor:pointer}
+        .btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(239,68,68,0.3)}
+        .btn-danger:disabled{opacity:.7;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);opacity:0;transition:all .4s ease;z-index:1000;pointer-events:none}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-in{animation:fadeUp .5s ease forwards}
+        .delay-1{animation-delay:.1s;opacity:0}.delay-2{animation-delay:.2s;opacity:0}.delay-3{animation-delay:.3s;opacity:0}.delay-4{animation-delay:.4s;opacity:0}
+        .avatar-circle{background:linear-gradient(135deg,#8b5cf6,#6366f1);box-shadow:0 0 30px rgba(139,92,246,0.3)}
+        .password-wrapper{position:relative}
+        .password-toggle{position:absolute;left:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,0.4);transition:color .2s;background:none;border:none;padding:4px}
+        .password-toggle:hover{color:rgba(255,255,255,0.7)}
+
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
+        .madarek-logo{display:inline-flex;align-items:center;gap:9px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:15px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+    </style>
+</head>
+<body class="font-tajawal text-white">
+    <div id="toast" class="toast">
+        <div class="bg-gray-800/95 border border-gray-600/50 rounded-2xl px-6 py-3.5 shadow-2xl flex items-center gap-3 backdrop-blur-sm">
+            <span id="toast-icon" class="text-xl">✅</span>
+            <span id="toast-msg" class="text-sm font-medium"></span>
+        </div>
+    </div>
+
+
+    <div class="px-4 py-4 flex items-center justify-between max-w-2xl mx-auto">
+        <a href="dashboard.html" class="flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
+            <svg class="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            <span class="text-sm font-medium">الرئيسية</span>
+        </a>
+        <a href="dashboard.html" class="madarek-logo">
+            <div class="icon">
+                <div class="ring"></div>
+                <svg viewBox="0 0 36 36" width="17" height="17" fill="none">
+                    <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                    <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                    <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                </svg>
+            </div>
+            <span class="name">مدارك النخبة</span>
+        </a>
+        <h1 class="text-sm font-bold text-purple-300/70">الملف الشخصي</h1>
+    </div>
+
+    <div class="max-w-2xl mx-auto px-4 pb-12">
+        <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+            <div class="spinner" style="width:40px;height:40px;border-width:3px;"></div>
+            <p class="text-purple-300/70 mt-4 text-sm">جاري تحميل البيانات...</p>
+        </div>
+
+        <div id="profile-content" class="hidden">
+            <div class="animate-in delay-1 flex flex-col items-center mb-8">
+                <div class="avatar-circle w-24 h-24 rounded-full flex items-center justify-center text-4xl mb-4">
+                    <span id="user-avatar">👤</span>
+                </div>
+                <h2 id="user-name-display" class="text-2xl font-bold mb-1"></h2>
+                <p id="user-email-display" class="text-purple-300/70 text-sm mb-1"></p>
+                <p id="user-join-date" class="text-purple-200/60 text-xs"></p>
+            </div>
+
+            <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">👤</span> المعلومات الشخصية</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">الاسم</label>
+                        <input type="text" id="input-name" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="اسمك هنا...">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">البريد الإلكتروني</label>
+                        <div class="input-field w-full rounded-xl px-4 py-3 text-sm opacity-60 cursor-not-allowed select-all" id="email-readonly" dir="ltr" style="text-align:right;"></div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">رقم الجوال</label>
+                        <input type="tel" id="input-phone" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="05xxxxxxxx" dir="ltr" style="text-align:right;" maxlength="10">
+                    </div>
+                </div>
+            </div>
+
+            <div class="animate-in delay-2 card-glow rounded-2xl p-6 mb-4">
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">🔒</span> تغيير كلمة المرور</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">كلمة المرور الجديدة</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="input-password" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="اتركها فارغة إذا ما تبي تغيّر" dir="ltr" style="text-align:right;">
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password',this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-purple-300/60 mb-1.5 font-medium">تأكيد كلمة المرور</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="input-password-confirm" class="input-field w-full rounded-xl px-4 py-3 text-sm" placeholder="أعد كتابة كلمة المرور الجديدة" dir="ltr" style="text-align:right;">
+                            <button type="button" class="password-toggle" onclick="togglePwVis('input-password-confirm',this)"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="animate-in delay-3 card-glow rounded-2xl p-6 mb-6">
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">⚙️</span> الإعدادات</h3>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl" id="sound-icon">🔊</span>
+                        <div>
+                            <p class="text-sm font-medium">المؤثرات الصوتية</p>
+                            <p class="text-xs text-purple-300/50">أصوات عند الإجابة الصحيحة والخاطئة</p>
+                        </div>
+                    </div>
+                    <div id="sound-toggle" class="toggle-switch" onclick="toggleSound()"></div>
+                </div>
+                <!-- 🔐 البصمة — يظهر فقط بالتطبيق -->
+                <div id="biometric-setting" class="flex items-center justify-between mt-5 pt-5" style="display:none;border-top:1px solid rgba(139,92,246,0.15)">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl" id="bio-icon">🔐</span>
+                        <div>
+                            <p class="text-sm font-medium">الدخول بالبصمة</p>
+                            <p class="text-xs text-purple-300/50" id="bio-type-label">Face ID أو Touch ID</p>
+                        </div>
+                    </div>
+                    <div id="bio-toggle" class="toggle-switch" onclick="toggleBiometric()"></div>
+                </div>
+            </div>
+
+            <!-- قسم الاشتراك -->
+            <div id="sub-section" class="animate-in delay-3 card-glow rounded-2xl p-6 mb-4" style="display:none">
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2"><span class="text-lg">💎</span> الاشتراك</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-purple-300/60">الخطة الحالية</span>
+                        <span id="sub-plan" class="text-sm font-bold">—</span>
+                    </div>
+                    <div id="sub-end-row" class="flex items-center justify-between" style="display:none">
+                        <span class="text-sm text-purple-300/60">ينتهي في</span>
+                        <span id="sub-end" class="text-sm font-bold" dir="ltr" style="text-align:left">—</span>
+                    </div>
+                    <div id="sub-days-row" class="flex items-center justify-between" style="display:none">
+                        <span class="text-sm text-purple-300/60">متبقي</span>
+                        <span id="sub-days" class="text-sm font-bold" style="color:#fbbf24">—</span>
+                    </div>
+                </div>
+                <!-- زر إلغاء الاشتراك (يظهر فقط للمشتركين) -->
+                <div id="cancel-sub-wrap" style="display:none" class="mt-5 pt-4" style="border-top:1px solid rgba(255,255,255,0.06)">
+                    <p class="text-xs text-purple-300/40 mb-3">إلغاء الاشتراك يوقف الوصول للمحتوى المدفوع فوراً</p>
+                    <button type="button" id="btn-cancel-sub" onclick="cancelSubscription()" class="w-full rounded-xl py-3 text-sm font-bold text-white transition-all" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;cursor:pointer" onmouseover="this.style.background='rgba(239,68,68,0.25)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">
+                        <span id="cancel-text">🚫 إلغاء الاشتراك</span>
+                        <span id="cancel-spinner" class="hidden"><span class="spinner"></span> جاري الإلغاء...</span>
+                    </button>
+                </div>
+                <!-- زر الاشتراك (يظهر لغير المشتركين) -->
+                <div id="upgrade-sub-wrap" style="display:none" class="mt-5">
+                    <a href="pricing.html" class="btn-primary block w-full rounded-xl py-3 text-sm font-bold text-white text-center" style="text-decoration:none">🚀 اشترك الحين</a>
+                </div>
+            </div>
+
+            <!-- قسم الإنجازات -->
+            <div id="badges-section" class="animate-in delay-4 card-glow rounded-2xl p-6 mb-4" style="display:none">
+                <h3 class="text-base font-bold mb-2 flex items-center gap-2"><span class="text-lg">🏅</span> الإنجازات</h3>
+                <p id="badges-count" class="text-xs mb-4" style="color:rgba(196,181,253,0.45)"></p>
+                <div id="badges-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px"></div>
+            </div>
+
+            <div class="animate-in delay-4 space-y-3">
+                <button type="button" id="btn-save" onclick="saveChanges()" class="btn-primary w-full rounded-xl py-3.5 text-sm font-bold text-white">
+                    <span id="save-text">💾 حفظ التغييرات</span>
+                    <span id="save-spinner" class="hidden"><span class="spinner"></span> جاري الحفظ...</span>
+                </button>
+                <button type="button" id="btn-logout" onclick="handleLogout()" class="btn-danger w-full rounded-xl py-3.5 text-sm font-bold text-white">
+                    <span id="logout-text">🚪 تسجيل الخروج</span>
+                    <span id="logout-spinner" class="hidden"><span class="spinner"></span> جاري الخروج...</span>
+                </button>
+            </div>
+            <p class="text-center text-purple-200/40 text-xs mt-8">مدارك النخبة v1.0</p>
+        </div>
+    </div>
+
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="session-keeper.js"></script>
+    <script src="biometric.js"></script>
+    <script>
+        const sb=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+        let currentUser=null,currentName='';
+        function showToast(msg,icon){document.getElementById('toast-msg').textContent=msg;document.getElementById('toast-icon').textContent=icon||'✅';document.getElementById('toast').classList.add('show');setTimeout(function(){document.getElementById('toast').classList.remove('show')},3000)}
+        function togglePwVis(id,btn){const inp=document.getElementById(id);if(inp.type==='password'){inp.type='text';btn.innerHTML='<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>'}else{inp.type='password';btn.innerHTML='<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>'}}
+        function initSoundToggle(){const on=localStorage.getItem('soundEnabled')!=='false',toggle=document.getElementById('sound-toggle'),icon=document.getElementById('sound-icon');if(on){toggle.classList.add('active');icon.textContent='🔊'}else{toggle.classList.remove('active');icon.textContent='🔇'}}
+        function toggleSound(){const toggle=document.getElementById('sound-toggle'),icon=document.getElementById('sound-icon');if(toggle.classList.contains('active')){toggle.classList.remove('active');icon.textContent='🔇';localStorage.setItem('soundEnabled','false');showToast('تم إيقاف الصوت','🔇')}else{toggle.classList.add('active');icon.textContent='🔊';localStorage.setItem('soundEnabled','true');showToast('تم تفعيل الصوت','🔊')}}
+        // 🔐 البصمة — toggle
+        async function initBiometricToggle(){
+            if(!window._biometric) return;
+            var bio = await window._biometric.checkAvailable();
+            if(!bio.available) return;
+            var setting = document.getElementById('biometric-setting');
+            if(setting) setting.style.display = 'flex';
+            var label = document.getElementById('bio-type-label');
+            if(label) label.textContent = 'سجّل دخولك بـ ' + bio.type;
+            var toggle = document.getElementById('bio-toggle');
+            var enabled = await window._biometric.isEnabled();
+            if(enabled && toggle) toggle.classList.add('active');
+        }
+        async function toggleBiometric(){
+            if(!window._biometric) return;
+            var toggle = document.getElementById('bio-toggle');
+            var isOn = toggle.classList.contains('active');
+            if(isOn){
+                await window._biometric.setEnabled(false);
+                toggle.classList.remove('active');
+                showToast('تم إيقاف الدخول بالبصمة','🔓');
+            } else {
+                var ok = await window._biometric.authenticate();
+                if(ok){
+                    await window._biometric.setEnabled(true);
+                    toggle.classList.add('active');
+                    showToast('تم تفعيل الدخول بالبصمة','🔐');
+                } else {
+                    showToast('فشل التحقق — حاول مرة ثانية','⚠️');
+                }
+            }
+        }
+        async function checkAuth(){try{var session=await window._madarekRestoreSession(sb);if(!session){window.location.href='login.html';return}currentUser=session.user;document.getElementById('user-email-display').textContent=currentUser.email||'';document.getElementById('email-readonly').textContent=currentUser.email||'';if(currentUser.created_at){try{const d=new Date(currentUser.created_at),months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];document.getElementById('user-join-date').textContent='عضو منذ '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()}catch(e){}}let displayName='';try{const{data:profile}=await sb.from('profiles').select('full_name,avatar_emoji,subscription_type,subscription_end,phone').eq('id',currentUser.id).single();if(profile?.full_name)displayName=profile.full_name;if(profile?.avatar_emoji)document.getElementById('user-avatar').textContent=profile.avatar_emoji;if(profile?.phone)document.getElementById('input-phone').value=profile.phone;renderSubscription(profile)}catch(e){}if(!displayName&&currentUser.user_metadata?.name)displayName=currentUser.user_metadata.name;if(!displayName)displayName=currentUser.email?currentUser.email.split('@')[0]:'';currentName=displayName;document.getElementById('user-name-display').textContent=displayName;document.getElementById('input-name').value=displayName;initSoundToggle();initBiometricToggle();document.getElementById('loading-state').classList.add('hidden');document.getElementById('profile-content').classList.remove('hidden')}catch(err){window.location.href='login.html'}}
+        function renderSubscription(profile){
+            var sec=document.getElementById('sub-section');if(!sec)return;sec.style.display='';
+            var type=profile?.subscription_type||'free';
+            var endStr=profile?.subscription_end;
+            var planEl=document.getElementById('sub-plan');
+            var endRow=document.getElementById('sub-end-row');
+            var endEl=document.getElementById('sub-end');
+            var daysRow=document.getElementById('sub-days-row');
+            var daysEl=document.getElementById('sub-days');
+            var cancelWrap=document.getElementById('cancel-sub-wrap');
+            var upgradeWrap=document.getElementById('upgrade-sub-wrap');
+            if(type==='monthly'){planEl.textContent='شهري 🔥';planEl.style.color='#8b5cf6'}
+            else if(type==='yearly'){planEl.textContent='سنوي 💎';planEl.style.color='#fbbf24'}
+            else{planEl.textContent='مجاني';planEl.style.color='rgba(255,255,255,0.5)'}
+            if(type!=='free'){
+                if(endStr){
+                    var end=new Date(endStr);
+                    var now=new Date();
+                    var diff=end-now;
+                    var daysLeft=Math.ceil(diff/(1000*60*60*24));
+                    var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+                    endRow.style.display='flex';
+                    endEl.textContent=end.getDate()+' '+months[end.getMonth()]+' '+end.getFullYear();
+                    if(daysLeft>0){daysRow.style.display='flex';daysEl.textContent=daysLeft+' يوم';daysEl.style.color=daysLeft<=7?'#f87171':'#fbbf24'}
+                    else{daysRow.style.display='flex';daysEl.textContent='منتهي';daysEl.style.color='#f87171'}
+                }else{
+                    endRow.style.display='none';daysRow.style.display='none';
+                }
+                cancelWrap.style.display='';upgradeWrap.style.display='none';
+            }else{
+                endRow.style.display='none';daysRow.style.display='none';
+                cancelWrap.style.display='none';upgradeWrap.style.display='';
+            }
+        }
+        async function cancelSubscription(){
+            var btn=document.getElementById('btn-cancel-sub');if(btn.disabled)return;
+            if(!confirm('هل أنت متأكد من إلغاء اشتراكك؟\n\nسيتم إيقاف الدفع التلقائي والوصول للمحتوى المدفوع.'))return;
+            btn.disabled=true;document.getElementById('cancel-text').classList.add('hidden');document.getElementById('cancel-spinner').classList.remove('hidden');
+            try{
+                var{data:ref,error:refErr}=await sb.auth.refreshSession();
+                if(refErr||!ref.session){showToast('انتهت الجلسة — سجّل دخول مرة ثانية','⚠️');resetCancel();return}
+                var{data,error}=await sb.functions.invoke('cancel-subscription');
+                if(error){showToast('فشل الإلغاء: '+(error.message||'حاول مرة ثانية'),'❌');resetCancel();return}
+                if(data&&data.error){showToast('فشل الإلغاء: '+data.error,'❌');resetCancel();return}
+                showToast('تم إلغاء الاشتراك وإيقاف الدفع التلقائي','👋');
+                renderSubscription({subscription_type:'free',subscription_end:null});
+            }catch(e){showToast('حدث خطأ — حاول مرة ثانية','❌')}
+            resetCancel();
+        }
+        function resetCancel(){var b=document.getElementById('btn-cancel-sub');b.disabled=false;document.getElementById('cancel-text').classList.remove('hidden');document.getElementById('cancel-spinner').classList.add('hidden')}
+        async function saveChanges(){const btn=document.getElementById('btn-save');if(btn.disabled)return;btn.disabled=true;document.getElementById('save-text').classList.add('hidden');document.getElementById('save-spinner').classList.remove('hidden');try{const newName=document.getElementById('input-name').value.trim(),newPhone=document.getElementById('input-phone').value.trim(),newPw=document.getElementById('input-password').value,confirmPw=document.getElementById('input-password-confirm').value;if(newPhone&&!/^05\d{8}$/.test(newPhone)){showToast('رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام','⚠️');resetSave();return}let changed=false;if(newPw){if(newPw.length<6){showToast('كلمة المرور لازم تكون 6 أحرف على الأقل','⚠️');resetSave();return}if(newPw!==confirmPw){showToast('كلمات المرور ما تتطابق','⚠️');resetSave();return}}const payload={};if(newName&&newName!==currentName){payload.data={name:newName};changed=true}if(newPw){payload.password=newPw;changed=true}var profileUpdate={};if(newName&&newName!==currentName)profileUpdate.full_name=newName;if(newPhone!==undefined)profileUpdate.phone=newPhone||null;if(Object.keys(profileUpdate).length>0)changed=true;if(changed){if(payload.data||payload.password){const{error:err}=await sb.auth.updateUser(payload);if(err){showToast('فشل الحفظ: '+err.message,'❌');resetSave();return}}if(Object.keys(profileUpdate).length>0){const{error:profErr}=await sb.from('profiles').update(profileUpdate).eq('id',currentUser.id);if(profErr)console.warn('Profile update error:',profErr)}if(newName&&newName!==currentName){currentName=newName;document.getElementById('user-name-display').textContent=newName}if(newPw){document.getElementById('input-password').value='';document.getElementById('input-password-confirm').value=''}showToast('تم حفظ التغييرات بنجاح','✅')}else showToast('ما في تغييرات جديدة','ℹ️')}catch(err){showToast('حدث خطأ أثناء الحفظ','❌')}resetSave()}
+        function resetSave(){document.getElementById('btn-save').disabled=false;document.getElementById('save-text').classList.remove('hidden');document.getElementById('save-spinner').classList.add('hidden')}
+        async function handleLogout(){const btn=document.getElementById('btn-logout');if(btn.disabled)return;btn.disabled=true;document.getElementById('logout-text').classList.add('hidden');document.getElementById('logout-spinner').classList.remove('hidden');try{if(window._biometric)try{await window._biometric.setEnabled(false)}catch(e){}await sb.auth.signOut();showToast('تم تسجيل الخروج','👋');setTimeout(function(){window.location.href='login.html'},800)}catch(err){showToast('حدث خطأ','❌');btn.disabled=false;document.getElementById('logout-text').classList.remove('hidden');document.getElementById('logout-spinner').classList.add('hidden')}}
+        checkAuth();
+    </script>
+    <script src="gamification.js"></script>
+    <script>
+    (function(){
+        if(!window.Gamification) return;
+
+        function tryLoad(){
+            var el = document.getElementById('profile-content');
+            if(!el || el.classList.contains('hidden')){ setTimeout(tryLoad, 300); return; }
+            loadProfileBadges();
+        }
+
+        async function loadProfileBadges(){
+            try{
+                var res = await sb.auth.getSession();
+                var session = res.data && res.data.session;
+                if(!session) return;
+
+                var r = await sb.from('attempts').select('is_correct,answered_at').eq('user_id', session.user.id);
+                if(r.error || !r.data) return;
+
+                var G = window.Gamification;
+                var streakData = G.calculateStreak(r.data);
+                var badgeResult = G.calculateBadges(r.data, streakData);
+
+                var section = document.getElementById('badges-section');
+                var grid = document.getElementById('badges-grid');
+                var count = document.getElementById('badges-count');
+
+                if(section && grid){
+                    grid.innerHTML = G.renderBadgeGrid(badgeResult);
+                    count.textContent = '\u062D\u0635\u0644\u062A \u0639\u0644\u0649 ' + badgeResult.earned.length + ' \u0645\u0646 ' + badgeResult.all.length + ' \u0625\u0646\u062C\u0627\u0632\u0627\u062A';
+                    section.style.display = '';
+                }
+            }catch(e){}
+        }
+
+        tryLoad();
+    })();
+    </script>
+    <script src="banner.js"></script>
+    <script src="app-install-bar.js"></script>
+    <script src="whatsapp-widget.js"></script>
+<script src="analytics.js"></script>
+<script src="engagement.js"></script></body>
+</html>

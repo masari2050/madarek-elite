@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <script>
+    /* App detection: hide pricing inside Capacitor WebView only */
+    (function(){
+        var ua = navigator.userAgent;
+        var isApp = window.Capacitor || (ua.indexOf('AppleWebKit') > -1 && ua.indexOf('Safari') === -1);
+        if(isApp){
+            document.documentElement.classList.add('in-app');
+            document.addEventListener('DOMContentLoaded', function(){
+                /* Change "جرّب 5 أسئلة مجاناً" to "🎯 اكتشف مستواك" in app */
+                document.querySelectorAll('a[href*="demo"]').forEach(function(el){
+                    if(el.textContent.indexOf('مجان') > -1) el.innerHTML = '🎯 اكتشف مستواك';
+                });
+            });
+        }
+    })();
+    </script>
+    <style>
+    /* ONLY inside the app — browser visitors see NOTHING different */
+    .in-app [href*="pricing"],
+    .in-app [href*="register"].btn-primary,
+    .in-app [href*="subscription-policy"],
+    .in-app #badge-free-trial,
+    .in-app #stat-free-price,
+    .in-app #pricing-section,
+    .in-app #app-download-banner,
+    .in-app #app-download-section,
+    .in-app .app-store-badges { display: none !important; }
+    </style>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0a2e">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="zrw6qRs3MfEe194HWMXbqhhqPUgm2tpPv5RirvMM0y4" />
+    <!-- Google Ads Tag -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17989685111"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','AW-17989685111');</script>
+    <!-- TikTok Pixel Code Start -->
+    <script>!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};ttq.load('D6OG9VRC77UET383RRTG');ttq.page()}(window,document,'ttq');</script>
+    <!-- TikTok Pixel Code End -->
+    <title>مدارك النخبة — منصة تقنية ذكية للقدرات والتحصيلي</title>
+    <meta name="description" content="مدارك النخبة — منصة تقنية سعودية تعمل بتقنيات الذكاء الاصطناعي لتقييم وتحليل أداء الطلاب في اختبارات القدرات والتحصيلي. آلاف الأسئلة المتجددة مع شروحات تفصيلية وتحليل ذكي.">
+    <link rel="canonical" href="https://madarekelite.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://madarekelite.com/">
+    <meta property="og:title" content="مدارك النخبة — منصة القدرات والتحصيلي">
+    <meta property="og:description" content="منصة سعودية ذكية للاستعداد لاختبارات القدرات والتحصيلي. بنك أسئلة شامل مع شروحات تفصيلية وتحليل أداء ذكي.">
+    <meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
+    <meta property="og:locale" content="ar_SA">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="مدارك النخبة — منصة القدرات والتحصيلي">
+    <meta name="twitter:description" content="منصة سعودية ذكية للاستعداد لاختبارات القدرات والتحصيلي">
+    <meta name="twitter:image" content="https://madarekelite.com/icons/icon-512.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']}}}}</script>
+    <style>
+        *{font-family:'Tajawal',sans-serif;scroll-behavior:smooth}
+        body{background:#0d0825;overflow-x:hidden}
+        .hero-bg{background:linear-gradient(135deg,#0f0a2e 0%,#1a1145 25%,#1e1550 50%,#151040 75%,#0d0825 100%);position:relative;overflow:hidden}
+        .hero-bg::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,0.12) 0%,transparent 65%);border-radius:50%}
+        .hero-bg::after{content:'';position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,0.1) 0%,transparent 65%);border-radius:50%}
+        .glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);border-radius:1.25rem}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @keyframes float2{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+        @keyframes pulse-soft{0%,100%{opacity:1}50%{opacity:.6}}
+        .float{animation:float 4s ease-in-out infinite}
+        .float2{animation:float2 5s ease-in-out infinite}
+        .pulse-soft{animation:pulse-soft 3s ease-in-out infinite}
+        .reveal{opacity:0;transform:translateY(30px);transition:all .6s ease}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+        .feature-card{transition:all .3s ease;position:relative;overflow:hidden}
+        .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+        .feature-card:hover{transform:translateY(-6px);background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15)}
+        .feature-card:hover::before{opacity:1}
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 30px rgba(99,102,241,0.3);transition:all .3s;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation;cursor:pointer;position:relative;z-index:10;text-decoration:none;color:#fff}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(99,102,241,0.5)}
+        .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);transition:all .3s;-webkit-tap-highlight-color:rgba(0,0,0,0);touch-action:manipulation;cursor:pointer;position:relative;z-index:10;text-decoration:none;color:#fff}
+        .btn-ghost:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
+        .nav-glass{background:rgba(13,8,37,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
+        .nav-scrolled{box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+        .cta-section{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border:1px solid rgba(139,92,246,0.2);position:relative;overflow:hidden}
+        .cta-section::before{content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);border-radius:50%}
+        .cta-section::after{content:'';position:absolute;bottom:-40%;left:-10%;width:250px;height:250px;background:radial-gradient(circle,rgba(99,102,241,0.1),transparent 70%);border-radius:50%}
+        .section-line{width:60px;height:3px;border-radius:999px;background:linear-gradient(90deg,#6366f1,#8b5cf6);margin:0 auto}
+
+        /* ── مدارك النخبة Logo ── */
+        @keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,0.25)}50%{box-shadow:0 8px 32px rgba(99,102,241,0.45)}}
+
+        .madarek-logo{display:inline-flex;align-items:center;gap:12px;direction:rtl;text-decoration:none;user-select:none}
+        .madarek-logo .icon{width:42px;height:42px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative;animation:glow-pulse 3s ease-in-out infinite}
+        .madarek-logo .icon .ring{position:absolute;inset:3px;border-radius:9px;padding:2px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo .name{font-family:'Cairo',sans-serif;font-size:22px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo .tag{font-family:'Tajawal',sans-serif;font-size:9.5px;font-weight:500;color:rgba(196,181,253,0.5);margin-top:1px;letter-spacing:0.3px;display:block}
+
+        /* footer logo smaller */
+        .madarek-logo-sm{display:inline-flex;align-items:center;gap:10px;direction:rtl;text-decoration:none}
+        .madarek-logo-sm .icon{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#1e1b4b,#2d2564);border:1px solid rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;position:relative}
+        .madarek-logo-sm .icon .ring{position:absolute;inset:3px;border-radius:7px;padding:1.5px;background:conic-gradient(from 330deg,rgba(99,102,241,0.9) 0deg,rgba(139,92,246,0.5) 120deg,transparent 150deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:spin-ring 3s linear infinite;pointer-events:none}
+        .madarek-logo-sm .name{font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;background:linear-gradient(110deg,#c7d2fe 0%,#e0e7ff 20%,#818cf8 45%,#c4b5fd 70%,#c7d2fe 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s linear infinite;line-height:1.1}
+        .madarek-logo-sm .tag{font-family:'Tajawal',sans-serif;font-size:8px;font-weight:500;color:rgba(196,181,253,0.45);margin-top:1px;display:block}
+
+        /* ── تسريبات Section ── */
+        @keyframes border-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes fire-glow{0%,100%{box-shadow:0 0 30px rgba(249,115,22,0.15),0 0 60px rgba(249,115,22,0.05)}50%{box-shadow:0 0 40px rgba(249,115,22,0.25),0 0 80px rgba(249,115,22,0.1)}}
+        .leaks-card{position:relative;background:linear-gradient(135deg,rgba(249,115,22,0.06),rgba(239,68,68,0.04),rgba(139,92,246,0.04));border:1.5px solid rgba(249,115,22,0.2);border-radius:1.5rem;padding:2.5rem 2rem;text-align:center;animation:fire-glow 3s ease-in-out infinite;overflow:hidden}
+        .leaks-card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;border-radius:1.5rem;background:conic-gradient(from 0deg,rgba(249,115,22,0.4),rgba(239,68,68,0.2),rgba(139,92,246,0.2),rgba(249,115,22,0.1),rgba(249,115,22,0.4));opacity:0.4;z-index:-1;animation:border-spin 6s linear infinite}
+        .btn-fire{background:linear-gradient(135deg,#f97316,#ef4444);box-shadow:0 8px 30px rgba(249,115,22,0.35);transition:all .3s;cursor:pointer;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+        .btn-fire:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(249,115,22,0.5)}
+
+        /* ── Comparison Section ── */
+        .compare-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+        .compare-row:last-child{border-bottom:none}
+        .compare-bad{color:rgba(248,113,113,0.7);font-size:0.875rem}
+        .compare-good{color:#4ade80;font-size:0.875rem;font-weight:700}
+
+        /* ── Counter Animation ── */
+        @keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    </style>
+    <style>
+      .hero-bg::before, .hero-bg::after, .cta-section::before, .cta-section::after { pointer-events:none; }
+    </style>
+</head>
+<body class="text-white" style="font-family:'Tajawal',sans-serif" data-page="index">
+
+    <!-- Nav -->
+    <nav id="mainNav" class="nav-glass fixed top-0 left-0 right-0 z-50 transition-all">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="madarek-logo">
+                <div class="icon">
+                    <div class="ring"></div>
+                    <svg viewBox="0 0 36 36" width="22" height="22" fill="none">
+                        <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                        <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                        <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                    </svg>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <span class="name">مدارك النخبة</span>
+                    <span class="tag">حيث يُصنع التميّز</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="pricing.html" class="hidden sm:block px-3 py-1.5 text-purple-300/60 hover:text-white text-sm transition">الباقات</a>
+                <a href="login.html" class="px-3 py-1.5 text-purple-300/60 hover:text-white text-sm transition">دخول</a>
+                <a href="register.html" class="btn-primary px-5 py-2 rounded-xl text-sm font-bold">ابدأ مجاناً</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🔥 بانر التسريبات الجديدة -->
+    <style>
+    @keyframes tasreebShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @keyframes tasreebPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+    @keyframes tasreebSlide{0%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes tasreebFireFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.1)}}
+    @keyframes tasreebGlow{0%,100%{opacity:0.4}50%{opacity:0.8}}
+    @keyframes tasreebSpark{0%{transform:translateY(0) scale(0);opacity:0}30%{opacity:1;transform:translateY(-8px) scale(1)}100%{transform:translateY(-25px) scale(0);opacity:0}}
+    #tasreeb-banner{margin-top:60px;background:linear-gradient(135deg,#1a0a2e,#2d1b69,#1a0a2e);padding:18px 20px;text-align:center;cursor:pointer;position:relative;z-index:40;overflow:hidden;border-bottom:2px solid rgba(249,115,22,0.5);animation:tasreebSlide 0.6s ease;transition:all 0.3s}
+    #tasreeb-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(249,115,22,0.08),rgba(239,68,68,0.06),transparent);background-size:200% 100%;animation:tasreebShimmer 4s infinite linear}
+    #tasreeb-banner::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(249,115,22,0.6),rgba(239,68,68,0.4),transparent)}
+    #tasreeb-banner:hover{background:linear-gradient(135deg,#1e0d35,#351f75,#1e0d35)}
+    #tasreeb-banner .tb-fire{animation:tasreebFireFloat 2s ease-in-out infinite;display:inline-block;font-size:26px;filter:drop-shadow(0 0 8px rgba(249,115,22,0.5))}
+    #tasreeb-banner .tb-main{color:#fff;font-size:18px;font-weight:900;font-family:'Cairo',sans-serif;letter-spacing:-0.3px;text-shadow:0 2px 15px rgba(249,115,22,0.2)}
+    #tasreeb-banner .tb-sub{color:rgba(255,255,255,0.55);font-size:12px;font-weight:500;margin-top:2px}
+    #tasreeb-banner .tb-cta{background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;font-size:13px;padding:7px 22px;border-radius:25px;font-weight:700;display:inline-block;transition:all 0.3s;box-shadow:0 4px 18px rgba(249,115,22,0.35);margin-top:4px}
+    #tasreeb-banner:hover .tb-cta{transform:scale(1.08);box-shadow:0 6px 25px rgba(249,115,22,0.5)}
+    #tasreeb-banner .tb-sparks{position:absolute;pointer-events:none}
+    #tasreeb-banner .tb-spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#f97316;animation:tasreebSpark 2s infinite}
+    </style>
+    <div id="tasreeb-banner" onclick="location.href='select-section.html'">
+        <div style="position:absolute;top:8px;left:15%;pointer-events:none">
+            <span class="tb-spark" style="animation-delay:0s;left:0"></span>
+            <span class="tb-spark" style="animation-delay:0.7s;left:20px;background:#ef4444"></span>
+            <span class="tb-spark" style="animation-delay:1.3s;left:40px"></span>
+        </div>
+        <div style="position:absolute;top:8px;right:15%;pointer-events:none">
+            <span class="tb-spark" style="animation-delay:0.4s;left:0;background:#ef4444"></span>
+            <span class="tb-spark" style="animation-delay:1s;left:20px"></span>
+            <span class="tb-spark" style="animation-delay:1.6s;left:40px;background:#fbbf24"></span>
+        </div>
+        <div style="max-width:600px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span class="tb-fire">🔥</span>
+                <span class="tb-main">اختبر نفسك بأسئلة جات فعلاً</span>
+                <span class="tb-fire">🔥</span>
+            </div>
+            <div class="tb-sub" id="tasreeb-date">من أحدث تسريبات الأيام الماضية — ١٤ أبريل</div>
+            <span class="tb-cta">ابدأ الحين ←</span>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- HERO — جاهز لاختبار القدرات؟          -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="hero-bg pt-28 pb-16 sm:pt-36 sm:pb-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <div class="reveal visible">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc">
+                        <span>🤖</span>
+                        مدعومة بتقنيات الذكاء الاصطناعي
+                    </div>
+                    <div id="badge-free-trial" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-5 mr-2" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:#4ade80">
+                        <span class="w-1.5 h-1.5 bg-green-400 rounded-full pulse-soft"></span>
+                        جرّب قبل ما تشترك — مجاناً
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-3">
+                        جاهز لاختبار
+                        <span class="block bg-gradient-to-l from-purple-300 via-indigo-300 to-blue-300 bg-clip-text text-transparent">القدرات والتحصيلي؟</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl font-bold text-white/80 mb-3">اكتشف مستواك الحقيقي — جرّب الحين</p>
+                    <p class="text-purple-200/60 text-sm sm:text-base leading-relaxed mb-8 max-w-lg">
+                        منصة متكاملة بتقنيات الذكاء الاصطناعي — آلاف الأسئلة المتجددة مع شروحات تفصيلية خطوة بخطوة وتحليل دقيق لنقاط ضعفك
+                    </p>
+                    <div class="flex flex-wrap gap-3 mb-10">
+                        <a href="demo.html" class="btn-fire px-7 py-3.5 rounded-xl font-bold text-sm">
+                            🔥 جرّب 5 أسئلة مجاناً
+                        </a>
+                        <a href="pricing.html" class="btn-ghost px-7 py-3.5 rounded-xl font-bold text-sm">شوف الباقات</a>
+                    </div>
+                    <div class="flex gap-5">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white" id="liveQuestions">1500+</p>
+                            <p class="text-purple-200/70 text-xs">سؤال متنوع</p>
+                            <div class="mt-1.5 flex items-center gap-1.5">
+                                <span class="relative flex h-1.5 w-1.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                                </span>
+                                <span class="text-green-400/70 text-[10px]">تتحدث باستمرار</span>
+                            </div>
+                        </div>
+                        <div class="w-px bg-purple-500/20"></div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white">3</p>
+                            <p class="text-purple-200/70 text-xs">أقسام رئيسية</p>
+                        </div>
+                        <div class="w-px bg-purple-500/20"></div>
+                        <div id="stat-free-price">
+                            <p class="text-2xl sm:text-3xl font-black text-white">0 ريال</p>
+                            <p class="text-purple-200/70 text-xs">للتجربة الأولى</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center justify-center relative">
+                    <div class="relative w-80 h-80">
+                        <div class="absolute inset-8 rounded-3xl flex items-center justify-center" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border:1px solid rgba(139,92,246,0.2)">
+                            <div class="text-center">
+                                <span class="text-7xl block mb-2 float">🎓</span>
+                                <p class="text-sm font-bold text-purple-200/80">جاهز تبدأ؟</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 right-0 glass px-3 py-2 text-xs font-bold float" style="animation-delay:.5s"><span class="text-green-400">✓</span> قدرات كمي</div>
+                        <div class="absolute bottom-8 right-0 glass px-3 py-2 text-xs font-bold float2"><span class="text-emerald-400">✓</span> قدرات لفظي</div>
+                        <div class="absolute top-12 left-0 glass px-3 py-2 text-xs font-bold float" style="animation-delay:1s"><span class="text-purple-400">✓</span> التحصيلي</div>
+                        <div class="absolute bottom-0 left-4 glass px-3 py-2 text-xs font-bold float2" style="animation-delay:.3s">📊 تحليل ذكي لأدائك</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- 📱 بانر تحميل التطبيق               -->
+    <!-- ══════════════════════════════════════ -->
+    <div id="app-download-banner" style="position:relative;overflow:hidden;padding:28px 16px;background:linear-gradient(135deg,#1a103d 0%,#1e1250 40%,#2a1560 60%,#1a103d 100%)">
+        <!-- Decorative glow -->
+        <div style="position:absolute;top:-40px;right:10%;width:200px;height:200px;background:radial-gradient(circle,rgba(99,102,241,0.25),transparent 70%);pointer-events:none"></div>
+        <div style="position:absolute;bottom:-40px;left:10%;width:180px;height:180px;background:radial-gradient(circle,rgba(168,85,247,0.2),transparent 70%);pointer-events:none"></div>
+        <div class="max-w-lg mx-auto text-center" style="position:relative;z-index:2">
+            <!-- Download icon with glow -->
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 32px rgba(99,102,241,0.4);margin-bottom:14px">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13m0 0l-4-4m4 4l4-4"/><rect x="4" y="17" width="16" height="4" rx="1" fill="rgba(255,255,255,0.15)" stroke="#fff"/></svg>
+            </div>
+            <h3 class="font-black text-white" style="font-size:18px;margin-bottom:6px;font-family:'Cairo',sans-serif">تدرّب وين ما كنت — حمّل التطبيق الحين</h3>
+            <p style="color:rgba(196,181,253,0.6);font-size:12px;margin-bottom:18px">متوفر على iOS و Android</p>
+            <div class="app-store-badges" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+                <a href="https://apps.apple.com/sa/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:14px;font-size:14px;font-weight:800;color:#fff;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.25);transition:all .3s ease;text-decoration:none;box-shadow:0 0 0 1px rgba(99,102,241,0.2),0 4px 16px rgba(0,0,0,0.2)" onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 0 1px rgba(99,102,241,0.4),0 8px 28px rgba(99,102,241,0.3)';this.style.borderColor='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)';this.style.boxShadow='0 0 0 1px rgba(99,102,241,0.2),0 4px 16px rgba(0,0,0,0.2)';this.style.borderColor='rgba(255,255,255,0.25)'">
+                    <svg width="22" height="22" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                    App Store
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:14px;font-size:14px;font-weight:800;color:#fff;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.25);transition:all .3s ease;text-decoration:none;box-shadow:0 0 0 1px rgba(139,92,246,0.2),0 4px 16px rgba(0,0,0,0.2)" onmouseover="this.style.background='rgba(255,255,255,0.12)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 0 1px rgba(139,92,246,0.4),0 8px 28px rgba(139,92,246,0.3)';this.style.borderColor='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)';this.style.boxShadow='0 0 0 1px rgba(139,92,246,0.2),0 4px 16px rgba(0,0,0,0.2)';this.style.borderColor='rgba(255,255,255,0.25)'">
+                    <svg width="22" height="22" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+                    Google Play
+                </a>
+            </div>
+        </div>
+        <!-- Border glow line -->
+        <div style="position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.4),rgba(99,102,241,0.4),transparent)"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- 🔥 تسريبات اختبارات سابقة              -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#120a2a,#0d0825)">
+        <div class="max-w-2xl mx-auto px-4">
+            <div class="reveal leaks-card">
+                <span class="text-5xl block mb-4">🔥</span>
+                <h2 class="text-2xl sm:text-3xl font-black mb-3" style="font-family:'Cairo',sans-serif">تسريبات اختبار أمس</h2>
+                <p class="text-purple-200/70 text-base sm:text-lg leading-relaxed mb-6">
+                    تخيل جتك هذي الأسئلة في اختبارك
+                </p>
+                <div class="flex items-center justify-center gap-4 mb-6 text-sm">
+                    <span class="px-3 py-1.5 rounded-full font-bold" style="background:rgba(249,115,22,0.12);color:#fb923c">🎯 اكتشف مستواك</span>
+                    <span class="text-purple-200/60">اختبر نفسك الآن</span>
+                </div>
+                <a href="demo.html" class="btn-fire px-8 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2 mb-5">
+                    🔥 ابدأ التحدي
+                </a>
+                <div class="mt-4 flex items-center justify-center gap-2">
+                    <span class="relative flex h-1.5 w-1.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
+                    </span>
+                    <span class="text-orange-400/70 text-xs">تجميعات من اختبارات انتهت — تتحدث باستمرار</span>
+                </div>
+            </div>
+
+            <!-- Platform Clarification -->
+            <div class="reveal mt-10 text-center">
+                <div class="glass p-6 sm:p-8" style="border-color:rgba(139,92,246,0.15)">
+                    <p class="text-base sm:text-lg font-bold text-white/90 mb-3">
+                        🚀 مدارك النخبة أكثر من مجرد تسريبات
+                    </p>
+                    <p class="text-purple-200/60 text-sm leading-relaxed mb-5">
+                        تدرّب بشكل تفاعلي ومحاكي للاختبارات الحقيقية — آلاف الأسئلة المتجددة، تجميعات وتسريبات، شروحات تفصيلية لكل سؤال، وإحصائيات دقيقة لنقاط ضعفك عشان تركّز عليها بالمذاكرة
+                    </p>
+                    <a href="demo.html" class="btn-primary px-7 py-3 rounded-xl font-bold text-sm inline-flex items-center gap-2">
+                        جرّب بنفسك الحين 🚀
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trusted By Banner -->
+    <section class="border-y border-purple-500/10 py-6">
+        <div class="max-w-6xl mx-auto px-4">
+            <p class="text-purple-200/40 text-xs text-center mb-4">مصمم خصيصاً لاختبارات:</p>
+            <div class="flex items-center justify-center gap-4 sm:gap-10 flex-wrap">
+                <div class="flex items-center gap-1.5"><span class="text-base sm:text-lg">📐</span><span class="text-purple-200/70 text-xs sm:text-sm font-bold">القدرات الكمي</span></div>
+                <div class="hidden sm:block w-px h-4 bg-purple-500/20"></div>
+                <div class="flex items-center gap-1.5"><span class="text-base sm:text-lg">📖</span><span class="text-purple-200/70 text-xs sm:text-sm font-bold">القدرات اللفظي</span></div>
+                <div class="hidden sm:block w-px h-4 bg-purple-500/20"></div>
+                <div class="flex items-center gap-1.5"><span class="text-base sm:text-lg">🎓</span><span class="text-purple-200/70 text-xs sm:text-sm font-bold">التحصيلي</span></div>
+                <div class="hidden sm:block w-px h-4 bg-purple-500/20"></div>
+                <div class="flex items-center gap-1.5"><span class="text-base sm:text-lg">🏛️</span><span class="text-purple-200/70 text-xs sm:text-sm font-bold">هيئة تقويم التعليم</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- ليش مدارك النخبة؟ — مقارنة            -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">ليش <span class="bg-gradient-to-l from-purple-300 via-indigo-300 to-blue-300 bg-clip-text text-transparent">مدارك النخبة؟</span></h2>
+                <p class="text-purple-300/50 text-sm">الفرق بينك وبين الطالب اللي يتدرب بمدارك</p>
+                <div class="section-line mt-4"></div>
+            </div>
+
+            <div class="reveal glass p-5 sm:p-8" style="border-color:rgba(139,92,246,0.15)">
+                <!-- Table Header -->
+                <div class="grid grid-cols-2 gap-3 pb-4 mb-1">
+                    <div class="text-center py-2.5 rounded-xl" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)">
+                        <span class="text-xs sm:text-sm font-bold text-red-400">❌ بدون مدارك</span>
+                    </div>
+                    <div class="text-center py-2.5 rounded-xl" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15)">
+                        <span class="text-xs sm:text-sm font-bold text-green-400">✅ مع مدارك النخبة</span>
+                    </div>
+                </div>
+
+                <!-- Row 1 -->
+                <div class="compare-row">
+                    <div class="compare-bad text-center">تذاكر بدون توجيه ولا تعرف مستواك</div>
+                    <div class="compare-good text-center">تدريب تفاعلي يحاكي الاختبار الحقيقي</div>
+                </div>
+                <!-- Row 2 -->
+                <div class="compare-row">
+                    <div class="compare-bad text-center">ما تعرف وين نقاط ضعفك</div>
+                    <div class="compare-good text-center">إحصائيات دقيقة تبيّن نقاط ضعفك وقوتك</div>
+                </div>
+                <!-- Row 3 -->
+                <div class="compare-row">
+                    <div class="compare-bad text-center">أسئلة بدون شرح أو بشرح سطحي</div>
+                    <div class="compare-good text-center">شرح تفصيلي خطوة بخطوة لكل سؤال 📝</div>
+                </div>
+                <!-- Row 4 -->
+                <div class="compare-row">
+                    <div class="compare-bad text-center">أسئلة قديمة ومكررة</div>
+                    <div class="compare-good text-center">آلاف الأسئلة المتجددة + تجميعات وتسريبات 🔥</div>
+                </div>
+                <!-- Row 5 -->
+                <div class="compare-row">
+                    <div class="compare-bad text-center">ما فيه تحفيز ولا منافسة</div>
+                    <div class="compare-good text-center">شارات ومستويات ونقاط XP ولوحة صدارة 🏆</div>
+                </div>
+                <!-- Row 6 -->
+                <div class="compare-row">
+                    <div class="compare-bad text-center">ما تقدر تتابع تقدمك</div>
+                    <div class="compare-good text-center">تقرير ذكي مفصّل لأدائك في كل قسم 📊</div>
+                </div>
+            </div>
+
+            <div class="text-center mt-8 reveal">
+                <a href="register.html" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
+                    جرّب الفرق بنفسك 🚀
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- المميزات الأساسية                      -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">كل اللي تحتاجه <span class="bg-gradient-to-l from-purple-300 via-indigo-300 to-blue-300 bg-clip-text text-transparent">بمنصة واحدة</span></h2>
+                <p class="text-purple-300/50 text-sm">أدوات ذكية تخلّيك تستعد للاختبار بثقة</p>
+                <div class="section-line mt-4"></div>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="reveal feature-card glass p-6 text-center"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 mx-auto" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">📝</div><h3 class="text-base font-bold mb-2">شروحات تفصيلية</h3><p class="text-purple-200/70 text-sm leading-relaxed">كل سؤال عليه شرح خطوة بخطوة — مو بس الإجابة الصحيحة، نعلّمك ليش هي الصح</p></div>
+                <div class="reveal feature-card glass p-6 text-center"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 mx-auto" style="background:linear-gradient(135deg,#10b981,#14b8a6)">📊</div><h3 class="text-base font-bold mb-2">إحصائيات نقاط ضعفك</h3><p class="text-purple-200/70 text-sm leading-relaxed">تحليل دقيق لأدائك في كل قسم وموضوع — تعرف وين تركّز بالمذاكرة</p></div>
+                <div class="reveal feature-card glass p-6 text-center"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 mx-auto" style="background:linear-gradient(135deg,#f97316,#ef4444)">🔥</div><h3 class="text-base font-bold mb-2">تجميعات وتسريبات</h3><p class="text-purple-200/70 text-sm leading-relaxed">تجميعات متجددة من اختبارات سابقة انتهت — أسئلة حقيقية مع شرح مفصّل</p></div>
+                <div class="reveal feature-card glass p-6 text-center"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 mx-auto" style="background:linear-gradient(135deg,#8b5cf6,#a855f7)">⏱️</div><h3 class="text-base font-bold mb-2">محاكاة الاختبار الحقيقي</h3><p class="text-purple-200/70 text-sm leading-relaxed">60 ثانية لكل سؤال — نفس ضغط الاختبار الحقيقي عشان تتعود عليه</p></div>
+                <div class="reveal feature-card glass p-6 text-center"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 mx-auto" style="background:linear-gradient(135deg,#ef4444,#ec4899)">🎯</div><h3 class="text-base font-bold mb-2">مراجعة الأخطاء</h3><p class="text-purple-200/70 text-sm leading-relaxed">كل سؤال غلطت فيه نحفظه لك مع الشرح — ترجع تراجعه وتتعلم منه</p></div>
+                <div class="reveal feature-card glass p-6 text-center"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 mx-auto" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">📱</div><h3 class="text-base font-bold mb-2">يشتغل من أي مكان</h3><p class="text-purple-200/70 text-sm leading-relaxed">جوال أو لابتوب أو آيباد — تدرّب وين ما كنت بدون ما تحتاج تحمل شي</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- التحدي والمنافسة                       -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#12082e,#0d0825)">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">مو بس أسئلة<br class="sm:hidden"> <span class="bg-gradient-to-l from-orange-300 via-amber-300 to-yellow-300 bg-clip-text text-transparent">تحدّي ومنافسة</span></h2>
+                <p class="text-purple-300/50 text-sm">حفّز نفسك واجمع إنجازات وتنافس مع زملائك</p>
+                <div class="section-line mt-4"></div>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="reveal glass p-6 text-center" style="background:linear-gradient(135deg,rgba(251,146,60,0.06),rgba(239,68,68,0.04));border-color:rgba(251,146,60,0.15)">
+                    <span class="text-4xl block mb-3">🔥</span>
+                    <h3 class="text-base font-bold mb-1" style="color:#fb923c">سلاسل يومية</h3>
+                    <p class="text-purple-200/60 text-xs leading-relaxed">تدرّب كل يوم وابني سلسلة أيام متتالية — كل ما طالت السلسلة كل ما زاد حماسك</p>
+                </div>
+                <div class="reveal glass p-6 text-center" style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.04));border-color:rgba(99,102,241,0.15)">
+                    <span class="text-4xl block mb-3">🏆</span>
+                    <h3 class="text-base font-bold mb-1" style="color:#818cf8">لوحة المتصدرين</h3>
+                    <p class="text-purple-200/60 text-xs leading-relaxed">شوف ترتيبك بين الطلاب وتنافس على المراكز الأولى كل أسبوع</p>
+                </div>
+                <div class="reveal glass p-6 text-center" style="background:linear-gradient(135deg,rgba(34,197,94,0.06),rgba(16,185,129,0.04));border-color:rgba(34,197,94,0.15)">
+                    <span class="text-4xl block mb-3">🏅</span>
+                    <h3 class="text-base font-bold mb-1" style="color:#4ade80">إنجازات وبادجات</h3>
+                    <p class="text-purple-200/60 text-xs leading-relaxed">اجمع 14 بادج مختلف — من قنّاص الإجابات لأسطورة المنصة</p>
+                </div>
+                <div class="reveal glass p-6 text-center" style="background:linear-gradient(135deg,rgba(168,85,247,0.06),rgba(139,92,246,0.04));border-color:rgba(168,85,247,0.15)">
+                    <span class="text-4xl block mb-3">⚡</span>
+                    <h3 class="text-base font-bold mb-1" style="color:#c084fc">نقاط XP</h3>
+                    <p class="text-purple-200/60 text-xs leading-relaxed">كل إجابة صحيحة = نقاط XP — حافظ على سلسلتك واحصل على بونس إضافي</p>
+                </div>
+            </div>
+            <div class="text-center mt-8 reveal">
+                <a href="register.html" class="btn-primary px-8 py-3.5 rounded-xl font-bold text-sm inline-flex items-center gap-2">
+                    ابدأ التحدي الحين 🚀
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- كيف تبدأ — 3 خطوات                    -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#1a1145,#0d0825)">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">كيف تبدأ؟</h2>
+                <p class="text-purple-300/50 text-sm">ثلاث خطوات بس وتبدأ رحلتك</p>
+                <div class="section-line mt-4"></div>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-5">
+                <div class="reveal text-center"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border:1px solid rgba(99,102,241,0.2)"><span>1️⃣</span></div><h3 class="font-bold text-sm mb-1">سجّل حسابك</h3><p class="text-purple-200/70 text-xs">حساب مجاني بثوانٍ — بريد إلكتروني وكلمة مرور بس</p></div>
+                <div class="reveal text-center" style="transition-delay:.1s"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(20,184,166,0.15));border:1px solid rgba(16,185,129,0.2)"><span>2️⃣</span></div><h3 class="font-bold text-sm mb-1">اختر القسم</h3><p class="text-purple-200/70 text-xs">كمي أو لفظي أو تحصيلي — حسب اللي تبي تتدرب عليه</p></div>
+                <div class="reveal text-center" style="transition-delay:.2s"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4" style="background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(139,92,246,0.15));border:1px solid rgba(168,85,247,0.2)"><span>3️⃣</span></div><h3 class="font-bold text-sm mb-1">ابدأ حل وتعلّم</h3><p class="text-purple-200/70 text-xs">أسئلة عشوائية مع تايمر وشرح تفصيلي فوري — وبتشوف نتيجتك</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- الباقات — مع عرض رمضان                 -->
+    <!-- ══════════════════════════════════════ -->
+    <section id="pricing-section" class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0d0825,#0f0a2e,#0d0825)">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-4 reveal">
+                <h2 class="text-3xl sm:text-4xl font-black mb-3">خطط بسيطة وواضحة</h2>
+                <p class="text-purple-300/50 text-sm">اشترك وابدأ تدريبك — بأسعار بسيطة</p>
+                <div class="section-line mt-4"></div>
+            </div>
+
+            <!-- Urgency Banner -->
+            <div class="reveal text-center mb-8" id="offer-banner" style="display:none">
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold" style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(249,115,22,0.15));border:1px solid rgba(239,68,68,0.25);color:#fca5a5">
+                    🔥 <span id="offer-text">عرض خاص — خصم لفترة محدودة!</span>
+                </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4 reveal max-w-2xl mx-auto">
+                <!-- Monthly -->
+                <div class="glass p-6 text-center relative" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.3)">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">⭐ الأكثر شعبية</div>
+                    <span class="text-3xl block mb-2 mt-1">📅</span>
+                    <h3 class="font-bold mb-1">شهري</h3>
+                    <div id="idx-monthly-orig-wrap" class="hidden">
+                        <span class="text-lg line-through text-red-400/60 font-bold" id="idx-monthly-orig"></span>
+                    </div>
+                    <p class="text-4xl font-black text-indigo-400 mb-1"><span id="idx-monthly-price">29</span> <span class="text-sm text-purple-200/70">ريال/شهر</span></p>
+                    <p class="text-purple-200/60 text-xs mb-4">أسئلة غير محدودة + شروحات كاملة</p>
+                    <a href="register.html" class="btn-primary block w-full py-2.5 rounded-xl text-sm font-bold text-center">ابدأ الحين</a>
+                </div>
+                <!-- Yearly -->
+                <div class="glass p-6 text-center relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full text-xs font-bold text-white whitespace-nowrap" style="background:linear-gradient(135deg,#10b981,#14b8a6)">💎 أفضل قيمة</div>
+                    <span class="text-3xl block mb-2 mt-1">💎</span>
+                    <h3 class="font-bold mb-1">سنوي</h3>
+                    <div id="idx-yearly-orig-wrap" class="hidden">
+                        <span class="text-lg line-through text-red-400/60 font-bold" id="idx-yearly-orig"></span>
+                    </div>
+                    <p class="text-4xl font-black text-emerald-400 mb-0.5"><span id="idx-yearly-pm">19</span> <span class="text-sm text-purple-200/70">ريال/شهر</span></p>
+                    <p class="text-purple-200/50 text-xs mb-1" id="idx-yearly-total"></p>
+                    <p class="text-emerald-400/80 text-xs font-bold mb-3" id="idx-yearly-save">💰 وفّر 120 ريال</p>
+                    <a href="register.html" class="btn-ghost block w-full py-2.5 rounded-xl text-sm font-bold text-center" style="border-color:rgba(16,185,129,0.3);color:#34d399">ابدأ الحين</a>
+                </div>
+            </div>
+            <div class="text-center mt-6 reveal">
+                <a href="pricing.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);color:#818cf8">
+                    قارن الباقات بالتفصيل
+                    <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- 📱 قسم تحميل التطبيق                  -->
+    <!-- ══════════════════════════════════════ -->
+    <section id="app-download-section" class="py-16 sm:py-20" style="background:linear-gradient(180deg,#0a0620,#0f0a2e,#0a0620)">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="reveal">
+                <span class="text-6xl block mb-5">📱</span>
+                <h2 class="text-3xl sm:text-4xl font-black mb-3" style="font-family:'Cairo',sans-serif">تدرّب من جوالك</h2>
+                <p class="text-purple-200/50 text-sm mb-10 max-w-lg mx-auto">حمّل تطبيق مدارك النخبة وتدرّب وين ما كنت — نفس المحتوى والمميزات بتجربة أسرع وأسهل</p>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-4 mb-10 max-w-2xl mx-auto">
+                <div class="reveal glass p-5 text-center">
+                    <span class="text-2xl block mb-2">⚡</span>
+                    <p class="font-bold text-sm text-white mb-1">سرعة وسهولة</p>
+                    <p class="text-purple-200/40 text-xs">تجربة سلسة مصممة للجوال</p>
+                </div>
+                <div class="reveal glass p-5 text-center">
+                    <span class="text-2xl block mb-2">🔔</span>
+                    <p class="font-bold text-sm text-white mb-1">تذكير يومي</p>
+                    <p class="text-purple-200/40 text-xs">إشعارات تحفّزك تتدرب كل يوم</p>
+                </div>
+                <div class="reveal glass p-5 text-center">
+                    <span class="text-2xl block mb-2">🎯</span>
+                    <p class="font-bold text-sm text-white mb-1">وصول سريع</p>
+                    <p class="text-purple-200/40 text-xs">ضغطة وحدة وتبدأ تتدرب</p>
+                </div>
+            </div>
+            <div class="reveal app-store-badges flex flex-wrap items-center justify-center gap-3">
+                <a href="https://apps.apple.com/sa/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold text-sm text-white transition hover:scale-105 hover:shadow-lg" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12)">
+                    <svg width="24" height="24" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                    <div class="text-right">
+                        <span class="text-purple-200/50 text-[10px] block leading-tight">حمّل من</span>
+                        <span class="text-sm font-bold leading-tight">App Store</span>
+                    </div>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold text-sm text-white transition hover:scale-105 hover:shadow-lg" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12)">
+                    <svg width="24" height="24" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+                    <div class="text-right">
+                        <span class="text-purple-200/50 text-[10px] block leading-tight">حمّل من</span>
+                        <span class="text-sm font-bold leading-tight">Google Play</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- CTA النهائي                            -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="py-16 sm:py-20" style="background:#0d0825">
+        <div class="max-w-3xl mx-auto px-4">
+            <div class="reveal cta-section rounded-3xl p-8 sm:p-12 text-center relative z-10">
+                <span class="text-5xl block mb-4">🚀</span>
+                <h2 class="text-3xl sm:text-4xl font-black mb-3 relative z-10">اختبارك قرّب — ابدأ تدريبك الحين</h2>
+                <p class="text-purple-200/50 text-sm mb-8 max-w-lg mx-auto relative z-10">آلاف الأسئلة المتجددة مع شروحات تفصيلية، تجميعات وتسريبات شبه يومية، وإحصائيات دقيقة لنقاط ضعفك</p>
+                <div class="flex flex-wrap gap-3 justify-center relative z-10">
+                    <a href="demo.html" class="btn-fire px-8 py-3.5 rounded-xl font-bold text-sm">🔥 جرّب 5 أسئلة مجاناً</a>
+                    <a href="login.html" class="btn-ghost px-8 py-3.5 rounded-xl font-bold text-sm">عندك حساب؟ ادخل</a>
+                </div>
+                <div class="flex items-center justify-center gap-4 sm:gap-6 mt-6 relative z-10 flex-wrap">
+                    <span class="text-purple-200/40 text-xs">✓ بدون بطاقة</span>
+                    <span class="text-purple-200/40 text-xs">✓ إلغاء وقت ما تبي</span>
+                    <span class="text-purple-200/40 text-xs">✓ بياناتك محمية</span>
+                </div>
+                <p class="text-purple-300/35 text-xs mt-5 relative z-10">🇸🇦 فريق سعودي يفهمك — مصمم من طلاب للطلاب</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-purple-500/10" style="background:#0a0620">
+        <div class="max-w-6xl mx-auto px-4 py-10">
+            <div class="grid sm:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <a href="#" class="madarek-logo-sm mb-3 inline-flex">
+                        <div class="icon">
+                            <div class="ring"></div>
+                            <svg viewBox="0 0 36 36" width="18" height="18" fill="none">
+                                <path d="M5 26 L5 14 L11.5 20 L18 7 L24.5 20 L31 14 L31 26 Z" stroke="rgba(165,180,252,0.95)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <line x1="5" y1="28.5" x2="31" y2="28.5" stroke="rgba(165,180,252,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="5"  cy="14" r="2.5" fill="#a5b4fc"/>
+                                <circle cx="18" cy="7"  r="2.5" fill="#c4b5fd"/>
+                                <circle cx="31" cy="14" r="2.5" fill="#a5b4fc"/>
+                            </svg>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end">
+                            <span class="name">مدارك النخبة</span>
+                            <span class="tag">حيث يُصنع التميّز</span>
+                        </div>
+                    </a>
+                    <p class="text-purple-200/60 text-xs leading-relaxed mt-2">منصة تقنية ذكية لمحاكاة وتحليل اختبارات القدرات والتحصيلي بتقنيات الذكاء الاصطناعي</p>
+                    <div class="app-store-badges flex items-center gap-2 mt-3">
+                        <a href="https://apps.apple.com/sa/app/%D9%85%D8%AF%D8%A7%D8%B1%D9%83-%D8%A7%D9%84%D9%86%D8%AE%D8%A8%D8%A9/id6760215684" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold text-purple-200/70 transition hover:text-white" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
+                            <svg width="12" height="12" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                            iOS
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.madarekelite.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold text-purple-200/70 transition hover:text-white" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)">
+                            <svg width="12" height="12" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+                            Android
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-purple-300/60 mb-3">روابط سريعة</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <a href="pricing.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">الباقات والأسعار</a>
+                        <a href="register.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">إنشاء حساب</a>
+                        <a href="login.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">تسجيل الدخول</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-purple-300/60 mb-3">السياسات</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <a href="privacy.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">سياسة الخصوصية</a>
+                        <a href="terms.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">شروط الاستخدام</a>
+                        <a href="subscription-policy.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">سياسة الاشتراكات</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-purple-300/60 mb-3">تواصل معنا</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <a href="contact.html" class="block text-purple-200/60 hover:text-purple-300/60 transition">الدعم الفني</a>
+                        <a href="mailto:madarekelite@gmail.com" class="block text-purple-200/60 hover:text-purple-300/60 transition">madarekelite@gmail.com</a>
+                        <a href="https://wa.me/966553339885" target="_blank" class="block text-purple-200/60 hover:text-purple-300/60 transition">واتساب: 0553339885</a>
+                    </div>
+                    <div class="flex gap-3 mt-3">
+                        <a href="https://x.com/MadarekElite" target="_blank" title="تويتر" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition hover:scale-110" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(196,181,253,0.7)">𝕏</a>
+                        <a href="https://tiktok.com/@madarekelite" target="_blank" title="تيك توك" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition hover:scale-110" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(196,181,253,0.7)">🎵</a>
+                        <a href="https://wa.me/966553339885" target="_blank" title="واتساب" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition hover:scale-110" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(196,181,253,0.7)">💬</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-purple-500/10 pt-6 text-center">
+                <p class="text-purple-200/50 text-xs">© 2026 مدارك النخبة — جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="session-keeper.js"></script>
+    <script src="biometric.js"></script>
+    <script>
+    (async function(){
+        try {
+            var sb = window.supabase.createClient(
+                'https://czzcmbxejxbotjemyuqf.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0'
+            );
+            var { count } = await sb.from('questions').select('id', {count:'exact', head:true});
+            if (count && count > 0) {
+                document.getElementById('liveQuestions').textContent = count + '+';
+            }
+            /* ── آخر تاريخ تسريبة (تلقائي) — معطّل، النص ثابت يدوياً في HTML ── */
+            // var { data: latest } = await sb.from('questions').select('created_at').order('created_at',{ascending:false}).limit(1).single();
+            // if (latest && latest.created_at) {
+            //     var d = new Date(latest.created_at);
+            //     d.setHours(d.getHours() + 3);
+            //     var months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+            //     var dayAr = d.getDate().toLocaleString('ar-SA');
+            //     var el = document.getElementById('tasreeb-date');
+            //     if (el) el.textContent = 'من أحدث تسريبات الأيام الماضية — ' + dayAr + ' ' + months[d.getMonth()];
+            // }
+        } catch(e){}
+    })();
+
+    /* ── Pricing from DB ── */
+    (function(){
+      var sb2=window.supabase.createClient('https://czzcmbxejxbotjemyuqf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0');
+      sb2.from('site_settings').select('*').then(function(res){
+        if(!res.data)return;
+        var s={};res.data.forEach(function(r){s[r.key]=r.value});
+        var mOrig=parseInt(s.price_monthly_original)||0;
+        var mCur=parseInt(s.price_monthly_current)||0;
+        var yOrig=parseInt(s.price_yearly_original)||0;
+        var yCur=parseInt(s.price_yearly_current)||0;
+        var disc=parseInt(s.discount_percent)||0;
+
+        var mNow,yNow;
+        if(disc>0&&mOrig>0){mNow=Math.round(mOrig*(100-disc)/100);}
+        else if(mCur>0){mNow=mCur;}
+        else{mNow=mOrig;}
+
+        if(disc>0&&yOrig>0){yNow=Math.round(yOrig*(100-disc)/100);}
+        else if(yCur>0){yNow=yCur;}
+        else{yNow=yOrig;}
+
+        if(mNow>0){
+          var e=document.getElementById('idx-monthly-price');if(e)e.textContent=mNow;
+          if(mOrig>0&&mOrig>mNow){
+            var mo=document.getElementById('idx-monthly-orig');
+            var mw=document.getElementById('idx-monthly-orig-wrap');
+            if(mo)mo.textContent=mOrig+' ريال';
+            if(mw)mw.classList.remove('hidden');
+          }
+        }
+        if(yNow>0){
+          var yPM=Math.round(yNow/12);
+          var e2=document.getElementById('idx-yearly-pm');if(e2)e2.textContent=yPM;
+          var yt=document.getElementById('idx-yearly-total');if(yt)yt.textContent='يُدفع '+yNow+' ريال فقط لسنة كاملة';
+          if(yOrig>0&&yOrig>yNow){
+            var yOrigPM=Math.round(yOrig/12);
+            var yo=document.getElementById('idx-yearly-orig');
+            var yw=document.getElementById('idx-yearly-orig-wrap');
+            if(yo)yo.textContent=yOrigPM+' ريال/شهر';
+            if(yw)yw.classList.remove('hidden');
+          }
+          var saving=mNow*12-yNow;
+          var e3=document.getElementById('idx-yearly-save');if(e3&&saving>0)e3.textContent='💰 توفّر '+saving+' ريال';
+        }
+
+        /* Show offer banner if there's a discount */
+        if(disc>0){
+          var banner=document.getElementById('offer-banner');
+          var txt=document.getElementById('offer-text');
+          if(banner){banner.style.display='block';}
+          if(txt){txt.textContent='🔥 عرض خاص — خصم '+disc+'% لفترة محدودة! استغل الفرصة';}
+        }
+      });
+    })();
+
+    /* ── Scroll Reveals ── */
+    var reveals = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if(entry.isIntersecting){ entry.target.classList.add('visible'); }
+        });
+    }, { threshold: 0.1 });
+    reveals.forEach(function(el){ observer.observe(el); });
+
+    /* ── Nav scroll effect ── */
+    window.addEventListener('scroll', function(){
+        var nav = document.getElementById('mainNav');
+        if(window.scrollY > 50) nav.classList.add('nav-scrolled');
+        else nav.classList.remove('nav-scrolled');
+    });
+    </script>
+    <script src="banner.js"></script>
+    <script src="whatsapp-widget.js"></script>
+    <script src="analytics.js"></script>
+    <script>
+    /* Load coupon popup only in browser — not in app */
+    if(!document.documentElement.classList.contains('in-app')){
+        var s=document.createElement('script');s.src='engagement.js';document.body.appendChild(s);
+    }
+    </script>
+</body>
+</html>

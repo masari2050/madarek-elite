@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدارك النخبة - إعلان</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; }
+body {
+    background: #0a0520;
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* الحاوية تحافظ على نسبة 9:16 */
+.video-frame {
+    position: relative;
+    width: 100vmin;
+    aspect-ratio: 9/16;
+    max-height: 100vh;
+    max-width: calc(100vh * 9 / 16);
+    overflow: hidden;
+    background: #0a0520;
+}
+
+/* الخلفية */
+.bg-gradient {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, #1a1155 0%, #0a0520 60%);
+}
+.particles {
+    position: absolute; inset: 0; z-index: 1;
+    background-image:
+        radial-gradient(2px 2px at 10% 10%, rgba(139,92,246,0.6), transparent),
+        radial-gradient(2px 2px at 30% 25%, rgba(167,139,250,0.4), transparent),
+        radial-gradient(3px 3px at 50% 5%, rgba(99,102,241,0.5), transparent),
+        radial-gradient(2px 2px at 70% 40%, rgba(139,92,246,0.3), transparent),
+        radial-gradient(2px 2px at 20% 75%, rgba(167,139,250,0.5), transparent),
+        radial-gradient(3px 3px at 80% 60%, rgba(99,102,241,0.4), transparent),
+        radial-gradient(2px 2px at 40% 90%, rgba(139,92,246,0.6), transparent),
+        radial-gradient(2px 2px at 90% 20%, rgba(196,181,253,0.3), transparent);
+    animation: sparkle 4s ease-in-out infinite alternate;
+}
+@keyframes sparkle { 0%{opacity:0.4} 100%{opacity:1} }
+
+.floating-shape {
+    position: absolute; border-radius: 50%; z-index: 1;
+    filter: blur(60px); opacity: 0.15;
+}
+.shape1 { width:40%;height:30%;background:#6366f1;top:-5%;right:-10%; animation: float1 8s ease-in-out infinite; }
+.shape2 { width:35%;height:25%;background:#8b5cf6;bottom:15%;left:-15%; animation: float2 10s ease-in-out infinite; }
+.shape3 { width:25%;height:20%;background:#a78bfa;top:50%;right:-5%; animation: float1 12s ease-in-out infinite reverse; }
+@keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-15px,20px)} }
+@keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
+
+/* شريط التقدم */
+.progress-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 4px; z-index: 100;
+    background: rgba(255,255,255,0.1);
+}
+.progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);
+    transition: width 0.3s linear;
+}
+
+/* المشاهد */
+.scene {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 6%; opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.scene.active { opacity: 1; }
+.scene.fade-out { opacity: 0; }
+
+/* أنيميشنات العناصر */
+.anim-el { opacity: 0; transform: translateY(25px); }
+.anim-el.show { opacity: 1; transform: translateY(0); transition: all 0.6s cubic-bezier(0.22,1,0.36,1); }
+.anim-el.pop.show { animation: popIn 0.5s forwards; }
+.anim-el.slide-right { transform: translateX(-40px) !important; }
+.anim-el.slide-right.show { opacity: 1; transform: translateX(0) !important; transition: all 0.5s cubic-bezier(0.22,1,0.36,1); }
+.anim-el.scale-in { transform: scale(0.7) !important; }
+.anim-el.scale-in.show { opacity: 1; transform: scale(1) !important; transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+
+@keyframes popIn {
+    0% { opacity:0; transform:scale(0.5); }
+    70% { transform:scale(1.08); }
+    100% { opacity:1; transform:scale(1); }
+}
+@keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(99,102,241,0); }
+}
+
+/* ═══ المشهد 1 ═══ */
+.scene1 .q-mark {
+    font-size: 30vmin; color: rgba(139,92,246,0.12);
+    position: absolute; top: 18%; right: 8%;
+    animation: qFloat 3s ease-in-out infinite;
+}
+@keyframes qFloat { 0%,100%{transform:rotate(-5deg) scale(1)} 50%{transform:rotate(5deg) scale(1.05)} }
+.scene1 h1 {
+    font-size: 7.5vmin; font-weight: 900; color: #fff;
+    text-align: center; line-height: 1.6;
+}
+.scene1 h1 .highlight {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1, #a78bfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.scene1 .line {
+    width: 0; height: 4px; background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+    border-radius: 4px; margin-top: 3vmin; transition: width 0.8s ease;
+}
+.scene1 .line.show { width: 18vmin; }
+.scene1 .sub { font-size: 4vmin; color: rgba(255,255,255,0.6); margin-top: 2.5vmin; }
+
+/* ═══ المشهد 2 ═══ */
+.scene2 .emoji { font-size: 15vmin; }
+.scene2 h2 {
+    font-size: 6.5vmin; font-weight: 900; color: #fff;
+    text-align: center; line-height: 1.6; margin-top: 3vmin;
+}
+.scene2 .pain-points { margin-top: 4vmin; width: 100%; }
+.scene2 .pain {
+    display: flex; align-items: center; gap: 2vmin; justify-content: flex-end;
+    padding: 2.2vmin 3vmin; margin: 1.5vmin 0;
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 2vmin;
+    font-size: 3.6vmin; color: rgba(255,255,255,0.85); font-weight: 700;
+}
+.scene2 .pain .icon { font-size: 4.2vmin; }
+
+/* ═══ المشهد 3 ═══ */
+.scene3 .logo-container {
+    width: 18vmin; height: 18vmin;
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
+    border: 2px solid rgba(139,92,246,0.3);
+    border-radius: 4vmin; display: flex; align-items: center; justify-content: center;
+}
+.scene3 .logo-text { font-size: 8vmin; }
+.scene3 .brand {
+    font-size: 8.5vmin; font-weight: 900; margin-top: 2vmin;
+    background: linear-gradient(135deg, #c4b5fd, #a78bfa, #8b5cf6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.scene3 .tagline { font-size: 4.2vmin; color: rgba(255,255,255,0.7); margin-top: 1vmin; }
+.scene3 .features { margin-top: 5vmin; width: 100%; }
+.scene3 .feat {
+    display: flex; align-items: center; gap: 2vmin; justify-content: flex-end;
+    padding: 2.2vmin 3vmin; margin: 1.5vmin 0;
+    background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05));
+    border: 1px solid rgba(139,92,246,0.2);
+    border-radius: 2vmin;
+    font-size: 3.4vmin; color: #fff; font-weight: 700;
+}
+.scene3 .feat .check { color: #22c55e; font-size: 3.8vmin; }
+
+/* ═══ المشهد 4 ═══ */
+.scene4 h2 {
+    font-size: 5.5vmin; font-weight: 900; color: #fff; margin-bottom: 4vmin;
+}
+.scene4 .stats { display: flex; flex-direction: column; gap: 3vmin; width: 100%; }
+.scene4 .stat {
+    text-align: center; padding: 3vmin;
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.06));
+    border: 1px solid rgba(139,92,246,0.25);
+    border-radius: 2.5vmin;
+}
+.scene4 .stat .number {
+    font-size: 9vmin; font-weight: 900;
+    background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.scene4 .stat .label { font-size: 3.5vmin; color: rgba(255,255,255,0.7); margin-top: 0.5vmin; font-weight: 700; }
+
+/* ═══ المشهد 5 ═══ */
+.scene5 .cta-text {
+    font-size: 7vmin; font-weight: 900; color: #fff;
+    text-align: center; line-height: 1.6;
+}
+.scene5 .cta-text .grad {
+    background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.scene5 .btn {
+    margin-top: 4vmin; padding: 2.5vmin 7vmin;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 999px; font-size: 4.2vmin; font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(99,102,241,0.4), 0 0 60px rgba(139,92,246,0.2);
+    animation: pulse 2s ease-out infinite;
+}
+.scene5 .url {
+    font-size: 3.5vmin; color: rgba(255,255,255,0.5); margin-top: 3vmin;
+    font-weight: 700; letter-spacing: 1px;
+}
+.scene5 .free-badge {
+    margin-top: 2vmin; padding: 1.2vmin 4vmin;
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 1.5vmin; font-size: 3.2vmin; color: #22c55e; font-weight: 700;
+}
+
+/* العلامة المائية */
+.watermark {
+    position: absolute; bottom: 2%; left: 0; right: 0;
+    text-align: center; z-index: 20;
+    font-size: 2.5vmin; color: rgba(255,255,255,0.12); font-weight: 700;
+}
+
+/* زر التحكم */
+.controls {
+    position: absolute; top: 2%; right: 3%; z-index: 50;
+    display: flex; gap: 8px;
+}
+.ctrl-btn {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; border-radius: 50%; width: 5vmin; height: 5vmin; min-width: 36px; min-height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 2.5vmin; backdrop-filter: blur(8px);
+    transition: all 0.2s;
+}
+.ctrl-btn:hover { background: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<div class="video-frame" id="videoFrame">
+    <div class="bg-gradient"></div>
+    <div class="particles"></div>
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+
+    <div class="controls">
+        <button class="ctrl-btn" onclick="replayVideo()" title="إعادة">↻</button>
+    </div>
+
+    <!-- المشهد 1: الافتتاحية -->
+    <div class="scene scene1" id="scene1">
+        <div class="q-mark">؟</div>
+        <h1 class="anim-el" data-delay="300">
+            اختبار <span class="highlight">القدرات</span><br>
+            والتحصيلي<br>
+            <span class="highlight">قرّب؟</span>
+        </h1>
+        <div class="line" data-delay="1200"></div>
+        <div class="sub anim-el" data-delay="1600">وما بدأت تذاكر لحد الحين؟</div>
+    </div>
+
+    <!-- المشهد 2: المشكلة -->
+    <div class="scene scene2" id="scene2">
+        <div class="emoji anim-el pop" data-delay="200">😰</div>
+        <h2 class="anim-el" data-delay="600">المشكلة اللي<br>يعاني منها كل طالب</h2>
+        <div class="pain-points">
+            <div class="pain anim-el slide-right" data-delay="1200">
+                <span>أسئلة كثيرة وما تدري تبدأ من وين</span>
+                <span class="icon">📚</span>
+            </div>
+            <div class="pain anim-el slide-right" data-delay="1700">
+                <span>تحل وما تفهم ليش غلطت</span>
+                <span class="icon">❌</span>
+            </div>
+            <div class="pain anim-el slide-right" data-delay="2200">
+                <span>ما فيه أحد يشرح لك الحل</span>
+                <span class="icon">🤷</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- المشهد 3: الحل -->
+    <div class="scene scene3" id="scene3">
+        <div class="logo-container anim-el pop" data-delay="200">
+            <div class="logo-text">👑</div>
+        </div>
+        <div class="brand anim-el" data-delay="600">مدارك النخبة</div>
+        <div class="tagline anim-el" data-delay="900">حيث يُصنع التميّز</div>
+        <div class="features">
+            <div class="feat anim-el slide-right" data-delay="1400">
+                <span>بنك أسئلة ذكي لكل الأقسام</span>
+                <span class="check">✓</span>
+            </div>
+            <div class="feat anim-el slide-right" data-delay="1800">
+                <span>شرح مفصّل لكل سؤال</span>
+                <span class="check">✓</span>
+            </div>
+            <div class="feat anim-el slide-right" data-delay="2200">
+                <span>تتبع أدائك وأخطائك</span>
+                <span class="check">✓</span>
+            </div>
+            <div class="feat anim-el slide-right" data-delay="2600">
+                <span>تدريب بوقت مثل الاختبار الحقيقي</span>
+                <span class="check">✓</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- المشهد 4: الأرقام -->
+    <div class="scene scene4" id="scene4">
+        <h2 class="anim-el" data-delay="200">أرقام تتكلم 💪</h2>
+        <div class="stats">
+            <div class="stat anim-el pop" data-delay="600">
+                <div class="number">+1,590</div>
+                <div class="label">سؤال متنوع</div>
+            </div>
+            <div class="stat anim-el pop" data-delay="1100">
+                <div class="number">3</div>
+                <div class="label">أقسام: كمي + لفظي + تحصيلي</div>
+            </div>
+            <div class="stat anim-el pop" data-delay="1600">
+                <div class="number">100%</div>
+                <div class="label">شرح لكل سؤال</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- المشهد 5: CTA -->
+    <div class="scene scene5" id="scene5">
+        <div class="cta-text anim-el scale-in" data-delay="200">
+            ابدأ الحين<br>
+            <span class="grad">مجاناً</span><br>
+            وحقق درجتك
+        </div>
+        <div class="btn anim-el pop" data-delay="1000">سجّل الحين مجاناً</div>
+        <div class="url anim-el" data-delay="1500">madarekelite.com</div>
+        <div class="free-badge anim-el" data-delay="1800">بدون بطاقة بنكية ✨</div>
+    </div>
+
+    <div class="watermark">مدارك النخبة | madarekelite.com</div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // توقيت كل مشهد (بالمللي ثانية)
+    var SCENES = [
+        { id: 'scene1', duration: 4000 },
+        { id: 'scene2', duration: 5000 },
+        { id: 'scene3', duration: 5000 },
+        { id: 'scene4', duration: 4500 },
+        { id: 'scene5', duration: 5500 }
+    ];
+    var TOTAL_DURATION = SCENES.reduce(function(s, sc) { return s + sc.duration; }, 0);
+    var currentScene = -1;
+    var timeouts = [];
+    var progressInterval = null;
+    var startTime = 0;
+
+    function clearAllTimeouts() {
+        timeouts.forEach(clearTimeout);
+        timeouts = [];
+        if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+    }
+
+    function resetAllScenes() {
+        document.querySelectorAll('.scene').forEach(function(s) {
+            s.classList.remove('active', 'fade-out');
+        });
+        document.querySelectorAll('.anim-el').forEach(function(el) {
+            el.classList.remove('show');
+        });
+        document.querySelectorAll('.scene1 .line').forEach(function(el) {
+            el.classList.remove('show');
+        });
+        document.getElementById('progressFill').style.width = '0%';
+    }
+
+    function showScene(index) {
+        if (index >= SCENES.length) {
+            // انتهى - أعد التشغيل بعد 2 ثانية
+            timeouts.push(setTimeout(function() { replayVideo(); }, 2000));
+            return;
+        }
+
+        currentScene = index;
+        var sc = SCENES[index];
+        var el = document.getElementById(sc.id);
+
+        // أخفي المشهد السابق
+        if (index > 0) {
+            var prev = document.getElementById(SCENES[index - 1].id);
+            prev.classList.add('fade-out');
+            prev.classList.remove('active');
+        }
+
+        // أظهر المشهد الحالي
+        el.classList.remove('fade-out');
+        el.classList.add('active');
+
+        // أنيميت العناصر الداخلية
+        var animEls = el.querySelectorAll('.anim-el');
+        animEls.forEach(function(child) {
+            var delay = parseInt(child.getAttribute('data-delay') || '0');
+            timeouts.push(setTimeout(function() { child.classList.add('show'); }, delay));
+        });
+
+        // الخط الخاص بالمشهد 1
+        var line = el.querySelector('.line');
+        if (line) {
+            var lineDelay = parseInt(line.getAttribute('data-delay') || '800');
+            timeouts.push(setTimeout(function() { line.classList.add('show'); }, lineDelay));
+        }
+
+        // انتقل للمشهد التالي
+        timeouts.push(setTimeout(function() { showScene(index + 1); }, sc.duration));
+    }
+
+    function startProgress() {
+        startTime = Date.now();
+        var fill = document.getElementById('progressFill');
+        progressInterval = setInterval(function() {
+            var elapsed = Date.now() - startTime;
+            var pct = Math.min((elapsed / TOTAL_DURATION) * 100, 100);
+            fill.style.width = pct + '%';
+            if (pct >= 100) clearInterval(progressInterval);
+        }, 50);
+    }
+
+    window.replayVideo = function() {
+        clearAllTimeouts();
+        resetAllScenes();
+        currentScene = -1;
+        setTimeout(function() {
+            startProgress();
+            showScene(0);
+        }, 300);
+    };
+
+    // تشغيل تلقائي
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            startProgress();
+            showScene(0);
+        }, 500);
+    });
+
+    // 🔊 إيقاع بسيط بـ Web Audio API
+    function playBeat() {
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var bpm = 120;
+            var beat = 60 / bpm;
+            var totalBeats = Math.floor(TOTAL_DURATION / 1000 / beat);
+
+            for (var i = 0; i < totalBeats; i++) {
+                var t = ctx.currentTime + i * beat;
+                // Kick
+                if (i % 4 === 0) {
+                    var osc = ctx.createOscillator();
+                    var gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(150, t);
+                    osc.frequency.exponentialRampToValueAtTime(40, t + 0.1);
+                    gain.gain.setValueAtTime(0.3, t);
+                    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+                    osc.start(t); osc.stop(t + 0.15);
+                }
+                // Hi-hat
+                if (i % 2 === 0) {
+                    var bufSize = ctx.sampleRate * 0.05;
+                    var buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+                    var data = buf.getChannelData(0);
+                    for (var s = 0; s < bufSize; s++) data[s] = (Math.random() * 2 - 1) * 0.15;
+                    var src = ctx.createBufferSource();
+                    var g = ctx.createGain();
+                    var hp = ctx.createBiquadFilter();
+                    hp.type = 'highpass'; hp.frequency.value = 7000;
+                    src.buffer = buf;
+                    src.connect(hp); hp.connect(g); g.connect(ctx.destination);
+                    g.gain.setValueAtTime(0.08, t);
+                    g.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
+                    src.start(t);
+                }
+                // Soft pad (every 8 beats)
+                if (i % 8 === 0) {
+                    var notes = [220, 261.63, 329.63, 392];
+                    notes.forEach(function(freq) {
+                        var o = ctx.createOscillator();
+                        var g2 = ctx.createGain();
+                        o.connect(g2); g2.connect(ctx.destination);
+                        o.type = 'sine';
+                        o.frequency.value = freq;
+                        g2.gain.setValueAtTime(0, t);
+                        g2.gain.linearRampToValueAtTime(0.04, t + 0.3);
+                        g2.gain.linearRampToValueAtTime(0, t + beat * 4);
+                        o.start(t); o.stop(t + beat * 4);
+                    });
+                }
+            }
+        } catch(e) {}
+    }
+
+    // تشغيل الصوت عند أول تفاعل (متطلبات المتصفح)
+    var audioStarted = false;
+    document.addEventListener('click', function() {
+        if (!audioStarted) { audioStarted = true; playBeat(); }
+    }, { once: false });
+
+    // محاولة تشغيل تلقائي
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { try { playBeat(); audioStarted = true; } catch(e) {} }, 600);
+    });
+})();
+</script>
+
+</body>
+</html>

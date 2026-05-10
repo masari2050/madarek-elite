@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>مدارك النخبة — التدريب (تصميم مقترح)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
+--pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--acc:#FF8A3D;--as:rgba(255,138,61,.08);
+--suc:#22C55E;--ss:rgba(34,197,94,.07);
+--dng:#EF4444;--ds:rgba(239,68,68,.07);
+--ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
+--ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
+--r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--ease:cubic-bezier(.25,.8,.25,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#E8E6E0;color:var(--ink);-webkit-tap-highlight-color:transparent;min-height:100vh;padding:20px 0}
+.wrap{max-width:400px;margin:0 auto;min-height:90vh;position:relative;padding-bottom:90px;background:var(--bg);border-radius:36px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+@keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* HEADER */
+.ph{padding:18px 18px 8px;display:flex;align-items:center;gap:8px}
+.ph .logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#8B5CF6,#6D5DF6);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
+.ph .title{font-size:17px;font-weight:800;flex:1}
+.sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;letter-spacing:.3px;background:linear-gradient(135deg,#8B5CF6,#6D5DF6);color:#fff}
+
+/* AI HERO STRIP */
+.ai-hero{margin:10px 16px 18px;padding:16px;border-radius:16px;background:linear-gradient(135deg,#6D5DF6 0%,#8B5CF6 50%,#A78BFA 100%);color:#fff;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s;box-shadow:0 10px 30px rgba(109,93,246,.35)}
+.ai-hero::before{content:'';position:absolute;top:-30px;left:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(255,255,255,.2),transparent);border-radius:50%}
+.ai-hero::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent);border-radius:50%}
+.ai-hero:active{transform:scale(.98)}
+.ai-hero .tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.2);padding:4px 9px;border-radius:12px;font-size:10px;font-weight:700;margin-bottom:10px;backdrop-filter:blur(10px)}
+.ai-hero .tag svg{width:11px;height:11px;stroke:#fff;fill:#fff}
+.ai-hero h3{font-size:15px;font-weight:800;margin-bottom:4px;position:relative}
+.ai-hero p{font-size:11.5px;opacity:.9;margin-bottom:12px;position:relative;line-height:1.5}
+.ai-hero .cta{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--pri);padding:8px 14px;border-radius:11px;font-size:12px;font-weight:800;position:relative}
+.ai-hero .cta svg{width:12px;height:12px;stroke:var(--pri);fill:none;stroke-width:2.5}
+
+/* GROUP */
+.group{margin-bottom:18px;animation:si .35s var(--ease) backwards}
+.group:nth-child(2){animation-delay:.05s}.group:nth-child(3){animation-delay:.1s}.group:nth-child(4){animation-delay:.15s}
+.group-head{padding:0 18px 10px;display:flex;align-items:center;justify-content:space-between}
+.group-head .t{font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+.group-head .t .emoji{font-size:15px}
+.group-head .count{font-size:11px;color:var(--i4);font-weight:600}
+.group-head .soon{font-size:10px;font-weight:700;color:var(--acc);background:var(--as);padding:2px 8px;border-radius:8px}
+
+.trn-list{padding:0 16px;display:flex;flex-direction:column;gap:10px}
+
+/* RICH CAT CARD */
+.cat{background:var(--sf);border-radius:16px;border:1px solid var(--ln);padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.cat:active{transform:scale(.98)}
+.cat.recommended{border-color:var(--pri);background:linear-gradient(135deg,rgba(109,93,246,.04),var(--sf))}
+.cat.recommended::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:linear-gradient(180deg,var(--pri),#8B5CF6)}
+.rec-reason{display:flex;align-items:center;gap:5px;background:linear-gradient(90deg,rgba(109,93,246,.08),transparent);padding:6px 10px;border-radius:10px;margin-top:8px;font-size:10.5px;font-weight:700;color:var(--pri)}
+.rec-reason svg{width:11px;height:11px;stroke:var(--pri);fill:var(--pri)}
+.cat.coming{opacity:.6;cursor:not-allowed;background:var(--s2)}
+.cat-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ci{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex-shrink:0;position:relative}
+.ci svg{width:22px;height:22px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ci.km{background:rgba(109,93,246,.12)}.ci.km svg{stroke:var(--pri)}
+.ci.lf{background:rgba(34,197,94,.12)}.ci.lf svg{stroke:var(--suc)}
+.ci.th{background:rgba(255,138,61,.12)}.ci.th svg{stroke:var(--acc)}
+.ci.mx{background:rgba(239,68,68,.1)}.ci.mx svg{stroke:var(--dng)}
+.ci.st{background:var(--s3)}.ci.st svg{stroke:var(--i4)}
+.ci.en{background:rgba(59,130,246,.1)}.ci.en svg{stroke:#3B82F6}
+.cat-info{flex:1;min-width:0}
+.cat-name{font-size:14.5px;font-weight:800;color:var(--ink);margin-bottom:2px}
+.cat-topics{font-size:11px;color:var(--i3);line-height:1.4}
+.cat-count{font-size:11px;font-weight:700;color:var(--i3);background:var(--s2);padding:4px 9px;border-radius:10px;border:1px solid var(--ln);white-space:nowrap;align-self:flex-start}
+
+.cat-stats{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px dashed var(--ln2)}
+.cat-stats .prog{flex:1;display:flex;flex-direction:column;gap:4px}
+.cat-stats .prog-top{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;color:var(--i3);font-weight:600}
+.cat-stats .prog-top .pct{color:var(--ink);font-weight:800}
+.cat-stats .prog-bar{height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.cat-stats .prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--pri),#8B5CF6);transition:width .6s var(--ease)}
+.cat-stats .prog-fill.suc{background:linear-gradient(90deg,var(--suc),#34D399)}
+.cat-stats .prog-fill.warn{background:linear-gradient(90deg,#EAB308,var(--acc))}
+.cat-stats .prog-fill.dng{background:linear-gradient(90deg,var(--dng),#F87171)}
+
+.last-result{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:5px 9px;border-radius:9px;white-space:nowrap}
+.last-result.suc{color:var(--suc);background:var(--ss)}
+.last-result.warn{color:var(--acc);background:var(--as)}
+.last-result.dng{color:var(--dng);background:var(--ds)}
+.last-result.none{color:var(--i4);background:var(--s2)}
+.last-result svg{width:11px;height:11px;fill:currentColor}
+
+.streak-badge{position:absolute;top:10px;right:12px;background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:3px;box-shadow:0 4px 10px rgba(245,158,11,.3)}
+.streak-badge svg{width:11px;height:11px}
+
+/* PLACEMENT TEST CARD */
+.placement{background:linear-gradient(135deg,#3B82F6 0%,#6366F1 100%);color:#fff;border-radius:16px;padding:16px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden;box-shadow:0 10px 24px rgba(59,130,246,.25)}
+.placement:active{transform:scale(.98)}
+.placement::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(255,255,255,.18),transparent);border-radius:50%}
+.placement .tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.2);padding:3px 9px;border-radius:10px;font-size:10px;font-weight:800;margin-bottom:9px;backdrop-filter:blur(10px);position:relative}
+.placement .tag svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.5}
+.placement-top{display:flex;align-items:center;gap:12px;margin-bottom:11px;position:relative}
+.placement-ic{width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,.2);display:grid;place-items:center;backdrop-filter:blur(10px);flex-shrink:0}
+.placement-ic svg{width:23px;height:23px;stroke:#fff;fill:none;stroke-width:2}
+.placement h4{font-size:15.5px;font-weight:800;margin-bottom:2px}
+.placement .sub{font-size:11.5px;opacity:.88;line-height:1.5}
+.placement .feats{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;position:relative}
+.placement .feat{font-size:10px;font-weight:700;background:rgba(255,255,255,.15);padding:4px 9px;border-radius:9px;backdrop-filter:blur(10px);display:inline-flex;align-items:center;gap:3px}
+.placement .feat svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5}
+.placement .start-btn{margin-top:12px;background:#fff;color:#3B82F6;padding:9px 14px;border-radius:11px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:5px;position:relative}
+.placement .start-btn svg{width:12px;height:12px;stroke:#3B82F6;fill:none;stroke-width:2.5}
+
+/* SUGGEST NEW */
+.suggest-new{background:linear-gradient(135deg,rgba(109,93,246,.05),rgba(139,92,246,.08));border:1.5px dashed rgba(109,93,246,.3);border-radius:16px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+.suggest-new:active{transform:scale(.98)}
+.suggest-new .ic{width:42px;height:42px;border-radius:50%;background:var(--pri);display:grid;place-items:center;margin:0 auto 10px}
+.suggest-new .ic svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.5}
+.suggest-new h4{font-size:13.5px;font-weight:800;color:var(--pri);margin-bottom:3px}
+.suggest-new p{font-size:11px;color:var(--i3)}
+
+/* BOTTOM NAV */
+.nav{position:absolute;bottom:0;left:0;right:0;height:70px;background:var(--nav);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;box-shadow:0 -4px 20px rgba(0,0,0,.1)}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px}
+.ni svg{width:21px;height:21px;stroke:rgba(255,255,255,.35);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ni span{font-size:10.5px;font-weight:500;color:rgba(255,255,255,.35)}
+.ni.on{background:rgba(109,93,246,.28)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+
+/* INFO BAR */
+.info-note{background:#FEF3C7;border:1px solid #FDE68A;color:#92400E;padding:10px 14px;margin:0 16px 14px;border-radius:12px;font-size:11px;text-align:center;font-weight:600}
+
+/* MOBILE FRAME HEADER */
+.frame-header{background:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;color:var(--ink)}
+.frame-header .dot{display:flex;gap:5px}
+.frame-header .dot span{width:8px;height:8px;border-radius:50%;background:#E8E6E0}
+.frame-status{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--i3)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="ph">
+    <div class="logo">م</div>
+    <div class="title">التدريب</div>
+    <span class="sub-badge">Elite</span>
+  </div>
+
+  <div class="info-note">
+    📌 هذه معاينة تصميم فقط — الأرقام والبيانات وهمية للعرض
+  </div>
+
+  <!-- AI HERO -->
+  <div class="ai-hero">
+    <div class="tag">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      تحليل ذكي لأدائك الحقيقي
+    </div>
+    <h3>نقطة ضعفك الحالية: إكمال الجمل</h3>
+    <p>بناءً على آخر 47 محاولة — دقّتك 42% في هذا النوع. جهّزنا لك 15 سؤالاً يركّز على الأنماط اللي تضيع فيها</p>
+    <div class="cta">
+      ابدأ التدريب المخصص
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+  </div>
+
+  <!-- GROUP 1: CORE TESTS -->
+  <div class="group">
+    <div class="group-head">
+      <div class="t"><span class="emoji">🎯</span> الاختبارات الرئيسية</div>
+      <div class="count">3 أقسام</div>
+    </div>
+    <div class="trn-list">
+
+      <!-- قدرات كمي -->
+      <div class="cat">
+        <div class="cat-top">
+          <div class="ci km"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="cat-info">
+            <div class="cat-name">قدرات كمي</div>
+            <div class="cat-topics">النسب · الهندسة · الجبر · الإحصاء</div>
+          </div>
+          <div class="cat-count">1,143 سؤال</div>
+        </div>
+        <div class="cat-stats">
+          <div class="prog">
+            <div class="prog-top"><span>التقدم</span><span class="pct">43%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:43%"></div></div>
+          </div>
+          <div class="last-result suc">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            78%
+          </div>
+        </div>
+      </div>
+
+      <!-- قدرات لفظي - موصى به -->
+      <div class="cat recommended">
+        <div class="streak-badge">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+          4 أيام
+        </div>
+        <div class="cat-top">
+          <div class="ci lf"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+          <div class="cat-info">
+            <div class="cat-name">قدرات لفظي</div>
+            <div class="cat-topics">التناظر · إكمال الجمل · الاستيعاب</div>
+          </div>
+          <div class="cat-count">1,461 سؤال</div>
+        </div>
+        <div class="rec-reason">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          الذكاء الاصطناعي ينصحك تركّز هنا — أقل قسم دقّة عندك
+        </div>
+        <div class="cat-stats">
+          <div class="prog">
+            <div class="prog-top"><span>التقدم</span><span class="pct">18%</span></div>
+            <div class="prog-bar"><div class="prog-fill dng" style="width:18%"></div></div>
+          </div>
+          <div class="last-result dng">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+            42%
+          </div>
+        </div>
+      </div>
+
+      <!-- تحصيلي -->
+      <div class="cat">
+        <div class="cat-top">
+          <div class="ci th"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/></svg></div>
+          <div class="cat-info">
+            <div class="cat-name">تحصيلي</div>
+            <div class="cat-topics">أحياء · كيمياء · فيزياء · رياضيات</div>
+          </div>
+          <div class="cat-count">986 سؤال</div>
+        </div>
+        <div class="cat-stats">
+          <div class="prog">
+            <div class="prog-top"><span>التقدم</span><span class="pct">8%</span></div>
+            <div class="prog-bar"><div class="prog-fill warn" style="width:8%"></div></div>
+          </div>
+          <div class="last-result none">
+            لم تبدأ
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GROUP 2: MIXED -->
+  <div class="group">
+    <div class="group-head">
+      <div class="t"><span class="emoji">🔀</span> التدريب المختلط</div>
+      <div class="count">قسم واحد</div>
+    </div>
+    <div class="trn-list">
+
+      <div class="cat">
+        <div class="cat-top">
+          <div class="ci mx"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+          <div class="cat-info">
+            <div class="cat-name">كمي + لفظي مختلط</div>
+            <div class="cat-topics">تدريب شامل من القسمين — محاكاة الاختبار الحقيقي</div>
+          </div>
+          <div class="cat-count">2,604 سؤال</div>
+        </div>
+        <div class="cat-stats">
+          <div class="prog">
+            <div class="prog-top"><span>التقدم</span><span class="pct">29%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:29%"></div></div>
+          </div>
+          <div class="last-result suc">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            65%
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GROUP 3: LANGUAGE -->
+  <div class="group">
+    <div class="group-head">
+      <div class="t"><span class="emoji">🌍</span> اختبارات اللغة</div>
+      <div class="count">متاح الآن</div>
+    </div>
+    <div class="trn-list">
+
+      <!-- PLACEMENT TEST (OPEN NOW) -->
+      <div class="placement">
+        <div class="tag">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          مجاني · مفتوح للجميع
+        </div>
+        <div class="placement-top">
+          <div class="placement-ic">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div style="flex:1">
+            <h4>اختبر مستواك بالإنجليزية</h4>
+            <div class="sub">اختبار تشخيصي أكاديمي يحدد مستواك (A1 → C2) بدقة</div>
+          </div>
+        </div>
+        <div class="feats">
+          <div class="feat"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>أسئلة جديدة كل محاولة</div>
+          <div class="feat"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>تقييم أكاديمي CEFR</div>
+          <div class="feat">📚 قواعد · مفردات · قراءة</div>
+        </div>
+        <div class="start-btn">
+          ابدأ اختبار تحديد المستوى
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+      </div>
+
+      <!-- STEP COMING SOON -->
+      <div class="cat coming">
+        <div class="cat-top">
+          <div class="ci en"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <div class="cat-info">
+            <div class="cat-name">STEP</div>
+            <div class="cat-topics">اختبار كفايات اللغة الإنجليزية الرسمي</div>
+          </div>
+          <div class="cat-count">🔒 قريباً</div>
+        </div>
+      </div>
+
+      <!-- IELTS COMING SOON -->
+      <div class="cat coming">
+        <div class="cat-top">
+          <div class="ci en"><svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg></div>
+          <div class="cat-info">
+            <div class="cat-name">IELTS / TOEFL</div>
+            <div class="cat-topics">محاكاة اختبارات اللغة الدولية</div>
+          </div>
+          <div class="cat-count">🔒 قريباً</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUGGEST NEW -->
+  <div style="padding:0 16px 20px">
+    <div class="suggest-new">
+      <div class="ic">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <h4>اقترح قسماً جديداً</h4>
+      <p>صوّت للأقسام القادمة — صوتك يصنع الفرق</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="ni on"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>التدريب</span></div>
+    <div class="ni"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>التسريبات</span></div>
+    <div class="ni"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></div>
+    <div class="ni"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>التقارير</span></div>
+    <div class="ni"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الملف</span></div>
+  </nav>
+
+</div>
+
+</body>
+</html>
