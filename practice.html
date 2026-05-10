@@ -609,9 +609,6 @@ function renderQuestion() {
     // Feedback placeholder
     html += '<div id="fbArea"></div>';
 
-    // Stats (hidden until answered in instant mode)
-    html += '<div id="statsArea" style="display:none"></div>';
-
     // Next button
     html += '<button class="q-next" id="nextBtn" onclick="nextQuestion()">' + (currentIdx < questions.length - 1 ? 'السؤال التالي' : 'عرض النتيجة') + '</button>';
 
@@ -714,11 +711,6 @@ function showInstantFeedback(idx, isCorrect, q) {
     }
     fbHtml += '</div>';
     document.getElementById('fbArea').innerHTML = fbHtml;
-
-    // Stats
-    const pct = correctCount + wrongCount > 0 ? Math.round(correctCount / (correctCount + wrongCount) * 100) : 0;
-    document.getElementById('statsArea').innerHTML = '<div class="q-stats"><div class="qsb ok"><div class="v">' + correctCount + '</div><div class="l">صحيح</div></div><div class="qsb no"><div class="v">' + wrongCount + '</div><div class="l">خطأ</div></div><div class="qsb rt"><div class="v">' + pct + '%</div><div class="l">النسبة</div></div></div>';
-    document.getElementById('statsArea').style.display = '';
 
     document.getElementById('nextBtn').style.display = 'block';
 
