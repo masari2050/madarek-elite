@@ -121,7 +121,9 @@ img { max-width: 100%; display: block; }
 }
 .urgency-bar svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; animation: pulse 1.6s infinite ease-in-out; }
 @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.15);opacity:.85} }
-.cd-num { font-weight: 800; font-variant-numeric: tabular-nums; padding: 0 4px; }
+.cd-num { font-weight: 800; font-variant-numeric: tabular-nums; padding: 0 3px; }
+.cd-lbl { font-size: 11px; font-weight: 700; opacity: .85; margin-left: 4px; }
+.cd-time { font-family: 'IBM Plex Sans Arabic', monospace; font-size: 13px; letter-spacing: .5px; padding: 0 6px; }
 
 /* ═══ HERO ═══ */
 .hero {
@@ -147,13 +149,16 @@ img { max-width: 100%; display: block; }
 .hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; position: relative; z-index: 2; }
 .hero-logo { display: flex; align-items: center; gap: 9px; }
 .hero-logo-ic {
-  width: 38px; height: 38px;
-  border-radius: 11px;
+  width: 42px; height: 42px;
+  border-radius: 12px;
   background: rgba(255,255,255,.18);
   display: flex; align-items: center; justify-content: center;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.18);
+  overflow: hidden;
+  padding: 4px;
 }
+.hero-logo-ic img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .hero-logo-ic svg { width: 22px; height: 22px; fill: #FFD700; }
 .hero-logo-tx { font-size: 13.5px; font-weight: 700; }
 .hero-logo-tx-sub { font-size: 10.5px; font-weight: 500; opacity: .8; line-height: 1; margin-top: 2px; }
@@ -837,11 +842,9 @@ img { max-width: 100%; display: block; }
 <!-- ═══ URGENCY COUNTDOWN BAR ═══ -->
 <div class="urgency-bar">
   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14" stroke="#fff" fill="none" stroke-width="2.5"/></svg>
-  <span>اختبار التحصيلي خلال </span>
-  <span class="cd-num" id="cd-d">—</span>
-  <span>أيام و</span>
-  <span class="cd-num" id="cd-h">—</span>
-  <span>ساعة</span>
+  <span>يبدأ خلال</span>
+  <span class="cd-num" id="cd-d">—</span><span class="cd-lbl">ي</span>
+  <span class="cd-num cd-time" id="cd-time">--:--:--</span>
 </div>
 
 <div class="wrap">
@@ -851,7 +854,7 @@ img { max-width: 100%; display: block; }
   <div class="hero-top">
     <div class="hero-logo">
       <div class="hero-logo-ic">
-        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        <img src="/icons/icon-192.png" alt="مدارك النخبة" onerror="this.outerHTML='<svg viewBox=&quot;0 0 24 24&quot; style=&quot;width:22px;height:22px;fill:%23FFD700&quot;><polygon points=&quot;12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26&quot;/></svg>'">
       </div>
       <div>
         <div class="hero-logo-tx">مدارك النخبة</div>
@@ -1158,25 +1161,27 @@ img { max-width: 100%; display: block; }
 (function(){
   // الخميس 14 مايو 2026 الساعة 8:00 صباحاً (توقيت السعودية UTC+3 → 5:00 UTC)
   var TARGET = new Date('2026-05-14T05:00:00Z').getTime();
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
   function tick(){
-    var now = Date.now();
-    var diff = TARGET - now;
+    var diff = TARGET - Date.now();
+    var dEl = document.getElementById('cd-d');
+    var tEl = document.getElementById('cd-time');
     if (diff <= 0) {
-      document.getElementById('cd-d').textContent = '0';
-      document.getElementById('cd-h').textContent = '0';
+      if (dEl) dEl.textContent = '0';
+      if (tEl) tEl.textContent = '00:00:00';
       var bar = document.querySelector('.urgency-bar');
-      if (bar) bar.firstChild && (bar.innerHTML = bar.innerHTML.replace(/خلال[^أ]*أيام/, 'بدأ الآن'));
+      if (bar) bar.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14" stroke="#fff" fill="none" stroke-width="2.5"/></svg><span>الاختبار بدأ — بالتوفيق</span>';
       return;
     }
     var days = Math.floor(diff / 86400000);
     var hours = Math.floor((diff % 86400000) / 3600000);
-    var dEl = document.getElementById('cd-d');
-    var hEl = document.getElementById('cd-h');
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
     if (dEl) dEl.textContent = days;
-    if (hEl) hEl.textContent = hours;
+    if (tEl) tEl.textContent = pad(hours) + ':' + pad(mins) + ':' + pad(secs);
   }
   tick();
-  setInterval(tick, 60000); // تحديث كل دقيقة
+  setInterval(tick, 1000); // تحديث كل ثانية
 })();
 
 // ═══ FAQ toggle ═══
