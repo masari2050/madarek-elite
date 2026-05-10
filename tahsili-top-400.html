@@ -184,6 +184,38 @@ img { max-width: 100%; display: block; }
   100% { box-shadow: 0 0 0 0 rgba(255,107,107,0); }
 }
 
+/* Hook strip — البطل البصري للصفحة */
+.hook-strip {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 18px;
+  padding: 14px 18px 12px;
+  background: linear-gradient(135deg, rgba(255,215,0,.14) 0%, rgba(245,158,11,.10) 100%);
+  border: 1px solid rgba(255,215,0,.32);
+  border-radius: 18px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+.hook-label {
+  display: block;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #FFD700 0%, #FCD34D 50%, #F59E0B 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.hook-sub {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,.92);
+  letter-spacing: 0;
+}
+
 .hero h1 {
   font-size: 32px;
   font-weight: 900;
@@ -833,6 +865,12 @@ img { max-width: 100%; display: block; }
     <span>تحصيلي 1447 — يبدأ الخميس</span>
   </div>
 
+  <!-- Hook كبير ملفت — موضوع الصفحة في سطر -->
+  <div class="hook-strip">
+    <span class="hook-label">الأسئلة الأكثر تكراراً</span>
+    <span class="hook-sub">في اختبارات التحصيلي</span>
+  </div>
+
   <h1>
     في آخر الأيام<br>
     <span class="gold">لا تشتّت نفسك</span>
@@ -1068,7 +1106,7 @@ img { max-width: 100%; display: block; }
   <h2 class="sec-h">أسئلة <span class="hl">شائعة</span></h2>
   <div class="faq-item">
     <div class="faq-q">كم عدد الأسئلة فعلياً؟</div>
-    <div class="faq-a">حالياً +380 سؤال (92 رياضيات + 92 فيزياء + 98 كيمياء + 100 أحياء) — كلها محمّلة في قاعدة البيانات وتظهر مباشرة في قسم التدريب بعد الاشتراك. نضيف أسئلة جديدة كل أسبوع للوصول لـ400 وأكثر.</div>
+    <div class="faq-a">حالياً +380 سؤال (92 رياضيات + 92 فيزياء + 98 كيمياء + 100 أحياء) — جاهزة للتدريب فور اشتراكك. نضيف أسئلة جديدة كل أسبوع للوصول لـ400 وأكثر.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">هل الأسئلة تتحدّث؟</div>
@@ -1085,10 +1123,6 @@ img { max-width: 100%; display: block; }
   <div class="faq-item">
     <div class="faq-q">كم تكلفة الاشتراك بعد الخصم؟</div>
     <div class="faq-a">الباقة الشهرية بـ 84 ر.س بدلاً من 99 (-15%). الـ3 شهور بـ 211 ر.س بدلاً من 249. السنوي بـ 679 ر.س بدلاً من 799. كلها بدون أي رسوم إضافية.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q">إذا ما رضيت، أقدر ألغي؟</div>
-    <div class="faq-a">الاشتراك ما يجدّد تلقائي إلا لو فعّلت الخيار. تقدر توقف التجديد في أي وقت من الإعدادات.</div>
   </div>
 </section>
 
