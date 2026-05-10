@@ -362,6 +362,7 @@ const MODE = params.get('mode') || 'instant'; // instant | end
 const SECTION_NAME = params.get('name') || 'تدريب';
 const LEAK_GROUP_ID = params.get('leak') || null; // فلترة حسب leak_group
 const TOP_REPEATED = params.get('top_repeated') === '1' || params.get('top_repeated') === 'true'; // فلترة الأسئلة الأكثر تكراراً
+const PREDICTED = params.get('predicted') === '1' || params.get('predicted') === 'true'; // فلترة توقعات النخبة
 const SAFE_COLS = 'id,question_text,choices,correct_index,image_url,section,sub_section,topic,passage_id,passage_text,passage_order,explanation,leak_group_id';
 
 const sectionMap = {quant:'قدرات كمي',verbal:'قدرات لفظي',tahsili:'تحصيلي',mixed:'مختلط'};
@@ -490,6 +491,11 @@ async function loadQuestions() {
             query = query.eq('is_top_repeated', true);
         }
 
+        // فلتر توقعات النخبة (المنتقى من نخبة المصادر)
+        if (PREDICTED) {
+            query = query.eq('is_predicted', true);
+        }
+
         // Get more than needed, then shuffle & slice
         const { data, error } = await query.is('passage_id', null).limit(500);
         if (error) throw error;
@@ -500,11 +506,11 @@ async function loadQuestions() {
             return typeof q.correct_index === 'number' && q.correct_index >= 0 && q.correct_index < n;
         });
 
-        // ── Smart rotation للأسئلة الأكثر تكراراً ──
+        // ── Smart rotation للأسئلة الأكثر تكراراً + التوقعات ──
         // لو المستخدم حلّ سؤالاً صح في آخر 14 يوم، نأجّله لآخر القائمة
         // عشان كل تدريب جديد يحس بأسئلة جديدة، وما يكرر اللي اتقنها فوراً
         const isRealUser = profile && profile.id && profile.id !== '00000000-0000-0000-0000-000000000000';
-        if (TOP_REPEATED && isRealUser) {
+        if ((TOP_REPEATED || PREDICTED) && isRealUser) {
             try {
                 const since = new Date(Date.now() - 14 * 864e5).toISOString();
                 const { data: recent } = await sb.from('attempts')

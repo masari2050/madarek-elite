@@ -275,7 +275,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- ═══ TAHSILI TOP-REPEATED FEATURED BANNER ═══ -->
-<a href="/practice.html?section=tahsili&top_repeated=1&count=20&mode=instant" onclick="openTahsiliCountModal();return false;" id="topRepBanner" style="display:block;text-decoration:none;margin:0 0 18px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(255,215,0,.32) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(255,138,61,.22) 0%,transparent 55%),linear-gradient(135deg,#1A1428 0%,#3D2EB8 50%,#5B4DD4 100%);position:relative;box-shadow:0 14px 40px rgba(245,158,11,.20),0 6px 20px rgba(109,93,246,.18);border:1px solid rgba(255,215,0,.25);cursor:pointer">
+<a href="/practice.html?section=tahsili&top_repeated=1&count=20&mode=instant" onclick="openTahsiliCountModal('top_repeated');return false;" id="topRepBanner" style="display:block;text-decoration:none;margin:0 0 14px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(255,215,0,.32) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(255,138,61,.22) 0%,transparent 55%),linear-gradient(135deg,#1A1428 0%,#3D2EB8 50%,#5B4DD4 100%);position:relative;box-shadow:0 14px 40px rgba(245,158,11,.20),0 6px 20px rgba(109,93,246,.18);border:1px solid rgba(255,215,0,.25);cursor:pointer">
   <div style="padding:20px 18px 18px;color:#fff;position:relative">
     <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:rgba(255,215,0,.20);border:1px solid rgba(255,215,0,.45);border-radius:50px;font-size:10.5px;font-weight:700;color:#FFD700;margin-bottom:10px">
       <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FF6B6B;animation:pulse 1.6s infinite ease-in-out"></span>
@@ -303,6 +303,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 <style>
 @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.2);opacity:.8} }
 #topRepBanner:active { transform: scale(.99); }
+#predBanner:active { transform: scale(.99); }
 
 /* ── Tahsili Count Selector Modal ── */
 @keyframes tcmSlideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
@@ -320,29 +321,83 @@ html[data-fs="large"] .wrap{zoom:1.1}
 .tcm-btn .tcm-num { display:block; font-size:20px; font-weight:900; color:var(--pri); margin-bottom:2px }
 .tcm-btn.tcm-all { background:linear-gradient(135deg,#FFD700 0%,#F59E0B 100%); border-color:#F59E0B; color:#1A1428 }
 .tcm-btn.tcm-all .tcm-num { color:#1A1428 }
+/* mode: predicted — emerald accent for the All button */
+#tahsiliCountModal.tcm-mode-predicted .tcm-btn.tcm-all { background:linear-gradient(135deg,#10B981 0%,#059669 100%); border-color:#059669; color:#fff }
+#tahsiliCountModal.tcm-mode-predicted .tcm-btn.tcm-all .tcm-num { color:#fff }
+#tahsiliCountModal.tcm-mode-predicted .tcm-btn:hover { border-color:#059669; background:rgba(5,150,105,.06) }
+#tahsiliCountModal.tcm-mode-predicted .tcm-btn .tcm-num { color:#059669 }
 .tcm-cancel { display:block; width:100%; margin-top:14px; padding:11px; background:transparent; border:none; color:var(--i3); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit }
 .tcm-cancel:hover { color:var(--ink) }
 </style>
 
-<!-- ═══ TAHSILI COUNT SELECTOR MODAL ═══ -->
+<!-- ═══ TAHSILI PREDICTIONS BANNER (توقعات النخبة) ═══ -->
+<a href="/practice.html?section=tahsili&predicted=1&count=20&mode=instant" onclick="openTahsiliCountModal('predicted');return false;" id="predBanner" style="display:block;text-decoration:none;margin:0 0 18px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(16,185,129,.30) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(217,119,6,.20) 0%,transparent 55%),linear-gradient(135deg,#0F2A26 0%,#0E5C4F 50%,#10B981 100%);position:relative;box-shadow:0 14px 40px rgba(16,185,129,.18),0 6px 20px rgba(15,42,38,.22);border:1px solid rgba(16,185,129,.30);cursor:pointer">
+  <div style="padding:20px 18px 18px;color:#fff;position:relative">
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:rgba(255,255,255,.14);border:1px solid rgba(16,185,129,.45);border-radius:50px;font-size:10.5px;font-weight:700;color:#A7F3D0;margin-bottom:10px">
+      <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10B981;animation:pulse 1.6s infinite ease-in-out"></span>
+      <span>توقعات تحصيلي 1447</span>
+    </div>
+    <div style="font-size:21px;font-weight:900;line-height:1.35;letter-spacing:-0.3px;margin-bottom:6px">
+      <span style="background:linear-gradient(135deg,#FDE68A 0%,#FBBF24 50%,#F59E0B 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">توقعات النخبة</span><br>
+      <span style="font-weight:800;font-size:18px">المنتقى من نخبة المصادر</span>
+    </div>
+    <p style="font-size:12.5px;opacity:.92;line-height:1.7;margin-bottom:14px">
+      تجربة موحّدة بدل تقليب الـPDFs — مختلطة • بدون تكرار • جاهزة للتدريب
+    </p>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div style="display:inline-flex;align-items:center;gap:7px;padding:11px 18px;background:linear-gradient(135deg,#FDE68A,#F59E0B);color:#0F2A26;border-radius:11px;font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(245,158,11,.45)">
+        <span>ابدأ التدريب</span>
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#0F2A26;fill:none;stroke-width:3"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <div style="font-size:11px;color:rgba(167,243,208,.95);font-weight:600;display:flex;align-items:center;gap:5px">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:#A7F3D0;fill:none;stroke-width:2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <span>إصدار حصري</span>
+      </div>
+    </div>
+  </div>
+</a>
+
+<!-- ═══ TAHSILI COUNT SELECTOR MODAL (يدعم top_repeated + predicted) ═══ -->
 <div id="tahsiliCountModal" onclick="if(event.target===this)closeTahsiliCountModal()" role="dialog" aria-modal="true" aria-labelledby="tcmTitle">
   <div class="tcm-sheet">
     <div class="tcm-grip"></div>
     <h3 id="tcmTitle" class="tcm-title">كم سؤال تبي تتدرّب؟</h3>
-    <p class="tcm-sub">من +380 سؤال متجدّد — مختلطة عشوائياً<br>الأسئلة اللي حليتها صح ما تتكرر بسرعة</p>
+    <p id="tcmSub" class="tcm-sub">من +380 سؤال متجدّد — مختلطة عشوائياً<br>الأسئلة اللي حليتها صح ما تتكرر بسرعة</p>
     <div class="tcm-grid">
       <button class="tcm-btn" onclick="startTahsiliPractice(20)"><span class="tcm-num">20</span>تدريب سريع</button>
       <button class="tcm-btn" onclick="startTahsiliPractice(50)"><span class="tcm-num">50</span>جلسة متوسطة</button>
       <button class="tcm-btn" onclick="startTahsiliPractice(100)"><span class="tcm-num">100</span>تدريب مكثّف</button>
-      <button class="tcm-btn tcm-all" onclick="startTahsiliPractice(500)"><span class="tcm-num">كل الأسئلة</span>+380 سؤال</button>
+      <button class="tcm-btn tcm-all" onclick="startTahsiliPractice(500)"><span id="tcmAllNum" class="tcm-num">كل الأسئلة</span><span id="tcmAllLabel">+380 سؤال</span></button>
     </div>
     <button class="tcm-cancel" onclick="closeTahsiliCountModal()">إلغاء</button>
   </div>
 </div>
 <script>
-function openTahsiliCountModal(){ document.getElementById('tahsiliCountModal').classList.add('show'); document.body.style.overflow='hidden' }
+let _tcmMode = 'top_repeated';
+function openTahsiliCountModal(mode){
+  _tcmMode = mode || 'top_repeated';
+  const modal = document.getElementById('tahsiliCountModal');
+  const title = document.getElementById('tcmTitle');
+  const sub = document.getElementById('tcmSub');
+  const allLabel = document.getElementById('tcmAllLabel');
+  modal.classList.toggle('tcm-mode-predicted', _tcmMode === 'predicted');
+  if (_tcmMode === 'predicted') {
+    title.textContent = 'كم سؤال من التوقعات؟';
+    sub.innerHTML = 'منتقاة من نخبة المصادر — مختلطة عشوائياً<br>الأسئلة اللي حليتها صح تُؤجَّل لآخر القائمة';
+    allLabel.textContent = 'كل التوقعات';
+  } else {
+    title.textContent = 'كم سؤال تبي تتدرّب؟';
+    sub.innerHTML = 'من +380 سؤال متجدّد — مختلطة عشوائياً<br>الأسئلة اللي حليتها صح ما تتكرر بسرعة';
+    allLabel.textContent = '+380 سؤال';
+  }
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
 function closeTahsiliCountModal(){ document.getElementById('tahsiliCountModal').classList.remove('show'); document.body.style.overflow='' }
-function startTahsiliPractice(c){ location.href = '/practice.html?section=tahsili&top_repeated=1&count=' + c + '&mode=instant' }
+function startTahsiliPractice(c){
+  const param = _tcmMode === 'predicted' ? 'predicted=1' : 'top_repeated=1';
+  location.href = '/practice.html?section=tahsili&' + param + '&count=' + c + '&mode=instant';
+}
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeTahsiliCountModal() });
 </script>
 
