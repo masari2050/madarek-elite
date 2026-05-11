@@ -89,7 +89,8 @@
         if (!profile) return false;
         if (profile.role === 'admin' || profile.role === 'staff') return true;
         if (!profile.subscription_type || profile.subscription_type === 'free') return false;
-        if (!profile.subscription_end) return false;
+        // NULL subscription_end = منحة إدارية مدى الحياة (نفس تفسير pricing.html)
+        if (!profile.subscription_end) return true;
         return new Date(profile.subscription_end) > new Date();
     }
 
