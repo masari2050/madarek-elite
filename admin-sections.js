@@ -4325,9 +4325,39 @@ window.loadVisitors = async function(opts = {}) {
     const { sb } = window.A;
     const isRefresh = opts.refresh === true;
 
-    // First-time render: build skeleton with time range chips
+    // First-time render: build skeleton with live feed + time range chips
     if (!isRefresh) {
         $c().innerHTML = `
+        <!-- ═══ النشاط اللحظي (Live Activity Feed) ═══ -->
+        <div style="background:var(--sf);border:1px solid var(--ln);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--ln);background:linear-gradient(180deg,rgba(34,197,94,.05),transparent)">
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span style="width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:livePulse 1.4s infinite"></span>
+                    <div>
+                        <div style="font-size:14px;font-weight:800;color:var(--ink)">النشاط اللحظي</div>
+                        <div style="font-size:10.5px;color:var(--i3)">آخر التفاعلات · يتحدّث كل 5 ثوان</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <select id="visLiveFilter" onchange="window._visState.liveFilter=this.value;visRefreshLive()" style="font-size:11px;padding:5px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);font-family:inherit;cursor:pointer">
+                        <option value="all">كل الأحداث</option>
+                        <option value="visits">زيارات الصفحات</option>
+                        <option value="signups">تسجيلات جديدة</option>
+                        <option value="practice">حلّ الأسئلة</option>
+                        <option value="payments">المدفوعات</option>
+                    </select>
+                    <button onclick="visRefreshLive()" style="font-size:11px;padding:5px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--i2);font-family:inherit;cursor:pointer">↻</button>
+                </div>
+            </div>
+            <div id="visLiveList" style="max-height:380px;overflow-y:auto;padding:6px 0">
+                <div class="loader" style="padding:30px">جاري التحميل...</div>
+            </div>
+            <div style="padding:10px 16px;border-top:1px solid var(--ln);font-size:10.5px;color:var(--i3);text-align:center;background:var(--s2)">
+                <span id="visLiveCount">0</span> حدث في آخر 30 دقيقة
+                · <span id="visLiveUpdate">--:--</span>
+            </div>
+        </div>
+
         <!-- Time range selector -->
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
             <span style="font-size:12px;color:var(--i3);font-weight:600">الفترة الزمنية:</span>
@@ -4339,23 +4369,44 @@ window.loadVisitors = async function(opts = {}) {
             </div>
             <div style="margin-right:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--i3)">
                 <span style="width:7px;height:7px;border-radius:50%;background:var(--suc);animation:livePulse 1.4s infinite"></span>
-                <span>تحديث تلقائي · <span id="visLastRefresh">الآن</span></span>
+                <span>إحصائيات الفترة · <span id="visLastRefresh">الآن</span></span>
             </div>
         </div>
         <div id="visArea"><div class="loader">جاري التحميل...</div></div>`;
 
-        // Inject chip styles + livePulse keyframe (once)
+        // Inject chip styles + livePulse keyframe + live feed styles (once)
         if (!document.getElementById('visChipStyles')) {
             const s = document.createElement('style');
             s.id = 'visChipStyles';
-            s.textContent = `.vis-chip{padding:6px 14px;border:none;background:transparent;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--i3);cursor:pointer;font-family:inherit;transition:all .15s}.vis-chip:hover{color:var(--pri)}.vis-chip.active{background:var(--sf);color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.06)}@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}`;
+            s.textContent = `.vis-chip{padding:6px 14px;border:none;background:transparent;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--i3);cursor:pointer;font-family:inherit;transition:all .15s}.vis-chip:hover{color:var(--pri)}.vis-chip.active{background:var(--sf);color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.06)}@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}
+.vlive-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(0,0,0,.04);transition:background .2s}
+.vlive-row:hover{background:var(--s2)}
+.vlive-row.new{animation:vliveIn .5s ease}
+@keyframes vliveIn{from{background:rgba(34,197,94,.18);transform:translateX(-8px);opacity:0}to{background:transparent;transform:none;opacity:1}}
+.vlive-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
+.vlive-body{flex:1;min-width:0}
+.vlive-text{font-size:12.5px;color:var(--ink);line-height:1.5}
+.vlive-meta{font-size:10.5px;color:var(--i3);margin-top:2px;display:flex;gap:8px;align-items:center}
+.vlive-time{font-size:11px;color:var(--i3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
+.vlive-pill{font-size:9px;padding:2px 6px;border-radius:6px;font-weight:700}`;
             document.head.appendChild(s);
         }
 
-        // Schedule auto-refresh every 30s
+        // Init live feed state
+        if (!window._visState.liveFilter) window._visState.liveFilter = 'all';
+        if (!window._visState.liveSeen) window._visState.liveSeen = new Set();
+
+        // Start live feed (immediate + every 5s)
+        if (window._visState.liveTimer) clearInterval(window._visState.liveTimer);
+        visRefreshLive();
+        window._visState.liveTimer = setInterval(() => {
+            if (document.getElementById('visLiveList')) visRefreshLive();
+            else { clearInterval(window._visState.liveTimer); window._visState.liveTimer = null; }
+        }, 5000);
+
+        // Schedule full auto-refresh every 30s for KPIs
         if (window._visState.refreshTimer) clearInterval(window._visState.refreshTimer);
         window._visState.refreshTimer = setInterval(() => {
-            // Only refresh if section still visible
             if (document.getElementById('visArea')) loadVisitors({ refresh: true });
             else { clearInterval(window._visState.refreshTimer); window._visState.refreshTimer = null; }
         }, 30000);
@@ -4763,6 +4814,169 @@ window.visSetRange = function(range) {
     window._visState.range = range;
     document.querySelectorAll('.vis-chip').forEach(c => c.classList.toggle('active', c.dataset.range === range));
     loadVisitors({ refresh: true });
+};
+
+// ═══════════════════════════════════════════════════════
+// LIVE ACTIVITY FEED — يجلب آخر 30 دقيقة من 4 مصادر ويعرضها كـtimeline
+// ═══════════════════════════════════════════════════════
+window.visRefreshLive = async function() {
+    const list = document.getElementById('visLiveList');
+    if (!list) return;
+    const { sb } = window.A;
+    const since = new Date(Date.now() - 30*60*1000).toISOString();
+
+    try {
+        const [evs, sus, ats, pys] = await Promise.all([
+            sb.from('analytics_events').select('event_type,page_path,user_id,anonymous_id,device,metadata,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(120),
+            sb.from('profiles').select('id,full_name,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(20),
+            sb.from('attempts').select('user_id,is_correct,created_at,question_id').gte('created_at', since).order('created_at',{ascending:false}).limit(40),
+            sb.from('payments').select('user_id,amount,created_at,payment_id,status').gte('created_at', since).order('created_at',{ascending:false}).limit(20)
+        ]);
+
+        // Collect user_ids to lookup names
+        const userIds = new Set();
+        (evs.data||[]).forEach(e => e.user_id && userIds.add(e.user_id));
+        (sus.data||[]).forEach(s => userIds.add(s.id));
+        (ats.data||[]).forEach(a => userIds.add(a.user_id));
+        (pys.data||[]).forEach(p => userIds.add(p.user_id));
+
+        let nameMap = {};
+        if (userIds.size > 0) {
+            const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', Array.from(userIds));
+            (profs||[]).forEach(p => { nameMap[p.id] = p.full_name || 'مستخدم'; });
+        }
+
+        const PAGE_LABELS = {
+            '/':'الرئيسية','/dashboard':'لوحة الطالب','/training':'التدريب','/leaks':'التسريبات',
+            '/practice':'الأسئلة','/profile':'الملف الشخصي','/reports':'التقارير','/pricing':'الاشتراك',
+            '/login':'تسجيل الدخول','/register':'إنشاء حساب','/welcome':'الترحيب','/demo':'تجربة مجانية',
+            '/admin':'لوحة الإدارة','/referrals':'الإحالات','/payment-return':'بعد الدفع',
+            '/tahsili-top-400':'حملة التحصيلي','/mock-exam':'اختبار محاكي','/about':'عن المنصة',
+            '/terms':'الشروط','/privacy':'الخصوصية','/invoice':'فاتورة','/forgot-password':'استعادة كلمة السر'
+        };
+
+        const items = [];
+
+        // 1) Signups (high priority)
+        (sus.data||[]).forEach(s => items.push({
+            ts: s.created_at, cat: 'signups',
+            ic: '🎉', bg: 'rgba(34,197,94,.12)', txtColor: '#16A34A',
+            text: `<b>${esc(s.full_name||'مستخدم')}</b> أنشأ حساباً جديداً`,
+            meta: '✨ تسجيل جديد', device: ''
+        }));
+
+        // 2) Payments
+        (pys.data||[]).forEach(p => {
+            const name = nameMap[p.user_id] || 'مستخدم';
+            const isFree = (p.payment_id||'').startsWith('FREE-');
+            const paid = p.status === 'paid';
+            items.push({
+                ts: p.created_at, cat: 'payments',
+                ic: isFree ? '🎟️' : (paid ? '⭐' : '💳'),
+                bg: paid ? 'rgba(245,158,11,.14)' : 'rgba(109,93,246,.10)',
+                txtColor: paid ? '#D97706' : 'var(--pri)',
+                text: isFree
+                    ? `<b>${esc(name)}</b> فعّل اشتراك مجاني (كوبون)`
+                    : (paid ? `<b>${esc(name)}</b> اشترك بـ ${Number(p.amount)} ر.س` : `<b>${esc(name)}</b> بدأ عملية دفع (${Number(p.amount||0)} ر.س)`),
+                meta: paid ? '✓ اشتراك مؤكّد' : '⏳ في انتظار التأكيد',
+                device: ''
+            });
+        });
+
+        // 3) Attempts (batch per user)
+        const attBy = {};
+        (ats.data||[]).forEach(a => {
+            const k = a.user_id;
+            if (!attBy[k]) attBy[k] = { count:0, correct:0, latest:a.created_at };
+            attBy[k].count++;
+            if (a.is_correct) attBy[k].correct++;
+            if (new Date(a.created_at) > new Date(attBy[k].latest)) attBy[k].latest = a.created_at;
+        });
+        Object.entries(attBy).forEach(([uid, st]) => {
+            items.push({
+                ts: st.latest, cat: 'practice',
+                ic: '📝', bg: 'rgba(109,93,246,.10)', txtColor: 'var(--pri)',
+                text: `<b>${esc(nameMap[uid]||'مستخدم')}</b> حلّ ${st.count} سؤال (${st.correct} صحيح)`,
+                meta: `معدل: ${Math.round(st.correct/st.count*100)}%`,
+                device: ''
+            });
+        });
+
+        // 4) Page views (most recent unique per user in last 30 min)
+        const seenVisit = new Set();
+        (evs.data||[]).forEach(e => {
+            if (e.event_type !== 'page_view') return;
+            const key = (e.user_id||e.anonymous_id||'?') + '|' + (e.page_path||'/');
+            if (seenVisit.has(key)) return;
+            seenVisit.add(key);
+            const path = (e.page_path||'/').replace(/\/$/,'')||'/';
+            const lbl = PAGE_LABELS[path] || path;
+            // عرض زائر مجهول: آخر 6 chars من anonymous_id كمعرّف مختصر
+            const anonShort = (e.anonymous_id||'').replace(/^anon_/,'').slice(-6) || 'مجهول';
+            const userName = e.user_id ? (nameMap[e.user_id]||'مستخدم') : ('زائر · ' + anonShort);
+            const isAnon = !e.user_id;
+            items.push({
+                ts: e.created_at, cat: 'visits',
+                ic: isAnon ? '👁️' : '👤',
+                bg: isAnon ? 'rgba(107,112,148,.10)' : 'rgba(59,130,246,.10)',
+                txtColor: isAnon ? 'var(--i3)' : '#3B82F6',
+                text: `<b>${esc(userName)}</b> فتح <span style="color:var(--i2)">${esc(lbl)}</span>`,
+                meta: e.metadata?.utm_source ? `من ${esc(e.metadata.utm_source)}` : '',
+                device: e.device || ''
+            });
+        });
+
+        // Sort all items by timestamp desc
+        items.sort((a,b) => new Date(b.ts) - new Date(a.ts));
+
+        // Filter
+        const filter = window._visState.liveFilter || 'all';
+        const filtered = filter === 'all' ? items : items.filter(i => i.cat === filter);
+
+        // Limit display
+        const display = filtered.slice(0, 60);
+
+        if (display.length === 0) {
+            list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--i4);font-size:12px">لا توجد أحداث في آخر 30 دقيقة</div>';
+        } else {
+            const formatAgo = (t) => {
+                const s = Math.floor((Date.now() - new Date(t).getTime()) / 1000);
+                if (s < 10) return 'الآن';
+                if (s < 60) return `قبل ${s} ث`;
+                if (s < 3600) return `قبل ${Math.floor(s/60)} د`;
+                return `قبل ${Math.floor(s/3600)} س`;
+            };
+
+            // Track which events are new (for animation)
+            const seen = window._visState.liveSeen || new Set();
+            const newSeen = new Set();
+
+            list.innerHTML = display.map(it => {
+                const key = it.ts + '|' + it.text.slice(0,40);
+                newSeen.add(key);
+                const isNew = !seen.has(key) && seen.size > 0;  // skip first load
+                const devPill = it.device ? `<span class="vlive-pill" style="background:var(--s2);color:var(--i3)">${esc(it.device)}</span>` : '';
+                const metaParts = [it.meta, devPill].filter(x => x).join(' · ');
+                return `<div class="vlive-row${isNew?' new':''}">
+                    <div class="vlive-ic" style="background:${it.bg};color:${it.txtColor}">${it.ic}</div>
+                    <div class="vlive-body">
+                        <div class="vlive-text">${it.text}</div>
+                        ${metaParts ? `<div class="vlive-meta">${metaParts}</div>` : ''}
+                    </div>
+                    <div class="vlive-time">${formatAgo(it.ts)}</div>
+                </div>`;
+            }).join('');
+
+            window._visState.liveSeen = newSeen;
+        }
+
+        const countEl = document.getElementById('visLiveCount');
+        if (countEl) countEl.textContent = filtered.length;
+        const updEl = document.getElementById('visLiveUpdate');
+        if (updEl) updEl.textContent = new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    } catch(e) {
+        console.error('visRefreshLive', e);
+    }
 };
 
 // ═══════════════════════════════════════════════════════

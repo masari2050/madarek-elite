@@ -74,6 +74,7 @@ button,input,select,textarea{font-family:inherit}
 .online-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:var(--suc-s);border:1px solid rgba(34,197,94,.2);font-size:11px;font-weight:600;color:var(--suc)}
 .online-dot{width:6px;height:6px;border-radius:50%;background:var(--suc);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}
 .tb-date{font-size:11px;color:var(--i3)}
 .content{padding:24px 28px;flex:1;min-width:0;overflow-x:hidden}
 .page{display:none}.page.active{display:block}
@@ -451,6 +452,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
     <div class="sb-group-label">المستخدمون</div>
     <div class="sb-item" data-page="users" data-title="الأعضاء"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>الأعضاء</span></div>
     <div class="sb-item" data-page="users-analytics" data-title="تحليل المستخدمين"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span>تحليل المستخدمين</span></div>
+    <div class="sb-item" data-page="visitors" data-title="تحليلات الزوار"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span>تحليلات الزوار</span><span style="margin-right:auto;width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 2px rgba(34,197,94,.25);animation:livePulse 1.4s infinite"></span></div>
 
     <div class="sb-group-label">المالية</div>
     <div class="sb-item" data-page="plans" data-title="خطط الاشتراك"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>خطط الاشتراك</span></div>
@@ -470,7 +472,6 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 
     <div class="sb-group-label">الإدارة</div>
     <div class="sb-item" data-page="staff" data-title="الموظفون"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>الموظفون</span></div>
-    <div class="sb-item" data-page="visitors" data-title="تحليلات الزوار"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span>تحليلات الزوار</span></div>
     <div class="sb-item" data-page="settings" data-title="الإعدادات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>الإعدادات</span></div>
 
     <div class="sb-item danger" onclick="doLogout()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>تسجيل الخروج</span></div>
@@ -517,7 +518,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
 <script src="v2/supabase-helpers-v2.js"></script>
-<script src="admin-sections.js?v=2026-05-09-apply-all"></script>
+<script src="admin-sections.js?v=2026-05-11-live-feed"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script>
 (function(){
