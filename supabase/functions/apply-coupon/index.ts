@@ -198,10 +198,14 @@ serve(async (req) => {
     // ══════════════════════════════════════════
     //  8. حساب الخصم
     // ══════════════════════════════════════════
-    const durMonths = coupon.duration_months || (coupon.plan_type === 'yearly' ? 12 : 1)
+    const durMonths = coupon.duration_months || (
+      coupon.plan_type === 'yearly' ? 12 :
+      coupon.plan_type === 'quarterly' ? 3 :
+      1
+    )
 
     // تحديد نوع الاشتراك من المدة
-    const subType = durMonths >= 12 ? 'yearly' : 'monthly'
+    const subType = durMonths >= 12 ? 'yearly' : (durMonths >= 3 ? 'quarterly' : 'monthly')
 
     // basePrice من جدول plans (المصدر الموحّد) مع fallback آمن.
     // لو plans غير متوفّر/فاشل → نرجع للقيم الافتراضية.

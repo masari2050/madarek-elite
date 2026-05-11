@@ -140,24 +140,37 @@ serve(async (req) => {
       })
     }
 
-    // حساب تاريخ انتهاء الاشتراك
-    const durMonths = plan === 'yearly' ? 12 : 1
+    // حساب تاريخ انتهاء الاشتراك — يدعم monthly/quarterly/yearly
+    const durMonths = plan === 'yearly' ? 12 : (plan === 'quarterly' ? 3 : 1)
     const endDate = new Date()
     endDate.setMonth(endDate.getMonth() + durMonths)
 
     // تحديث ملف المستخدم عبر SECURITY DEFINER RPC (يتجاوز RLS)
+    // + ضمان حفظ subscription_end صريحاً في الـfallback لمنع تكرار NULL bug
     const { error: rpcErr } = await supabaseAdmin.rpc('activate_subscription_by_coupon', {
       p_user_id: targetUserId,
       p_subscription_type: plan,
       p_duration_months: durMonths
     })
-    if (rpcErr) {
-      console.error('[verify-payment] RPC error:', rpcErr.message)
-      // Fallback: direct update
+
+    // Verification: مهما حصل، نتأكد إن subscription_end ليس NULL
+    // (مشكلة 2026: 8 مستخدمين دفعوا فعلياً لكن subscription_end ظل NULL)
+    const { data: verifyProfile } = await supabaseAdmin.from('profiles')
+      .select('subscription_type, subscription_end')
+      .eq('id', targetUserId).maybeSingle()
+
+    if (rpcErr || !verifyProfile?.subscription_end) {
+      if (rpcErr) console.error('[verify-payment] RPC error:', rpcErr.message)
+      else console.warn('[verify-payment] RPC succeeded but subscription_end is NULL — applying defensive fallback')
+      // Defensive direct update — يضمن دائماً subscription_end صالح
       await supabaseAdmin.from('profiles').update({
         subscription_type: plan,
-        subscription_end: endDate.toISOString()
+        subscription_end: endDate.toISOString(),
+        subscription_source: 'myfatoorah'
       }).eq('id', targetUserId)
+    } else if (!verifyProfile.subscription_source) {
+      // RPC نجح + end موجود لكن source مفقود → نضيفه فقط
+      await supabaseAdmin.from('profiles').update({ subscription_source: 'myfatoorah' }).eq('id', targetUserId)
     }
 
     // ── استخراج وسيلة الدفع من MyFatoorah (visa/mada/apple_pay/stc_pay) ──
