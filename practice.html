@@ -455,10 +455,37 @@ async function init() {
     } else {
         const user = await M.requireAuth('/login.html');
         if (!user) return;
+
+        // ── 🔒 Subscription gate — direct DB query (نفس نمط pricing.html للتوافق) ──
+        // أوّلاً جرّب الـcache من الـhelper
         profile = await M.getProfile();
-        if (!profile) return;
-        // ── 🔒 Subscription gate (يحمي من الوصول المباشر بدون اشتراك) ──
-        if (!M.isSubscribed(profile)) {
+
+        // فحص ثانوي مباشر — يحمي من حالات getProfile() ترجع null/stale
+        // أو فقدان أعمدة subscription بسبب timing/RLS issues
+        let subRow = null;
+        try {
+            const { data } = await sb.from('profiles')
+                .select('id, full_name, subscription_type, subscription_end, role, sound_enabled, total_questions_solved, total_correct, total_sessions, avatar_emoji')
+                .eq('id', user.id).maybeSingle();
+            subRow = data;
+        } catch(e) { console.warn('subscription gate query:', e); }
+
+        // لو الـdirect query رجّع profile، استخدمه (أحدث)
+        if (subRow) profile = subRow;
+
+        if (!profile) {
+            location.href = '/login.html?redirect=' + encodeURIComponent(location.pathname + location.search);
+            return;
+        }
+
+        // فحص الاشتراك — admin/staff يمر، باقي يحتاج subscription_type !== 'free' + end > now
+        const role = profile.role;
+        const isPrivileged = role === 'admin' || role === 'staff';
+        const subType = profile.subscription_type;
+        const subEnd = profile.subscription_end ? new Date(profile.subscription_end) : null;
+        const hasActiveSub = subType && subType !== 'free' && (!subEnd || subEnd > new Date());
+
+        if (!isPrivileged && !hasActiveSub) {
             location.href = '/pricing.html?from=' + encodeURIComponent(location.pathname + location.search);
             return;
         }
