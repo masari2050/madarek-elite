@@ -1493,7 +1493,7 @@ window.viewUser = async function(id) {
 
         ${sectionHead('— الاشتراك —')}
         <div class="form-field"><label class="form-label">نوع الاشتراك</label>
-            <select class="form-select" id="euSub">
+            <select class="form-select" id="euSub" onchange="autoFillSubEnd(this.value)">
                 <option value="free" ${subType==='free'?'selected':''}>مجاني</option>
                 <option value="monthly" ${subType==='monthly'?'selected':''}>شهري (Pro)</option>
                 <option value="quarterly" ${subType==='quarterly'?'selected':''}>ربع سنوي</option>
@@ -1602,6 +1602,16 @@ window.adminChangeUserPassword = async function(userId) {
     } catch (e) {
         showToast('خطأ: ' + (e.message || 'فشل التحديث'), 'err');
     }
+};
+
+// ── تعبئة تاريخ نهاية الاشتراك تلقائياً عند تغيير النوع ──
+window.autoFillSubEnd = function(subType) {
+    const endEl = document.getElementById('euEnd');
+    if (!endEl) return;
+    if (subType === 'free') { endEl.value = ''; return; }
+    const months = subType === 'yearly' ? 12 : subType === 'quarterly' ? 3 : 1;
+    const d = new Date(); d.setMonth(d.getMonth() + months);
+    endEl.value = d.toISOString().split('T')[0];
 };
 
 // ── حفظ تعديلات العضو ──
