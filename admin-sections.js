@@ -4335,7 +4335,7 @@ window.loadVisitors = async function(opts = {}) {
                     <span style="width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:livePulse 1.4s infinite"></span>
                     <div>
                         <div style="font-size:14px;font-weight:800;color:var(--ink)">النشاط اللحظي</div>
-                        <div style="font-size:10.5px;color:var(--i3)">آخر التفاعلات · يتحدّث كل 5 ثوان</div>
+                        <div style="font-size:10.5px;color:var(--i3)">آخر 24 ساعة · يتحدّث كل 5 ثوان</div>
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
@@ -4353,7 +4353,7 @@ window.loadVisitors = async function(opts = {}) {
                 <div class="loader" style="padding:30px">جاري التحميل...</div>
             </div>
             <div style="padding:10px 16px;border-top:1px solid var(--ln);font-size:10.5px;color:var(--i3);text-align:center;background:var(--s2)">
-                <span id="visLiveCount">0</span> حدث في آخر 30 دقيقة
+                <span id="visLiveCount">0</span> حدث في آخر 24 ساعة
                 · <span id="visLiveUpdate">--:--</span>
             </div>
         </div>
@@ -4535,11 +4535,12 @@ window.loadVisitors = async function(opts = {}) {
             return `<span style="font-size:10px;color:${up?'var(--suc)':'var(--dng)'};font-weight:700">${up?'↑':'↓'} ${Math.abs(pct)}%</span> <span style="font-size:9px;color:var(--i4)">vs السابق</span>`;
         };
 
-        // Activity feed (latest 15 events) — always recent regardless of range
+        // Activity feed (آخر 24 ساعة) — موسّع من 10 events إلى أوسع لتغطية كل النشاطين
+        const dayAgoIso = new Date(Date.now() - 24*60*60*1000).toISOString();
         const [recentSignups, recentAttempts, recentPayments] = await Promise.all([
-            sb.from('profiles').select('id,full_name,created_at').order('created_at',{ascending:false}).limit(10),
-            sb.from('attempts').select('user_id,is_correct,created_at,profiles(full_name)').order('created_at',{ascending:false}).limit(10),
-            sb.from('payments').select('user_id,amount,created_at,payment_id,profiles(full_name)').eq('status','paid').order('created_at',{ascending:false}).limit(10)
+            sb.from('profiles').select('id,full_name,created_at').gte('created_at', dayAgoIso).order('created_at',{ascending:false}).limit(30),
+            sb.from('attempts').select('user_id,is_correct,created_at,profiles(full_name)').gte('created_at', dayAgoIso).order('created_at',{ascending:false}).limit(500),
+            sb.from('payments').select('user_id,amount,created_at,payment_id,profiles(full_name)').eq('status','paid').gte('created_at', dayAgoIso).order('created_at',{ascending:false}).limit(30)
         ]);
 
         const feed = [];
@@ -4549,14 +4550,19 @@ window.loadVisitors = async function(opts = {}) {
             if (isFree) feed.push({type:'coupon',icon:'🎟️',color:'var(--acc)',text:'<b>'+esc(p.profiles?.full_name||'مستخدم')+'</b> فعّل اشتراك مجاني (كوبون)',time:p.created_at});
             else feed.push({type:'subscribe',icon:'⭐',color:'var(--suc)',text:'<b>'+esc(p.profiles?.full_name||'مستخدم')+'</b> اشترك بـ '+Number(p.amount)+' ريال',time:p.created_at});
         });
+        // جمّع كل المحاولات حسب المستخدم (لا limit الآن — يلتقط كل من حلّ في آخر 24 ساعة)
         const attByUser = {};
         (recentAttempts.data||[]).forEach(a => {
             const k = a.user_id;
             if (!attByUser[k]) attByUser[k] = { name: a.profiles?.full_name, time: a.created_at, count: 0, correct: 0 };
             attByUser[k].count++;
             if (a.is_correct) attByUser[k].correct++;
+            if (new Date(a.created_at) > new Date(attByUser[k].time)) attByUser[k].time = a.created_at;
         });
-        Object.values(attByUser).slice(0,5).forEach(u => feed.push({type:'practice',icon:'📝',color:'var(--pri)',text:'<b>'+esc(u.name||'مستخدم')+'</b> حل '+u.count+' سؤال ('+u.correct+' صح)',time:u.time}));
+        // اعرض كل المستخدمين اللي حلّوا (بدل slice(0,5))، مرتّبة حسب آخر نشاط
+        Object.values(attByUser)
+            .sort((a,b) => new Date(b.time) - new Date(a.time))
+            .forEach(u => feed.push({type:'practice',icon:'📝',color:'var(--pri)',text:'<b>'+esc(u.name||'مستخدم')+'</b> حلّ '+u.count+' سؤال ('+u.correct+' صح)',time:u.time}));
         feed.sort((a,b) => new Date(b.time) - new Date(a.time));
 
         // Top trainees in range
@@ -4817,20 +4823,22 @@ window.visSetRange = function(range) {
 };
 
 // ═══════════════════════════════════════════════════════
-// LIVE ACTIVITY FEED — يجلب آخر 30 دقيقة من 4 مصادر ويعرضها كـtimeline
+// LIVE ACTIVITY FEED — يجلب آخر 24 ساعة من 4 مصادر ويعرضها كـtimeline
+// (موسّع من 30 دقيقة لرؤية أوسع لنشاط الموقع)
 // ═══════════════════════════════════════════════════════
 window.visRefreshLive = async function() {
     const list = document.getElementById('visLiveList');
     if (!list) return;
     const { sb } = window.A;
-    const since = new Date(Date.now() - 30*60*1000).toISOString();
+    // نافذة 24 ساعة + limits أكبر لعدم تفويت أي نشاط
+    const since = new Date(Date.now() - 24*60*60*1000).toISOString();
 
     try {
         const [evs, sus, ats, pys] = await Promise.all([
-            sb.from('analytics_events').select('event_type,page_path,user_id,anonymous_id,device,metadata,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(120),
-            sb.from('profiles').select('id,full_name,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(20),
-            sb.from('attempts').select('user_id,is_correct,created_at,question_id').gte('created_at', since).order('created_at',{ascending:false}).limit(40),
-            sb.from('payments').select('user_id,amount,created_at,payment_id,status').gte('created_at', since).order('created_at',{ascending:false}).limit(20)
+            sb.from('analytics_events').select('event_type,page_path,user_id,anonymous_id,device,metadata,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(400),
+            sb.from('profiles').select('id,full_name,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(50),
+            sb.from('attempts').select('user_id,is_correct,created_at,question_id').gte('created_at', since).order('created_at',{ascending:false}).limit(300),
+            sb.from('payments').select('user_id,amount,created_at,payment_id,status').gte('created_at', since).order('created_at',{ascending:false}).limit(50)
         ]);
 
         // Collect user_ids to lookup names
@@ -4937,7 +4945,7 @@ window.visRefreshLive = async function() {
         const display = filtered.slice(0, 60);
 
         if (display.length === 0) {
-            list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--i4);font-size:12px">لا توجد أحداث في آخر 30 دقيقة</div>';
+            list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--i4);font-size:12px">لا توجد أحداث في آخر 24 ساعة</div>';
         } else {
             const formatAgo = (t) => {
                 const s = Math.floor((Date.now() - new Date(t).getTime()) / 1000);
