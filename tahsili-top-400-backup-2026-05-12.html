@@ -812,540 +812,6 @@ img { max-width: 100%; display: block; }
 }
 .sticky-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.8; }
 
-/* ═══ TWO PILLARS (الأكثر تكراراً + توقعات النخبة) ═══ */
-.pillars-wrap {
-  background: var(--sf);
-  padding: 32px 22px 28px;
-}
-.pillars-intro {
-  text-align: center;
-  margin-bottom: 22px;
-}
-.pillars-intro h2 {
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1.45;
-  margin-bottom: 8px;
-  letter-spacing: -0.3px;
-}
-.pillars-intro p {
-  font-size: 13.5px;
-  color: var(--i3);
-  line-height: 1.7;
-}
-.pillars-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.pillar-card {
-  border-radius: var(--r3);
-  padding: 22px 20px 20px;
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 14px 32px rgba(0,0,0,.10);
-}
-.pillar-card::before {
-  content: "";
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,215,0,.18) 0%, transparent 70%);
-  pointer-events: none;
-}
-.pillar-card.repeat-card {
-  background: linear-gradient(135deg, #3D2EB8 0%, #5B4DD4 55%, #6D5DF6 100%);
-}
-.pillar-card.predict-card {
-  background: linear-gradient(135deg, #064E3B 0%, #047857 55%, #10B981 100%);
-}
-.pillar-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  background: rgba(255,255,255,.15);
-  border: 1px solid rgba(255,215,0,.45);
-  border-radius: 50px;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #FFD700;
-  margin-bottom: 14px;
-  position: relative; z-index: 2;
-}
-.pillar-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; }
-.pillar-tag svg { width: 12px; height: 12px; fill: #FFD700; }
-
-.pillar-h {
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1.3;
-  margin-bottom: 8px;
-  position: relative; z-index: 2;
-  letter-spacing: -0.3px;
-}
-.pillar-h .gold {
-  background: linear-gradient(135deg, #FFD700 0%, #FCD34D 50%, #F59E0B 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.pillar-num-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 10px;
-  position: relative; z-index: 2;
-}
-.pillar-num {
-  font-size: 38px;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(135deg, #FFD700 0%, #FCD34D 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-variant-numeric: tabular-nums;
-}
-.pillar-num-lbl {
-  font-size: 13.5px;
-  font-weight: 700;
-  opacity: .9;
-}
-
-.pillar-tx {
-  font-size: 13.5px;
-  font-weight: 500;
-  line-height: 1.75;
-  opacity: .94;
-  position: relative; z-index: 2;
-  margin-bottom: 14px;
-}
-
-.pillar-bullets {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  position: relative; z-index: 2;
-}
-.pillar-bullets li {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 12.5px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  opacity: .95;
-}
-.pillar-bullets li::before {
-  content: "✓";
-  color: #FFD700;
-  font-weight: 900;
-  flex-shrink: 0;
-  font-size: 13px;
-  line-height: 1.5;
-}
-.pillar-bullets li:last-child { margin-bottom: 0; }
-
-.pillars-combo {
-  margin-top: 16px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(109,93,246,.08), rgba(16,185,129,.08));
-  border: 1px solid var(--ln);
-  border-radius: 14px;
-  text-align: center;
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1.65;
-}
-.pillars-combo strong { color: var(--pri); font-weight: 800; }
-.pillars-combo .emerald { color: #047857; font-weight: 800; }
-
-/* ═══ INTERACTIVE TRIAL ═══ */
-.itrial-wrap {
-  background: var(--bg);
-  padding: 32px 22px 28px;
-}
-.itrial-head {
-  text-align: center;
-  margin-bottom: 18px;
-}
-.itrial-head .pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: var(--pm);
-  color: var(--pri);
-  border-radius: 50px;
-  font-size: 11.5px;
-  font-weight: 800;
-  margin-bottom: 10px;
-}
-.itrial-head .pill svg { width: 12px; height: 12px; }
-.itrial-head h2 {
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1.45;
-  margin-bottom: 6px;
-  letter-spacing: -0.3px;
-}
-.itrial-head h2 .hl { color: var(--pri); }
-.itrial-head p {
-  font-size: 13px;
-  color: var(--i3);
-  line-height: 1.7;
-}
-
-.itrial-progress {
-  height: 5px;
-  background: var(--pm);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-.itrial-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--pri-l), var(--pri));
-  border-radius: 10px;
-  width: 0%;
-  transition: width .4s var(--ease);
-}
-.itrial-step {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--i3);
-  margin-bottom: 14px;
-  text-align: center;
-}
-.itrial-step strong { color: var(--pri); }
-
-.itrial-card {
-  background: var(--sf);
-  border-radius: var(--r3);
-  padding: 22px 18px 20px;
-  border: 1px solid var(--ln);
-  box-shadow: 0 8px 28px rgba(109,93,246,.08);
-}
-.itrial-subj {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
-  background: var(--pm);
-  color: var(--pri);
-  border-radius: 50px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-.itrial-subj.predict {
-  background: rgba(16,185,129,.13);
-  color: #047857;
-}
-.itrial-q {
-  font-size: 15.5px;
-  font-weight: 700;
-  line-height: 1.85;
-  margin-bottom: 14px;
-  color: var(--ink);
-}
-.itrial-opts {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  margin-bottom: 14px;
-}
-.itrial-opt {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 12px 14px;
-  background: var(--s2);
-  border: 1.5px solid var(--ln2);
-  border-radius: 12px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--i2);
-  cursor: pointer;
-  transition: all .18s var(--ease);
-  text-align: right;
-  width: 100%;
-  font-family: inherit;
-}
-.itrial-opt:hover:not(:disabled) {
-  border-color: var(--pri-l);
-  background: rgba(109,93,246,.05);
-}
-.itrial-opt:disabled { cursor: default; }
-.itrial-opt-letter {
-  width: 26px; height: 26px;
-  border-radius: 8px;
-  background: rgba(0,0,0,.05);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12.5px; font-weight: 700;
-  flex-shrink: 0;
-}
-.itrial-opt .check-ic, .itrial-opt .x-ic {
-  margin-right: auto;
-  width: 18px; height: 18px;
-  fill: none; stroke-width: 3;
-  display: none;
-}
-.itrial-opt.correct {
-  background: var(--ss);
-  border-color: var(--suc);
-  color: var(--ink);
-}
-.itrial-opt.correct .itrial-opt-letter {
-  background: var(--suc);
-  color: #fff;
-}
-.itrial-opt.correct .check-ic {
-  display: block;
-  stroke: var(--suc);
-}
-.itrial-opt.wrong {
-  background: rgba(239,68,68,.10);
-  border-color: var(--dng);
-  color: var(--ink);
-}
-.itrial-opt.wrong .itrial-opt-letter {
-  background: var(--dng);
-  color: #fff;
-}
-.itrial-opt.wrong .x-ic {
-  display: block;
-  stroke: var(--dng);
-}
-.itrial-opt.dim {
-  opacity: .5;
-}
-
-.itrial-feedback {
-  margin-top: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  line-height: 1.7;
-}
-.itrial-feedback.ok {
-  background: var(--ss);
-  border: 1px solid rgba(34,197,94,.3);
-  color: #065F46;
-}
-.itrial-feedback.no {
-  background: rgba(239,68,68,.08);
-  border: 1px solid rgba(239,68,68,.25);
-  color: #991B1B;
-}
-.itrial-feedback svg { width: 18px; height: 18px; flex-shrink: 0; stroke-width: 2.5; fill: none; margin-top: 1px; }
-.itrial-feedback.ok svg { stroke: #16a34a; }
-.itrial-feedback.no svg { stroke: var(--dng); }
-
-.itrial-explain {
-  margin-top: 10px;
-  background: #FEFCE8;
-  border: 1px solid #FDE68A;
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 13px;
-  color: #92400E;
-  line-height: 1.85;
-}
-.itrial-explain b { font-weight: 800; }
-.itrial-explain-h {
-  font-weight: 700;
-  color: #92400E;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.itrial-explain-h svg { width: 14px; height: 14px; stroke: #92400E; fill: none; stroke-width: 2.5; }
-
-.itrial-explain-locked {
-  position: relative;
-  margin-top: 10px;
-  background: var(--s2);
-  border: 1px solid var(--ln);
-  border-radius: 12px;
-  padding: 12px 14px;
-  overflow: hidden;
-  min-height: 110px;
-}
-.itrial-explain-locked .blurred {
-  filter: blur(6px);
-  user-select: none;
-  pointer-events: none;
-  color: var(--i3);
-  font-size: 12.5px;
-  line-height: 1.8;
-}
-.itrial-explain-locked .lock-cover {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, rgba(250,248,245,.55) 0%, rgba(250,248,245,.95) 60%);
-  padding: 12px;
-  gap: 6px;
-  text-align: center;
-}
-.itrial-explain-locked .lock-cover svg { width: 22px; height: 22px; stroke: var(--pri); fill: none; stroke-width: 2.2; }
-.itrial-explain-locked .lock-cover .tx {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.itrial-explain-locked .lock-cover .sub {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--i3);
-}
-
-.itrial-next-btn {
-  margin-top: 14px;
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, var(--pri), var(--pri-d));
-  color: #fff;
-  border-radius: 14px;
-  font-size: 14.5px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 8px 22px rgba(109,93,246,.35);
-  transition: transform .15s var(--ease);
-}
-.itrial-next-btn:active { transform: scale(.98); }
-.itrial-next-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 3; }
-
-/* ═══ TRIAL RESULT ═══ */
-.itrial-result {
-  background: linear-gradient(160deg, var(--pri-xd) 0%, var(--pri-d) 55%, var(--pri) 100%);
-  color: #fff;
-  border-radius: var(--r3);
-  padding: 26px 22px 24px;
-  position: relative;
-  overflow: hidden;
-  margin-top: 4px;
-}
-.itrial-result::before {
-  content: "";
-  position: absolute;
-  top: -80px; right: -80px;
-  width: 220px; height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,215,0,.18) 0%, transparent 70%);
-}
-.itrial-result-num {
-  font-size: 56px;
-  font-weight: 900;
-  line-height: 1;
-  text-align: center;
-  background: linear-gradient(135deg, #FFD700 0%, #FCD34D 50%, #F59E0B 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 6px;
-  position: relative; z-index: 2;
-  font-variant-numeric: tabular-nums;
-}
-.itrial-result-sub {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  opacity: .9;
-  margin-bottom: 14px;
-  position: relative; z-index: 2;
-}
-.itrial-result-motiv {
-  text-align: center;
-  font-size: 15.5px;
-  font-weight: 700;
-  line-height: 1.6;
-  margin-bottom: 6px;
-  position: relative; z-index: 2;
-}
-.itrial-result-tx {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 500;
-  opacity: .9;
-  line-height: 1.75;
-  margin-bottom: 20px;
-  position: relative; z-index: 2;
-}
-.itrial-result-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #FFD700, #F59E0B);
-  color: #0F1124;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 900;
-  box-shadow: 0 12px 28px rgba(245,158,11,.45);
-  position: relative; z-index: 2;
-  transition: transform .15s var(--ease);
-}
-.itrial-result-cta:active { transform: scale(.97); }
-.itrial-result-cta svg { width: 16px; height: 16px; stroke: #0F1124; fill: none; stroke-width: 3; }
-
-.itrial-result-link {
-  display: block;
-  text-align: center;
-  margin-top: 12px;
-  font-size: 12.5px;
-  color: rgba(255,255,255,.88);
-  text-decoration: underline;
-  text-decoration-color: rgba(255,255,255,.4);
-  text-underline-offset: 4px;
-  font-weight: 600;
-  position: relative; z-index: 2;
-}
-
-/* ═══ SOURCE DIVERSITY BADGE ═══ */
-.src-badge {
-  background: var(--sf);
-  border: 1px solid var(--ln);
-  border-radius: 18px;
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0 0;
-  box-shadow: 0 4px 14px rgba(0,0,0,.04);
-}
-.src-badge-ic {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--gold), #B45309);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(245,158,11,.35);
-}
-.src-badge-ic svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2.2; }
-.src-badge-body { flex: 1; }
-.src-badge-title { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
-.src-badge-tx { font-size: 12px; color: var(--i3); line-height: 1.65; font-weight: 600; }
-
 /* ═══ DESKTOP responsive ═══ */
 @media (min-width: 768px) {
   body {
@@ -1407,8 +873,8 @@ img { max-width: 100%; display: block; }
 
   <!-- Hook كبير ملفت — موضوع الصفحة في سطر -->
   <div class="hook-strip">
-    <span class="hook-label">الأكثر تكراراً + توقعات النخبة</span>
-    <span class="hook-sub">كل اللي تحتاجه للتحصيلي في مكان واحد</span>
+    <span class="hook-label">الأسئلة الأكثر تكراراً</span>
+    <span class="hook-sub">في اختبارات التحصيلي</span>
   </div>
 
   <h1>
@@ -1416,8 +882,8 @@ img { max-width: 100%; display: block; }
     <span class="gold">لا تشتّت نفسك</span>
   </h1>
   <p class="hero-sub">
-    <b>+380 سؤال</b> من الأكثر تكراراً، و<b>+116 توقّع</b> منتقى من نخبة المصادر.<br>
-    تجربة موحّدة بدون تقليب PDFs — جاهزة للتدريب فور اشتراكك.
+    الممارسة على نمط الأسئلة الفعلي هي <b>الفرق</b>.<br>
+    تدرّب على +380 سؤال متجدّد من الأكثر تكراراً قبل ما تدخل القاعة.
   </p>
 
   <!-- Coupon badge -->
@@ -1452,63 +918,22 @@ img { max-width: 100%; display: block; }
   </div>
 </section>
 
-<!-- ═══ TWO PILLARS — الأكثر تكراراً + توقعات النخبة ═══ -->
-<section class="pillars-wrap" id="pillars">
-  <div class="pillars-intro">
-    <h2>ميزتان <span style="color:var(--pri)">في تطبيق واحد</span></h2>
-    <p>بدل ما تقلّب بين 8 مصادر متفرّقة، كل شي مرتّب لك بتجربة موحّدة</p>
-  </div>
-
-  <div class="pillars-grid">
-
-    <!-- Pillar 1: الأكثر تكراراً -->
-    <div class="pillar-card repeat-card">
-      <div class="pillar-tag">
-        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
-        من اختبارات سابقة
-      </div>
-      <h3 class="pillar-h">الأسئلة <span class="gold">الأكثر تكراراً</span></h3>
-      <div class="pillar-num-row">
-        <span class="pillar-num">+380</span>
-        <span class="pillar-num-lbl">سؤال متجدّد</span>
-      </div>
-      <p class="pillar-tx">تحليل اختبارات تحصيلي السنوات السابقة، وانتقاء الأسئلة الأكثر تكراراً في الـ4 مواد.</p>
-      <ul class="pillar-bullets">
-        <li>تعوّد على نمط الأسئلة الفعلي</li>
-        <li>شرح خطوة-خطوة بلغة بسيطة</li>
-        <li>تتحدّث باستمرار كل أسبوع</li>
-      </ul>
-    </div>
-
-    <!-- Pillar 2: توقعات النخبة -->
-    <div class="pillar-card predict-card">
-      <div class="pillar-tag">
-        <span class="dot"></span>
-        إصدار حصري 1447
-      </div>
-      <h3 class="pillar-h"><span class="gold">توقعات النخبة</span> للاختبار</h3>
-      <div class="pillar-num-row">
-        <span class="pillar-num">+116</span>
-        <span class="pillar-num-lbl">توقّع منتقى</span>
-      </div>
-      <p class="pillar-tx">انتقاء يدوي من نخبة المصادر، بدون تكرار. أسئلة محتمل ظهور أمثالها في الاختبار القادم.</p>
-      <ul class="pillar-bullets">
-        <li>منتقاة من 8 مصادر مختلفة</li>
-        <li>تجربة موحّدة بدون تقليب PDFs</li>
-        <li>صور نظيفة بدون watermarks</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="pillars-combo">
-    تحصل على <strong>+380 سؤال متكرّر</strong> و <span class="emerald">+116 توقّع</span> — كلها في تطبيق واحد بنفس الاشتراك
-  </div>
+<!-- ═══ FOCUS MESSAGE ═══ -->
+<section class="focus-msg">
+  <h2 class="focus-h">
+    الممارسة <span class="pri">هي الحل</span>،<br>
+    والتعوّد على <span class="acc">نمط الأسئلة</span> هو الفرق
+  </h2>
+  <p class="focus-p">
+    آخر يومين قبل الاختبار مو وقت لتعلّم قواعد جديدة. وقت لتثبيت اللي تعرفه على أسئلة حقيقية.
+    اللي يدخل القاعة وقد شاف مئات الأسئلة الفعلية، يختلف عن اللي بس راجع كتاب.
+  </p>
 </section>
 
 <!-- ═══ STATS — مواد التحصيلي ═══ -->
 <section class="stats">
-  <h2 class="sec-h">توزيع <span class="hl">الأسئلة الأكثر تكراراً</span></h2>
-  <p class="sec-sub">تغطية متوازنة لكل المواد العلمية في اختبار التحصيلي + 116 سؤال توقّع إضافي</p>
+  <h2 class="sec-h">توزيع <span class="hl">+380 سؤال متجدّد</span></h2>
+  <p class="sec-sub">تغطية متوازنة لكل المواد العلمية في اختبار التحصيلي</p>
   <div class="stats-grid">
     <div class="stat stat-1">
       <div class="stat-ic">
@@ -1544,17 +969,6 @@ img { max-width: 100%; display: block; }
     <div class="live-dot"></div>
     <div>
       <b>أسئلة تتحدّث باستمرار</b> — نضيف أسئلة جديدة كل أسبوع، وتراها مباشرة بدون تحديث الاشتراك
-    </div>
-  </div>
-
-  <!-- Source diversity badge — يميّز عن المنافسين -->
-  <div class="src-badge">
-    <div class="src-badge-ic">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    </div>
-    <div class="src-badge-body">
-      <div class="src-badge-title">منتقاة من 8 مصادر مختلفة</div>
-      <div class="src-badge-tx">جمعنا الأقوى من عدة مصادر متخصّصة بدون تكرار — تجربة موحّدة بدلاً من تقليب PDFs</div>
     </div>
   </div>
 </section>
@@ -1594,23 +1008,51 @@ img { max-width: 100%; display: block; }
   </div>
 </section>
 
-<!-- ═══ INTERACTIVE TRIAL ═══ -->
-<section class="itrial-wrap" id="trial">
-  <div class="itrial-head">
-    <span class="pill">
-      <svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="20 6 9 17 4 12"/></svg>
-      جرّب 3 أسئلة الآن — مجاناً
+<!-- ═══ SAMPLE QUESTION ═══ -->
+<section class="sample-wrap">
+  <h2 class="sec-h">جرّب <span class="hl">سؤال مجاناً</span></h2>
+  <p class="sec-sub">شف مستوى التفاصيل في الشرح — كل سؤال بنفس الجودة</p>
+
+  <div class="sample-card">
+    <span class="sample-tag">
+      <svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2.5"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      كيمياء — تكرّر 4 مرات
     </span>
-    <h2>اختبر نفسك <span class="hl">قبل ما تشترك</span></h2>
-    <p>سؤال من الأكثر تكراراً، وسؤالين من توقعات النخبة. شف مستوى الجودة بنفسك.</p>
+    <div class="sample-q">عدد الإلكترونات في ذرة الكلور (Z = 17) في المستوى الأخير يساوي:</div>
+    <div class="sample-options">
+      <div class="sample-opt">
+        <div class="sample-opt-letter">أ</div>
+        <span>2</span>
+      </div>
+      <div class="sample-opt">
+        <div class="sample-opt-letter">ب</div>
+        <span>5</span>
+      </div>
+      <div class="sample-opt correct">
+        <div class="sample-opt-letter">ج</div>
+        <span>7</span>
+        <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="sample-opt">
+        <div class="sample-opt-letter">د</div>
+        <span>8</span>
+      </div>
+    </div>
+    <div class="sample-explain">
+      <div class="sample-explain-h">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>الشرح خطوة خطوة</span>
+      </div>
+      <b>1)</b> العدد الذري للكلور Z = 17 → عدد الإلكترونات = 17.<br>
+      <b>2)</b> توزيع الإلكترونات: K=2، L=8، M=7.<br>
+      <b>3)</b> المستوى الأخير (M) = 17 − (2+8) = <b>7 إلكترونات</b>.<br>
+      الجواب: <b>ج</b>
+    </div>
   </div>
 
-  <div class="itrial-step" id="iStep">السؤال <strong>1</strong> من 3</div>
-  <div class="itrial-progress">
-    <div class="itrial-progress-fill" id="iPb"></div>
+  <div class="sample-foot">
+    و <strong>+379 سؤال</strong> آخر بنفس الجودة بانتظارك
   </div>
-
-  <div id="iTrialArea"></div>
 </section>
 
 <!-- ═══ STEPS ═══ -->
@@ -1628,8 +1070,8 @@ img { max-width: 100%; display: block; }
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-body">
-      <div class="step-title">افتح "الأكثر تكراراً" أو "توقعات النخبة"</div>
-      <div class="step-tx">في صفحة التدريب، اختر القسم اللي تبغى تركّز عليه — أو ابدأ بمختلط من الاثنين.</div>
+      <div class="step-title">ادخل قسم "الأكثر تكراراً"</div>
+      <div class="step-tx">في صفحة التدريب، اختر "الأسئلة الأكثر تكراراً" وابدأ بأي مادة تبغى.</div>
     </div>
   </div>
   <div class="step">
@@ -1647,7 +1089,7 @@ img { max-width: 100%; display: block; }
     <span class="gold">الوقت يضيق</span><br>
     ابدأ تدريبك الآن
   </h2>
-  <p class="cta-p">+380 سؤال متكرّر و+116 توقّع من نخبة المصادر — كل اللي تحتاجه للتحصيلي 1447 في تطبيق واحد</p>
+  <p class="cta-p">طلاب من جميع مناطق المملكة يدرّبون على مدارك النخبة استعداداً للتحصيلي 1447</p>
 
   <div class="cta-coupon">
     <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
@@ -1669,24 +1111,20 @@ img { max-width: 100%; display: block; }
 <section class="faq">
   <h2 class="sec-h">أسئلة <span class="hl">شائعة</span></h2>
   <div class="faq-item">
-    <div class="faq-q">إيش الفرق بين "الأكثر تكراراً" و"توقعات النخبة"؟</div>
-    <div class="faq-a"><b>الأكثر تكراراً</b>: +380 سؤال من تحليل اختبارات تحصيلي السنوات السابقة — أسئلة جاءت فعلاً وبصياغات قريبة في أكثر من اختبار.<br><br><b>توقعات النخبة</b>: +116 سؤال جديد منتقى يدوياً من نخبة المصادر للتحصيلي 1447 — أسئلة محتمل ظهور أمثالها هذا العام بناءً على أنماط الاختبار.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q">من وين جابوا الأسئلة؟</div>
-    <div class="faq-a">الأكثر تكراراً من تحليل اختبارات تحصيلي السنوات السابقة. توقعات النخبة من <b>8 مصادر مختلفة</b> اشتُغلت على مستوى عالٍ من قِبَل معلّمين متخصّصين — جمعناها لك وأعدنا كتابة الشروح بأسلوب موحّد وبسيط.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q">كم عدد الأسئلة الإجمالي؟</div>
-    <div class="faq-a">+380 سؤال متكرّر (92 رياضيات + 92 فيزياء + 98 كيمياء + 100 أحياء) + +116 سؤال توقعات النخبة = <b>+496 سؤال</b> جاهزة للتدريب فور اشتراكك. نضيف أسئلة جديدة كل أسبوع.</div>
+    <div class="faq-q">كم عدد الأسئلة فعلياً؟</div>
+    <div class="faq-a">حالياً +380 سؤال (92 رياضيات + 92 فيزياء + 98 كيمياء + 100 أحياء) — جاهزة للتدريب فور اشتراكك. نضيف أسئلة جديدة كل أسبوع للوصول لـ400 وأكثر.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">هل الأسئلة تتحدّث؟</div>
-    <div class="faq-a">نعم — نضيف أسئلة جديدة كل أسبوع بناءً على آخر التحديثات. التحديثات تظهر مباشرة بدون أي تكلفة إضافية.</div>
+    <div class="faq-a">نعم — نضيف أسئلة جديدة كل أسبوع بناءً على آخر التحديثات والملاحظات من الطلاب الذين دخلوا الاختبارات السابقة. التحديثات تظهر مباشرة بدون أي تكلفة إضافية.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">من وين جابوا الأسئلة؟</div>
+    <div class="faq-a">من تحليل اختبارات تحصيلي سابقة لسنوات متعددة. اخترنا الأسئلة الأكثر تكراراً والمواضيع الأكثر أهمية حسب تحليل الأنماط.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">هل عندي وقت أحلّها كلها قبل الاختبار؟</div>
-    <div class="faq-a">معدل الحل: 5-7 أسئلة في الدقيقة مع المراجعة. الـ+496 سؤال يحتاج 10-13 ساعة تدريب فقط — تقدر تخلصها في 3-4 أيام (الوقت المتاح قبل اختبارك).</div>
+    <div class="faq-a">معدل الحل: 5-7 أسئلة في الدقيقة مع المراجعة. الـ+380 سؤال يحتاجون 8-10 ساعات تدريب فقط — تقدر تخلصها في 3-4 أيام (الوقت المتاح قبل اختبارك).</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">كم تكلفة الاشتراك بعد الخصم؟</div>
@@ -1712,7 +1150,7 @@ img { max-width: 100%; display: block; }
 <div class="sticky-cta">
   <div class="sticky-info">
     <span class="sticky-coupon">TAHSILI15 · خصم 15%</span><br>
-    <b>+380 متكرّر + 116 توقّع</b>
+    <b>+380 سؤال متجدّد جاهز</b>
     <div class="sticky-sub">تدرّب قبل ما يبدأ الاختبار</div>
   </div>
   <a href="/pricing.html?coupon=TAHSILI15&from=tahsili-top-400&utm_source=tahsili-page&utm_medium=sticky&utm_campaign=tahsili-1447" class="sticky-btn" data-cta="sticky">
@@ -1777,34 +1215,9 @@ window.addEventListener('load', function(){
   } catch(e){ console.warn('[tt] ViewContent failed:', e); }
 });
 
-// ═══ نظام نسب المحولين للحملة (campaign attribution) ═══
-// عند ضغط أي CTA: نحفظ المصدر في localStorage + نسجّل event صريح
-// عند ما المستخدم يتم اشتراكه (في payment-callback)، نقدر نربط المعاملة بحملة tahsili-1447
-window.persistCampaignOrigin = function(ctaType){
-  try {
-    localStorage.setItem('madarek_campaign_origin', 'tahsili-top-400');
-    localStorage.setItem('madarek_campaign_name', 'tahsili-1447');
-    localStorage.setItem('madarek_campaign_cta', ctaType);
-    localStorage.setItem('madarek_campaign_clicked_at', new Date().toISOString());
-  } catch(_){}
-};
-var persistCampaignOrigin = window.persistCampaignOrigin;
-
 document.querySelectorAll('[data-cta]').forEach(btn => {
   btn.addEventListener('click', function(){
     var ctaType = this.getAttribute('data-cta');
-    // 1) Persist في localStorage — أي حدث اشتراك لاحق سيقدر يستدلّ بهذه القيم
-    persistCampaignOrigin(ctaType);
-    // 2) Madarek Analytics — حدث صريح في analytics_events (يظهر في "النشاط اللحظي")
-    try {
-      if (window.MadarekAnalytics) window.MadarekAnalytics.track('landing_cta_click', {
-        cta_type: ctaType,
-        landing: 'tahsili-top-400',
-        campaign: 'tahsili-1447',
-        coupon: 'TAHSILI15'
-      });
-    } catch(_){}
-    // 3) TikTok Pixel — حدث ClickButton (للـ funnel في TikTok Events Manager)
     try {
       if (window.ttq) {
         ttq.track('ClickButton', {
@@ -1813,10 +1226,7 @@ document.querySelectorAll('[data-cta]').forEach(btn => {
           currency: 'SAR'
         }, { event_id: ttGenEventId('cb') });
       }
-    } catch(_){}
-    // 4) Google Analytics — حدث cta_click
-    try {
-      if (window.gtag) gtag('event', 'cta_click', { cta_type: ctaType, page: 'tahsili-top-400', campaign: 'tahsili-1447' });
+      if (window.gtag) gtag('event', 'cta_click', { cta_type: ctaType, page: 'tahsili-top-400' });
     } catch(_){}
   });
 });
@@ -1833,234 +1243,6 @@ document.querySelectorAll('[data-cta]').forEach(btn => {
       }
     });
   }, { passive: true });
-})();
-
-// ═══ INTERACTIVE TRIAL — 3 أسئلة (1 أكثر تكرار + 2 توقعات) ═══
-(function(){
-  var TRIAL_Q = [
-    {
-      pillar: 'repeat',
-      subj: 'كيمياء — الأكثر تكراراً',
-      q: 'عدد الإلكترونات في ذرة الكلور (Z = 17) في المستوى الأخير يساوي:',
-      choices: ['2', '5', '7', '8'],
-      correct: 2,
-      explain: '<b>1)</b> العدد الذري للكلور Z = 17 → عدد الإلكترونات = 17.<br><b>2)</b> توزيع الإلكترونات: K = 2، L = 8، M = 7.<br><b>3)</b> المستوى الأخير (M) = 17 − (2 + 8) = <b>7 إلكترونات</b>.<br>الجواب: <b>ج</b>',
-      unlocked: true
-    },
-    {
-      pillar: 'predict',
-      subj: 'رياضيات — توقعات النخبة',
-      q: 'إذا كان س + ص = 7 و س × ص = 12، فإن قيمة س² + ص² تساوي:',
-      choices: ['25', '37', '49', '13'],
-      correct: 0,
-      explain: '<b>1)</b> نعرف أن (س + ص)² = س² + 2سص + ص²<br><b>2)</b> بالتعويض: (7)² = س² + ص² + 2(12)<br><b>3)</b> 49 = س² + ص² + 24<br><b>4)</b> س² + ص² = <b>25</b><br>الجواب: <b>أ</b>',
-      unlocked: false
-    },
-    {
-      pillar: 'predict',
-      subj: 'أحياء — توقعات النخبة',
-      q: 'في الخلية حقيقية النواة، أي العضيات الآتية تُعدّ الموقع الرئيس لإنتاج الطاقة عبر التنفس الخلوي الهوائي؟',
-      choices: ['الميتوكوندريا', 'البلاستيدات الخضراء', 'جهاز جولجي', 'الجسيمات الحالّة'],
-      correct: 0,
-      explain: '<b>1)</b> التنفس الخلوي الهوائي يحوّل الغذاء + الأكسجين إلى طاقة (ATP).<br><b>2)</b> هذي العملية تتم في <b>الميتوكوندريا</b> (يُلقّب بـ"بيت الطاقة").<br><b>3)</b> البلاستيدات الخضراء للبناء الضوئي، وجهاز جولجي للتعديل والإفراز، والجسيمات الحالّة للهضم الخلوي.<br>الجواب: <b>أ</b>',
-      unlocked: false
-    }
-  ];
-
-  var idx = 0;
-  var correctCount = 0;
-  var answered = false;
-  var area = document.getElementById('iTrialArea');
-  var stepEl = document.getElementById('iStep');
-  var pbEl = document.getElementById('iPb');
-  if (!area) return;
-
-  function escapeHtml(s){
-    return String(s||'').replace(/[&<>"']/g, function(c){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-    });
-  }
-
-  function letterAr(i){ return ['أ','ب','ج','د'][i] || (i+1); }
-
-  function renderQ(){
-    var q = TRIAL_Q[idx];
-    if (!q) return;
-    answered = false;
-    var pct = ((idx + 1) / TRIAL_Q.length) * 100;
-    if (stepEl) stepEl.innerHTML = 'السؤال <strong>' + (idx + 1) + '</strong> من ' + TRIAL_Q.length;
-    if (pbEl) pbEl.style.width = pct + '%';
-
-    var subjClass = q.pillar === 'predict' ? 'itrial-subj predict' : 'itrial-subj';
-    var html = '<div class="itrial-card">';
-    html += '<span class="' + subjClass + '">' + escapeHtml(q.subj) + '</span>';
-    html += '<div class="itrial-q">' + escapeHtml(q.q) + '</div>';
-    html += '<div class="itrial-opts">';
-    for (var i = 0; i < q.choices.length; i++) {
-      html += '<button class="itrial-opt" data-idx="' + i + '" type="button">';
-      html += '<div class="itrial-opt-letter">' + letterAr(i) + '</div>';
-      html += '<span>' + escapeHtml(q.choices[i]) + '</span>';
-      html += '<svg class="check-ic" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
-      html += '<svg class="x-ic" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-      html += '</button>';
-    }
-    html += '</div>';
-    html += '<div id="iFb"></div>';
-    html += '<button class="itrial-next-btn" id="iNext" style="display:none" type="button">';
-    html += '<span>' + (idx < TRIAL_Q.length - 1 ? 'السؤال التالي' : 'عرض نتيجتك') + '</span>';
-    html += '<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
-    html += '</button>';
-    html += '</div>';
-    area.innerHTML = html;
-
-    var opts = area.querySelectorAll('.itrial-opt');
-    opts.forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if (answered) return;
-        answered = true;
-        var picked = parseInt(this.getAttribute('data-idx'), 10);
-        var isOk = (picked === q.correct);
-        if (isOk) correctCount++;
-
-        opts.forEach(function(b, i){
-          b.disabled = true;
-          if (i === q.correct) b.classList.add('correct');
-          else if (i === picked && !isOk) b.classList.add('wrong');
-          else if (i !== picked) b.classList.add('dim');
-        });
-
-        var fb = document.getElementById('iFb');
-        var fbCls = isOk ? 'ok' : 'no';
-        var fbIc = isOk
-          ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
-          : '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-        var fbTx = isOk ? 'إجابة صحيحة — أحسنت' : 'إجابة خاطئة — الصواب: ' + escapeHtml(q.choices[q.correct]);
-        var fbHtml = '<div class="itrial-feedback ' + fbCls + '">' + fbIc + '<div>' + fbTx + '</div></div>';
-
-        if (q.unlocked) {
-          fbHtml += '<div class="itrial-explain">';
-          fbHtml += '<div class="itrial-explain-h"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span>الشرح خطوة-خطوة</span></div>';
-          fbHtml += q.explain;
-          fbHtml += '</div>';
-        } else {
-          fbHtml += '<div class="itrial-explain-locked">';
-          fbHtml += '<div class="blurred">' + q.explain + '</div>';
-          fbHtml += '<div class="lock-cover">';
-          fbHtml += '<svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
-          fbHtml += '<div class="tx">الشرح الكامل بعد الاشتراك</div>';
-          fbHtml += '<div class="sub">كل سؤال معه شرح مفصّل بنفس الجودة</div>';
-          fbHtml += '</div>';
-          fbHtml += '</div>';
-        }
-
-        fb.innerHTML = fbHtml;
-        var nextBtn = document.getElementById('iNext');
-        if (nextBtn) {
-          nextBtn.style.display = 'flex';
-          nextBtn.addEventListener('click', goNext, { once: true });
-        }
-
-        try {
-          if (window.gtag) gtag('event', 'trial_answer', { q_index: idx, correct: isOk ? 1 : 0, pillar: q.pillar });
-          if (window.MadarekAnalytics) window.MadarekAnalytics.track('trial_answer', { q_index: idx, correct: isOk, pillar: q.pillar });
-        } catch(_){}
-      });
-    });
-  }
-
-  function goNext(){
-    idx++;
-    if (idx >= TRIAL_Q.length) {
-      renderResult();
-    } else {
-      renderQ();
-      // smooth scroll to question top
-      var sec = document.getElementById('trial');
-      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-
-  function renderResult(){
-    var pct = Math.round((correctCount / TRIAL_Q.length) * 100);
-    if (stepEl) stepEl.innerHTML = 'انتهيت من <strong>' + TRIAL_Q.length + ' من ' + TRIAL_Q.length + '</strong>';
-    if (pbEl) pbEl.style.width = '100%';
-
-    var motiv, sub;
-    if (correctCount === TRIAL_Q.length) {
-      motiv = 'أداء ممتاز — أنت على الطريق الصحيح';
-      sub = 'الآن خذ خطوة عملية: تدرّب على +496 سؤال آخر بنفس الجودة';
-    } else if (correctCount >= 2) {
-      motiv = 'أداء جيد — تقدر تطلع أعلى';
-      sub = 'مع تدريب منتظم على الأسئلة المتكرّرة وتوقعات النخبة، النتيجة تتغيّر';
-    } else if (correctCount >= 1) {
-      motiv = 'بداية موفّقة — التدريب يصنع الفرق';
-      sub = 'هذي بالضبط الأسئلة اللي يجب تركّز عليها قبل الاختبار';
-    } else {
-      motiv = 'لا تقلق — الكل بدأ من هنا';
-      sub = 'مع الشرح المفصّل وخطة تدريب يومية، النتيجة تتغيّر بسرعة';
-    }
-
-    var html = '<div class="itrial-result">';
-    html += '<div class="itrial-result-num">' + pct + '%</div>';
-    html += '<div class="itrial-result-sub">' + correctCount + ' من ' + TRIAL_Q.length + ' صحيحة</div>';
-    html += '<div class="itrial-result-motiv">' + motiv + '</div>';
-    html += '<div class="itrial-result-tx">' + sub + '</div>';
-    html += '<a href="/pricing.html?coupon=TAHSILI15&from=tahsili-top-400&utm_source=tahsili-page&utm_medium=trial&utm_campaign=tahsili-1447" class="itrial-result-cta" data-cta="trial-result">';
-    html += '<span>اشترك بكود TAHSILI15 — وفّر 15%</span>';
-    html += '<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
-    html += '</a>';
-    html += '<a href="/register.html?coupon=TAHSILI15&from=tahsili-top-400" class="itrial-result-link" data-cta="trial-register">أنشئ حساب مجاناً أولاً</a>';
-    html += '</div>';
-    area.innerHTML = html;
-
-    // attach FULL tracking to result CTAs (same as initial CTAs but for dynamic elements)
-    area.querySelectorAll('[data-cta]').forEach(function(b){
-      b.addEventListener('click', function(){
-        var t = this.getAttribute('data-cta');
-        // 1) campaign origin persist (same helper used by main handler)
-        if (typeof window.persistCampaignOrigin === 'function') {
-          window.persistCampaignOrigin(t);
-        } else {
-          try {
-            localStorage.setItem('madarek_campaign_origin', 'tahsili-top-400');
-            localStorage.setItem('madarek_campaign_name', 'tahsili-1447');
-            localStorage.setItem('madarek_campaign_cta', t);
-            localStorage.setItem('madarek_campaign_clicked_at', new Date().toISOString());
-          } catch(_){}
-        }
-        // 2) Madarek Analytics — landing_cta_click event مع pillar معلومة (الـtrial)
-        try {
-          if (window.MadarekAnalytics) window.MadarekAnalytics.track('landing_cta_click', {
-            cta_type: t, landing: 'tahsili-top-400', campaign: 'tahsili-1447', coupon: 'TAHSILI15', from: 'trial'
-          });
-        } catch(_){}
-        // 3) TikTok ClickButton
-        try {
-          if (window.ttq) ttq.track('ClickButton', {
-            contents: [{ content_id: 'tahsili_top_400', content_name: 'Tahsili 400 - ' + t }],
-            value: 84, currency: 'SAR'
-          }, { event_id: 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
-        } catch(_){}
-        // 4) gtag
-        try {
-          if (window.gtag) gtag('event', 'cta_click', { cta_type: t, page: 'tahsili-top-400', campaign: 'tahsili-1447' });
-        } catch(_){}
-      });
-    });
-
-    try {
-      if (window.gtag) gtag('event', 'trial_complete', { correct: correctCount, total: TRIAL_Q.length, pct: pct });
-      if (window.MadarekAnalytics) window.MadarekAnalytics.track('trial_complete', { correct: correctCount, total: TRIAL_Q.length, pct: pct });
-      if (window.ttq) ttq.track('CompleteRegistration', {
-        contents: [{ content_id: 'tahsili_top_400_trial', content_name: 'tahsili-trial-complete' }],
-        value: correctCount, currency: 'SAR'
-      }, { event_id: 'tc_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
-    } catch(_){}
-
-    try { localStorage.setItem('madarek_trial_completed_at', new Date().toISOString()); } catch(_){}
-  }
-
-  renderQ();
 })();
 </script>
 </body>
