@@ -1631,7 +1631,13 @@ window.saveUser = async function(id) {
     };
     const endVal = getVal('euEnd');
     patch.subscription_end = endVal ? new Date(endVal + 'T23:59:59').toISOString() : null;
-    if (patch.subscription_type === 'free') patch.subscription_end = null;
+    if (patch.subscription_type === 'free') {
+        patch.subscription_end = null;
+    } else if (!patch.subscription_end) {
+        const months = patch.subscription_type === 'yearly' ? 12 : patch.subscription_type === 'quarterly' ? 3 : 1;
+        const d = new Date(); d.setMonth(d.getMonth() + months); d.setHours(23,59,59,0);
+        patch.subscription_end = d.toISOString();
+    }
 
     try {
         // 1) تحقّق إذا الإيميل تغيّر — حدّثه عبر Edge Function (auth.users + profiles)
