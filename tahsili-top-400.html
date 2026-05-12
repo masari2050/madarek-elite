@@ -812,7 +812,49 @@ img { max-width: 100%; display: block; }
 }
 .sticky-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.8; }
 
-/* ═══ TWO PILLARS (الأكثر تكراراً + توقعات النخبة) ═══ */
+/* ═══ HERO PILLARS — bittons داخل الـHero ═══ */
+.hero-pillars {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.hero-pillars .pillar-card {
+  padding: 16px 16px 14px;
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.08);
+}
+.hero-pillars .pillar-tag {
+  margin-bottom: 10px;
+  font-size: 10.5px;
+  padding: 4px 10px;
+}
+.hero-pillars .pillar-h {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+.hero-pillars .pillar-num-row {
+  margin-bottom: 6px;
+}
+.hero-pillars .pillar-num {
+  font-size: 28px;
+}
+.hero-pillars .pillar-num-lbl {
+  font-size: 12px;
+}
+.hero-pillars .pillar-tx {
+  font-size: 12px;
+  margin-bottom: 8px;
+  line-height: 1.65;
+}
+.hero-pillars .pillar-bullets {
+  display: none; /* للحفاظ على الـHero مدمج */
+}
+
+/* ═══ TWO PILLARS (الأكثر تكراراً + توقعات النخبة) — قسم مستقل (احتياطي) ═══ */
 .pillars-wrap {
   background: var(--sf);
   padding: 32px 22px 28px;
@@ -1405,20 +1447,54 @@ img { max-width: 100%; display: block; }
     <span>تحصيلي 1447 — يبدأ الخميس</span>
   </div>
 
-  <!-- Hook كبير ملفت — موضوع الصفحة في سطر -->
-  <div class="hook-strip">
-    <span class="hook-label">الأكثر تكراراً + توقعات النخبة</span>
-    <span class="hook-sub">كل اللي تحتاجه للتحصيلي في مكان واحد</span>
-  </div>
-
   <h1>
-    في آخر الأيام<br>
-    <span class="gold">لا تشتّت نفسك</span>
+    <span class="gold">لا تشتّت نفسك</span><br>
+    في آخر الأيام قبل اختبار التحصيلي
   </h1>
   <p class="hero-sub">
-    <b>+380 سؤال</b> من الأكثر تكراراً، و<b>+116 توقّع</b> منتقى من نخبة المصادر.<br>
-    تجربة موحّدة بدون تقليب PDFs — جاهزة للتدريب فور اشتراكك.
+    كل اللي تحتاجه في تطبيق واحد — بدون تقليب PDFs.
   </p>
+
+  <!-- البطاقتان داخل الـHero مباشرة (الـhook البصري الحقيقي) -->
+  <div class="hero-pillars">
+
+    <div class="pillar-card repeat-card">
+      <div class="pillar-tag">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        الأكثر تكراراً من اختبارات سابقة
+      </div>
+      <h3 class="pillar-h">الأسئلة <span class="gold">الأكثر تكراراً</span></h3>
+      <div class="pillar-num-row">
+        <span class="pillar-num">+380</span>
+        <span class="pillar-num-lbl">سؤال متجدّد</span>
+      </div>
+      <p class="pillar-tx">منتقاة من تحليل اختبارات تحصيلي سنوات سابقة — تعوّد على نمط الأسئلة الفعلي.</p>
+      <ul class="pillar-bullets">
+        <li>تعوّد على نمط الأسئلة الفعلي</li>
+        <li>شرح خطوة-خطوة بلغة بسيطة</li>
+        <li>تتحدّث باستمرار كل أسبوع</li>
+      </ul>
+    </div>
+
+    <div class="pillar-card predict-card">
+      <div class="pillar-tag">
+        <span class="dot"></span>
+        إصدار حصري 1447
+      </div>
+      <h3 class="pillar-h"><span class="gold">توقعات النخبة</span> للاختبار</h3>
+      <div class="pillar-num-row">
+        <span class="pillar-num">+116</span>
+        <span class="pillar-num-lbl">توقّع منتقى</span>
+      </div>
+      <p class="pillar-tx">انتقاء يدوي من 8 مصادر مختلفة، بدون تكرار — أسئلة محتمل ظهور أمثالها هذا العام.</p>
+      <ul class="pillar-bullets">
+        <li>منتقاة من 8 مصادر مختلفة</li>
+        <li>تجربة موحّدة بدون تقليب PDFs</li>
+        <li>صور نظيفة بدون watermarks</li>
+      </ul>
+    </div>
+
+  </div>
 
   <!-- Coupon badge -->
   <div class="coupon-badge">
@@ -1452,58 +1528,7 @@ img { max-width: 100%; display: block; }
   </div>
 </section>
 
-<!-- ═══ TWO PILLARS — الأكثر تكراراً + توقعات النخبة ═══ -->
-<section class="pillars-wrap" id="pillars">
-  <div class="pillars-intro">
-    <h2>ميزتان <span style="color:var(--pri)">في تطبيق واحد</span></h2>
-    <p>بدل ما تقلّب بين 8 مصادر متفرّقة، كل شي مرتّب لك بتجربة موحّدة</p>
-  </div>
-
-  <div class="pillars-grid">
-
-    <!-- Pillar 1: الأكثر تكراراً -->
-    <div class="pillar-card repeat-card">
-      <div class="pillar-tag">
-        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
-        من اختبارات سابقة
-      </div>
-      <h3 class="pillar-h">الأسئلة <span class="gold">الأكثر تكراراً</span></h3>
-      <div class="pillar-num-row">
-        <span class="pillar-num">+380</span>
-        <span class="pillar-num-lbl">سؤال متجدّد</span>
-      </div>
-      <p class="pillar-tx">تحليل اختبارات تحصيلي السنوات السابقة، وانتقاء الأسئلة الأكثر تكراراً في الـ4 مواد.</p>
-      <ul class="pillar-bullets">
-        <li>تعوّد على نمط الأسئلة الفعلي</li>
-        <li>شرح خطوة-خطوة بلغة بسيطة</li>
-        <li>تتحدّث باستمرار كل أسبوع</li>
-      </ul>
-    </div>
-
-    <!-- Pillar 2: توقعات النخبة -->
-    <div class="pillar-card predict-card">
-      <div class="pillar-tag">
-        <span class="dot"></span>
-        إصدار حصري 1447
-      </div>
-      <h3 class="pillar-h"><span class="gold">توقعات النخبة</span> للاختبار</h3>
-      <div class="pillar-num-row">
-        <span class="pillar-num">+116</span>
-        <span class="pillar-num-lbl">توقّع منتقى</span>
-      </div>
-      <p class="pillar-tx">انتقاء يدوي من نخبة المصادر، بدون تكرار. أسئلة محتمل ظهور أمثالها في الاختبار القادم.</p>
-      <ul class="pillar-bullets">
-        <li>منتقاة من 8 مصادر مختلفة</li>
-        <li>تجربة موحّدة بدون تقليب PDFs</li>
-        <li>صور نظيفة بدون watermarks</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="pillars-combo">
-    تحصل على <strong>+380 سؤال متكرّر</strong> و <span class="emerald">+116 توقّع</span> — كلها في تطبيق واحد بنفس الاشتراك
-  </div>
-</section>
+<!-- (تم نقل البطاقتين إلى الـHero — لا قسم مكرّر هنا) -->
 
 <!-- ═══ STATS — مواد التحصيلي ═══ -->
 <section class="stats">
