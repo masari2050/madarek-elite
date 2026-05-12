@@ -1638,6 +1638,9 @@ window.saveUser = async function(id) {
         const d = new Date(); d.setMonth(d.getMonth() + months); d.setHours(23,59,59,0);
         patch.subscription_end = d.toISOString();
     }
+    if (patch.subscription_type !== 'free' && !patch.subscription_source) {
+        patch.subscription_source = 'admin';
+    }
 
     try {
         // 1) تحقّق إذا الإيميل تغيّر — حدّثه عبر Edge Function (auth.users + profiles)
