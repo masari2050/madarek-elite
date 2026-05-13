@@ -126,9 +126,9 @@ serve(async (req) => {
 
     // استخراج الخطة و userId من CustomerReference (الصيغة: userId|plan)
     const ref = invoiceData.CustomerReference || ''
-    const parts = ref.split('|')
-    const refUserId = parts[0] || ''
-    const plan = parts[1] || 'monthly'
+    const refParts = ref.split('|')
+    const refUserId = refParts[0] || ''
+    const refPlan = refParts[1] || 'monthly'
 
     // تحديد المستخدم: من الجلسة (إجباري الآن)
     const targetUserId = user.id
@@ -138,6 +138,97 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'هذه الفاتورة ليست لحسابك' }), {
         status: 403, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // 🛡️ AMOUNT + PLAN TAMPERING DEFENSE (C1 — fix-payment-amount-check-may11)
+    // ───────────────────────────────────────────────────────────────────────
+    // نقارن المبلغ المدفوع فعلياً (MyFatoorah) مع ما خزّناه server-side في
+    // create-payment (في payments.amount). أي اختلاف >1 ر.س = محاولة تلاعب.
+    //
+    // نستخدم plan من payments.plan_type (الموثوق server-side) بدلاً من
+    // refPlan (CustomerReference) — defense-in-depth حتى لو تم تعديل
+    // CustomerReference نظرياً عبر webhook مزوّر أو خطأ في create-payment.
+    //
+    // الحماية تغطّي:
+    //   - تعديل CustomerReference بعد إنشاء الفاتورة (نظرياً)
+    //   - partial payment (لو MyFatoorah يدعمها يوماً)
+    //   - currency confusion
+    //   - أي bug مستقبلي في create-payment يكسر السعر/الخطة
+    // ═══════════════════════════════════════════════════════════════════════
+    const paidAmount = Number(invoiceData.InvoiceValue || 0)
+    const paymentRecordId = String(invoiceData.InvoiceId)
+
+    const { data: pmtRow, error: pmtErr } = await supabaseAdmin.from('payments')
+      .select('amount, plan_type, coupon_code, user_id')
+      .eq('payment_id', paymentRecordId)
+      .maybeSingle()
+
+    if (pmtErr || !pmtRow) {
+      console.error('[verify-payment] payments lookup failed:', pmtErr?.message, 'invoiceId:', paymentRecordId)
+      return new Response(JSON.stringify({
+        error: 'سجل الدفع غير موجود. تواصل مع الدعم.'
+      }), {
+        status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+      })
+    }
+
+    // 🛡️ تحقّق إضافي: payments.user_id يطابق المستخدم في الجلسة
+    if (pmtRow.user_id && pmtRow.user_id !== user.id) {
+      console.error(`[verify-payment] 🚨 USER MISMATCH: payments.user_id=${pmtRow.user_id}, session=${user.id}`)
+      return new Response(JSON.stringify({ error: 'هذه الفاتورة ليست لحسابك' }), {
+        status: 403, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+      })
+    }
+
+    const expectedAmount = Number(pmtRow.amount || 0)
+    const AMOUNT_TOLERANCE_SAR = 1.0  // tolerance لـrounding errors
+
+    if (expectedAmount > 0 && Math.abs(paidAmount - expectedAmount) > AMOUNT_TOLERANCE_SAR) {
+      console.error(
+        `[verify-payment] 🚨 AMOUNT TAMPERING DETECTED:\n` +
+        `  paid=${paidAmount} SAR\n` +
+        `  expected=${expectedAmount} SAR (from payments table — trusted server-side)\n` +
+        `  refPlan=${refPlan} (from CustomerReference — untrusted)\n` +
+        `  dbPlan=${pmtRow.plan_type} (from payments table — trusted)\n` +
+        `  invoiceId=${paymentRecordId}\n` +
+        `  user=${user.id} (${user.email})\n` +
+        `  coupon=${pmtRow.coupon_code || 'none'}`
+      )
+
+      // علّم السجل كـtamper_suspect — admin يقدر يراجع لاحقاً
+      await supabaseAdmin.from('payments').update({
+        status: 'tamper_suspect',
+        provider_data: {
+          ...invoiceData,
+          _tamper_detected: {
+            paid_amount: paidAmount,
+            expected_amount: expectedAmount,
+            ref_plan: refPlan,
+            db_plan: pmtRow.plan_type,
+            detected_at: new Date().toISOString()
+          }
+        }
+      }).eq('payment_id', paymentRecordId)
+
+      return new Response(JSON.stringify({
+        status: 'amount_mismatch',
+        error: 'القيمة المدفوعة لا تطابق المعتمد. لا يمكن تفعيل الاشتراك تلقائياً — تواصل مع الدعم.'
+      }), {
+        status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+      })
+    }
+
+    // 🛡️ استخدم plan من payments table (server-side trusted) بدلاً من CustomerReference
+    // payments.plan_type تم حفظه في create-payment بعد التحقّق من JWT و body validation.
+    const plan = pmtRow.plan_type || refPlan
+
+    // لو في mismatch بين DB و CustomerReference، نسجّل warning (لكن نكمّل بـplan الموثوق)
+    if (pmtRow.plan_type && pmtRow.plan_type !== refPlan) {
+      console.warn(
+        `[verify-payment] ⚠️ Plan mismatch (using DB value): ` +
+        `db=${pmtRow.plan_type}, ref=${refPlan}, user=${user.id}`
+      )
     }
 
     // حساب تاريخ انتهاء الاشتراك — يدعم monthly/quarterly/yearly
