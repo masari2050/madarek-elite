@@ -62,6 +62,61 @@
             window.location.href = '/admin-login.html';
             return null;
         }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // 🛡️ MFA enforcement على لوحة الإدارة
+        // ───────────────────────────────────────────────────────────────────
+        // لو الـadmin عنده TOTP factor مفعّل في Supabase، نطلب الرمز
+        // قبل أي وصول للوحة. لو ما عنده factor، يكمّل عادي (لا regression).
+        // ═══════════════════════════════════════════════════════════════════
+        try {
+            const sb = getSb();
+            const aalRes = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+            const aalNext = aalRes && aalRes.data && aalRes.data.nextLevel;
+            const aalCurrent = aalRes && aalRes.data && aalRes.data.currentLevel;
+            if (aalNext === 'aal2' && aalCurrent !== 'aal2') {
+                const factorsRes = await sb.auth.mfa.listFactors();
+                const totpFactors = (factorsRes && factorsRes.data && factorsRes.data.totp) || [];
+                const totpFactor = totpFactors.filter(f => f.status === 'verified')[0];
+                if (totpFactor) {
+                    let code = prompt('أدخل الرمز من تطبيق المصادقة (Google Authenticator):');
+                    if (!code) {
+                        await sb.auth.signOut();
+                        window.location.href = '/admin-login.html';
+                        return null;
+                    }
+                    code = code.trim().replace(/\s+/g, '');
+                    if (!/^\d{6}$/.test(code)) {
+                        alert('الرمز يجب أن يكون 6 أرقام. حاول مرة ثانية.');
+                        await sb.auth.signOut();
+                        window.location.href = '/admin-login.html';
+                        return null;
+                    }
+                    const chRes = await sb.auth.mfa.challenge({ factorId: totpFactor.id });
+                    if (chRes.error) {
+                        await sb.auth.signOut();
+                        window.location.href = '/admin-login.html';
+                        return null;
+                    }
+                    const vrRes = await sb.auth.mfa.verify({
+                        factorId: totpFactor.id,
+                        challengeId: chRes.data.id,
+                        code: code
+                    });
+                    if (vrRes.error) {
+                        alert('الرمز غير صحيح. سيتم تسجيل الخروج.');
+                        await sb.auth.signOut();
+                        window.location.href = '/admin-login.html';
+                        return null;
+                    }
+                }
+            }
+        } catch (mfaErr) {
+            console.error('[requireAdmin] MFA error:', mfaErr);
+            // لا نمنع الدخول لو حصل خطأ في MFA check نفسه — نسجّل فقط
+            // (يمنع كسر الـlogin لو Supabase MFA API صار له تغيير)
+        }
+
         return profile;
     }
 
