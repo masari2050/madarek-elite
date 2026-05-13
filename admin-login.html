@@ -309,6 +309,57 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
       toast('هذا الحساب ليس له صلاحية إدارية','err');
       resetBtn(btn);return;
     }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 🛡️ MFA verification (TOTP via Google Authenticator)
+    // ───────────────────────────────────────────────────────────────────
+    // لو المستخدم فعّل TOTP factor في Supabase، نطلب الـcode من
+    // Google Authenticator. لو ما فعّلها، يدخل عادي (لا regression).
+    // ═══════════════════════════════════════════════════════════════════
+    try {
+      var aalRes = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      var aalNext = aalRes && aalRes.data && aalRes.data.nextLevel;
+      var aalCurrent = aalRes && aalRes.data && aalRes.data.currentLevel;
+      if (aalNext === 'aal2' && aalCurrent !== 'aal2') {
+        // المستخدم عنده MFA factor مفعّل ولم يصل لـAAL2 بعد
+        var factorsRes = await sb.auth.mfa.listFactors();
+        var totpFactors = (factorsRes && factorsRes.data && factorsRes.data.totp) || [];
+        var totpFactor = totpFactors.filter(function(f){return f.status==='verified';})[0];
+        if (totpFactor) {
+          btn.innerHTML='<span>جاري التحقق...</span>';
+          var code = prompt('ادخل الرمز من تطبيق المصادقة (Google Authenticator)');
+          if (!code) {
+            await sb.auth.signOut();
+            toast('تم الإلغاء','err');
+            resetBtn(btn);return;
+          }
+          code = code.trim().replace(/\s+/g,'');
+          if (!/^\d{6}$/.test(code)) {
+            await sb.auth.signOut();
+            toast('الرمز يجب أن يكون 6 أرقام','err');
+            resetBtn(btn);return;
+          }
+          var chRes = await sb.auth.mfa.challenge({ factorId: totpFactor.id });
+          if (chRes.error) throw chRes.error;
+          var vrRes = await sb.auth.mfa.verify({
+            factorId: totpFactor.id,
+            challengeId: chRes.data.id,
+            code: code
+          });
+          if (vrRes.error) {
+            await sb.auth.signOut();
+            toast('الرمز غير صحيح','err');
+            resetBtn(btn);return;
+          }
+        }
+      }
+    } catch (mfaErr) {
+      console.error('[admin-login] MFA error:', mfaErr);
+      await sb.auth.signOut();
+      toast('خطأ في التحقق الثنائي: '+(mfaErr.message||'حاول مرة ثانية'),'err');
+      resetBtn(btn);return;
+    }
+
     _attempts=0;
     btn.innerHTML='<span>تم — جاري التحويل...</span>';
     setTimeout(function(){window.location.href='admin.html';},500);

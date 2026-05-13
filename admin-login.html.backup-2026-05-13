@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>مدارك النخبة — دخول لوحة الإدارة</title>
 <script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}}catch(e){}})();</script>
-<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -213,7 +213,7 @@ if(!_isRecoveryUrl){
       var s=await sb.auth.getSession();
       if(s.data&&s.data.session){
         var ok=await ensureAdmin(s.data.session.user.id).catch(function(){return null;});
-        if(ok){window.location.href='/admin.html';}
+        if(ok){window.location.href='admin.html';}
       }
     }catch(e){}
   })();
@@ -279,7 +279,7 @@ window.saveNewPass=async function(){
     var {error}=await sb.auth.updateUser({password:p1});
     if(error)throw error;
     m.textContent='تم تغيير كلمة المرور ✓';m.className='mdl-msg ok on';
-    setTimeout(function(){window.location.href='/admin.html';},1200);
+    setTimeout(function(){window.location.href='admin.html';},1200);
   }catch(e){
     var mm=e.message||'';
     m.textContent=(mm.indexOf('expired')>-1||mm.indexOf('JWT')>-1||mm.indexOf('session')>-1)?'انتهت صلاحية الرابط — اطلب رابط جديد':'ما قدرنا نغيّر — حاول مرة ثانية';
@@ -309,59 +309,9 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
       toast('هذا الحساب ليس له صلاحية إدارية','err');
       resetBtn(btn);return;
     }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // 🛡️ MFA verification (TOTP via Google Authenticator)
-    // ───────────────────────────────────────────────────────────────────
-    // لو المستخدم فعّل TOTP factor في Supabase، نطلب الـcode.
-    // لو ما فعّلها، يدخل عادي (لا regression).
-    // ═══════════════════════════════════════════════════════════════════
-    try {
-      var aalRes = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
-      var aalNext = aalRes && aalRes.data && aalRes.data.nextLevel;
-      var aalCurrent = aalRes && aalRes.data && aalRes.data.currentLevel;
-      if (aalNext === 'aal2' && aalCurrent !== 'aal2') {
-        var factorsRes = await sb.auth.mfa.listFactors();
-        var totpFactors = (factorsRes && factorsRes.data && factorsRes.data.totp) || [];
-        var totpFactor = totpFactors.filter(function(f){return f.status==='verified';})[0];
-        if (totpFactor) {
-          btn.innerHTML='<span>جاري التحقق...</span>';
-          var code = prompt('ادخل الرمز من تطبيق المصادقة (Google Authenticator)');
-          if (!code) {
-            await sb.auth.signOut();
-            toast('تم الإلغاء','err');
-            resetBtn(btn);return;
-          }
-          code = code.trim().replace(/\s+/g,'');
-          if (!/^\d{6}$/.test(code)) {
-            await sb.auth.signOut();
-            toast('الرمز يجب أن يكون 6 أرقام','err');
-            resetBtn(btn);return;
-          }
-          var chRes = await sb.auth.mfa.challenge({ factorId: totpFactor.id });
-          if (chRes.error) throw chRes.error;
-          var vrRes = await sb.auth.mfa.verify({
-            factorId: totpFactor.id,
-            challengeId: chRes.data.id,
-            code: code
-          });
-          if (vrRes.error) {
-            await sb.auth.signOut();
-            toast('الرمز غير صحيح','err');
-            resetBtn(btn);return;
-          }
-        }
-      }
-    } catch (mfaErr) {
-      console.error('[admin-login] MFA error:', mfaErr);
-      await sb.auth.signOut();
-      toast('خطأ في التحقق الثنائي: '+(mfaErr.message||'حاول مرة ثانية'),'err');
-      resetBtn(btn);return;
-    }
-
     _attempts=0;
     btn.innerHTML='<span>تم — جاري التحويل...</span>';
-    setTimeout(function(){window.location.href='/admin.html';},500);
+    setTimeout(function(){window.location.href='admin.html';},500);
   }catch(err){
     _attempts++;
     if(_attempts>=10){_locked=true;_lockTime=Date.now()+120000;toast('كثرت المحاولات — حاول بعد دقيقتين','err');}
