@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>تذوّق تسريبات التحصيلي — مدارك النخبة</title>
+<link rel="icon" href="/icons/icon-192.png">
+<meta name="theme-color" content="#10B981">
+<meta name="description" content="جرّب ٥ أسئلة من تسريبات اختبار التحصيلي الأربعاء ١٣ مايو ٢٠٢٦ — مع شروح مبسّطة. ثم اشترك للوصول لـ١٩٨ سؤالاً كاملاً.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap">
+<style>
+*,*:before,*:after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:#F8FAF9;color:#0F1B17;-webkit-font-smoothing:antialiased;font-feature-settings:"ss01";line-height:1.6;direction:rtl}
+:root{
+  --emerald:#10B981;--emerald-d:#047857;--emerald-l:#34D399;
+  --gold:#F59E0B;--gold-l:#FBBF24;
+  --ink:#0F1B17;--ink2:#1F2E2A;--ink3:#475569;
+  --line:#E2E8F0;--soft:#F1F5F4;--white:#fff;
+  --red:#EF4444;--red-bg:rgba(239,68,68,.08);
+  --green:#22C55E;--green-bg:rgba(34,197,94,.08);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+a{color:inherit;text-decoration:none}
+
+/* ═══ HEADER ═══ */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr-in{max-width:920px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:var(--ink)}
+.brand img{width:28px;height:28px;border-radius:7px}
+.hdr-spacer{flex:1}
+.hdr-link{font-size:13px;font-weight:700;color:var(--ink3);padding:7px 10px;border-radius:8px}
+.hdr-link:hover{background:var(--soft)}
+.hdr-cta{font-size:13px;font-weight:800;background:var(--emerald);color:#fff;padding:8px 16px;border-radius:10px;box-shadow:0 3px 10px rgba(16,185,129,.32);transition:transform .15s}
+.hdr-cta:hover{transform:translateY(-1px)}
+
+/* ═══ HERO ═══ */
+.hero{background:linear-gradient(140deg,#047857 0%,#10B981 55%,#34D399 100%);color:#fff;padding:38px 0 28px;position:relative;overflow:hidden;border-bottom-left-radius:28px;border-bottom-right-radius:28px}
+.hero::before{content:"";position:absolute;top:-80px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.22),transparent 65%);pointer-events:none}
+.hero::after{content:"";position:absolute;bottom:-100px;left:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 65%);pointer-events:none}
+.hero-in{max-width:920px;margin:0 auto;padding:0 18px;position:relative;z-index:1;text-align:center}
+.hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.36);padding:5px 13px;border-radius:18px;font-size:11.5px;font-weight:800;margin-bottom:14px;letter-spacing:.3px}
+.hero-pill .dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9);animation:pulseDot 1.4s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.hero-pill .day{background:#FFD700;color:#0F2A26;padding:2px 8px;border-radius:10px;font-weight:800;margin-inline-start:4px;font-size:10.5px;box-shadow:0 2px 8px rgba(255,215,0,.4)}
+.hero h1{font-size:26px;font-weight:900;line-height:1.4;margin:0 0 10px;letter-spacing:-.01em}
+.hero h1 .gold{color:#FFD700;text-shadow:0 0 14px rgba(255,215,0,.55)}
+.hero p{font-size:13.5px;color:rgba(255,255,255,.92);max-width:520px;margin:0 auto 18px;line-height:1.75}
+.hero-meta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.92)}
+.hero-meta span{display:inline-flex;align-items:center;gap:5px}
+.hero-meta svg{width:13px;height:13px;stroke:#FFD700;fill:none;stroke-width:2.4}
+
+/* ═══ QUIZ AREA ═══ */
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 60px}
+.progress-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.progress-bar .pb-line{flex:1;height:6px;background:var(--soft);border-radius:6px;overflow:hidden}
+.progress-bar .pb-fill{height:100%;background:linear-gradient(90deg,var(--emerald),var(--emerald-l));border-radius:6px;transition:width .35s var(--ease);width:0%}
+.progress-bar .pb-txt{font-size:12px;font-weight:800;color:var(--ink3);min-width:55px;text-align:left}
+
+.q-card{background:#fff;border-radius:18px;padding:22px 22px 18px;box-shadow:0 4px 16px rgba(0,0,0,.05);border:1px solid var(--line);animation:fadeUp .35s var(--ease) backwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,.1);color:var(--emerald-d);padding:4px 11px;border-radius:12px;font-size:11px;font-weight:800;margin-bottom:14px;letter-spacing:.2px}
+.q-text{font-size:16px;font-weight:700;line-height:1.85;color:var(--ink);margin-bottom:18px;direction:rtl;unicode-bidi:plaintext}
+.q-choices{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.choice{display:flex;align-items:center;gap:10px;padding:13px 15px;border:2px solid var(--line);background:#fff;border-radius:13px;text-align:start;font-size:14.5px;font-weight:600;color:var(--ink);transition:all .18s;cursor:pointer;font-family:inherit;width:100%;line-height:1.6}
+.choice:hover{border-color:var(--emerald-l);background:rgba(16,185,129,.04)}
+.choice .ch-letter{width:28px;height:28px;border-radius:8px;background:var(--soft);color:var(--ink3);display:grid;place-items:center;font-size:13px;font-weight:800;flex-shrink:0;transition:all .18s}
+.choice:hover .ch-letter{background:rgba(16,185,129,.15);color:var(--emerald-d)}
+.choice.correct{background:var(--green-bg);border-color:var(--green);color:#15803D;animation:none}
+.choice.correct .ch-letter{background:var(--green);color:#fff}
+.choice.wrong{background:var(--red-bg);border-color:var(--red);color:#B91C1C}
+.choice.wrong .ch-letter{background:var(--red);color:#fff}
+.choice:disabled{cursor:default;opacity:1}
+.choice.disabled-other{opacity:.55}
+
+.explanation{background:#FEFCE8;border:1px solid #FDE68A;border-radius:13px;padding:14px 16px;margin-top:6px;animation:fadeUp .3s var(--ease)}
+.explanation .lbl{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;color:#92400E;margin-bottom:6px;letter-spacing:.3px}
+.explanation .lbl svg{width:13px;height:13px;stroke:#92400E;fill:none;stroke-width:2.4}
+.explanation .body{font-size:13.5px;line-height:1.85;color:#451A03;font-weight:500}
+
+.q-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px}
+.next-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:var(--emerald);color:#fff;font-size:13.5px;font-weight:800;border-radius:12px;transition:all .15s;box-shadow:0 4px 12px rgba(16,185,129,.3);font-family:inherit;cursor:pointer;border:none}
+.next-btn:hover{transform:translateX(-2px);box-shadow:0 6px 16px rgba(16,185,129,.42)}
+.next-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.6}
+.next-btn:disabled{opacity:.5;cursor:not-allowed}
+.q-counter{font-size:11.5px;font-weight:700;color:var(--ink3)}
+
+/* ═══ RESULT / CTA SCREEN ═══ */
+.result{display:none;animation:fadeUp .4s var(--ease)}
+.result .score-ring{width:140px;height:140px;margin:0 auto 18px;position:relative;display:grid;place-items:center}
+.result .score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.result .score-ring circle{fill:none;stroke-width:11;stroke-linecap:round}
+.result .score-ring .bg{stroke:var(--soft)}
+.result .score-ring .fg{stroke:url(#scoreGrad);stroke-dasharray:380;stroke-dashoffset:380;animation:ringFill 1.2s var(--ease) forwards}
+@keyframes ringFill{to{stroke-dashoffset:var(--off,160)}}
+.result .score-num{position:relative;z-index:1;font-size:32px;font-weight:900;color:var(--emerald-d);line-height:1}
+.result .score-lbl{position:relative;z-index:1;font-size:11px;font-weight:700;color:var(--ink3);margin-top:2px}
+.result h2{font-size:22px;font-weight:900;margin:0 0 8px;text-align:center;color:var(--ink)}
+.result h2 .accent{color:var(--emerald-d)}
+.result .res-sub{font-size:14px;color:var(--ink3);text-align:center;max-width:480px;margin:0 auto 22px;line-height:1.8}
+
+.cta-card{background:linear-gradient(140deg,#047857 0%,#10B981 55%,#34D399 100%);color:#fff;border-radius:20px;padding:26px 24px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(16,185,129,.32)}
+.cta-card::before{content:"";position:absolute;top:-60px;left:-50px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.cta-card::after{content:"";position:absolute;bottom:-70px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,215,0,.12);pointer-events:none}
+.cta-card .cta-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative;z-index:1}
+.cta-card .cta-num{font-size:36px;font-weight:900;color:#FFD700;text-shadow:0 0 12px rgba(255,215,0,.55);line-height:1}
+.cta-card .cta-num-lbl{font-size:13px;font-weight:700;color:rgba(255,255,255,.92);line-height:1.4}
+.cta-card h3{font-size:18px;font-weight:900;margin:0 0 8px;line-height:1.5;position:relative;z-index:1}
+.cta-card .cta-sub{font-size:13px;color:rgba(255,255,255,.92);margin-bottom:18px;line-height:1.75;position:relative;z-index:1;font-weight:500}
+.cta-card .feat-list{display:flex;flex-direction:column;gap:7px;margin-bottom:20px;position:relative;z-index:1}
+.cta-card .feat-row{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#fff}
+.cta-card .feat-row svg{width:16px;height:16px;stroke:#FFD700;fill:none;stroke-width:2.6;flex-shrink:0}
+.cta-actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.cta-btn{flex:1;min-width:140px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:13px 18px;font-size:14px;font-weight:800;border-radius:12px;text-decoration:none;transition:transform .15s;font-family:inherit;cursor:pointer;border:none}
+.cta-btn-pri{background:#fff;color:var(--emerald-d);box-shadow:0 5px 16px rgba(0,0,0,.16)}
+.cta-btn-pri:hover{transform:translateY(-1px)}
+.cta-btn-pri svg{width:14px;height:14px;stroke:var(--emerald-d);fill:none;stroke-width:2.6}
+.cta-btn-sec{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.32)}
+.cta-btn-sec:hover{background:rgba(255,255,255,.28)}
+
+.retry-link{text-align:center;margin-top:14px}
+.retry-link a{font-size:12.5px;color:var(--ink3);font-weight:600}
+.retry-link a:hover{color:var(--emerald-d)}
+
+@media (max-width:560px){
+  .hero{padding:30px 0 24px}
+  .hero h1{font-size:22px}
+  .q-card{padding:18px 16px 14px}
+  .q-text{font-size:15px}
+  .choice{font-size:14px;padding:12px 13px}
+  .result .score-ring{width:120px;height:120px}
+  .result .score-num{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-in">
+    <a class="brand" href="/">
+      <img src="/icons/icon-192.png" alt="مدارك النخبة">
+      <span>مدارك النخبة</span>
+    </a>
+    <div class="hdr-spacer"></div>
+    <a class="hdr-link" href="/login.html">دخول</a>
+    <a class="hdr-cta" href="/register.html">سجّل الآن</a>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-pill">
+      <span class="dot"></span>
+      <span>تذوّق مجاني</span>
+      <span class="day">اليوم الأول</span>
+    </div>
+    <h1>تسريبات التحصيلي <span class="gold">أوّل بأوّل</span></h1>
+    <p>جرّب ٥ أسئلة من اختبار الأربعاء ١٣ مايو مع شروح مبسّطة — ثم افتح الباقي بالاشتراك.</p>
+    <div class="hero-meta">
+      <span><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>محلولة بالكامل</span>
+      <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>أقل من ٥ دقايق</span>
+      <span><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>شرح بسيط</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUIZ AREA ═══ -->
+<div class="wrap">
+  <!-- Quiz screen -->
+  <div id="quizScreen">
+    <div class="progress-bar">
+      <div class="pb-line"><div class="pb-fill" id="pbFill"></div></div>
+      <div class="pb-txt" id="pbTxt">0 / 5</div>
+    </div>
+
+    <div id="quizArea">
+      <!-- Loading state -->
+      <div class="q-card" id="loadingCard" style="text-align:center;padding:60px 20px">
+        <div style="font-size:14px;color:var(--ink3);font-weight:600">جاري تحميل الأسئلة…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result/CTA screen -->
+  <div class="result" id="resultScreen">
+    <div class="score-ring">
+      <svg viewBox="0 0 140 140">
+        <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#047857"/><stop offset="100%" stop-color="#34D399"/>
+        </linearGradient></defs>
+        <circle class="bg" cx="70" cy="70" r="60"/>
+        <circle class="fg" cx="70" cy="70" r="60"/>
+      </svg>
+      <div style="text-align:center">
+        <div class="score-num" id="scoreNum">0%</div>
+        <div class="score-lbl" id="scoreLbl">0 / 5</div>
+      </div>
+    </div>
+    <h2 id="resultTitle">أحسنت — <span class="accent">جربت التذوّق</span></h2>
+    <div class="res-sub" id="resultSub">المرحلة القادمة: الوصول الكامل للـ١٩٨ سؤال محلول من اختبار الأربعاء، مع شروح أعمق ولوحة تقدّمك الشخصية.</div>
+
+    <div class="cta-card">
+      <div class="cta-top">
+        <div class="cta-num">١٩٨</div>
+        <div class="cta-num-lbl">سؤال إضافي محلول<br>من اختبار الأربعاء ١٣ مايو</div>
+      </div>
+      <h3>افتح كل التسريبات + التدريب الذكي</h3>
+      <div class="cta-sub">اشتراك واحد يفتح لك ٤٬٢٠٠+ سؤال، تسريبات مستمرّة بعد كل فترة، وتدريب يقترح عليك نقاط ضعفك.</div>
+
+      <div class="feat-list">
+        <div class="feat-row"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>١٩٨ سؤال من اختبار الأربعاء — كلها محلولة</div>
+        <div class="feat-row"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تسريبات الفترات القادمة فور صدورها</div>
+        <div class="feat-row"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تدريب ذكي + اختبارات محاكية + تقارير تقدّمك</div>
+      </div>
+
+      <div class="cta-actions">
+        <a class="cta-btn cta-btn-pri" href="/register.html?from=leaks-preview">
+          سجّل الآن وافتح كل التسريبات
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <a class="cta-btn cta-btn-sec" href="/pricing.html?from=leaks-preview">شوف الباقات</a>
+      </div>
+    </div>
+
+    <div class="retry-link">
+      <a href="javascript:void(0)" onclick="restartQuiz()">↻ جرّب ٥ أسئلة جديدة</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+const LEAK_GROUP_ID = 'cfaf82ac-dc99-43ac-8d00-d44133802245';
+const SAMPLE_SIZE = 5;
+
+let allQuestions = [];
+let pool = [];
+let current = 0;
+let correct = 0;
+let answered = false;
+
+function esc(s){return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function shuffleArr(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+async function loadQuestions(){
+  // get a varied sample — pull 40 questions and shuffle, then pick first 5
+  const url = SB_URL + '/rest/v1/questions?leak_group_id=eq.' + LEAK_GROUP_ID
+    + '&select=subject,topic,question_text,choices,correct_index,explanation&limit=40&disabled=eq.false';
+  try {
+    const r = await fetch(url, {headers:{apikey:SB_KEY, Authorization:'Bearer '+SB_KEY}});
+    if(!r.ok) throw new Error('fetch failed');
+    allQuestions = await r.json();
+    if (!allQuestions.length) throw new Error('no questions');
+    pool = shuffleArr(allQuestions).slice(0, SAMPLE_SIZE);
+    current = 0; correct = 0;
+    renderQuestion();
+  } catch(e) {
+    document.getElementById('loadingCard').innerHTML =
+      '<div style="font-size:14px;color:#B91C1C;font-weight:700">تعذّر تحميل الأسئلة. <a href="/leaks-preview.html" style="color:#10B981">حاول مرّة ثانية</a></div>';
+  }
+}
+
+function renderQuestion(){
+  if (current >= pool.length) { showResult(); return; }
+  answered = false;
+  const q = pool[current];
+  const choices = Array.isArray(q.choices) ? q.choices : JSON.parse(q.choices);
+  const letters = ['أ','ب','ج','د'];
+
+  const pct = Math.round((current / SAMPLE_SIZE) * 100);
+  document.getElementById('pbFill').style.width = pct + '%';
+  document.getElementById('pbTxt').textContent = current + ' / ' + SAMPLE_SIZE;
+
+  let html = '<div class="q-card">';
+  html += '<div class="q-tag">' + esc(q.subject) + (q.topic ? ' · ' + esc(q.topic) : '') + '</div>';
+  html += '<div class="q-text">' + esc(q.question_text) + '</div>';
+  html += '<div class="q-choices">';
+  choices.forEach((c, i) => {
+    html += '<button class="choice" data-idx="' + i + '" onclick="answerQ(' + i + ')">'
+         + '<span class="ch-letter">' + letters[i] + '</span>'
+         + '<span>' + esc(c) + '</span>'
+         + '</button>';
+  });
+  html += '</div>';
+  html += '<div id="explainBox"></div>';
+  html += '<div class="q-footer">'
+       +   '<div class="q-counter">سؤال ' + (current + 1) + ' من ' + SAMPLE_SIZE + '</div>'
+       +   '<button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>'
+       +     '<span id="nextBtnTxt">' + (current === SAMPLE_SIZE - 1 ? 'النتيجة' : 'التالي') + '</span>'
+       +     '<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>'
+       +   '</button>'
+       + '</div>';
+  html += '</div>';
+  document.getElementById('quizArea').innerHTML = html;
+}
+
+window.answerQ = function(idx){
+  if (answered) return;
+  answered = true;
+  const q = pool[current];
+  const ok = idx === q.correct_index;
+  if (ok) correct++;
+
+  document.querySelectorAll('.choice').forEach((el, i) => {
+    el.disabled = true;
+    if (i === q.correct_index) el.classList.add('correct');
+    else if (i === idx) el.classList.add('wrong');
+    else el.classList.add('disabled-other');
+  });
+
+  // show explanation
+  const ex = document.getElementById('explainBox');
+  ex.innerHTML = '<div class="explanation">'
+    + '<div class="lbl"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>الشرح</div>'
+    + '<div class="body">' + esc(q.explanation) + '</div>'
+    + '</div>';
+
+  document.getElementById('nextBtn').disabled = false;
+};
+
+window.nextQ = function(){
+  current++;
+  if (current >= pool.length) showResult();
+  else renderQuestion();
+};
+
+function showResult(){
+  document.getElementById('quizScreen').style.display = 'none';
+  const r = document.getElementById('resultScreen');
+  r.style.display = 'block';
+  const pct = Math.round((correct / SAMPLE_SIZE) * 100);
+  document.getElementById('scoreNum').textContent = pct + '%';
+  document.getElementById('scoreLbl').textContent = correct + ' / ' + SAMPLE_SIZE;
+
+  // animate ring: 380 = 2πr ≈ 2π·60.5. dashoffset = 380 - (380 * pct/100)
+  const off = 380 - (380 * pct / 100);
+  document.querySelector('.score-ring .fg').style.setProperty('--off', off);
+
+  // dynamic title/sub
+  const titleEl = document.getElementById('resultTitle');
+  const subEl = document.getElementById('resultSub');
+  if (pct >= 80) {
+    titleEl.innerHTML = 'ممتاز — <span class="accent">جاهز للاختبار</span>';
+    subEl.textContent = 'مستواك قوي. تخيّل لو دخلت الاختبار وقد حللت كل الـ١٩٨ سؤال مع نظرائها من تسريبات الفترات السابقة.';
+  } else if (pct >= 50) {
+    titleEl.innerHTML = 'جيّد — <span class="accent">في الطريق الصحيح</span>';
+    subEl.textContent = 'فيه مساحة للتحسّن. الـ١٩٨ سؤال الباقية + الشروح المبسّطة + تدريبنا الذكي يرفعونك مستويين تقريباً.';
+  } else {
+    titleEl.innerHTML = 'لا بأس — <span class="accent">البداية مهمّة</span>';
+    subEl.textContent = 'الأهم أنك بدأت. التدريب المركّز على نقاط ضعفك + التسريبات المحلولة يقدر يقلب نتيجتك خلال أيام.';
+  }
+}
+
+window.restartQuiz = function(){
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  document.getElementById('quizArea').innerHTML = '<div class="q-card" id="loadingCard" style="text-align:center;padding:60px 20px"><div style="font-size:14px;color:var(--ink3);font-weight:600">جاري تحميل الأسئلة…</div></div>';
+  pool = shuffleArr(allQuestions).slice(0, SAMPLE_SIZE);
+  current = 0; correct = 0;
+  renderQuestion();
+};
+
+loadQuestions();
+</script>
+</body>
+</html>
