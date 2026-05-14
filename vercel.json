@@ -1,7 +1,9 @@
 {
   "rewrites": [
     { "source": "/invite/:code", "destination": "/invite.html?code=:code" },
-    { "source": "/r/:code",       "destination": "/invite.html?code=:code" }
+    { "source": "/r/:code",       "destination": "/invite.html?code=:code" },
+    { "source": "/q/:id",         "destination": "/question.html?id=:id" },
+    { "source": "/dl/:slug",      "destination": "/dl.html?slug=:slug" }
   ],
   "headers": [
     {

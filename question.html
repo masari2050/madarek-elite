@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سؤال محلول — مدارك النخبة</title>
+<link rel="icon" href="/icons/icon-192.png">
+<meta name="theme-color" content="#5B4DD4">
+<meta name="description" content="سؤال محلول من تسريبات اختبار التحصيلي مع شرح مبسّط — مدارك النخبة">
+<meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap">
+<style>
+*,*:before,*:after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;background:#F8FAF9;color:#0F1B17;-webkit-font-smoothing:antialiased;line-height:1.6;direction:rtl}
+:root{
+  --pri:#6D5DF6;--pri-d:#5B4DD4;--pri-l:#8B7FFF;
+  --gold:#F59E0B;--gold-d:#D97706;
+  --ink:#0F1B17;--ink2:#1F2E2A;--ink3:#475569;--ink4:#94A3B8;
+  --line:#E2E8F0;--soft:#F1F5F4;--white:#fff;
+  --suc:#22C55E;--suc-bg:rgba(34,197,94,.10);
+  --red:#EF4444;--red-bg:rgba(239,68,68,.08);
+  --yellow-bg:#FEFCE8;--yellow-bd:#FDE68A;--yellow-ink:#92400E;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 50%,#8B7FFF 100%);color:#fff;box-shadow:0 4px 20px rgba(109,93,246,.25)}
+.hdr-in{max-width:760px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:10px}
+.hdr-logo{display:flex;align-items:center;gap:8px;flex:1}
+.hdr-logo svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hdr-logo .br{font-size:15px;font-weight:800}
+.hdr-cta{background:#FBBF24;color:#0F1B17;padding:8px 16px;border-radius:11px;font-size:12px;font-weight:800;box-shadow:0 3px 10px rgba(251,191,36,.32)}
+
+/* WRAP */
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 60px}
+
+/* QUESTION CARD */
+.q-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(109,93,246,.10);color:var(--pri-d);padding:5px 12px;border-radius:11px;font-size:11.5px;font-weight:800;margin-bottom:14px;letter-spacing:.2px}
+.q-tag .dot{width:5px;height:5px;border-radius:50%;background:var(--pri)}
+
+.q-card{background:#fff;border-radius:18px;padding:24px 22px 20px;box-shadow:0 4px 18px rgba(0,0,0,.06);border:1px solid var(--line);margin-bottom:14px}
+.q-text{font-size:17px;font-weight:700;line-height:1.95;color:var(--ink);direction:rtl;unicode-bidi:plaintext;margin-bottom:18px}
+
+.choices{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.choice{display:flex;align-items:center;gap:11px;padding:14px 16px;border:2px solid var(--line);background:#fff;border-radius:13px;font-size:15px;font-weight:600;color:var(--ink);line-height:1.6;width:100%;text-align:start}
+.choice .letter{width:30px;height:30px;border-radius:9px;background:var(--soft);color:var(--ink3);display:grid;place-items:center;font-size:13.5px;font-weight:800;flex-shrink:0}
+.choice.correct{background:var(--suc-bg);border-color:var(--suc);color:#15803D}
+.choice.correct .letter{background:var(--suc);color:#fff}
+
+/* EXPLANATION */
+.explain{background:var(--yellow-bg);border:1px solid var(--yellow-bd);border-radius:13px;padding:16px 18px;margin-top:6px}
+.explain .lbl{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--yellow-ink);margin-bottom:10px;letter-spacing:.3px}
+.explain .lbl svg{width:14px;height:14px;stroke:var(--yellow-ink);fill:none;stroke-width:2.4}
+.explain .body{font-size:14px;line-height:1.95;color:#451A03;font-weight:500;direction:rtl;unicode-bidi:plaintext}
+
+/* CTA card — يدفع للاشتراك */
+.cta-card{margin-top:18px;background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 50%,#8B7FFF 100%);color:#fff;border-radius:18px;padding:24px 22px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(109,93,246,.32)}
+.cta-card::before{content:"";position:absolute;top:-50px;left:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.cta-card::after{content:"";position:absolute;bottom:-60px;right:-50px;width:160px;height:160px;border-radius:50%;background:rgba(251,191,36,.14);pointer-events:none}
+.cta-num{position:relative;z-index:1;display:flex;align-items:flex-end;gap:8px;margin-bottom:8px}
+.cta-num .big{font-size:42px;font-weight:900;color:#FBBF24;line-height:1;text-shadow:0 0 14px rgba(251,191,36,.4)}
+.cta-num .small{font-size:13px;color:#fff;line-height:1.4;font-weight:600;padding-bottom:6px}
+.cta-card h2{font-size:18px;font-weight:900;margin:0 0 8px;position:relative;z-index:1}
+.cta-card p{font-size:13px;color:rgba(255,255,255,.92);line-height:1.8;margin:0 0 16px;position:relative;z-index:1}
+.cta-feats{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;position:relative;z-index:1}
+.cta-feat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#fff}
+.cta-feat svg{width:15px;height:15px;stroke:#FBBF24;fill:none;stroke-width:2.6;flex-shrink:0}
+.cta-actions{display:flex;gap:9px;flex-wrap:wrap;position:relative;z-index:1}
+.cta-btn{flex:1;min-width:140px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:13px 18px;font-size:14px;font-weight:800;border-radius:12px;text-decoration:none}
+.cta-btn-pri{background:#FBBF24;color:#0F1B17;box-shadow:0 5px 16px rgba(251,191,36,.32)}
+.cta-btn-sec{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.32)}
+
+/* META */
+.meta{display:flex;gap:18px;justify-content:center;margin:14px 0;font-size:12px;color:var(--ink3);flex-wrap:wrap}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.meta svg{width:14px;height:14px;stroke:var(--pri);fill:none;stroke-width:2.2}
+
+/* LOADING / EMPTY */
+.loading,.err{padding:60px 20px;text-align:center;color:var(--ink3)}
+.loading{font-size:14px}
+.err .ic{font-size:48px;margin-bottom:12px}
+.err .t{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.err .d{font-size:13px;line-height:1.7}
+.err a{color:var(--pri);font-weight:700}
+
+/* FOOTER */
+.ftr{text-align:center;font-size:11.5px;color:var(--ink3);margin-top:30px;padding-top:20px;border-top:1px solid var(--line)}
+.ftr a{color:var(--pri);font-weight:700}
+
+@media (max-width:560px){
+  .q-text{font-size:16px}
+  .choice{font-size:14.5px;padding:12px 14px}
+  .cta-num .big{font-size:36px}
+  .cta-card h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-logo">
+      <svg viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
+      <span class="br">مدارك النخبة</span>
+    </div>
+    <a class="hdr-cta" href="/register.html?from=q-page">سجّل الآن</a>
+  </div>
+</header>
+
+<div class="wrap" id="root">
+  <div class="loading">جاري تحميل السؤال...</div>
+</div>
+
+<script>
+const SB_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+const params = new URLSearchParams(location.search);
+const qId = params.get('id');
+const root = document.getElementById('root');
+
+function esc(s){return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function showError(title, desc){
+  root.innerHTML = `
+    <div class="err">
+      <div class="ic">📚</div>
+      <div class="t">${title}</div>
+      <div class="d">${desc}</div>
+      <p style="margin-top:20px"><a href="/">← العودة للصفحة الرئيسية</a></p>
+    </div>`;
+}
+
+async function loadQuestion(){
+  if (!qId) {
+    showError('الرابط غير صحيح', 'لم نتمكّن من إيجاد السؤال. <br><br>زر <a href="/">madarekelite.com</a> للوصول لـ4,200+ سؤال محلول.');
+    return;
+  }
+
+  try {
+    const r = await fetch(SB_URL + '/rest/v1/questions?id=eq.' + encodeURIComponent(qId)
+      + '&select=subject,topic,question_text,choices,correct_index,explanation,leak_group_id&limit=1', {
+        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+      });
+    if (!r.ok) throw new Error('Network error');
+    const data = await r.json();
+    if (!data || !data.length) {
+      showError('السؤال غير متوفّر', 'هذا الرابط لم يعد صالحاً، أو السؤال تم تحديثه. <br><br>اكتشف المزيد على <a href="/">منصّتنا</a>.');
+      return;
+    }
+    render(data[0]);
+  } catch (e) {
+    showError('حدث خطأ', 'تعذّر تحميل السؤال. <a href="/">العودة للرئيسية</a>');
+  }
+}
+
+function render(q){
+  const choices = Array.isArray(q.choices) ? q.choices : JSON.parse(q.choices || '[]');
+  const letters = ['أ','ب','ج','د'];
+  const subjTopic = q.subject + (q.topic ? ' · ' + q.topic : '');
+
+  root.innerHTML = `
+    <div class="q-tag"><span class="dot"></span>${esc(subjTopic)}</div>
+
+    <div class="q-card">
+      <div class="q-text">${esc(q.question_text)}</div>
+      <div class="choices">
+        ${choices.map((ch, i) => `
+          <div class="choice ${i === q.correct_index ? 'correct' : ''}">
+            <span class="letter">${letters[i]}</span>
+            <span>${esc(ch)}</span>
+          </div>
+        `).join('')}
+      </div>
+      ${q.explanation ? `
+        <div class="explain">
+          <div class="lbl">
+            <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+            الشرح
+          </div>
+          <div class="body">${esc(q.explanation)}</div>
+        </div>
+      ` : ''}
+    </div>
+
+    <div class="meta">
+      <span><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>محلول ومُراجَع</span>
+      <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>تسريبات التحصيلي</span>
+      <span><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>هدية مجانية</span>
+    </div>
+
+    <div class="cta-card">
+      <div class="cta-num">
+        <span class="big">4,200+</span>
+        <span class="small">سؤال محلول<br>على المنصّة الكاملة</span>
+      </div>
+      <h2>هذا السؤال هدية من مدارك النخبة</h2>
+      <p>للوصول للمزيد: تسريبات تتجدّد · تدريب ذكي · اختبارات محاكية · مسابقات أسبوعية.</p>
+      <div class="cta-feats">
+        <div class="cta-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>4,200+ سؤال محلول من اختبارات سعودية حقيقية</div>
+        <div class="cta-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تسريبات الفترات القادمة فور صدورها</div>
+        <div class="cta-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تدريب ذكي يقترح عليك نقاط ضعفك</div>
+      </div>
+      <div class="cta-actions">
+        <a class="cta-btn cta-btn-pri" href="/register.html?from=q-page">سجّل واحصل على كل شي</a>
+        <a class="cta-btn cta-btn-sec" href="/leaks-preview.html">جرّب 5 أسئلة مجاناً</a>
+      </div>
+    </div>
+
+    <div class="ftr">
+      <a href="https://madarekelite.com">madarekelite.com</a>
+      &nbsp;·&nbsp; @madarekelite &nbsp;·&nbsp; واتساب 966553339885+
+    </div>
+  `;
+  // SEO: تحديث العنوان حسب السؤال
+  document.title = q.subject + ' — سؤال محلول · مدارك النخبة';
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
