@@ -91,6 +91,32 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .mock-cta:hover{transform:translateY(-1px)}
 .mock-cta:active{transform:scale(.97)}
 
+/* FRESH LEAK BANNER — أخضر زمرّدي للتسريبات الجديدة */
+.fresh-leak-ban{display:none;margin:0 6px 14px;padding:16px 18px;border-radius:var(--r2);
+  background:linear-gradient(135deg,#047857 0%,#10B981 50%,#34D399 100%);
+  color:#fff;position:relative;overflow:hidden;cursor:pointer;
+  box-shadow:0 8px 24px rgba(16,185,129,.32);transition:transform .15s;
+}
+.fresh-leak-ban:hover{transform:translateY(-1px)}
+.fresh-leak-ban:active{transform:scale(.98)}
+.fresh-leak-ban::before{content:"";position:absolute;top:-50px;left:-40px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.fresh-leak-ban::after{content:"";position:absolute;bottom:-60px;right:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none}
+.fresh-leak-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;
+  background:rgba(255,255,255,.18);color:#fff;
+  padding:4px 11px;border-radius:14px;margin-bottom:9px;
+  border:1px solid rgba(255,255,255,.32);position:relative;z-index:1;letter-spacing:.3px;
+}
+.fresh-leak-tag svg{width:11px;height:11px;fill:#fff;stroke:none}
+.fresh-leak-ttl{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:5px;position:relative;z-index:1;letter-spacing:-.01em}
+.fresh-leak-sub{font-size:12.5px;color:rgba(255,255,255,.92);line-height:1.65;margin-bottom:12px;position:relative;z-index:1;font-weight:500}
+.fresh-leak-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;
+  background:#fff;color:#047857;font-size:12.5px;font-weight:800;
+  border-radius:11px;border:none;font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);position:relative;z-index:1;
+}
+.fresh-leak-cta svg{width:13px;height:13px;stroke:#047857;fill:none;stroke-width:2.4}
+[data-t="d"] .fresh-leak-ban,html.dark .fresh-leak-ban{box-shadow:0 8px 24px rgba(16,185,129,.22)}
+
 /* REFERRAL CASH BANNER (مطابق Hook الذهبي بالتطبيق) */
 .ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
   background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 50%,#FDE68A 100%);
@@ -343,6 +369,20 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <div class="mock-meta" id="mockMeta">يبدأ 13 مايو — 160 سؤال في 125 دقيقة</div>
   <div class="mock-count" id="mockCount" style="display:none;font-size:11px;opacity:.85;margin-top:6px"></div>
   <button class="mock-cta" id="mockCta" onclick="mockExamRegister()">سجّل الآن</button>
+</div>
+
+<!-- FRESH LEAK BANNER — يظهر تلقائياً لو في leak_group بـaccent_color خلال آخر 3 أيام -->
+<div class="fresh-leak-ban" id="freshLeakBan" onclick="location.href='/leaks.html'">
+  <div class="fresh-leak-tag">
+    <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <span>جديد · ١٣ مايو</span>
+  </div>
+  <div class="fresh-leak-ttl" id="freshLeakTtl">تسريبات التحصيلي – الأربعاء ١٣ مايو</div>
+  <div class="fresh-leak-sub" id="freshLeakSub">أسئلة الفترة الأولى مع شروح مبسّطة. جاهزة الآن للتدريب.</div>
+  <button class="fresh-leak-cta" type="button" onclick="event.stopPropagation();location.href='/leaks.html'">
+    <span>افتح التسريبات</span>
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
 </div>
 
 <!-- REFERRAL CASH BANNER (للجميع — يحوّل لـreferrals dashboard) -->
@@ -1021,6 +1061,48 @@ async function loadBanners() {
         });
     } catch(e) {}
     loadMockExamBanner();
+    loadFreshLeakBanner();
+}
+
+// ── Fresh Leak Banner ──
+// يظهر تلقائياً لو في leak_group بـaccent_color وتاريخه خلال آخر 3 أيام
+async function loadFreshLeakBanner() {
+    const el = document.getElementById('freshLeakBan');
+    if (!el) return;
+    try {
+        const cutoff = new Date(Date.now() - 3*24*60*60*1000).toISOString().split('T')[0];
+        const { data } = await sb.from('leak_groups')
+            .select('id, title, leak_date, accent_color, question_count')
+            .eq('is_active', true)
+            .not('accent_color', 'is', null)
+            .gte('leak_date', cutoff)
+            .order('leak_date', { ascending: false })
+            .limit(1);
+        if (!data || !data.length) { el.style.display = 'none'; return; }
+        const g = data[0];
+        const ttl = document.getElementById('freshLeakTtl');
+        const sub = document.getElementById('freshLeakSub');
+        const tag = el.querySelector('.fresh-leak-tag span');
+        if (ttl) ttl.textContent = g.title;
+        if (sub) sub.textContent = (g.question_count || '') + ' سؤال محلول مع شرح مبسّط — جاهزة الآن.';
+        if (tag) {
+            const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
+            tag.textContent = 'جديد · ' + dt;
+        }
+        // accent_color → خلفية gradient ديناميكية
+        if (g.accent_color) {
+            el.style.background = 'linear-gradient(135deg,' + g.accent_color + 'cc 0%,' + g.accent_color + ' 55%,' + g.accent_color + 'ee 100%)';
+            el.style.boxShadow = '0 8px 24px ' + g.accent_color + '52';
+            const cta = el.querySelector('.fresh-leak-cta');
+            if (cta) cta.style.color = g.accent_color;
+            const ctaSvg = el.querySelector('.fresh-leak-cta svg');
+            if (ctaSvg) ctaSvg.style.stroke = g.accent_color;
+        }
+        el.style.display = 'block';
+    } catch(e) {
+        // لو فشل (مثلاً عمود accent_color مو موجود بعد) → نخفي بصمت
+        el.style.display = 'none';
+    }
 }
 
 async function loadMockExamBanner() {

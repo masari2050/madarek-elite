@@ -128,6 +128,48 @@ img { max-width: 100%; display: block; }
 .cd-lbl { font-size: 11px; font-weight: 700; opacity: .85; margin-left: 4px; }
 .cd-time { font-family: 'IBM Plex Sans Arabic', monospace; font-size: 13px; letter-spacing: .5px; padding: 0 6px; }
 
+/* ═══ LEAKS LIVE STRIP — تسريبات أول بأول ═══ */
+.leaks-live-strip {
+  position: fixed;
+  top: 38px; left: 0; right: 0;
+  z-index: 99;
+  background: linear-gradient(90deg, #047857 0%, #10B981 50%, #059669 100%);
+  color: #fff;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 14px rgba(16,185,129,.3);
+  transition: filter .18s;
+  text-decoration: none;
+}
+.leaks-live-strip:hover { filter: brightness(1.05); }
+.leaks-live-strip .live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #fff; flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(255,255,255,.9);
+  animation: liveDot 1.4s infinite ease-in-out;
+}
+@keyframes liveDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.8)} }
+.leaks-live-strip .live-tag {
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.32);
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+.leaks-live-strip .live-arr { font-size: 16px; opacity: .85; transition: transform .18s; }
+.leaks-live-strip:hover .live-arr { transform: translateX(-4px); }
+/* عند ظهور leaks-strip نُزيح المحتوى ليفسح المكان */
+body.has-leaks-strip { padding-top: 38px; }
+
 /* ═══ HERO ═══ */
 .hero {
   background:
@@ -1425,6 +1467,15 @@ img { max-width: 100%; display: block; }
   <span class="cd-num" id="cd-d">—</span><span class="cd-lbl">ي</span>
   <span class="cd-num cd-time" id="cd-time">--:--:--</span>
 </div>
+
+<!-- ═══ LEAKS LIVE STRIP — تسريبات أول بأول ═══ -->
+<a href="/leaks.html" class="leaks-live-strip" id="leaksStrip">
+  <span class="live-dot"></span>
+  <span class="live-tag">LIVE</span>
+  <span>تسريبات التحصيلي ١٤٤٧ — ننزّلها أوّل بأوّل بعد كل فترة</span>
+  <span class="live-arr">←</span>
+</a>
+<script>document.body.classList.add('has-leaks-strip');</script>
 
 <div class="wrap">
 
