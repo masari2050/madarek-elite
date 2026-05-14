@@ -5372,6 +5372,124 @@ const EXAM_TYPE_MAP = {
     custom:           { name: 'اختبار مخصّص',            q: 50,  dur: 60,  color: '#22C55E' }
 };
 
+// ═══════════════════════════════════════════════
+// LEAKS PDF — إدارة ملفات تسريبات PDF + عدّاد التحميلات
+// ═══════════════════════════════════════════════
+window.loadLeaksPdf = async function() {
+    const { sb } = window.A;
+    const c = $c();
+    c.innerHTML = '<div class="loader">جاري تحميل ملفات التسريبات...</div>';
+
+    try {
+        const { data, error } = await sb.from('leak_groups')
+            .select('id, title, leak_date, section, question_count, pdf_url, pdf_downloads, pdf_uploaded_at, accent_color, is_active')
+            .order('leak_date', { ascending: false });
+        if (error) throw error;
+
+        const groups = data || [];
+        const totalDownloads = groups.reduce((s,g) => s + (g.pdf_downloads || 0), 0);
+        const withPdf = groups.filter(g => g.pdf_url).length;
+        const topGroup = groups.slice().sort((a,b) => (b.pdf_downloads||0) - (a.pdf_downloads||0))[0];
+
+        const SECTION_LABELS = { 'tahsili':'تحصيلي', 'quant':'قدرات كمي', 'verbal':'قدرات لفظي', 'mixed':'مختلط' };
+
+        c.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px">
+            <div class="kpi green">
+                <div class="kpi-label">إجمالي التحميلات</div>
+                <div class="kpi-val" style="color:var(--suc)">${totalDownloads.toLocaleString('ar-SA')}</div>
+                <div class="kpi-sub">عبر كل التسريبات</div>
+            </div>
+            <div class="kpi blue">
+                <div class="kpi-label">ملفات PDF منشورة</div>
+                <div class="kpi-val" style="color:var(--pri)">${withPdf} / ${groups.length}</div>
+                <div class="kpi-sub">مجموعة فيها ملف</div>
+            </div>
+            <div class="kpi gold">
+                <div class="kpi-label">الأكثر تحميلاً</div>
+                <div class="kpi-val" style="color:var(--gold);font-size:15px;line-height:1.4">${topGroup && topGroup.pdf_downloads ? esc(topGroup.title.slice(0,30)) : '—'}</div>
+                <div class="kpi-sub">${topGroup ? (topGroup.pdf_downloads||0).toLocaleString('ar-SA') + ' تحميل' : ''}</div>
+            </div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:16px 18px;border-bottom:1px solid var(--ln)">
+                <div style="font-size:15px;font-weight:800;color:var(--ink)">ملفات التسريبات PDF</div>
+                <div style="font-size:12px;color:var(--i3);margin-top:4px;line-height:1.7">رابط الجمهور: <code style="background:var(--s2);padding:2px 6px;border-radius:4px;font-size:11px">madarekelite.com/dl.html?id=&lt;leak_group_id&gt;</code></div>
+            </div>
+            <div class="tbl-wrap" style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead style="background:var(--s2)">
+                <tr style="text-align:right">
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">المجموعة</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">القسم</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">التاريخ</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">الأسئلة</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">PDF</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">التحميلات</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">رُفِع في</th>
+                  <th style="padding:10px 12px;font-weight:700;color:var(--i2);border-bottom:1px solid var(--ln)">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${groups.map(g => {
+                    const sectionLabel = SECTION_LABELS[g.section] || g.section || '—';
+                    const dateStr = g.leak_date ? new Date(g.leak_date).toLocaleDateString('ar-SA', {day:'numeric', month:'short', year:'numeric'}) : '—';
+                    const uploadedStr = g.pdf_uploaded_at ? new Date(g.pdf_uploaded_at).toLocaleDateString('ar-SA', {day:'numeric', month:'short'}) : '—';
+                    const hasPdf = !!g.pdf_url;
+                    const downloads = g.pdf_downloads || 0;
+                    const dlUrl = 'https://madarekelite.com/dl.html?id=' + g.id;
+                    return `
+                    <tr style="border-bottom:1px solid var(--ln)">
+                      <td style="padding:11px 12px;font-weight:700;color:var(--ink)">
+                        ${g.accent_color ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+g.accent_color+';margin-left:6px;vertical-align:middle"></span>' : ''}
+                        ${esc(g.title)}
+                      </td>
+                      <td style="padding:11px 12px"><span style="background:var(--ps);color:var(--pri);padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700">${esc(sectionLabel)}</span></td>
+                      <td style="padding:11px 12px;color:var(--i3);font-size:12px">${dateStr}</td>
+                      <td style="padding:11px 12px;color:var(--i2)">${g.question_count || 0}</td>
+                      <td style="padding:11px 12px">${hasPdf ? '<span style="color:var(--suc);font-weight:700;font-size:12px">✓ مرفوع</span>' : '<span style="color:var(--i4);font-size:12px">— لم يُرفع</span>'}</td>
+                      <td style="padding:11px 12px;font-weight:800;color:${downloads>0?'var(--suc)':'var(--i4)'};font-size:15px">${downloads.toLocaleString('ar-SA')}</td>
+                      <td style="padding:11px 12px;color:var(--i3);font-size:12px">${uploadedStr}</td>
+                      <td style="padding:11px 12px">
+                        ${hasPdf ? `
+                          <button onclick="window.copyLeakDlLink('${esc(dlUrl)}')" style="background:var(--ps);color:var(--pri);border:none;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-left:4px">📋 نسخ الرابط</button>
+                          <a href="${esc(g.pdf_url)}" target="_blank" rel="noopener" style="display:inline-block;background:var(--s3);color:var(--i2);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none">👁️ معاينة</a>
+                        ` : '<span style="color:var(--i4);font-size:11px">ارفع يدوياً من Storage</span>'}
+                      </td>
+                    </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;padding:16px 18px">
+            <div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:10px">كيف يعمل عدّاد التحميلات؟</div>
+            <ul style="line-height:1.9;font-size:13px;color:var(--i2);padding-inline-start:18px;margin:0">
+                <li>الزائر يفتح <code style="background:var(--s2);padding:2px 5px;border-radius:4px">madarekelite.com/dl.html?id=&lt;leak_group_id&gt;</code></li>
+                <li>يضغط زر "حمّل PDF" → JS يستدعي RPC <code style="background:var(--s2);padding:2px 5px;border-radius:4px">increment_pdf_download(id)</code></li>
+                <li>الـRPC يزيد <code>pdf_downloads</code> ويرجع رابط <code>pdf_url</code></li>
+                <li>المتصفّح يبدأ تحميل الملف الحقيقي من Supabase Storage</li>
+                <li>أي شخص بالرابط يقدر يحمّل (بدون اشتراك) — العدّاد يتحدّث فوراً</li>
+            </ul>
+        </div>
+        `;
+    } catch(e) {
+        console.error(e);
+        c.innerHTML = '<div class="empty"><div class="empty-ic">⚠️</div><div class="empty-t">حدث خطأ</div><div class="empty-d">'+(e.message||'')+'</div></div>';
+    }
+};
+
+window.copyLeakDlLink = function(url) {
+    navigator.clipboard.writeText(url).then(() => {
+        if (typeof showSaveToast === 'function') showSaveToast('تم نسخ الرابط', 'success');
+        else alert('تم نسخ الرابط: ' + url);
+    }).catch(() => {
+        prompt('انسخ الرابط:', url);
+    });
+};
+
 window.loadMockExams = async function() {
     const { sb } = window.A;
     const isPreview = new URLSearchParams(window.location.search).has('preview');
