@@ -91,31 +91,52 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .mock-cta:hover{transform:translateY(-1px)}
 .mock-cta:active{transform:scale(.97)}
 
-/* FRESH LEAK BANNER — أخضر زمرّدي للتسريبات الجديدة */
-.fresh-leak-ban{display:none;margin:0 6px 14px;padding:16px 18px;border-radius:var(--r2);
+/* FRESH LEAK BANNER — أخضر زمرّدي للتسريبات الجديدة (مع نبض ولمعان) */
+.fresh-leak-ban{display:none;margin:0 6px 14px;padding:18px 20px 16px;border-radius:var(--r2);
   background:linear-gradient(135deg,#047857 0%,#10B981 50%,#34D399 100%);
   color:#fff;position:relative;overflow:hidden;cursor:pointer;
-  box-shadow:0 8px 24px rgba(16,185,129,.32);transition:transform .15s;
+  box-shadow:0 10px 30px rgba(16,185,129,.42), 0 0 0 1px rgba(16,185,129,.18);
+  transition:transform .15s, box-shadow .25s;
+  animation:freshBanPulse 2.6s ease-in-out infinite;
 }
-.fresh-leak-ban:hover{transform:translateY(-1px)}
+@keyframes freshBanPulse {
+  0%,100%{box-shadow:0 10px 30px rgba(16,185,129,.42), 0 0 0 1px rgba(16,185,129,.18)}
+  50%{box-shadow:0 14px 38px rgba(16,185,129,.58), 0 0 0 3px rgba(16,185,129,.22)}
+}
+.fresh-leak-ban:hover{transform:translateY(-2px)}
 .fresh-leak-ban:active{transform:scale(.98)}
-.fresh-leak-ban::before{content:"";position:absolute;top:-50px;left:-40px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
-.fresh-leak-ban::after{content:"";position:absolute;bottom:-60px;right:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none}
-.fresh-leak-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;
-  background:rgba(255,255,255,.18);color:#fff;
-  padding:4px 11px;border-radius:14px;margin-bottom:9px;
-  border:1px solid rgba(255,255,255,.32);position:relative;z-index:1;letter-spacing:.3px;
+.fresh-leak-ban::before{content:"";position:absolute;top:-60px;left:-50px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none;animation:freshBlobA 6s ease-in-out infinite}
+.fresh-leak-ban::after{content:"";position:absolute;bottom:-70px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;animation:freshBlobB 7s ease-in-out infinite}
+@keyframes freshBlobA{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,8px)}}
+@keyframes freshBlobB{0%,100%{transform:translate(0,0)}50%{transform:translate(-12px,-6px)}}
+/* شريط لمعان متحرّك يمر فوق البنر */
+.fresh-leak-ban .shine{position:absolute;top:0;bottom:0;width:80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);pointer-events:none;animation:freshShine 3.4s ease-in-out infinite;left:-120px}
+@keyframes freshShine{0%,100%{left:-120px;opacity:0}40%{opacity:1}50%{left:110%;opacity:.7}51%{opacity:0}}
+.fresh-leak-tag{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;
+  background:rgba(255,255,255,.22);color:#fff;
+  padding:4px 12px;border-radius:14px;margin-bottom:10px;
+  border:1px solid rgba(255,255,255,.38);position:relative;z-index:1;letter-spacing:.3px;
 }
-.fresh-leak-tag svg{width:11px;height:11px;fill:#fff;stroke:none}
-.fresh-leak-ttl{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:5px;position:relative;z-index:1;letter-spacing:-.01em}
-.fresh-leak-sub{font-size:12.5px;color:rgba(255,255,255,.92);line-height:1.65;margin-bottom:12px;position:relative;z-index:1;font-weight:500}
-.fresh-leak-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;
-  background:#fff;color:#047857;font-size:12.5px;font-weight:800;
-  border-radius:11px;border:none;font-family:inherit;cursor:pointer;
-  box-shadow:0 4px 12px rgba(0,0,0,.12);position:relative;z-index:1;
+.fresh-leak-tag .live-dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.95);animation:freshDot 1.2s infinite ease-in-out}
+@keyframes freshDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.fresh-leak-day{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;
+  background:#FFD700;color:#0F2A26;
+  padding:4px 11px;border-radius:14px;margin-bottom:10px;margin-inline-start:6px;
+  position:relative;z-index:1;letter-spacing:.3px;
+  box-shadow:0 3px 10px rgba(255,215,0,.32);
 }
+.fresh-leak-ttl{font-size:18.5px;font-weight:900;line-height:1.35;margin-bottom:5px;position:relative;z-index:1;letter-spacing:-.015em;text-shadow:0 1px 0 rgba(0,0,0,.08)}
+.fresh-leak-ttl .accent{color:#FFD700;text-shadow:0 0 12px rgba(255,215,0,.55)}
+.fresh-leak-sub{font-size:12.5px;color:rgba(255,255,255,.94);line-height:1.65;margin-bottom:13px;position:relative;z-index:1;font-weight:500}
+.fresh-leak-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;
+  background:#fff;color:#047857;font-size:13px;font-weight:800;
+  border-radius:12px;border:none;font-family:inherit;cursor:pointer;
+  box-shadow:0 5px 16px rgba(0,0,0,.16);position:relative;z-index:1;
+  transition:transform .15s;
+}
+.fresh-leak-cta:hover{transform:translateX(-2px)}
 .fresh-leak-cta svg{width:13px;height:13px;stroke:#047857;fill:none;stroke-width:2.4}
-[data-t="d"] .fresh-leak-ban,html.dark .fresh-leak-ban{box-shadow:0 8px 24px rgba(16,185,129,.22)}
+[data-t="d"] .fresh-leak-ban,html.dark .fresh-leak-ban{box-shadow:0 10px 30px rgba(16,185,129,.28), 0 0 0 1px rgba(16,185,129,.22)}
 
 /* REFERRAL CASH BANNER (مطابق Hook الذهبي بالتطبيق) */
 .ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
@@ -373,14 +394,18 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 <!-- FRESH LEAK BANNER — يظهر تلقائياً لو في leak_group بـaccent_color خلال آخر 3 أيام -->
 <div class="fresh-leak-ban" id="freshLeakBan" onclick="location.href='/leaks.html'">
-  <div class="fresh-leak-tag">
-    <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    <span>جديد · ١٣ مايو</span>
+  <span class="shine"></span>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0;position:relative;z-index:1">
+    <div class="fresh-leak-tag">
+      <span class="live-dot"></span>
+      <span>LIVE · أوّل بأوّل</span>
+    </div>
+    <div class="fresh-leak-day" id="freshLeakDay">اليوم الأول</div>
   </div>
-  <div class="fresh-leak-ttl" id="freshLeakTtl">تسريبات التحصيلي – الأربعاء ١٣ مايو</div>
-  <div class="fresh-leak-sub" id="freshLeakSub">أسئلة الفترة الأولى مع شروح مبسّطة. جاهزة الآن للتدريب.</div>
+  <div class="fresh-leak-ttl" id="freshLeakTtl">تسريبات التحصيلي <span class="accent">أوّل بأوّل</span></div>
+  <div class="fresh-leak-sub" id="freshLeakSub">١٩٨ سؤال من اختبار الأربعاء ١٣ مايو — رياضيات وفيزياء وكيمياء وأحياء مع شروح مبسّطة. جاهزة الآن.</div>
   <button class="fresh-leak-cta" type="button" onclick="event.stopPropagation();location.href='/leaks.html'">
-    <span>افتح التسريبات</span>
+    <span>افتح التسريبات الآن</span>
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
 </div>
@@ -1080,14 +1105,19 @@ async function loadFreshLeakBanner() {
             .limit(1);
         if (!data || !data.length) { el.style.display = 'none'; return; }
         const g = data[0];
-        const ttl = document.getElementById('freshLeakTtl');
         const sub = document.getElementById('freshLeakSub');
-        const tag = el.querySelector('.fresh-leak-tag span');
-        if (ttl) ttl.textContent = g.title;
-        if (sub) sub.textContent = (g.question_count || '') + ' سؤال محلول مع شرح مبسّط — جاهزة الآن.';
-        if (tag) {
+        const dayEl = document.getElementById('freshLeakDay');
+        // العنوان ثابت بصيغة "أوّل بأوّل" (الجمالية)؛ التفاصيل في الـsub
+        if (sub) {
             const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
-            tag.textContent = 'جديد · ' + dt;
+            sub.textContent = (g.question_count || '') + ' سؤال من اختبار ' + dt + ' — رياضيات وفيزياء وكيمياء وأحياء مع شروح مبسّطة. جاهزة الآن.';
+        }
+        // بادج "اليوم الأول/الثاني/..." حسب فرق الأيام من بداية اختبار التحصيلي
+        if (dayEl) {
+            const examStart = new Date('2026-05-13');
+            const diffDays = Math.round((new Date(g.leak_date) - examStart) / (1000*60*60*24));
+            const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع','اليوم الخامس','اليوم السادس','اليوم السابع'];
+            dayEl.textContent = (diffDays >= 0 && diffDays < 7) ? dayNames[diffDays] : 'جديد';
         }
         // accent_color → خلفية gradient ديناميكية
         if (g.accent_color) {
