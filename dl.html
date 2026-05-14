@@ -6,9 +6,9 @@
 <title>تحميل التسريبات — مدارك النخبة</title>
 <link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#5B4DD4">
-<meta name="description" content="حمّل ملف تسريبات اختبار التحصيلي — اليوم الأول · ١٧٩ سؤال محلول مع شرح بسيط · مدارك النخبة">
+<meta name="description" content="حمّل ملف تسريبات اختبار التحصيلي — اليوم الأول · ١٧٩ سؤال محلول · ٥١ صفحة مع شرح بسيط · مدارك النخبة">
 <meta property="og:title" content="تسريبات اختبار التحصيلي · اليوم الأول">
-<meta property="og:description" content="١٧٩ سؤال محلول مع شرح بسيط · إصدار مدارك النخبة">
+<meta property="og:description" content="١٧٩ سؤال محلول · ٥١ صفحة مع شرح بسيط · إصدار مدارك النخبة">
 <meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,7 +83,7 @@ html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-s
   <div class="card">
     <span class="day-pill" id="dayPill">اليوم الأول · الأربعاء ١٣ مايو</span>
     <h2 class="title">تسريبات <span class="gold">اختبار التحصيلي</span></h2>
-    <div class="subtitle" id="subtitle">ملف PDF احترافي · ١٧٩ سؤال محلول · مع شرح بسيط لكل سؤال</div>
+    <div class="subtitle" id="subtitle">ملف PDF احترافي · ١٧٩ سؤال محلول · ٥١ صفحة · مع شرح بسيط لكل سؤال</div>
 
     <div class="stats">
       <div class="stat"><div class="stat-n" id="statQ">179</div><div class="stat-l">سؤال محلول</div></div>
@@ -93,7 +93,7 @@ html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-s
 
     <button class="dl-btn" id="dlBtn" onclick="startDownload()">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      <span id="dlText">حمّل PDF (1.9 MB)</span>
+      <span id="dlText">حمّل PDF (354 KB)</span>
     </button>
 
     <div class="meta">
@@ -176,7 +176,7 @@ async function startDownload(){
     txt.textContent = '✓ تم — اضغط مرة ثانية للتحميل';
   } catch (e) {
     showToast(e.message || 'تعذّر التحميل، حاول مرة أخرى', 'error');
-    txt.textContent = 'حمّل PDF (1.9 MB)';
+    txt.textContent = 'حمّل PDF (354 KB)';
   } finally {
     setTimeout(() => { btn.disabled = false; dlInProgress = false; }, 1500);
   }
