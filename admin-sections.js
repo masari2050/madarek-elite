@@ -5412,10 +5412,26 @@ window.loadLeaksPdf = async function() {
             </div>
         </div>
 
+        <!-- روابط المشاركة العامة -->
+        <div class="card" style="padding:16px 18px;margin-bottom:14px;background:linear-gradient(135deg,rgba(109,93,246,.06),rgba(245,158,11,.05))">
+            <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:10px">🔗 روابط مشاركة عامة</div>
+            <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;font-size:13px">
+                <div style="font-weight:700;color:var(--pri)">الصفحة الموحّدة:</div>
+                <code style="background:var(--s2);padding:6px 10px;border-radius:6px;font-size:12px;color:var(--ink)">madarekelite.com/tahsili</code>
+                <button onclick="window.copyLeakDlLink('https://madarekelite.com/tahsili')" style="background:var(--pri);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">نسخ</button>
+                <div style="font-weight:700;color:var(--pri)">الأربعاء:</div>
+                <code style="background:var(--s2);padding:6px 10px;border-radius:6px;font-size:12px;color:var(--ink)">madarekelite.com/dl/wed</code>
+                <button onclick="window.copyLeakDlLink('https://madarekelite.com/dl/wed')" style="background:var(--ps);color:var(--pri);border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">نسخ</button>
+                <div style="font-weight:700;color:var(--pri)">الخميس:</div>
+                <code style="background:var(--s2);padding:6px 10px;border-radius:6px;font-size:12px;color:var(--ink)">madarekelite.com/dl/thu</code>
+                <button onclick="window.copyLeakDlLink('https://madarekelite.com/dl/thu')" style="background:var(--ps);color:var(--pri);border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">نسخ</button>
+            </div>
+        </div>
+
         <div class="card" style="padding:0;overflow:hidden">
             <div style="padding:16px 18px;border-bottom:1px solid var(--ln)">
-                <div style="font-size:15px;font-weight:800;color:var(--ink)">ملفات التسريبات PDF</div>
-                <div style="font-size:12px;color:var(--i3);margin-top:4px;line-height:1.7">رابط الجمهور: <code style="background:var(--s2);padding:2px 6px;border-radius:4px;font-size:11px">madarekelite.com/dl.html?id=&lt;leak_group_id&gt;</code></div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink)">جدول التحميلات</div>
+                <div style="font-size:12px;color:var(--i3);margin-top:4px;line-height:1.7">رابط لكل مجموعة فردياً: <code style="background:var(--s2);padding:2px 6px;border-radius:4px;font-size:11px">madarekelite.com/dl.html?id=&lt;leak_group_id&gt;</code></div>
             </div>
             <div class="tbl-wrap" style="overflow-x:auto">
             <table style="width:100%;border-collapse:collapse;font-size:13px">

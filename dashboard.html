@@ -1167,6 +1167,7 @@ async function loadFreshLeakBanner() {
                 if (off >= 0 && off < TOTAL_DAYS) byDateOffset[off] = d;
             });
             const chips = [];
+            const dlSlugs = ['wed','thu','fri','sat'];
             for (let i = 0; i < TOTAL_DAYS; i++) {
                 const dayDate = new Date(EXAM_START.getTime() + i*86400000); dayDate.setHours(0,0,0,0);
                 const entry = byDateOffset[i];
@@ -1176,7 +1177,7 @@ async function loadFreshLeakBanner() {
                 if (entry) {
                     cls = (entry.id === latest.id) ? 'live' : 'done';
                     label = dayNamesShort[i];
-                    chips.push(`<a href="/dl.html?id=${entry.id}" class="day-chip ${cls}" style="text-decoration:none" onclick="event.stopPropagation()">${label}</a>`);
+                    chips.push(`<a href="/dl/${dlSlugs[i]}" class="day-chip ${cls}" style="text-decoration:none" onclick="event.stopPropagation()">${label}</a>`);
                 } else if (isToday || isPast) {
                     chips.push(`<span class="day-chip soon">${dayNamesShort[i]} · جاري المتابعة</span>`);
                 } else {
