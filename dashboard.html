@@ -137,6 +137,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .fresh-leak-cta:hover{transform:translateX(-2px)}
 .fresh-leak-cta svg{width:13px;height:13px;stroke:#047857;fill:none;stroke-width:2.4}
 [data-t="d"] .fresh-leak-ban,html.dark .fresh-leak-ban{box-shadow:0 10px 30px rgba(16,185,129,.28), 0 0 0 1px rgba(16,185,129,.22)}
+/* جدول الأيام (chip لكل يوم: متاح / جاري المتابعة / قادم) */
+.day-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:9px;font-size:10.5px;font-weight:700;letter-spacing:.2px;cursor:default;transition:transform .15s}
+.day-chip.done{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.38);cursor:pointer}
+.day-chip.done:hover{transform:translateY(-1px);background:rgba(255,255,255,.30)}
+.day-chip.done::before{content:"✓";color:#FFD700;font-weight:900;font-size:11px}
+.day-chip.live{background:#FFD700;color:#0F2A26;border:1px solid #FFD700;box-shadow:0 2px 8px rgba(255,215,0,.4);cursor:pointer}
+.day-chip.live:hover{transform:translateY(-1px)}
+.day-chip.live::before{content:"●";color:#0F2A26;font-size:8px;animation:lsDot 1.2s infinite ease-in-out}
+.day-chip.soon{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65);border:1px dashed rgba(255,255,255,.28)}
+.day-chip.soon::before{content:"⏳";font-size:10px}
 
 /* REFERRAL CASH BANNER (مطابق Hook الذهبي بالتطبيق) */
 .ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
@@ -404,6 +414,12 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
   <div class="fresh-leak-ttl" id="freshLeakTtl">تسريبات التحصيلي <span class="accent">أوّل بأوّل</span></div>
   <div class="fresh-leak-sub" id="freshLeakSub">١٩٨ سؤال من اختبار الأربعاء ١٣ مايو — رياضيات وفيزياء وكيمياء وأحياء مع شروح مبسّطة. جاهزة الآن.</div>
+
+  <!-- جدول الأيام (يظهر متى يلوقا أيام متعدّدة من DB) -->
+  <div id="daysTrack" style="display:none;margin:12px 0 14px;position:relative;z-index:1">
+    <div id="daysTrackList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+
   <button class="fresh-leak-cta" type="button" onclick="event.stopPropagation();location.href='/leaks.html'">
     <span>افتح التسريبات الآن</span>
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1090,35 +1106,47 @@ async function loadBanners() {
 }
 
 // ── Fresh Leak Banner ──
-// يظهر تلقائياً لو في leak_group بـaccent_color وتاريخه خلال آخر 3 أيام
+// يجلب كل leak_groups للتحصيلي خلال أسبوع + يبني جدول الأيام
 async function loadFreshLeakBanner() {
     const el = document.getElementById('freshLeakBan');
     if (!el) return;
     try {
-        const cutoff = new Date(Date.now() - 3*24*60*60*1000).toISOString().split('T')[0];
+        const EXAM_START = new Date('2026-05-13');  // الأربعاء = اليوم الأول
+        const TOTAL_DAYS = 5;  // الأربعاء → الأحد
+        const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع','اليوم الخامس'];
+        const dayNamesShort = ['الأول','الثاني','الثالث','الرابع','الخامس'];
+
+        // كل التسريبات النشطة خلال نافذة الاختبار (8 أيام للأمان)
+        const winStart = new Date(EXAM_START.getTime() - 24*60*60*1000).toISOString().split('T')[0];
+        const winEnd = new Date(EXAM_START.getTime() + (TOTAL_DAYS+2)*24*60*60*1000).toISOString().split('T')[0];
         const { data } = await sb.from('leak_groups')
-            .select('id, title, leak_date, accent_color, question_count')
+            .select('id, title, leak_date, accent_color, question_count, pdf_url')
             .eq('is_active', true)
-            .not('accent_color', 'is', null)
-            .gte('leak_date', cutoff)
-            .order('leak_date', { ascending: false })
-            .limit(1);
+            .eq('section', 'tahsili')
+            .gte('leak_date', winStart)
+            .lte('leak_date', winEnd)
+            .order('leak_date', { ascending: true });
+
         if (!data || !data.length) { el.style.display = 'none'; return; }
-        const g = data[0];
+
+        // ابحث عن آخر يوم متاح
+        const today = new Date(); today.setHours(0,0,0,0);
+        const sorted = data.slice().sort((a,b) => new Date(b.leak_date) - new Date(a.leak_date));
+        const latest = sorted[0];
+
+        // اضبط البنر الرئيسي على أحدث leak
+        const g = latest;
         const sub = document.getElementById('freshLeakSub');
         const dayEl = document.getElementById('freshLeakDay');
-        // العنوان ثابت بصيغة "أوّل بأوّل" (الجمالية)؛ التفاصيل في الـsub
         if (sub) {
             const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
-            sub.textContent = (g.question_count || '') + ' سؤال من اختبار ' + dt + ' — رياضيات وفيزياء وكيمياء وأحياء مع شروح مبسّطة. جاهزة الآن.';
+            sub.textContent = (g.question_count || '') + ' سؤال من اختبار ' + dt + ' — رياضيات وفيزياء وكيمياء وأحياء. جاهزة للتحميل.';
         }
-        // بادج "اليوم الأول/الثاني/..." حسب فرق الأيام من بداية اختبار التحصيلي
         if (dayEl) {
-            const examStart = new Date('2026-05-13');
-            const diffDays = Math.round((new Date(g.leak_date) - examStart) / (1000*60*60*24));
-            const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع','اليوم الخامس','اليوم السادس','اليوم السابع'];
-            dayEl.textContent = (diffDays >= 0 && diffDays < 7) ? dayNames[diffDays] : 'جديد';
+            const diffDays = Math.round((new Date(g.leak_date) - EXAM_START) / (1000*60*60*24));
+            dayEl.textContent = (diffDays >= 0 && diffDays < TOTAL_DAYS) ? dayNames[diffDays] : 'جديد';
         }
+
         // accent_color → خلفية gradient ديناميكية
         if (g.accent_color) {
             el.style.background = 'linear-gradient(135deg,' + g.accent_color + 'cc 0%,' + g.accent_color + ' 55%,' + g.accent_color + 'ee 100%)';
@@ -1128,9 +1156,40 @@ async function loadFreshLeakBanner() {
             const ctaSvg = el.querySelector('.fresh-leak-cta svg');
             if (ctaSvg) ctaSvg.style.stroke = g.accent_color;
         }
+
+        // ─── بناء جدول الأيام ───
+        const list = document.getElementById('daysTrackList');
+        const track = document.getElementById('daysTrack');
+        if (list && track) {
+            const byDateOffset = {};
+            data.forEach(d => {
+                const off = Math.round((new Date(d.leak_date) - EXAM_START) / 86400000);
+                if (off >= 0 && off < TOTAL_DAYS) byDateOffset[off] = d;
+            });
+            const chips = [];
+            for (let i = 0; i < TOTAL_DAYS; i++) {
+                const dayDate = new Date(EXAM_START.getTime() + i*86400000); dayDate.setHours(0,0,0,0);
+                const entry = byDateOffset[i];
+                const isToday = dayDate.getTime() === today.getTime();
+                const isPast = dayDate.getTime() < today.getTime();
+                let cls, label;
+                if (entry) {
+                    cls = (entry.id === latest.id) ? 'live' : 'done';
+                    label = dayNamesShort[i];
+                    chips.push(`<a href="/dl.html?id=${entry.id}" class="day-chip ${cls}" style="text-decoration:none" onclick="event.stopPropagation()">${label}</a>`);
+                } else if (isToday || isPast) {
+                    chips.push(`<span class="day-chip soon">${dayNamesShort[i]} · جاري المتابعة</span>`);
+                } else {
+                    chips.push(`<span class="day-chip soon">${dayNamesShort[i]} · قريباً</span>`);
+                }
+            }
+            list.innerHTML = chips.join('');
+            track.style.display = 'block';
+        }
+
         el.style.display = 'block';
     } catch(e) {
-        // لو فشل (مثلاً عمود accent_color مو موجود بعد) → نخفي بصمت
+        console.error('freshLeakBanner:', e);
         el.style.display = 'none';
     }
 }
