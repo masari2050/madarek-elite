@@ -3,6 +3,8 @@
     { "source": "/invite/:code", "destination": "/invite.html?code=:code" },
     { "source": "/r/:code",       "destination": "/invite.html?code=:code" },
     { "source": "/q/:id",         "destination": "/question.html?id=:id" },
+    { "source": "/dl/wed",        "destination": "/dl.html?id=cfaf82ac-dc99-43ac-8d00-d44133802245" },
+    { "source": "/dl/thu",        "destination": "/dl.html?id=002b90df-4849-4842-88cd-8c4c11253573" },
     { "source": "/dl/:slug",      "destination": "/dl.html?slug=:slug" }
   ],
   "headers": [

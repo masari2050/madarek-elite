@@ -81,25 +81,31 @@ html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-s
   </div>
 
   <div class="card">
-    <span class="day-pill" id="dayPill">اليوم الأول · الأربعاء ١٣ مايو</span>
+    <span class="day-pill" id="dayPill">جاري التحميل...</span>
     <h2 class="title">تسريبات <span class="gold">اختبار التحصيلي</span></h2>
-    <div class="subtitle" id="subtitle">ملف PDF احترافي · ١٧٩ سؤال محلول · ٤ مواد · من اختبارات سعودية حقيقية</div>
+    <div class="subtitle" id="subtitle">ملف PDF احترافي · من اختبارات سعودية حقيقية</div>
 
     <div class="stats">
-      <div class="stat"><div class="stat-n" id="statQ">179</div><div class="stat-l">سؤال محلول</div></div>
+      <div class="stat"><div class="stat-n" id="statQ">—</div><div class="stat-l">سؤال محلول</div></div>
       <div class="stat"><div class="stat-n">4</div><div class="stat-l">مواد</div></div>
-      <div class="stat"><div class="stat-n">51</div><div class="stat-l">صفحة</div></div>
+      <div class="stat"><div class="stat-n" id="statPages">—</div><div class="stat-l">صفحة</div></div>
     </div>
 
     <button class="dl-btn" id="dlBtn" onclick="startDownload()">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      <span id="dlText">حمّل PDF (354 KB)</span>
+      <span id="dlText">حمّل PDF</span>
     </button>
 
     <div class="meta">
-      <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>محدّث ١٤ مايو</span>
+      <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="metaDate">حديث</span></span>
       <span><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>مُراجَع</span>
       <span><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M22 3H2v6h20V3M12 22V9"/></svg>هدية مجانية</span>
+    </div>
+
+    <!-- قائمة كل التسريبات المتاحة (تظهر بعد التحميل) -->
+    <div id="allLeaks" style="margin-top:24px;width:100%;display:none">
+      <div style="font-size:11.5px;color:#C4B5FD;font-weight:700;margin-bottom:10px;text-align:center">📚 كل التسريبات المتاحة:</div>
+      <div id="allLeaksList" style="display:flex;flex-direction:column;gap:7px"></div>
     </div>
 
     <div class="cta-row">
@@ -163,20 +169,20 @@ async function startDownload(){
       throw new Error('الملف غير متاح حالياً');
     }
 
-    // 2) Start the download — anchor with download attr triggers save dialog
+    // 2) Start the download
     const a = document.createElement('a');
     a.href = pdfUrl;
-    a.download = 'تسريبات-التحصيلي-الأربعاء-١٣-مايو-مدارك-النخبة.pdf';
+    a.download = (window._currentTitle || 'تسريبات-التحصيلي') + '.pdf';
     a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
     showToast('بدأ التحميل · شاركها مع زملائك');
-    txt.textContent = '✓ تم — اضغط مرة ثانية للتحميل';
+    txt.textContent = '✓ تم — اضغط مرة ثانية';
   } catch (e) {
     showToast(e.message || 'تعذّر التحميل، حاول مرة أخرى', 'error');
-    txt.textContent = 'حمّل PDF (354 KB)';
+    txt.textContent = window._currentBtnText || 'حمّل PDF';
   } finally {
     setTimeout(() => { btn.disabled = false; dlInProgress = false; }, 1500);
   }
@@ -187,23 +193,55 @@ if (params.get('auto') === '1') {
   setTimeout(startDownload, 600);
 }
 
-// تحديث الـmetadata الديناميكي لو ?id مرّر group مختلف
+// تحديث الـmetadata الديناميكي
 async function loadGroupInfo(){
   try {
+    // 1) جلب معلومات المجموعة الحالية
     const r = await fetch(SB_URL + '/rest/v1/leak_groups?id=eq.' + groupId + '&select=title,leak_date,question_count', {
       headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
     });
     const d = await r.json();
     if (d && d[0]) {
       const g = d[0];
-      const dayPill = document.getElementById('dayPill');
-      const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', {weekday:'long', day:'numeric', month:'long'});
-      // ممكن نطلع اسم اليوم لاحقاً
-      if (g.title) dayPill.textContent = g.title;
+      // عنوان الـbadge: يستخرج "اليوم الأول/الثاني..." من العنوان
+      const titleMatch = g.title.match(/الأربعاء|الخميس|الجمعة|السبت|الأحد|الاثنين|الثلاثاء/);
+      const day = titleMatch ? titleMatch[0] : '';
+      const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', {day:'numeric', month:'long'});
+      const examStart = new Date('2026-05-13');
+      const dayDiff = Math.round((new Date(g.leak_date) - examStart) / 86400000);
+      const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع','اليوم الخامس'];
+      const dayLabel = dayNames[dayDiff] || 'اليوم';
+
+      document.getElementById('dayPill').textContent = `${dayLabel} · ${day} ${dt}`;
+      document.getElementById('statQ').textContent = g.question_count || '—';
+      document.getElementById('subtitle').textContent = `ملف PDF احترافي · ${g.question_count} سؤال محلول · ٤ مواد · من اختبارات سعودية حقيقية`;
+      document.getElementById('metaDate').textContent = `محدّث ${dt}`;
+      window._currentTitle = g.title.replace(/[ /]/g, '-');
+
+      // 2) جلب باقي التسريبات المتاحة للعرض كقائمة
+      const allR = await fetch(SB_URL + '/rest/v1/leak_groups?is_active=eq.true&pdf_url=not.is.null&select=id,title,leak_date,question_count,pdf_downloads&order=leak_date.desc&limit=10', {
+        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+      });
+      const allLeaks = await allR.json();
+      const others = (allLeaks || []).filter(x => x.id !== groupId);
+      if (others.length > 0) {
+        const list = document.getElementById('allLeaksList');
+        list.innerHTML = others.map(o => {
+          const odt = new Date(o.leak_date).toLocaleDateString('ar-SA', {day:'numeric', month:'long'});
+          return `<a href="/dl.html?id=${o.id}" style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:10px 14px;border-radius:11px;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:600;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.10)'">
+            <span>📘 ${o.title.replace('تسريبات التحصيلي – ','')}</span>
+            <span style="color:#FBBF24;font-size:11px">${o.question_count} سؤال</span>
+          </a>`;
+        }).join('');
+        document.getElementById('allLeaks').style.display = 'block';
+      }
+      return;
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('loadGroupInfo error:', e);
+    document.getElementById('dayPill').textContent = 'حدث خطأ — حاول مرة أخرى';
+  }
 }
-// تحميل في الخلفية
 loadGroupInfo();
 </script>
 </body>
