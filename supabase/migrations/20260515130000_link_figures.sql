@@ -1,0 +1,16 @@
+BEGIN;
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/dna_helix.png' WHERE id = '2019e51f-34a7-4d6e-86ea-978e16347b91';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/asymptote_x0.png' WHERE id = '3a925a60-0570-4453-9418-8a4c1993c12a';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/parabola_y_x2.png' WHERE id = 'bba24732-c7f0-4372-9de7-1742dd7a9a9d';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/jump_discontinuity.png' WHERE id = 'e2441f9b-a9f2-4e9b-8f64-11d1e6a1f8ba';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/vertical_angles.png' WHERE id = '0363d8e7-b2b6-454f-aab3-4cc757d556a1';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/parallel_lines_3x_20.png' WHERE id = '818f498c-9ea2-400f-81c3-0c5d721903c7';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/isosceles_triangle.png' WHERE id = '7d65a0c0-5335-400d-a7bb-83c82878fd21';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/isosceles_trapezoid.png' WHERE id = '325c7f78-bda6-4c6b-b897-a07cbfdfb21f';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/parallel_lines_70.png' WHERE id = '5bd32b45-4796-4dc4-bb1d-9f284938d61b';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/circle_inscribed.png' WHERE id = '2739515f-bc76-467a-8d4d-950fe9dd4694';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/food_web.png' WHERE id = 'd0b16fea-42db-4d61-bf09-b2f5d3ff3b1c';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/two_triangles.png' WHERE id = '19cb20a1-835a-47cb-8210-166c90e3f3fb';
+UPDATE questions SET image_url = 'https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/broken_circuit.png' WHERE id = 'dc0d1837-ddcc-4ef6-81d9-0d3839437672';
+COMMIT;
+SELECT id, subject, image_url FROM questions WHERE image_url IS NOT NULL AND leak_group_id IN ('cfaf82ac-dc99-43ac-8d00-d44133802245','002b90df-4849-4842-88cd-8c4c11253573') ORDER BY subject;
