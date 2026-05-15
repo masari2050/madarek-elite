@@ -1112,9 +1112,9 @@ async function loadFreshLeakBanner() {
     if (!el) return;
     try {
         const EXAM_START = new Date('2026-05-13');  // الأربعاء = اليوم الأول
-        const TOTAL_DAYS = 5;  // الأربعاء → الأحد
-        const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع','اليوم الخامس'];
-        const dayNamesShort = ['الأول','الثاني','الثالث','الرابع','الخامس'];
+        const TOTAL_DAYS = 4;  // الأربعاء → السبت
+        const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع'];
+        const dayNamesShort = ['الأول','الثاني','الثالث','الرابع'];
 
         // كل التسريبات النشطة خلال نافذة الاختبار (8 أيام للأمان)
         const winStart = new Date(EXAM_START.getTime() - 24*60*60*1000).toISOString().split('T')[0];
