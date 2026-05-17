@@ -6,7 +6,7 @@
 <title>تسريبات اختبار التحصيلي ١٤٤٧ — مدارك النخبة</title>
 <link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#5B4DD4">
-<meta name="description" content="تسريبات اختبار التحصيلي ١٤٤٧ — أوّل بأوّل يوم بيوم. ١٧٩+ سؤال محلول للأربعاء، ١٢٧+ للخميس، والمزيد قريباً.">
+<meta name="description" content="تسريبات اختبار التحصيلي ١٤٤٧ — أوّل بأوّل يوم بيوم. ٥ أيام اختبار: الأربعاء حتى الأحد، أسئلة محلولة بالشرح.">
 <meta property="og:title" content="تسريبات اختبار التحصيلي ١٤٤٧ · أوّل بأوّل">
 <meta property="og:description" content="مدارك النخبة — منصة تدريب التحصيلي والقدرات. تسريبات يومية مجانية مع الإجابة الصحيحة.">
 <meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
@@ -190,9 +190,9 @@ const SB_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
 
 const EXAM_START = new Date('2026-05-13');
-const TOTAL_DAYS = 4;
-const dayNamesShort = ['الأول','الثاني','الثالث','الرابع'];
-const dayDates = ['الأربعاء ١٣ مايو', 'الخميس ١٤ مايو', 'الجمعة ١٥ مايو', 'السبت ١٦ مايو'];
+const TOTAL_DAYS = 5;
+const dayNamesShort = ['الأول','الثاني','الثالث','الرابع','الخامس'];
+const dayDates = ['الأربعاء ١٣ مايو', 'الخميس ١٤ مايو', 'الجمعة ١٥ مايو', 'السبت ١٦ مايو', 'الأحد ١٧ مايو'];
 
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -236,7 +236,7 @@ async function loadDays(){
 
     if (g) {
       const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', { weekday:'long', day:'numeric', month:'long' });
-      const dlSlug = i === 0 ? 'wed' : (i === 1 ? 'thu' : (i === 2 ? 'fri' : 'sat'));
+      const dlSlug = ['wed','thu','fri','sat','sun'][i];
       cards.push(`
         <div class="day-card ${isLatest ? 'live' : ''}">
           <div class="day-ic">${i+1}</div>
@@ -285,7 +285,7 @@ async function loadDays(){
 
   // Update "X/4 published" stat
   const published = Object.keys(byOff).length;
-  document.querySelector('.hero-stat:nth-child(3) .n').textContent = published + '/4';
+  document.querySelector('.hero-stat:nth-child(3) .n').textContent = published + '/5';
 }
 
 loadDays();
