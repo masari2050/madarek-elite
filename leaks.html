@@ -215,6 +215,26 @@ html[data-fs="large"] .wrap{zoom:1.1}
   }
 }
 
+/* ── Count-selector modal (when opening a leak) ── */
+#leakCountModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;align-items:flex-end;justify-content:center;animation:lcmFade .2s ease-out}
+#leakCountModal.show{display:flex}
+@keyframes lcmFade{from{opacity:0}to{opacity:1}}
+@keyframes lcmSlide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+#leakCountModal .lcm-sheet{background:var(--sf);border-top-left-radius:24px;border-top-right-radius:24px;padding:20px 18px 28px;max-width:480px;width:100%;box-shadow:0 -10px 40px rgba(0,0,0,.18);animation:lcmSlide .28s cubic-bezier(.2,.9,.3,1.1)}
+#leakCountModal .lcm-grip{width:44px;height:5px;background:var(--i3);opacity:.28;border-radius:3px;margin:0 auto 16px}
+#leakCountModal .lcm-title{font-size:17px;font-weight:800;color:var(--ink);text-align:center;margin:0 0 4px}
+#leakCountModal .lcm-sub{font-size:12.5px;color:var(--i3);text-align:center;margin:0 0 18px;line-height:1.6}
+#leakCountModal .lcm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lcm-btn{padding:14px 12px;border:1.5px solid var(--ln2);background:var(--bg);border-radius:14px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .18s;font-family:inherit;text-align:center}
+.lcm-btn:hover{border-color:var(--pri);background:rgba(109,93,246,.06);transform:translateY(-1px)}
+.lcm-btn:active{transform:translateY(0) scale(.98)}
+.lcm-btn .lcm-num{display:block;font-size:20px;font-weight:900;color:var(--pri);margin-bottom:2px}
+.lcm-btn.lcm-all{background:linear-gradient(135deg,#FFD700 0%,#F59E0B 100%);border-color:#F59E0B;color:#1A1428}
+.lcm-btn.lcm-all .lcm-num{color:#1A1428}
+.lcm-btn.lcm-dis{opacity:.45;cursor:not-allowed}
+.lcm-btn.lcm-dis:hover{transform:none;border-color:var(--ln2);background:var(--bg)}
+.lcm-cancel{display:block;width:100%;margin-top:14px;padding:11px;background:transparent;border:none;color:var(--i3);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+
 </style>
 <script src="/analytics.js" async></script>
 </head>
@@ -608,6 +628,7 @@ window.filterLeaks = function() {
     renderLeaks();
 };
 
+let _lcmCtx = null;  // { leakId, section, total }
 window.openLeak = function(leakId, section, count) {
     // 🔒 مستخدم غير مشترك → modal بدل redirect مفاجئ
     if (isLocked) {
@@ -621,20 +642,71 @@ window.openLeak = function(leakId, section, count) {
         }
         return;
     }
+    const total = parseInt(count) || 0;
+    _lcmCtx = { leakId: leakId, section: section, total: total };
+    const m = document.getElementById('leakCountModal');
+    if (!m) {
+        // fallback — modal missing for some reason → go direct with all
+        return _lcmStart(total > 0 ? total : 500);
+    }
+    // populate buttons & "all" label
+    const allLabel = document.getElementById('lcmAllLabel');
+    const allNum = document.getElementById('lcmAllNum');
+    if (total > 0) {
+        allLabel.textContent = total + ' سؤال';
+        allNum.textContent = 'كل الأسئلة';
+    } else {
+        allLabel.textContent = 'مختلطة عشوائياً';
+        allNum.textContent = 'كل الأسئلة';
+    }
+    // dim buttons that exceed total
+    ['10','20','50','100'].forEach(function(n){
+        const btn = document.getElementById('lcm' + n);
+        if (!btn) return;
+        if (total > 0 && total < parseInt(n)) {
+            btn.classList.add('lcm-dis');
+            btn.setAttribute('disabled','disabled');
+        } else {
+            btn.classList.remove('lcm-dis');
+            btn.removeAttribute('disabled');
+        }
+    });
+    m.classList.add('show');
+    document.body.style.overflow = 'hidden';
+};
+
+function _lcmStart(c) {
+    if (!_lcmCtx) return;
     const sectionMap = { 'قدرات كمي':'quant', 'قدرات لفظي':'verbal', 'تحصيلي':'tahsili', 'مختلط':'mixed' };
-    const secSlug = sectionMap[section] || 'mixed';
+    const secSlug = sectionMap[_lcmCtx.section] || 'mixed';
     const params = new URLSearchParams({
-        leak: leakId,
-        name: 'تسريبات: ' + section,
+        leak: _lcmCtx.leakId,
+        name: 'تسريبات: ' + _lcmCtx.section,
         section: secSlug,
-        count: Math.min(count || 20, 50),
+        count: c,
         mode: 'instant'
     });
     const curQs = new URLSearchParams(window.location.search);
     if (curQs.has('preview')) params.set('preview','1');
     if (curQs.get('force_subscriber') === 'true') params.set('force_subscriber','true');
     window.location.href = '/practice.html?' + params.toString();
+}
+
+window.lcmPick = function(c) {
+    if (c === 'all') c = (_lcmCtx && _lcmCtx.total > 0) ? _lcmCtx.total : 500;
+    _lcmStart(c);
 };
+
+window.closeLeakCountModal = function() {
+    const m = document.getElementById('leakCountModal');
+    if (m) m.classList.remove('show');
+    document.body.style.overflow = '';
+    _lcmCtx = null;
+};
+
+document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeLeakCountModal();
+});
 
 window.goPricing = function() {
     window.location.href = '/pricing.html';
@@ -648,5 +720,23 @@ function esc(s) {
 }
 })();
 </script>
+
+<!-- ═══ COUNT SELECTION MODAL (opens when clicking a leak card) ═══ -->
+<div id="leakCountModal" onclick="if(event.target===this)closeLeakCountModal()" role="dialog" aria-modal="true" aria-labelledby="lcmTitle">
+  <div class="lcm-sheet">
+    <div class="lcm-grip"></div>
+    <h3 id="lcmTitle" class="lcm-title">كم سؤال تبي تحل؟</h3>
+    <p class="lcm-sub">اختر العدد المناسب — الأسئلة مختلطة عشوائياً</p>
+    <div class="lcm-grid">
+      <button class="lcm-btn" id="lcm10" onclick="lcmPick(10)"><span class="lcm-num">10</span>سريع</button>
+      <button class="lcm-btn" id="lcm20" onclick="lcmPick(20)"><span class="lcm-num">20</span>متوسط</button>
+      <button class="lcm-btn" id="lcm50" onclick="lcmPick(50)"><span class="lcm-num">50</span>جلسة كاملة</button>
+      <button class="lcm-btn" id="lcm100" onclick="lcmPick(100)"><span class="lcm-num">100</span>تدريب مكثّف</button>
+      <button class="lcm-btn lcm-all" style="grid-column:span 2" onclick="lcmPick('all')"><span id="lcmAllNum" class="lcm-num">كل الأسئلة</span><span id="lcmAllLabel">مختلطة عشوائياً</span></button>
+    </div>
+    <button class="lcm-cancel" onclick="closeLeakCountModal()">إلغاء</button>
+  </div>
+</div>
+
 </body>
 </html>
