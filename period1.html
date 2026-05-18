@@ -20,8 +20,8 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
 
 /* ═══ HEADER ═══ */
 .hdr{padding:18px 22px;display:flex;align-items:center;gap:12px;max-width:720px;margin:0 auto}
-.hdr-logo{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#5B4DD4,#6D5DF6);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
-.hdr-logo svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.hdr-logo{width:48px;height:48px;border-radius:13px;overflow:hidden;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.28);flex-shrink:0}
+.hdr-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .hdr-text h1{margin:0;font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em}
 .hdr-text p{margin:1px 0 0;font-size:12.5px;color:#C4B5FD;font-weight:600}
 
@@ -91,6 +91,13 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
 .feat h4{margin:0 0 5px;font-size:14.5px;font-weight:800;color:#fff;letter-spacing:-.005em}
 .feat p{margin:0;font-size:12.5px;color:#D7CDF9;line-height:1.7;font-weight:500}
 
+/* ═══ PHILOSOPHY ═══ */
+.philosophy{position:relative;padding:30px 26px 28px;background:linear-gradient(135deg,rgba(255,215,0,.10) 0%,rgba(91,77,212,.18) 100%);border:1.5px solid rgba(255,215,0,.28);border-radius:20px;text-align:center;overflow:hidden}
+.philosophy::after{content:"";position:absolute;top:-50px;right:-50px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.20),transparent 70%);pointer-events:none}
+.philo-quote{font-size:60px;line-height:.6;color:#FFD700;font-family:serif;font-weight:900;margin-bottom:0;opacity:.85}
+.philo-h{margin:8px 0 12px;font-size:19px;font-weight:900;color:#fff;letter-spacing:-.01em;position:relative;z-index:1}
+.philo-p{margin:0;font-size:14px;color:#E0D6FF;line-height:1.95;font-weight:500;max-width:480px;margin-inline:auto;position:relative;z-index:1}
+
 /* ═══ COMPARE ═══ */
 .compare{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:22px;margin:24px 0}
 .compare h4{margin:0 0 16px;font-size:15px;font-weight:800;color:#fff;text-align:center}
@@ -159,7 +166,7 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
 
 <div class="hdr">
   <div class="hdr-logo">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#fff"/></svg>
+    <img src="/icons/icon-192.png" alt="مدارك النخبة">
   </div>
   <div class="hdr-text">
     <h1>مدارك النخبة</h1>
@@ -202,7 +209,7 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
     <div class="price-trust">
       <span>
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        دفع آمن — MyFatoorah
+        الشبكة السعودية للمدفوعات
       </span>
       <span>
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -274,7 +281,7 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
       <div class="feat">
         <div class="feat-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <h4>شرح مفصّل لكل سؤال</h4>
-        <p>تعرف ليش الإجابة صحيحة وليش الخيارات الأخرى خطأ — مش بس النتيجة.</p>
+        <p>تعرف ليش الإجابة صحيحة وليش الخيارات الأخرى خطأ — وليس النتيجة فقط.</p>
       </div>
       <div class="feat">
         <div class="feat-ic"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
@@ -286,6 +293,15 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
         <h4>إحصائيات تقدّمك</h4>
         <p>تقرير بنسبة الصح، النقاط القوية والضعيفة، الوقت الذي قضيته في كل قسم.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section class="sec">
+    <div class="philosophy">
+      <div class="philo-quote">”</div>
+      <h3 class="philo-h">مدارك النخبة لا تبيع نماذج</h3>
+      <p class="philo-p">نحن نبيع لك تجربة تدريب متكاملة + تقارير + إحصائيات تحدّد نقاط ضعفك بدقّة، تركّز على المواد التي تحتاجها فعلاً بدل أن تشتّت جهدك على كل شيء.</p>
     </div>
   </section>
 
@@ -308,10 +324,10 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
           <div class="compare-name">الاشتراك الشهري</div>
           <div class="compare-price">٩٩ ر.س</div>
           <ul class="compare-list">
-            <li>كل التسريبات الجديدة</li>
-            <li>كل تجميعات قياس</li>
-            <li>توقعات النخبة</li>
-            <li>المسابقات الأسبوعية</li>
+            <li>تجميعات قياس للسنوات الماضية</li>
+            <li>تسريبات الفترة الثانية فور صدورها</li>
+            <li>توقعات النخبة + المسابقات</li>
+            <li>تقارير وإحصائيات نقاط ضعفك</li>
           </ul>
         </div>
       </div>
@@ -328,7 +344,7 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
           <span>هل الأسئلة حقيقية من الاختبار؟</span>
           <span class="pl">+</span>
         </button>
-        <div class="faq-a">نعم، كل الأسئلة من اختبارات التحصيلي ١٤٤٧ — الفترة الأولى الفعلية. تم جمعها من مصادر موثوقة (يلو + همّة) ومراجعتها وتنسيقها مع الشروح.</div>
+        <div class="faq-a">نعم، كل الأسئلة من اختبارات التحصيلي ١٤٤٧ — الفترة الأولى الفعلية. تم جمعها من مصادر متعددة موثوقة، ومراجعتها وتنسيقها مع شروح كاملة من فريق مدارك النخبة.</div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <button class="faq-q" type="button">
@@ -356,7 +372,7 @@ body{background:linear-gradient(160deg,#2A1F8E 0%,#3D2EB8 45%,#5B4DD4 100%);min-
           <span>كم طريقة دفع متاحة؟</span>
           <span class="pl">+</span>
         </button>
-        <div class="faq-a">الدفع عبر بوابة MyFatoorah — تدعم: مدى، فيزا، ماستركارد، Apple Pay، STC Pay. الدفع آمن والاشتراك يفعّل فوراً بعد إتمام العملية.</div>
+        <div class="faq-a">الدفع عبر الشبكة السعودية للمدفوعات: مدى، فيزا، ماستركارد، Apple Pay، STC Pay. الحزمة تُفتح فور إتمام العملية.</div>
       </div>
     </div>
   </section>
