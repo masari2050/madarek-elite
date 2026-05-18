@@ -241,7 +241,8 @@ serve(async (req) => {
         'a4b1c2d3-7654-4321-8aaa-fedc12345678',  // Fri 15
         'b6a2c3d4-7777-4321-8aaa-fed012345001',  // Sat 16 morning
         'f62fd04b-fcf1-e144-5931-039d178c582e',  // Sat 16 evening
-        '7d5c8a6b-9e3f-4a2d-b1c4-58a0d3f7e982',  // Sun 17 (Day 5)
+        '7d5c8a6b-9e3f-4a2d-b1c4-58a0d3f7e982',  // Sun 17 morning (Day 5)
+        '8e6d9c7a-af4d-4b3e-c2d5-69b1e4a8d093',  // Sun 17 evening (Day 5)
       ]
       const { error: prErr } = await supabaseAdmin.rpc('record_product_purchase', {
         p_user_id: targetUserId,
