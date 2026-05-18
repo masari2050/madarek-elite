@@ -8,7 +8,8 @@
     { "source": "/dl/:slug",      "destination": "/dl.html?slug=:slug" },
     { "source": "/files/:filename", "destination": "https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/leaks-pdfs/:filename" },
     { "source": "/img/:filename",   "destination": "https://czzcmbxejxbotjemyuqf.supabase.co/storage/v1/object/public/question-figures/:filename" },
-    { "source": "/tahsili",         "destination": "/tahsili.html" }
+    { "source": "/tahsili",         "destination": "/tahsili.html" },
+    { "source": "/period1",         "destination": "/period1.html" }
   ],
   "headers": [
     {
