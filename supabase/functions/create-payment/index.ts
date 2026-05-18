@@ -223,12 +223,13 @@ serve(async (req) => {
     // Products with free coupon: record purchase via product_purchases (no subscription)
     if (finalAmount <= 0 && isProduct) {
       const PERIOD1_LEAK_GROUPS = [
-        'cfaf82ac-dc99-43ac-8d00-d44133802245',  // Wed
-        '002b90df-4849-4842-88cd-8c4c11253573',  // Thu (yelo)
-        'c48e7dd9-8dc6-47c4-9a30-4b53766fb361',  // Thu (mohandesa)
-        'a4b1c2d3-7654-4321-8aaa-fedc12345678',  // Fri
-        'b6a2c3d4-7777-4321-8aaa-fed012345001',  // Sat morning
-        'f62fd04b-fcf1-e144-5931-039d178c582e',  // Sat evening
+        'cfaf82ac-dc99-43ac-8d00-d44133802245',  // Wed 13
+        '002b90df-4849-4842-88cd-8c4c11253573',  // Thu 14 (yelo)
+        'c48e7dd9-8dc6-47c4-9a30-4b53766fb361',  // Thu 14 (mohandesa)
+        'a4b1c2d3-7654-4321-8aaa-fedc12345678',  // Fri 15
+        'b6a2c3d4-7777-4321-8aaa-fed012345001',  // Sat 16 morning
+        'f62fd04b-fcf1-e144-5931-039d178c582e',  // Sat 16 evening
+        '7d5c8a6b-9e3f-4a2d-b1c4-58a0d3f7e982',  // Sun 17 (Day 5)
       ]
       const freePid = 'FREE-PROD-' + Date.now()
       await supabaseAdmin.from('payments').insert({
