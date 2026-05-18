@@ -426,18 +426,88 @@ body{background:linear-gradient(160deg,#4C1D95 0%,#6D28D9 45%,#7C3AED 100%);min-
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-function showToast(msg){
+const SB_URL = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+function showToast(msg, dur){
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), dur || 3000);
 }
 
-function startCheckout(){
-  // ⏳ مؤقت — سنربطه بـEdge Function بعد موافقة عبدالله على التصميم
-  showToast('قريباً جداً — يتم التجهيز');
+let loadingCheckout = false;
+async function startCheckout(){
+  if (loadingCheckout) return;
+  loadingCheckout = true;
+  const btns = document.querySelectorAll('.price-cta, .sticky-btn');
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '.7'; });
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      // not logged in → redirect to register with return URL
+      sessionStorage.setItem('madarek_post_register_redirect', '/period1');
+      location.href = '/register.html?next=' + encodeURIComponent('/period1') + '&for=period1';
+      return;
+    }
+
+    showToast('جاري تجهيز الدفع...', 60000);
+
+    const { data, error } = await sb.functions.invoke('create-payment', {
+      body: {
+        plan: 'period1',
+        source: 'web-v2',
+      }
+    });
+
+    if (error) throw new Error(error.message || 'فشل تجهيز الدفع');
+    if (!data) throw new Error('استجابة فارغة');
+    if (data.error) throw new Error(data.error);
+
+    if (data.free) {
+      showToast('تم تفعيل الحزمة', 3000);
+      setTimeout(() => location.href = '/leaks.html', 1500);
+      return;
+    }
+
+    const url = data.paymentUrl || data.url || data.invoiceURL;
+    if (!url) throw new Error('رابط الدفع غير متوفر');
+
+    // Redirect to MyFatoorah
+    location.href = url;
+
+  } catch (e) {
+    console.error('checkout error:', e);
+    showToast('حدث خطأ: ' + (e.message || e), 5000);
+    btns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+    loadingCheckout = false;
+  }
 }
+
+// Auto-check ownership: if user already owns the product, show banner
+(async function() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return;
+    const { data: owns } = await sb.rpc('user_owns_product', { p_slug: 'tahsili_period1_1447' });
+    if (owns === true) {
+      // Replace CTA with "go to leaks"
+      const cta = document.querySelector('.price-cta');
+      const sticky = document.querySelector('.sticky-btn');
+      const newHtml = '<span>افتح التسريبات الآن</span><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
+      if (cta) { cta.innerHTML = newHtml; cta.onclick = () => location.href = '/leaks.html'; }
+      if (sticky) { sticky.innerHTML = newHtml; sticky.onclick = () => location.href = '/leaks.html'; }
+      const tag = document.querySelector('.price-tag');
+      if (tag) tag.textContent = 'حزمتك مفعّلة';
+    }
+  } catch(_) {}
+})();
 </script>
 
 </body>

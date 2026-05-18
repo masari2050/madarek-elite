@@ -231,37 +231,63 @@ serve(async (req) => {
       )
     }
 
-    // حساب تاريخ انتهاء الاشتراك — يدعم monthly/quarterly/yearly
-    const durMonths = plan === 'yearly' ? 12 : (plan === 'quarterly' ? 3 : 1)
-    const endDate = new Date()
-    endDate.setMonth(endDate.getMonth() + durMonths)
+    // ─── Period 1 product (one-time purchase, not a subscription) ───
+    const isProduct = plan === 'period1'
+    if (isProduct) {
+      const PERIOD1_LEAK_GROUPS = [
+        'cfaf82ac-dc99-43ac-8d00-d44133802245',  // Wed 13
+        '002b90df-4849-4842-88cd-8c4c11253573',  // Thu 14 (yelo)
+        'c48e7dd9-8dc6-47c4-9a30-4b53766fb361',  // Thu 14 (mohandesa)
+        'a4b1c2d3-7654-4321-8aaa-fedc12345678',  // Fri 15
+        'b6a2c3d4-7777-4321-8aaa-fed012345001',  // Sat 16 morning
+        'f62fd04b-fcf1-e144-5931-039d178c582e',  // Sat 16 evening
+      ]
+      const { error: prErr } = await supabaseAdmin.rpc('record_product_purchase', {
+        p_user_id: targetUserId,
+        p_slug: 'tahsili_period1_1447',
+        p_payment_id: String(invoiceData.InvoiceId),
+        p_amount: Number(pmtRow.amount) || 29,
+        p_leak_group_ids: PERIOD1_LEAK_GROUPS,
+      })
+      if (prErr) {
+        console.error('[verify-payment] product RPC error:', prErr.message)
+      } else {
+        console.log(`[verify-payment] ✅ product recorded for user ${targetUserId}: tahsili_period1_1447`)
+      }
+    } else {
+      // ─── Subscription flow (monthly/quarterly/yearly) ───
+      // حساب تاريخ انتهاء الاشتراك
+      const durMonths = plan === 'yearly' ? 12 : (plan === 'quarterly' ? 3 : 1)
+      const endDate = new Date()
+      endDate.setMonth(endDate.getMonth() + durMonths)
 
-    // تحديث ملف المستخدم عبر SECURITY DEFINER RPC (يتجاوز RLS)
-    // + ضمان حفظ subscription_end صريحاً في الـfallback لمنع تكرار NULL bug
-    const { error: rpcErr } = await supabaseAdmin.rpc('activate_subscription_by_coupon', {
-      p_user_id: targetUserId,
-      p_subscription_type: plan,
-      p_duration_months: durMonths
-    })
+      // تحديث ملف المستخدم عبر SECURITY DEFINER RPC (يتجاوز RLS)
+      // + ضمان حفظ subscription_end صريحاً في الـfallback لمنع تكرار NULL bug
+      const { error: rpcErr } = await supabaseAdmin.rpc('activate_subscription_by_coupon', {
+        p_user_id: targetUserId,
+        p_subscription_type: plan,
+        p_duration_months: durMonths
+      })
 
-    // Verification: مهما حصل، نتأكد إن subscription_end ليس NULL
-    // (مشكلة 2026: 8 مستخدمين دفعوا فعلياً لكن subscription_end ظل NULL)
-    const { data: verifyProfile } = await supabaseAdmin.from('profiles')
-      .select('subscription_type, subscription_end')
-      .eq('id', targetUserId).maybeSingle()
+      // Verification: مهما حصل، نتأكد إن subscription_end ليس NULL
+      // (مشكلة 2026: 8 مستخدمين دفعوا فعلياً لكن subscription_end ظل NULL)
+      const { data: verifyProfile } = await supabaseAdmin.from('profiles')
+        .select('subscription_type, subscription_end, subscription_source')
+        .eq('id', targetUserId).maybeSingle()
 
-    if (rpcErr || !verifyProfile?.subscription_end) {
-      if (rpcErr) console.error('[verify-payment] RPC error:', rpcErr.message)
-      else console.warn('[verify-payment] RPC succeeded but subscription_end is NULL — applying defensive fallback')
-      // Defensive direct update — يضمن دائماً subscription_end صالح
-      await supabaseAdmin.from('profiles').update({
-        subscription_type: plan,
-        subscription_end: endDate.toISOString(),
-        subscription_source: 'myfatoorah'
-      }).eq('id', targetUserId)
-    } else if (!verifyProfile.subscription_source) {
-      // RPC نجح + end موجود لكن source مفقود → نضيفه فقط
-      await supabaseAdmin.from('profiles').update({ subscription_source: 'myfatoorah' }).eq('id', targetUserId)
+      if (rpcErr || !verifyProfile?.subscription_end) {
+        if (rpcErr) console.error('[verify-payment] RPC error:', rpcErr.message)
+        else console.warn('[verify-payment] RPC succeeded but subscription_end is NULL — applying defensive fallback')
+        // Defensive direct update — يضمن دائماً subscription_end صالح
+        await supabaseAdmin.from('profiles').update({
+          subscription_type: plan,
+          subscription_end: endDate.toISOString(),
+          subscription_source: 'myfatoorah'
+        }).eq('id', targetUserId)
+      } else if (!verifyProfile.subscription_source) {
+        // RPC نجح + end موجود لكن source مفقود → نضيفه فقط
+        await supabaseAdmin.from('profiles').update({ subscription_source: 'myfatoorah' }).eq('id', targetUserId)
+      }
     }
 
     // ── استخراج وسيلة الدفع من MyFatoorah (visa/mada/apple_pay/stc_pay) ──

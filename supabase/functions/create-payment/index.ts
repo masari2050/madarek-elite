@@ -84,11 +84,15 @@ serve(async (req) => {
     const source = body.source === 'app' ? 'app'
       : body.source === 'web-v2' ? 'web-v2'
       : 'web'
-    if (!plan || !['monthly', 'quarterly', 'yearly'].includes(plan)) {
+    if (!plan || !['monthly', 'quarterly', 'yearly', 'period1'].includes(plan)) {
       return new Response(JSON.stringify({ error: 'خطة غير صحيحة' }), {
         status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
       })
     }
+
+    // ─── Period 1 bundle (29 SAR fixed, one-time product) ───
+    // Different flow: no subscription, just records product_purchases on payment
+    const isProduct = plan === 'period1'
 
     console.log(`[create-payment] user=${user.id}, plan=${plan}, coupon=${coupon || 'none'}, source=${source}`)
 
@@ -97,22 +101,30 @@ serve(async (req) => {
     let basePrice = 0
     let durMonths = plan === 'yearly' ? 12 : (plan === 'quarterly' ? 3 : 1)
 
-    try {
-      const { data: planRow, error: planErr } = await supabaseAdmin.from('plans')
-        .select('price, duration_days')
-        .eq('slug', plan)
-        .maybeSingle()
-      if (planErr) console.warn('[create-payment] plans query err:', planErr.message)
-      if (planRow?.price) {
-        basePrice = Number(planRow.price)
-        if (planRow.duration_days) {
-          durMonths = Math.max(1, Math.round(Number(planRow.duration_days) / 30))
-        }
-        console.log(`[create-payment] price from plans: ${basePrice} SAR, durMonths=${durMonths}`)
-      }
-    } catch (e) { console.warn('[create-payment] plans lookup failed:', (e as Error).message) }
+    // ─── Product: fixed price 29 SAR, no subscription duration ───
+    if (isProduct) {
+      basePrice = 29
+      durMonths = 0  // not used for products
+    }
 
-    if (basePrice <= 0) {
+    if (!isProduct) {
+      try {
+        const { data: planRow, error: planErr } = await supabaseAdmin.from('plans')
+          .select('price, duration_days')
+          .eq('slug', plan)
+          .maybeSingle()
+        if (planErr) console.warn('[create-payment] plans query err:', planErr.message)
+        if (planRow?.price) {
+          basePrice = Number(planRow.price)
+          if (planRow.duration_days) {
+            durMonths = Math.max(1, Math.round(Number(planRow.duration_days) / 30))
+          }
+          console.log(`[create-payment] price from plans: ${basePrice} SAR, durMonths=${durMonths}`)
+        }
+      } catch (e) { console.warn('[create-payment] plans lookup failed:', (e as Error).message) }
+    }
+
+    if (!isProduct && basePrice <= 0) {
       // fallback: جدول site_settings (النسخة القديمة)
       const { data: settings } = await supabaseAdmin.from('site_settings')
         .select('key, value')
@@ -183,8 +195,9 @@ serve(async (req) => {
     // ── خصم الإحالة 10% (server-side verification) ──
     // نقرأ من DB مباشرة بدلاً من الثقة بالـclient. لو المستخدم في إحالة awaiting_payment،
     // نطبّق خصم 10% على السعر بعد الكوبون. cap: السعر النهائي >= 1 ر.س (متطلب MyFatoorah).
+    // الإحالة لا تنطبق على المنتجات (period1 - عرض ثابت).
     let referralRow: any = null
-    if (finalAmount >= 1) {
+    if (!isProduct && finalAmount >= 1) {
       try {
         const { data: refRow } = await supabaseAdmin
           .from('referrals')
@@ -207,6 +220,45 @@ serve(async (req) => {
     }
 
     // ── FREE (amount = 0) → activate directly ──
+    // Products with free coupon: record purchase via product_purchases (no subscription)
+    if (finalAmount <= 0 && isProduct) {
+      const PERIOD1_LEAK_GROUPS = [
+        'cfaf82ac-dc99-43ac-8d00-d44133802245',  // Wed
+        '002b90df-4849-4842-88cd-8c4c11253573',  // Thu (yelo)
+        'c48e7dd9-8dc6-47c4-9a30-4b53766fb361',  // Thu (mohandesa)
+        'a4b1c2d3-7654-4321-8aaa-fedc12345678',  // Fri
+        'b6a2c3d4-7777-4321-8aaa-fed012345001',  // Sat morning
+        'f62fd04b-fcf1-e144-5931-039d178c582e',  // Sat evening
+      ]
+      const freePid = 'FREE-PROD-' + Date.now()
+      await supabaseAdmin.from('payments').insert({
+        user_id: user.id,
+        amount: 0,
+        status: 'paid',
+        plan_type: 'period1',
+        coupon_code: coupon?.toUpperCase() || null,
+        payment_id: freePid,
+        paid_at: new Date().toISOString(),
+      })
+      const { error: prErr } = await supabaseAdmin.rpc('record_product_purchase', {
+        p_user_id: user.id,
+        p_slug: 'tahsili_period1_1447',
+        p_payment_id: freePid,
+        p_amount: 0,
+        p_leak_group_ids: PERIOD1_LEAK_GROUPS,
+      })
+      if (prErr) console.error('[create-payment] product RPC err:', prErr.message)
+      if (couponData) {
+        try { await supabaseAdmin.rpc('increment_coupon_usage', { p_code: coupon.toUpperCase() }) } catch(_) {}
+      }
+      return new Response(JSON.stringify({
+        free: true,
+        product: 'tahsili_period1_1447',
+      }), {
+        headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' }
+      })
+    }
+
     if (finalAmount <= 0) {
       const subType = durMonths >= 12 ? 'yearly'
         : durMonths >= 3 ? 'quarterly'
@@ -337,7 +389,8 @@ serve(async (req) => {
           Language: 'AR',
           CustomerReference: user.id + '|' + plan,
           InvoiceItems: [{
-            ItemName: plan === 'yearly' ? 'اشتراك سنوي — مدارك النخبة'
+            ItemName: plan === 'period1' ? 'حزمة تسريبات التحصيلي — الفترة الأولى ١٤٤٧'
+              : plan === 'yearly' ? 'اشتراك سنوي — مدارك النخبة'
               : plan === 'quarterly' ? 'اشتراك 3 شهور — مدارك النخبة'
               : 'اشتراك شهري — مدارك النخبة',
             Quantity: 1,

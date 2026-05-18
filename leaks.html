@@ -369,6 +369,28 @@ async function init() {
 
     isLocked = !forceSubscriber && !M.isSubscribed(profile);
 
+    // ── Owned product leak_groups (e.g., bought period1 bundle) ──
+    // Build a Set of leak_group_ids this user has access to via product purchases
+    window.ownedLeakGroups = new Set();
+    try {
+        if (!isPreview && profile?.id && profile.id !== 'free-user' && !profile.id.startsWith('mock-')) {
+            const { data: purchases } = await sb
+                .from('product_purchases')
+                .select('leak_group_ids')
+                .eq('status', 'paid');
+            (purchases || []).forEach(p => {
+                (p.leak_group_ids || []).forEach(id => window.ownedLeakGroups.add(id));
+            });
+            // If user owns any product, they're effectively unlocked for THOSE leak_groups
+            if (window.ownedLeakGroups.size > 0) {
+                console.log('[leaks] user owns ' + window.ownedLeakGroups.size + ' leak_groups via products');
+                // If they own ANY product, hide the global locked hero
+                isLocked = false;
+                window.isProductOwner = true;  // soft state: subscribed-via-product
+            }
+        }
+    } catch(e) { console.warn('[leaks] product_purchases lookup failed:', e); }
+
     // ── حالة بنر الاشتراك من admin/البنرات (toggle from DB) ──
     let leaksSubBannerEnabled = false;
     try {
@@ -547,7 +569,15 @@ function renderCard(g) {
         ? '<span class="lk-fresh" style="background:' + accent + ';color:#fff">جديد</span> '
         : '';
 
-    if (isLocked) {
+    // ── Per-card lock check ──
+    // If the user is a product-only owner (no full subscription), this specific
+    // card is locked unless the leak_group is in their owned set.
+    let cardLocked = isLocked;
+    if (!cardLocked && window.isProductOwner && window.ownedLeakGroups && !window.ownedLeakGroups.has(g.id)) {
+        cardLocked = true;  // owns *a* product but not this leak_group
+    }
+
+    if (cardLocked) {
         // كارد مقفل: opacity 0.78 + 🔒 + click يفتح modal "اشترك"
         return '<div class="lk-item card locked" onclick="openLeak(\'' + g.id + '\',\'' + esc(g.section||'') + '\',' + (g.question_count||20) + ')"' + accentStyle + '>'
             + '<div class="lk-ic locked">'
@@ -636,6 +666,19 @@ window.openLeak = function(leakId, section, count) {
             showLockedModal({
                 title: 'هذه التسريبة للمشتركين',
                 body: 'اشترك الآن لفتح كل التسريبات والأسئلة الحقيقية مع شرح مفصّل'
+            });
+        } else {
+            window.location.href = '/pricing.html';
+        }
+        return;
+    }
+    // 🛍 مشتري منتج فقط، يحاول يفتح leak خارج حزمته
+    if (window.isProductOwner && window.ownedLeakGroups && !window.ownedLeakGroups.has(leakId)) {
+        if (typeof showLockedModal === 'function') {
+            showLockedModal({
+                title: 'هذه التسريبة خارج حزمتك',
+                body: 'حزمتك الحالية تغطّي تسريبات الفترة الأولى فقط. اشترك للوصول لكل التسريبات والمسابقات والتوقعات.',
+                ctaText: 'شوف الباقات'
             });
         } else {
             window.location.href = '/pricing.html';

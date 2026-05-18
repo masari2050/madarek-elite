@@ -328,9 +328,31 @@ function showSuccess(info) {
         amountEl.parentElement.style.display = 'none';
     }
     if (info && info.plan) {
-        planEl.textContent = info.plan === 'yearly' ? 'اشتراك سنوي (12 شهر)' : 'اشتراك شهري';
+        if (info.plan === 'period1') {
+            planEl.textContent = 'حزمة تسريبات التحصيلي — الفترة الأولى ١٤٤٧';
+        } else if (info.plan === 'yearly') {
+            planEl.textContent = 'اشتراك سنوي (12 شهر)';
+        } else if (info.plan === 'quarterly') {
+            planEl.textContent = 'اشتراك 3 شهور';
+        } else {
+            planEl.textContent = 'اشتراك شهري';
+        }
     } else {
         planEl.style.display = 'none';
+    }
+
+    // For period1 product: change CTA to "افتح التسريبات الآن" → /leaks.html
+    if (info && info.plan === 'period1') {
+        try {
+            const ctas = document.querySelectorAll('#state-success a[href]');
+            ctas.forEach(a => {
+                const txt = a.textContent.trim();
+                if (txt.includes('اذهب') || txt.includes('حساب') || txt.includes('dashboard')) {
+                    a.textContent = 'افتح التسريبات الآن';
+                    a.setAttribute('href', '/leaks.html');
+                }
+            });
+        } catch(_) {}
     }
 
     // ── TikTok Purchase event (web flow فقط — التطبيق يبعثها بنفسه) ──
