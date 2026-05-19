@@ -411,7 +411,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <div class="fresh-leak-day">الفترة الأولى مكتملة</div>
   </div>
   <div class="fresh-leak-ttl">الفترة الأولى <span class="accent">كاملة</span> — كل الأيام متوفّرة</div>
-  <div class="fresh-leak-sub">جميع أيام اختبار الفترة الأولى 1447 — أسئلة محلولة بشرح مبسّط لكل سؤال، متاحة الآن.</div>
+  <div class="fresh-leak-sub" id="freshLeakSub">جميع أيام اختبار الفترة الأولى 1447 — أسئلة محلولة بشرح مبسّط لكل سؤال، متاحة الآن.</div>
 
   <div class="fresh-cd" id="freshCd">
     <div class="fresh-cd-lbl"><span class="cd-pin"></span><span>الفترة الثانية تبدأ خلال</span></div>
@@ -646,6 +646,7 @@ async function init() {
         checkNotifications(),
         checkSubscription()
     ]);
+    loadFreshLeakBanner();
 }
 
 // ── Header ──
@@ -1105,7 +1106,6 @@ async function loadBanners() {
         });
     } catch(e) {}
     loadMockExamBanner();
-    loadFreshLeakBanner();
 }
 
 // ── Tahsili Banner ──
@@ -1119,7 +1119,11 @@ async function loadFreshLeakBanner() {
         const dest = isPro ? '/leaks.html' : '/period1';
         const ctaTxt = document.getElementById('freshLeakCtaTxt');
         const cta = document.getElementById('freshLeakCta');
+        const sub = document.getElementById('freshLeakSub');
         if (ctaTxt) ctaTxt.textContent = isPro ? 'افتح التسريبات الآن' : 'اشترك وافتح التسريبات';
+        if (sub) sub.textContent = isPro
+            ? 'جميع أيام اختبار الفترة الأولى 1447 متاحة لك بالكامل — أسئلة محلولة بشرح مبسّط لكل سؤال.'
+            : 'جميع أيام اختبار الفترة الأولى 1447 — أسئلة محلولة بشرح مبسّط، اشترك وافتحها كاملة الآن.';
         el.onclick = () => { location.href = dest; };
         if (cta) cta.onclick = (e) => { e.stopPropagation(); location.href = dest; };
 
