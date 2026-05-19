@@ -91,17 +91,17 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .mock-cta:hover{transform:translateY(-1px)}
 .mock-cta:active{transform:scale(.97)}
 
-/* FRESH LEAK BANNER — أخضر زمرّدي للتسريبات الجديدة (مع نبض ولمعان) */
+/* TAHSILI BANNER — بنفسجي البراند للتسريبات (مع نبض ولمعان) */
 .fresh-leak-ban{display:none;margin:0 6px 14px;padding:18px 20px 16px;border-radius:var(--r2);
-  background:linear-gradient(135deg,#047857 0%,#10B981 50%,#34D399 100%);
+  background:linear-gradient(135deg,#4C1D95 0%,#6D28D9 50%,#7C3AED 100%);
   color:#fff;position:relative;overflow:hidden;cursor:pointer;
-  box-shadow:0 10px 30px rgba(16,185,129,.42), 0 0 0 1px rgba(16,185,129,.18);
+  box-shadow:0 10px 30px rgba(124,58,237,.42), 0 0 0 1px rgba(124,58,237,.20);
   transition:transform .15s, box-shadow .25s;
   animation:freshBanPulse 2.6s ease-in-out infinite;
 }
 @keyframes freshBanPulse {
-  0%,100%{box-shadow:0 10px 30px rgba(16,185,129,.42), 0 0 0 1px rgba(16,185,129,.18)}
-  50%{box-shadow:0 14px 38px rgba(16,185,129,.58), 0 0 0 3px rgba(16,185,129,.22)}
+  0%,100%{box-shadow:0 10px 30px rgba(124,58,237,.42), 0 0 0 1px rgba(124,58,237,.20)}
+  50%{box-shadow:0 14px 38px rgba(124,58,237,.58), 0 0 0 3px rgba(124,58,237,.26)}
 }
 .fresh-leak-ban:hover{transform:translateY(-2px)}
 .fresh-leak-ban:active{transform:scale(.98)}
@@ -129,24 +129,22 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .fresh-leak-ttl .accent{color:#FFD700;text-shadow:0 0 12px rgba(255,215,0,.55)}
 .fresh-leak-sub{font-size:12.5px;color:rgba(255,255,255,.94);line-height:1.65;margin-bottom:13px;position:relative;z-index:1;font-weight:500}
 .fresh-leak-cta{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;
-  background:#fff;color:#047857;font-size:13px;font-weight:800;
+  background:#fff;color:#5B21B6;font-size:13px;font-weight:800;
   border-radius:12px;border:none;font-family:inherit;cursor:pointer;
   box-shadow:0 5px 16px rgba(0,0,0,.16);position:relative;z-index:1;
   transition:transform .15s;
 }
 .fresh-leak-cta:hover{transform:translateX(-2px)}
-.fresh-leak-cta svg{width:13px;height:13px;stroke:#047857;fill:none;stroke-width:2.4}
-[data-t="d"] .fresh-leak-ban,html.dark .fresh-leak-ban{box-shadow:0 10px 30px rgba(16,185,129,.28), 0 0 0 1px rgba(16,185,129,.22)}
-/* جدول الأيام (chip لكل يوم: متاح / جاري المتابعة / قادم) */
-.day-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:9px;font-size:10.5px;font-weight:700;letter-spacing:.2px;cursor:default;transition:transform .15s}
-.day-chip.done{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.38);cursor:pointer}
-.day-chip.done:hover{transform:translateY(-1px);background:rgba(255,255,255,.30)}
-.day-chip.done::before{content:"✓";color:#FFD700;font-weight:900;font-size:11px}
-.day-chip.live{background:#FFD700;color:#0F2A26;border:1px solid #FFD700;box-shadow:0 2px 8px rgba(255,215,0,.4);cursor:pointer}
-.day-chip.live:hover{transform:translateY(-1px)}
-.day-chip.live::before{content:"●";color:#0F2A26;font-size:8px;animation:lsDot 1.2s infinite ease-in-out}
-.day-chip.soon{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65);border:1px dashed rgba(255,255,255,.28)}
-.day-chip.soon::before{content:"⏳";font-size:10px}
+.fresh-leak-cta svg{width:13px;height:13px;stroke:#5B21B6;fill:none;stroke-width:2.4}
+[data-t="d"] .fresh-leak-ban,html.dark .fresh-leak-ban{box-shadow:0 10px 30px rgba(124,58,237,.30), 0 0 0 1px rgba(124,58,237,.26)}
+/* عدّاد الفترة الثانية */
+.fresh-cd{position:relative;z-index:1;margin:2px 0 14px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.24)}
+.fresh-cd-lbl{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:800;color:rgba(255,255,255,.95);margin-bottom:8px;letter-spacing:.2px}
+.fresh-cd-lbl .cd-pin{width:6px;height:6px;border-radius:50%;background:#FFD700;box-shadow:0 0 8px rgba(255,215,0,.9)}
+.fresh-cd-grid{display:flex;gap:6px;justify-content:center}
+.fresh-cd-cell{flex:1;max-width:64px;background:rgba(255,255,255,.17);border-radius:10px;padding:6px 4px;text-align:center}
+.fresh-cd-cell b{display:block;font-size:19px;font-weight:900;line-height:1.15;color:#FFD700;font-variant-numeric:tabular-nums}
+.fresh-cd-cell span{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.86)}
 
 /* REFERRAL CASH BANNER (مطابق Hook الذهبي بالتطبيق) */
 .ref-cash-ban{margin:0 6px 14px;padding:14px 16px;border-radius:var(--r2);
@@ -402,26 +400,31 @@ html[data-fs="large"] .wrap{zoom:1.1}
   <button class="mock-cta" id="mockCta" onclick="mockExamRegister()">سجّل الآن</button>
 </div>
 
-<!-- FRESH LEAK BANNER — يظهر تلقائياً لو في leak_group بـaccent_color خلال آخر 3 أيام -->
-<div class="fresh-leak-ban" id="freshLeakBan" onclick="location.href='/leaks.html'">
+<!-- TAHSILI BANNER — الفترة الأولى كاملة + عدّاد الفترة الثانية -->
+<div class="fresh-leak-ban" id="freshLeakBan">
   <span class="shine"></span>
   <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0;position:relative;z-index:1">
     <div class="fresh-leak-tag">
       <span class="live-dot"></span>
-      <span>LIVE · أوّل بأوّل</span>
+      <span>تسريبات التحصيلي</span>
     </div>
-    <div class="fresh-leak-day" id="freshLeakDay">اليوم الأول</div>
+    <div class="fresh-leak-day">الفترة الأولى مكتملة</div>
   </div>
-  <div class="fresh-leak-ttl" id="freshLeakTtl">تسريبات التحصيلي <span class="accent">أوّل بأوّل</span></div>
-  <div class="fresh-leak-sub" id="freshLeakSub">١٩٨ سؤال من اختبار الأربعاء ١٣ مايو — رياضيات وفيزياء وكيمياء وأحياء مع شروح مبسّطة. جاهزة الآن.</div>
+  <div class="fresh-leak-ttl">الفترة الأولى <span class="accent">كاملة</span> — كل الأيام متوفّرة</div>
+  <div class="fresh-leak-sub">جميع أيام اختبار الفترة الأولى 1447 — أسئلة محلولة بشرح مبسّط لكل سؤال، متاحة الآن.</div>
 
-  <!-- جدول الأيام (يظهر متى يلوقا أيام متعدّدة من DB) -->
-  <div id="daysTrack" style="display:none;margin:12px 0 14px;position:relative;z-index:1">
-    <div id="daysTrackList" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  <div class="fresh-cd" id="freshCd">
+    <div class="fresh-cd-lbl"><span class="cd-pin"></span><span>الفترة الثانية تبدأ خلال</span></div>
+    <div class="fresh-cd-grid">
+      <div class="fresh-cd-cell"><b id="cdD">--</b><span>يوم</span></div>
+      <div class="fresh-cd-cell"><b id="cdH">--</b><span>ساعة</span></div>
+      <div class="fresh-cd-cell"><b id="cdM">--</b><span>دقيقة</span></div>
+      <div class="fresh-cd-cell"><b id="cdS">--</b><span>ثانية</span></div>
+    </div>
   </div>
 
-  <button class="fresh-leak-cta" type="button" onclick="event.stopPropagation();location.href='/leaks.html'">
-    <span>افتح التسريبات الآن</span>
+  <button class="fresh-leak-cta" type="button" id="freshLeakCta">
+    <span id="freshLeakCtaTxt">افتح التسريبات الآن</span>
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
 </div>
@@ -1105,92 +1108,41 @@ async function loadBanners() {
     loadFreshLeakBanner();
 }
 
-// ── Fresh Leak Banner ──
-// يجلب كل leak_groups للتحصيلي خلال أسبوع + يبني جدول الأيام
+// ── Tahsili Banner ──
+// الفترة الأولى كاملة + عدّاد تنازلي للفترة الثانية + وجهة CTA حسب الاشتراك
 async function loadFreshLeakBanner() {
     const el = document.getElementById('freshLeakBan');
     if (!el) return;
     try {
-        const EXAM_START = new Date('2026-05-13');  // الأربعاء = اليوم الأول
-        const TOTAL_DAYS = 4;  // الأربعاء → السبت
-        const dayNames = ['اليوم الأول','اليوم الثاني','اليوم الثالث','اليوم الرابع'];
-        const dayNamesShort = ['الأول','الثاني','الثالث','الرابع'];
+        // وجهة الزر: المشترك → التسريبات مجاناً · غير المشترك → صفحة الحزمة/الاشتراك
+        const isPro = profile && M.isSubscribed(profile);
+        const dest = isPro ? '/leaks.html' : '/period1';
+        const ctaTxt = document.getElementById('freshLeakCtaTxt');
+        const cta = document.getElementById('freshLeakCta');
+        if (ctaTxt) ctaTxt.textContent = isPro ? 'افتح التسريبات الآن' : 'اشترك وافتح التسريبات';
+        el.onclick = () => { location.href = dest; };
+        if (cta) cta.onclick = (e) => { e.stopPropagation(); location.href = dest; };
 
-        // كل التسريبات النشطة خلال نافذة الاختبار (8 أيام للأمان)
-        const winStart = new Date(EXAM_START.getTime() - 24*60*60*1000).toISOString().split('T')[0];
-        const winEnd = new Date(EXAM_START.getTime() + (TOTAL_DAYS+2)*24*60*60*1000).toISOString().split('T')[0];
-        const { data } = await sb.from('leak_groups')
-            .select('id, title, leak_date, accent_color, question_count, pdf_url')
-            .eq('is_active', true)
-            .eq('section', 'tahsili')
-            .gte('leak_date', winStart)
-            .lte('leak_date', winEnd)
-            .order('leak_date', { ascending: true });
-
-        if (!data || !data.length) { el.style.display = 'none'; return; }
-
-        // ابحث عن آخر يوم متاح
-        const today = new Date(); today.setHours(0,0,0,0);
-        const sorted = data.slice().sort((a,b) => new Date(b.leak_date) - new Date(a.leak_date));
-        const latest = sorted[0];
-
-        // اضبط البنر الرئيسي على أحدث leak
-        const g = latest;
-        const sub = document.getElementById('freshLeakSub');
-        const dayEl = document.getElementById('freshLeakDay');
-        if (sub) {
-            const dt = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
-            sub.textContent = (g.question_count || '') + ' سؤال من اختبار ' + dt + ' — رياضيات وفيزياء وكيمياء وأحياء. جاهزة للتحميل.';
-        }
-        if (dayEl) {
-            const diffDays = Math.round((new Date(g.leak_date) - EXAM_START) / (1000*60*60*24));
-            dayEl.textContent = (diffDays >= 0 && diffDays < TOTAL_DAYS) ? dayNames[diffDays] : 'جديد';
-        }
-
-        // accent_color → خلفية gradient ديناميكية
-        if (g.accent_color) {
-            el.style.background = 'linear-gradient(135deg,' + g.accent_color + 'cc 0%,' + g.accent_color + ' 55%,' + g.accent_color + 'ee 100%)';
-            el.style.boxShadow = '0 8px 24px ' + g.accent_color + '52';
-            const cta = el.querySelector('.fresh-leak-cta');
-            if (cta) cta.style.color = g.accent_color;
-            const ctaSvg = el.querySelector('.fresh-leak-cta svg');
-            if (ctaSvg) ctaSvg.style.stroke = g.accent_color;
-        }
-
-        // ─── بناء جدول الأيام ───
-        const list = document.getElementById('daysTrackList');
-        const track = document.getElementById('daysTrack');
-        if (list && track) {
-            const byDateOffset = {};
-            data.forEach(d => {
-                const off = Math.round((new Date(d.leak_date) - EXAM_START) / 86400000);
-                if (off >= 0 && off < TOTAL_DAYS) byDateOffset[off] = d;
-            });
-            const chips = [];
-            const dlSlugs = ['wed','thu','fri','sat'];
-            for (let i = 0; i < TOTAL_DAYS; i++) {
-                const dayDate = new Date(EXAM_START.getTime() + i*86400000); dayDate.setHours(0,0,0,0);
-                const entry = byDateOffset[i];
-                const isToday = dayDate.getTime() === today.getTime();
-                const isPast = dayDate.getTime() < today.getTime();
-                let cls, label;
-                if (entry) {
-                    cls = (entry.id === latest.id) ? 'live' : 'done';
-                    label = dayNamesShort[i];
-                    chips.push(`<a href="/dl/${dlSlugs[i]}" class="day-chip ${cls}" style="text-decoration:none" onclick="event.stopPropagation()">${label}</a>`);
-                } else if (isToday || isPast) {
-                    chips.push(`<span class="day-chip soon">${dayNamesShort[i]} · جاري المتابعة</span>`);
-                } else {
-                    chips.push(`<span class="day-chip soon">${dayNamesShort[i]} · قريباً</span>`);
-                }
-            }
-            list.innerHTML = chips.join('');
-            track.style.display = 'block';
-        }
+        // عدّاد الفترة الثانية — تبدأ الجمعة 5 يونيو 2026، 8 صباحاً السعودية (05:00 UTC)
+        const TARGET = new Date('2026-06-05T05:00:00Z').getTime();
+        const cdEl = document.getElementById('freshCd');
+        const tick = () => {
+            const diff = TARGET - Date.now();
+            if (diff <= 0) { if (cdEl) cdEl.style.display = 'none'; return; }
+            const p = n => String(n).padStart(2, '0');
+            const d = Math.floor(diff / 864e5);
+            const h = Math.floor((diff % 864e5) / 36e5);
+            const m = Math.floor((diff % 36e5) / 6e4);
+            const s = Math.floor((diff % 6e4) / 1e3);
+            const set = (id, v) => { const x = document.getElementById(id); if (x) x.textContent = v; };
+            set('cdD', d); set('cdH', p(h)); set('cdM', p(m)); set('cdS', p(s));
+        };
+        tick();
+        setInterval(tick, 1000);
 
         el.style.display = 'block';
     } catch(e) {
-        console.error('freshLeakBanner:', e);
+        console.error('tahsiliBanner:', e);
         el.style.display = 'none';
     }
 }
