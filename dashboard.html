@@ -637,7 +637,8 @@ async function init() {
     showSubBadge();
 
     // Load everything in parallel (banners already started above)
-    Promise.all([
+    // ننتظر banners خصيصاً لأن freshLeakBanner يقرأ config منه
+    await Promise.all([
         loadHomeStats(),
         bannersPromise || loadBanners(),
         loadStreak(),
@@ -645,7 +646,7 @@ async function init() {
         loadWeakTopics(),
         checkNotifications(),
         checkSubscription()
-    ]);
+    ]).catch(() => {});
     loadFreshLeakBanner();
 }
 
@@ -1079,15 +1080,9 @@ async function loadBanners() {
                 }
             }
             else if (b.banner_type === 'main') {
-                const ban = document.getElementById('mainBanner');
-                const bgL = cfg.bg_left || '#1A1230';
-                const bgR = cfg.bg_right || '#2D1B69';
-                ban.style.background = 'linear-gradient(135deg,' + bgL + ',' + bgR + ')';
-                ban.style.display = 'block';
-                ban.innerHTML = '<div class="ad-tag">' + esc(cfg.tag || '') + '</div>'
-                    + '<div class="ad-title">' + esc(cfg.title || '') + '</div>'
-                    + '<div class="ad-sub">' + esc(cfg.subtitle || '') + '</div>'
-                    + '<button class="ad-btn" style="background:' + (cfg.btn_color || '#F59E0B') + ';color:' + (cfg.btn_text_color || '#1A1230') + '">' + esc(cfg.cta_text || 'المزيد') + '</button>';
+                // البنر الرئيسي يُعرض الآن عبر freshLeakBan الموحّد (يحوي countdown + decorations + accent)
+                // نحفظ الـconfig هنا للاستخدام في loadFreshLeakBanner
+                window._mainBannerConfig = cfg;
             }
             else if (b.banner_type === 'image' && cfg.image_url) {
                 const ban = document.getElementById('imageBanner');
@@ -1114,35 +1109,72 @@ async function loadFreshLeakBanner() {
     const el = document.getElementById('freshLeakBan');
     if (!el) return;
     try {
+        // البنر يقرأ من DB (banner_type=main) — يختفي تلقائياً لو الأدمن أوقفه
+        const cfg = window._mainBannerConfig;
+        if (!cfg) { el.style.display = 'none'; return; }
+
         // وجهة الزر: المشترك → التسريبات مجاناً · غير المشترك → صفحة الحزمة/الاشتراك
         const isPro = profile && M.isSubscribed(profile);
-        const dest = isPro ? '/leaks.html' : '/period1';
+        const linkFromCfg = cfg.link;
+        const dest = linkFromCfg || (isPro ? '/leaks.html' : '/period1');
+
+        // ملء القيم من DB config (مع fallback لقيم افتراضية للسلامة)
+        const tagSpan = el.querySelector('.fresh-leak-tag span:last-child');
+        const dayBadge = document.getElementById('freshLeakDay');
+        const ttl = el.querySelector('.fresh-leak-ttl');
+        const sub = document.getElementById('freshLeakSub');
         const ctaTxt = document.getElementById('freshLeakCtaTxt');
         const cta = document.getElementById('freshLeakCta');
-        const sub = document.getElementById('freshLeakSub');
-        if (ctaTxt) ctaTxt.textContent = isPro ? 'افتح التسريبات الآن' : 'اشترك وافتح التسريبات';
-        if (sub) sub.textContent = isPro
-            ? 'جميع أيام اختبار الفترة الأولى 1447 متاحة لك بالكامل — أسئلة محلولة بشرح مبسّط لكل سؤال.'
-            : 'جميع أيام اختبار الفترة الأولى 1447 — أسئلة محلولة بشرح مبسّط، اشترك وافتحها كاملة الآن.';
+
+        if (tagSpan && cfg.tag) tagSpan.textContent = cfg.tag;
+        if (dayBadge) {
+            if (cfg.day_badge) { dayBadge.textContent = cfg.day_badge; dayBadge.style.display = ''; }
+            else dayBadge.style.display = 'none';
+        }
+        if (ttl && cfg.title) {
+            // دعم title_accent (كلمة بالذهبي داخل العنوان)
+            const t = String(cfg.title);
+            if (cfg.title_accent && t.includes(cfg.title_accent)) {
+                const idx = t.indexOf(cfg.title_accent);
+                ttl.innerHTML = esc(t.slice(0, idx)) +
+                    '<span class="accent">' + esc(cfg.title_accent) + '</span>' +
+                    esc(t.slice(idx + cfg.title_accent.length));
+            } else {
+                ttl.textContent = t;
+            }
+        }
+        if (sub && cfg.subtitle) sub.textContent = cfg.subtitle;
+        if (ctaTxt) ctaTxt.textContent = cfg.cta_text || (isPro ? 'افتح التسريبات الآن' : 'اشترك وافتح التسريبات');
         el.onclick = () => { location.href = dest; };
         if (cta) cta.onclick = (e) => { e.stopPropagation(); location.href = dest; };
 
-        // عدّاد الفترة الثانية — تبدأ الجمعة 5 يونيو 2026، 8 صباحاً السعودية (05:00 UTC)
-        const TARGET = new Date('2026-06-05T05:00:00Z').getTime();
+        // ألوان الخلفية من DB
+        if (cfg.bg_left && cfg.bg_right) {
+            el.style.background = 'linear-gradient(135deg,' + cfg.bg_left + ' 0%,' + cfg.bg_right + ' 100%)';
+        }
+
+        // عدّاد — لو countdown_target موجود في config
         const cdEl = document.getElementById('freshCd');
-        const tick = () => {
-            const diff = TARGET - Date.now();
-            if (diff <= 0) { if (cdEl) cdEl.style.display = 'none'; return; }
-            const p = n => String(n).padStart(2, '0');
-            const d = Math.floor(diff / 864e5);
-            const h = Math.floor((diff % 864e5) / 36e5);
-            const m = Math.floor((diff % 36e5) / 6e4);
-            const s = Math.floor((diff % 6e4) / 1e3);
-            const set = (id, v) => { const x = document.getElementById(id); if (x) x.textContent = v; };
-            set('cdD', d); set('cdH', p(h)); set('cdM', p(m)); set('cdS', p(s));
-        };
-        tick();
-        setInterval(tick, 1000);
+        if (cfg.countdown_target && cdEl) {
+            const TARGET = new Date(cfg.countdown_target).getTime();
+            const cdLbl = cdEl.querySelector('.fresh-cd-lbl span:last-child');
+            if (cdLbl && cfg.countdown_label) cdLbl.textContent = cfg.countdown_label;
+            const tick = () => {
+                const diff = TARGET - Date.now();
+                if (diff <= 0) { cdEl.style.display = 'none'; return; }
+                const p = n => String(n).padStart(2, '0');
+                const set = (id, v) => { const x = document.getElementById(id); if (x) x.textContent = v; };
+                set('cdD', Math.floor(diff / 864e5));
+                set('cdH', p(Math.floor((diff % 864e5) / 36e5)));
+                set('cdM', p(Math.floor((diff % 36e5) / 6e4)));
+                set('cdS', p(Math.floor((diff % 6e4) / 1e3)));
+            };
+            tick();
+            setInterval(tick, 1000);
+            cdEl.style.display = '';
+        } else if (cdEl) {
+            cdEl.style.display = 'none';
+        }
 
         el.style.display = 'block';
     } catch(e) {
