@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مدارك النخبة — جرّب الاختبار قبل ما يجرّبك</title>
+<meta name="description" content="سؤال حقيقي من اختبارات سابقة — حله الحين وشوف الشرح. تجميعات محدثة أول بأول وتدريب ذكي للقدرات والتحصيلي.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0F1128">
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F7FF; --sf:#FFFFFF; --s2:#F3F1FA;
+  --pri:#7C3AED; --pri2:#5B21B6; --ps:rgba(124,58,237,.08); --pm:rgba(124,58,237,.22);
+  --navy:#0F1128; --navy2:#1E1060; --navy3:#3B1FB0;
+  --gold:#F59E0B; --gold2:#FBBF24;
+  --suc:#22C55E; --dng:#EF4444;
+  --ink:#1A1D2E; --i2:#3D4058; --i3:#6B7280;
+  --ln:rgba(15,17,40,.08);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+h1,h2,.disp{font-family:'Cairo',sans-serif}
+a,button{font-family:inherit;cursor:pointer;color:inherit;text-decoration:none;border:none;background:none}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+img{max-width:100%}
+
+/* ───── reveals ───── */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.on{opacity:1;transform:none}
+
+/* ───── header ───── */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(15,17,40,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.hdr-in{max-width:1050px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15.5px;color:#fff}
+.brand .bx{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;box-shadow:0 4px 14px rgba(124,58,237,.45)}
+.brand svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2}
+.sp{flex:1}
+.h-lnk{padding:8px 13px;font-size:13px;font-weight:600;color:#C9C3EE;border-radius:9px;transition:.15s}
+.h-lnk:hover{color:#fff}
+.h-cta{padding:9px 17px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:13px;font-weight:700;border-radius:10px;box-shadow:0 4px 16px rgba(124,58,237,.45);transition:.2s var(--ease)}
+.h-cta:hover{transform:translateY(-1px)}
+
+/* ───── hero ───── */
+.hero{position:relative;background:linear-gradient(165deg,var(--navy) 0%,var(--navy2) 55%,var(--navy3) 115%);color:#fff;padding:58px 0 150px;overflow:hidden;text-align:center}
+.hero .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1px);background-size:24px 24px;opacity:.35;pointer-events:none}
+.hero .glow1{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.5),transparent 65%);top:-140px;right:-120px;pointer-events:none}
+.hero .glow2{position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2),transparent 65%);bottom:-80px;left:-110px;pointer-events:none}
+.hero-in{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#DDD6FE;padding:6px 15px;border-radius:20px;font-size:12px;font-weight:600;animation:up .7s var(--ease) both}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--gold2);display:inline-block}
+.hero h1{font-size:clamp(30px,8.4vw,52px);font-weight:900;line-height:1.35;margin:20px 0 12px;letter-spacing:-.5px;animation:up .7s .12s var(--ease) both}
+.hero h1 .g{background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:clamp(14px,3.9vw,16.5px);color:#B9AFF2;max-width:440px;margin:0 auto;animation:up .7s .22s var(--ease) both}
+.hero .arrow{margin:22px auto 0;width:22px;height:22px;animation:up .7s .34s var(--ease) both}
+.hero .arrow svg{width:22px;height:22px;stroke:#8B7FD8;fill:none;stroke-width:2;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* ───── السؤال التفاعلي ───── */
+.qz{position:relative;z-index:5;margin-top:-108px;animation:up .8s .4s var(--ease) both}
+.q-card{background:var(--sf);border-radius:26px;padding:26px 22px 24px;box-shadow:0 24px 70px -18px rgba(30,16,96,.45),0 0 0 1px var(--ln);position:relative}
+.q-tag{position:absolute;top:-13px;right:22px;background:linear-gradient(135deg,var(--gold),#D97706);color:#fff;font-size:11.5px;font-weight:700;padding:5px 14px;border-radius:20px;box-shadow:0 6px 16px rgba(245,158,11,.4)}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.q-sec{font-size:11.5px;font-weight:700;color:var(--pri);background:var(--ps);padding:3px 11px;border-radius:14px}
+.q-n{font-size:11.5px;color:var(--i3);font-weight:500}
+.q-txt{font-size:17.5px;font-weight:700;line-height:1.75;margin-bottom:16px}
+.q-ch{display:grid;gap:9px}
+.q-c{display:flex;align-items:center;gap:11px;width:100%;text-align:right;padding:13px 15px;border:1.5px solid var(--ln);border-radius:14px;background:var(--sf);font-size:14.5px;font-weight:600;color:var(--i2);transition:.22s var(--ease)}
+.q-c .l{width:26px;height:26px;border-radius:8px;background:var(--s2);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--i3);flex-shrink:0;transition:.22s}
+.q-c:hover{border-color:var(--pm);transform:translateY(-1px);box-shadow:0 6px 18px rgba(124,58,237,.1)}
+.q-c.ok{background:rgba(34,197,94,.12);border-color:var(--suc);color:#15803D}
+.q-c.ok .l{background:var(--suc);color:#fff}
+.q-c.no{background:rgba(239,68,68,.12);border-color:var(--dng);color:#B91C1C}
+.q-c.no .l{background:var(--dng);color:#fff}
+.q-c.dim{opacity:.45;pointer-events:none}
+.q-c:disabled{cursor:default}
+.q-ex{display:none;margin-top:14px;background:#FEFCE8;border:1px solid #FDE68A;border-radius:14px;padding:14px 16px;animation:up .5s var(--ease)}
+.q-ex.show{display:block}
+.q-ex b{display:block;font-size:12px;color:#92400E;margin-bottom:4px;font-weight:700}
+.q-ex p{font-size:13.5px;color:#78350F;line-height:1.8}
+.q-after{display:none;margin-top:16px;gap:10px;flex-direction:column}
+.q-after.show{display:flex;animation:up .55s .1s var(--ease) both}
+.q-go{display:block;text-align:center;padding:15px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:15px;font-weight:700;border-radius:14px;box-shadow:0 10px 26px rgba(124,58,237,.4);transition:.2s var(--ease)}
+.q-go:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(124,58,237,.5)}
+.q-more{text-align:center;padding:11px;font-size:13.5px;font-weight:700;color:var(--pri);border:1.5px dashed var(--pm);border-radius:13px;transition:.2s}
+.q-more:hover{background:var(--ps)}
+.q-verdict{display:none;align-items:center;gap:8px;margin-top:14px;font-size:14px;font-weight:700}
+.q-verdict.show{display:flex;animation:up .4s var(--ease)}
+.q-verdict.win{color:#15803D}.q-verdict.lose{color:#B91C1C}
+.q-verdict svg{width:19px;height:19px;stroke-width:2.5;fill:none}
+
+/* ───── stats strip ───── */
+.stats{padding:44px 0 10px}
+.st-row{display:flex;justify-content:space-between;align-items:stretch}
+.st{flex:1;text-align:center;padding:6px 4px;position:relative}
+.st + .st::after{content:"";position:absolute;right:0;top:18%;height:64%;width:1px;background:var(--ln)}
+.st .n{font-family:'Cairo';font-size:clamp(21px,6vw,34px);font-weight:900;letter-spacing:-.5px;white-space:nowrap}
+.st .n .p{color:var(--gold);font-size:.72em;margin-left:1px}
+.st .t{font-size:clamp(11px,3vw,13px);color:var(--i3);font-weight:600;margin-top:2px}
+
+/* ───── section head ───── */
+.sec{padding:54px 0 0}
+.k{font-size:12px;font-weight:700;color:var(--pri);letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.k::before{content:"";width:22px;height:2px;background:var(--gold);border-radius:2px;display:inline-block}
+.sec h2{font-size:clamp(23px,6.4vw,32px);font-weight:900;line-height:1.4;letter-spacing:-.3px}
+.sec .sub{font-size:14.5px;color:var(--i3);margin-top:6px;max-width:480px}
+
+/* ───── وين أنت ───── */
+.seg{display:grid;gap:14px;margin-top:24px}
+.sg{border-radius:22px;padding:24px 22px;position:relative;overflow:hidden;transition:.25s var(--ease);display:block}
+.sg:hover{transform:translateY(-3px)}
+.sg.a{background:linear-gradient(150deg,#F4F0FF,#EDE6FF);border:1px solid rgba(124,58,237,.16)}
+.sg.b{background:linear-gradient(150deg,#FFF9EC,#FFF3D6);border:1px solid rgba(245,158,11,.22)}
+.sg .tt{font-family:'Cairo';font-size:19px;font-weight:900;margin-bottom:6px}
+.sg.a .tt{color:var(--pri2)}
+.sg.b .tt{color:#92400E}
+.sg .ds{font-size:13.5px;color:var(--i2);line-height:1.8;margin-bottom:14px}
+.sg .go{font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.sg.a .go{color:var(--pri)}
+.sg.b .go{color:#B45309}
+.sg .go svg{width:15px;height:15px;stroke-width:2.5;fill:none;transition:.2s}
+.sg:hover .go svg{transform:translateX(-4px)}
+.sg .bignum{position:absolute;left:-8px;bottom:-26px;font-family:'Cairo';font-size:110px;font-weight:900;opacity:.06;line-height:1;pointer-events:none}
+
+/* ───── ليش مدارك — قائمة تحريرية ───── */
+.why{margin-top:26px;border-top:1px solid var(--ln)}
+.w-row{display:flex;gap:18px;padding:24px 2px;border-bottom:1px solid var(--ln);align-items:flex-start}
+.w-num{font-family:'Cairo';font-size:34px;font-weight:900;color:var(--gold);line-height:1;min-width:52px;letter-spacing:-1px}
+.w-bd h3{font-size:16.5px;font-weight:700;margin-bottom:5px}
+.w-bd p{font-size:13.5px;color:var(--i3);line-height:1.85}
+
+/* ───── محاكاة ───── */
+.mock{margin-top:60px;background:linear-gradient(150deg,var(--navy),var(--navy2) 70%,#2A1580);border-radius:28px;padding:38px 26px;color:#fff;position:relative;overflow:hidden}
+.mock::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.18),transparent 65%);top:-90px;left:-70px;pointer-events:none}
+.mock .k{color:var(--gold2)}
+.mock h2{font-size:clamp(21px,5.8vw,28px);font-weight:900;line-height:1.5}
+.mock p{font-size:14px;color:#B9AFF2;margin:8px 0 20px;max-width:420px}
+.m-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.m-ch{font-size:12px;font-weight:700;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);padding:6px 13px;border-radius:16px;color:#DDD6FE}
+.m-cta{display:inline-block;padding:13px 26px;background:#fff;color:var(--navy2);font-size:14px;font-weight:700;border-radius:13px;transition:.2s var(--ease)}
+.m-cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.3)}
+
+/* ───── تسعير ───── */
+.price{margin-top:60px;text-align:center;background:var(--sf);border:1px solid var(--ln);border-radius:26px;padding:36px 24px;box-shadow:0 14px 44px -18px rgba(30,16,96,.14)}
+.price .from{font-size:13px;color:var(--i3);font-weight:600}
+.price .amt{font-family:'Cairo';font-size:52px;font-weight:900;letter-spacing:-1px;line-height:1.2;margin:2px 0}
+.price .amt small{font-size:17px;font-weight:700;color:var(--i3)}
+.price .per{font-size:13px;color:var(--i3);margin-bottom:18px}
+.p-feats{display:flex;flex-direction:column;gap:8px;max-width:320px;margin:0 auto 22px;text-align:right}
+.p-f{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--i2)}
+.p-f svg{width:16px;height:16px;stroke:var(--suc);stroke-width:2.5;fill:none;flex-shrink:0}
+.p-cta{display:inline-block;padding:14px 34px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:14.5px;font-weight:700;border-radius:13px;box-shadow:0 10px 26px rgba(124,58,237,.38);transition:.2s var(--ease)}
+.p-cta:hover{transform:translateY(-2px)}
+
+/* ───── FAQ ───── */
+.faq{margin-top:22px}
+.f-i{border-bottom:1px solid var(--ln)}
+.f-i summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 2px;font-size:15px;font-weight:700;cursor:pointer}
+.f-i summary::-webkit-details-marker{display:none}
+.f-i summary svg{width:17px;height:17px;stroke:var(--pri);stroke-width:2.5;fill:none;flex-shrink:0;transition:.25s var(--ease)}
+.f-i[open] summary svg{transform:rotate(45deg)}
+.f-i .f-a{padding:0 2px 18px;font-size:13.5px;color:var(--i3);line-height:1.9}
+
+/* ───── CTA أخير + فوتر ───── */
+.fin{margin:64px 0 0;background:linear-gradient(135deg,#4C1D95,#6D28D9 55%,var(--pri));border-radius:28px;padding:44px 26px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.fin::after{content:"";position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 60%);top:-160px;right:-100px;pointer-events:none}
+.fin h2{font-size:clamp(22px,6vw,30px);font-weight:900;line-height:1.5;position:relative}
+.fin p{font-size:14px;color:#DDD6FE;margin:8px 0 22px;position:relative}
+.fin a{display:inline-block;padding:14px 32px;background:#fff;color:var(--pri2);font-size:14.5px;font-weight:700;border-radius:13px;position:relative;transition:.2s var(--ease)}
+.fin a:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.ftr{padding:34px 0 44px;text-align:center}
+.ftr .lks{display:flex;justify-content:center;gap:22px;margin-bottom:12px}
+.ftr a{font-size:12.5px;color:var(--i3);font-weight:600}
+.ftr a:hover{color:var(--pri)}
+.ftr .cp{font-size:11.5px;color:#A8ABB8}
+
+/* ───── desktop ───── */
+@media(min-width:768px){
+  .hero{padding:74px 0 170px}
+  .q-card{padding:34px 34px 30px}
+  .seg{grid-template-columns:1fr 1fr}
+  .mock{padding:48px 44px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <a class="brand" href="/">
+      <span class="bx"><svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V10l4 3 4-8 4 8 4-3v10"/></svg></span>
+      مدارك النخبة
+    </a>
+    <div class="sp"></div>
+    <a class="h-lnk" href="/login.html">دخول</a>
+    <a class="h-cta" href="/register.html">سجّل الآن</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="dots"></div><div class="glow1"></div><div class="glow2"></div>
+  <div class="wrap hero-in">
+    <span class="pill"><i></i>منصة سعودية للقدرات والتحصيلي</span>
+    <h1>جرّب الاختبار<br><span class="g">قبل ما يجرّبك</span></h1>
+    <p>هذا سؤال من اختبار سابق. حله الحين — بدون تسجيل، والشرح ينفتح لك فوراً.</p>
+    <div class="arrow"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+  </div>
+</section>
+
+<div class="wrap qz">
+  <div class="q-card">
+    <span class="q-tag">من اختبار حقيقي</span>
+    <div class="q-meta">
+      <span class="q-sec" id="qSec">قدرات لفظي</span>
+      <span class="q-n" id="qN">سؤال 1 من 2</span>
+    </div>
+    <div class="q-txt" id="qTxt"></div>
+    <div class="q-ch" id="qCh"></div>
+    <div class="q-verdict" id="qV">
+      <svg id="qVi" viewBox="0 0 24 24"></svg><span id="qVt"></span>
+    </div>
+    <div class="q-ex" id="qEx"><b>طريقة الحل</b><p id="qExP"></p></div>
+    <div class="q-after" id="qAfter">
+      <a class="q-go" href="/demo.html">جرّب 5 أسئلة كاملة مجاناً</a>
+      <button class="q-more" id="qMore">سؤال ثاني من نوع مختلف</button>
+    </div>
+  </div>
+</div>
+
+<section class="stats wrap rv">
+  <div class="st-row">
+    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" id="cQ" data-target="4953">0</span></div><div class="t">سؤال متجدد</div></div>
+    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" id="cU" data-target="429">0</span></div><div class="t">طالب</div></div>
+    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" data-target="8295">0</span></div><div class="t">إجابة تدريب</div></div>
+  </div>
+</section>
+
+<section class="sec wrap rv">
+  <div class="k">وين أنت من الاختبار؟</div>
+  <h2>كل طالب له بداية مختلفة</h2>
+  <div class="seg">
+    <a class="sg a" href="/demo.html">
+      <span class="bignum">1</span>
+      <div class="tt">أول مرة تختبر؟</div>
+      <div class="ds">اكتشف مستواك الحقيقي في 5 دقايق، وشوف وين تقف قبل ما تبدأ المذاكرة.</div>
+      <span class="go">اكتشف مستواك <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></span>
+    </a>
+    <a class="sg b" href="/register.html">
+      <span class="bignum">2</span>
+      <div class="tt">اختبرت قبل؟</div>
+      <div class="ds">محاولتك الجاية أهم. تدرّب على نوعية الأسئلة اللي نزّلت درجتك بالضبط.</div>
+      <span class="go">ابدأ التدريب الموجّه <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></span>
+    </a>
+  </div>
+</section>
+
+<section class="sec wrap rv">
+  <div class="k">ليش مدارك النخبة؟</div>
+  <h2>مو بنك أسئلة — طريقة استعداد كاملة</h2>
+  <div class="why">
+    <div class="w-row rv">
+      <div class="w-num">01</div>
+      <div class="w-bd">
+        <h3>تجميعات محدثة أول بأول</h3>
+        <p>أسئلة الاختبارات تنضاف بعد كل فترة، محلولة ومشروحة — تعرف وش يجي فعلاً، مو وش المفروض يجي.</p>
+      </div>
+    </div>
+    <div class="w-row rv">
+      <div class="w-num">02</div>
+      <div class="w-bd">
+        <h3>شرح يعلّمك، مو بس يصحّح لك</h3>
+        <p>كل سؤال معه طريقة الحل خطوة خطوة، بلغة بسيطة تفهمها من أول قراءة.</p>
+      </div>
+    </div>
+    <div class="w-row rv">
+      <div class="w-num">03</div>
+      <div class="w-bd">
+        <h3>تقارير تكشف ضعفك قبل الاختبار</h3>
+        <p>تعرف بالضبط أي نوع أسئلة ينزّل درجتك، وتتدرب عليه بتركيز بدل ما تعيد كل شي.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap rv">
+  <section class="mock">
+    <div class="k">المحاكاة</div>
+    <h2>عيش تجربة الاختبار قبل موعدك</h2>
+    <p>اختبار محاكي بنفس عدد الأسئلة ونفس الوقت ونفس الضغط — عشان يوم الاختبار الحقيقي يكون مألوفاً.</p>
+    <div class="m-chips">
+      <span class="m-ch">نفس عدد الأسئلة</span>
+      <span class="m-ch">مؤقت حقيقي</span>
+      <span class="m-ch">تقرير مفصل بعدها</span>
+    </div>
+    <a class="m-cta" href="/register.html">جرّب المحاكاة</a>
+  </section>
+</div>
+
+<div class="wrap rv">
+  <section class="price">
+    <div class="from">اشتراك واحد يفتح كل شي — يبدأ من</div>
+    <div class="amt">99 <small>ر.س / شهر</small></div>
+    <div class="per">قدرات كمي ولفظي + تحصيلي بكل مواده</div>
+    <div class="p-feats">
+      <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>كل بنك الأسئلة والتجميعات المحدثة</div>
+      <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>شرح مفصل لكل سؤال</div>
+      <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تقارير الأداء والاختبارات المحاكية</div>
+    </div>
+    <a class="p-cta" href="/pricing.html">شوف الباقات</a>
+  </section>
+</div>
+
+<section class="sec wrap rv">
+  <div class="k">أسئلة تجيك على البال</div>
+  <h2>قبل ما تسأل</h2>
+  <div class="faq">
+    <details class="f-i">
+      <summary>الأسئلة من وين تجيبونها؟<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+      <div class="f-a">من تجميعات اختبارات سابقة، يجهزها فريقنا محلولة ومشروحة وتتحدث بعد كل فترة اختبارات — إضافة لبنك تدريب واسع مصنف حسب المواضيع.</div>
+    </details>
+    <details class="f-i">
+      <summary>أقدر أجرب قبل ما أشترك؟<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+      <div class="f-a">نعم — 5 أسئلة مجانية بدون تسجيل تعطيك فكرة عن مستواك وعن طريقة الشرح. جربها من زر "اكتشف مستواك" فوق.</div>
+    </details>
+    <details class="f-i">
+      <summary>فيه تطبيق للجوال؟<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+      <div class="f-a">نعم، تطبيق للآيفون والأندرويد — وحسابك واحد: تبدأ التدريب من الموقع وتكمله من التطبيق بنفس التقدم.</div>
+    </details>
+    <details class="f-i">
+      <summary>أنا ما اختبرت أبداً — من وين أبدأ؟<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
+      <div class="f-a">ابدأ باختبار تحديد المستوى المجاني. بعدها المنصة نفسها تقترح عليك خطة تدريب حسب نقاط ضعفك، وتتابع تقدمك أسبوعاً بأسبوع.</div>
+    </details>
+  </div>
+</section>
+
+<div class="wrap rv">
+  <section class="fin">
+    <h2>ادخل اختبارك وأنت عارف وش بيجيك</h2>
+    <p>ابدأ بسؤال، كمّل بخمسة، وبعدها قرر بنفسك.</p>
+    <a href="/demo.html">ابدأ التجربة المجانية</a>
+  </section>
+</div>
+
+<footer class="ftr wrap">
+  <div class="lks">
+    <a href="/privacy.html">الخصوصية</a>
+    <a href="/terms.html">الشروط</a>
+    <a href="https://wa.me/966553339885" target="_blank" rel="noopener">تواصل معنا</a>
+  </div>
+  <div class="cp">مدارك النخبة — منصة سعودية للتدريب على القدرات والتحصيلي</div>
+</footer>
+
+<script src="/analytics.js" async></script>
+<script>
+// ═══ السؤال التفاعلي ═══
+const QS = [
+  {
+    sec: 'قدرات لفظي',
+    txt: 'أكمل التناظر: ساعة : وقت = ميزان : ____',
+    ch: ['ذهب', 'وزن', 'عدل', 'تجارة'],
+    ok: 1,
+    ex: 'الساعة تقيس الوقت، والميزان يقيس الوزن. العلاقة: أداة قياس وما تقيسه.'
+  },
+  {
+    sec: 'قدرات كمي',
+    txt: 'إذا كان س + ص = 10، وس × ص = 24، فما قيمة س² + ص²؟',
+    ch: ['52', '48', '60', '44'],
+    ok: 0,
+    ex: 'س² + ص² = (س + ص)² − 2سص = 10² − 2(24) = 100 − 48 = 52'
+  }
+];
+let qi = 0, answered = false;
+const $ = id => document.getElementById(id);
+const L = ['أ', 'ب', 'ج', 'د'];
+
+function renderQ() {
+  const q = QS[qi];
+  answered = false;
+  $('qSec').textContent = q.sec;
+  $('qN').textContent = 'سؤال ' + (qi + 1) + ' من ' + QS.length;
+  $('qTxt').textContent = q.txt;
+  $('qEx').classList.remove('show');
+  $('qV').classList.remove('show', 'win', 'lose');
+  $('qAfter').classList.remove('show');
+  $('qCh').innerHTML = q.ch.map((c, i) =>
+    '<button class="q-c" data-i="' + i + '"><span class="l">' + L[i] + '</span><span>' + c + '</span></button>'
+  ).join('');
+  document.querySelectorAll('.q-c').forEach(b => b.addEventListener('click', () => answer(+b.dataset.i)));
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const q = QS[qi];
+  document.querySelectorAll('.q-c').forEach(b => {
+    const bi = +b.dataset.i;
+    b.disabled = true;
+    if (bi === q.ok) b.classList.add('ok');
+    else if (bi === i) b.classList.add('no');
+    else b.classList.add('dim');
+  });
+  const win = i === q.ok;
+  const v = $('qV');
+  v.classList.add('show', win ? 'win' : 'lose');
+  $('qVi').innerHTML = win ? '<polyline points="20 6 9 17 4 12" stroke="#15803D"/>' : '<line x1="18" y1="6" x2="6" y2="18" stroke="#B91C1C"/><line x1="6" y1="6" x2="18" y2="18" stroke="#B91C1C"/>';
+  $('qVt').textContent = win ? 'إجابة صحيحة — كذا تكون البداية' : 'قريب — والشرح تحت يوضح لك الطريقة';
+  $('qExP').textContent = q.ex;
+  $('qEx').classList.add('show');
+  $('qAfter').classList.add('show');
+  if (qi >= QS.length - 1) $('qMore').style.display = 'none';
+  try { if (window.MadarekAnalytics) MadarekAnalytics.track('hero_question_answered', { q: qi, correct: win }); } catch(_) {}
+}
+
+$('qMore').addEventListener('click', () => { qi++; renderQ(); $('qTxt').scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+renderQ();
+
+// ═══ reveal on scroll ═══
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); }
+}), { threshold: .1, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+setTimeout(() => document.querySelectorAll('.rv').forEach(el => el.classList.add('on')), 2500);
+
+// ═══ counters ═══
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target, 10) || 0;
+  const start = performance.now(), dur = 1400;
+  function tick(now) {
+    const p = Math.min(1, (now - start) / dur);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US');
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  setTimeout(() => { if (el.textContent === '0') el.textContent = target.toLocaleString('en-US'); }, 250);
+}
+const cObs = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting && !e.target.dataset.done) { e.target.dataset.done = '1'; animateCounter(e.target); }
+}), { threshold: .4 });
+document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
+
+// ═══ أرقام حية من DB ═══
+(function () {
+  const U = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+  const K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+  function put(el, v) { if (!el || !v) return; el.dataset.target = v; el.textContent = (+v).toLocaleString('en-US'); }
+  fetch(U + '/rest/v1/rpc/get_public_stats', {
+    method: 'POST',
+    headers: { apikey: K, Authorization: 'Bearer ' + K, 'Content-Type': 'application/json' },
+    body: '{}'
+  }).then(r => r.ok ? r.json() : null).then(d => {
+    const s = Array.isArray(d) ? d[0] : d;
+    if (!s) return;
+    put(document.getElementById('cQ'), s.total_questions);
+    put(document.getElementById('cU'), s.total_users);
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>
