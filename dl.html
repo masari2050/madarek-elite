@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تحميل التسريبات — مدارك النخبة</title>
+<title>تحميل التجميعات — مدارك النخبة</title>
 <link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#5B4DD4">
-<meta name="description" content="حمّل ملف تسريبات اختبار التحصيلي — اليوم الأول · ١٧٩ سؤال محلول · ٥١ صفحة مع شرح بسيط · مدارك النخبة">
-<meta property="og:title" content="تسريبات اختبار التحصيلي · اليوم الأول">
+<meta name="description" content="حمّل ملف تجميعات اختبار التحصيلي — اليوم الأول · ١٧٩ سؤال محلول · ٥١ صفحة مع شرح بسيط · مدارك النخبة">
+<meta property="og:title" content="تجميعات اختبار التحصيلي · اليوم الأول">
 <meta property="og:description" content="١٧٩ سؤال محلول · ٥١ صفحة مع شرح بسيط · إصدار مدارك النخبة">
 <meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
 <meta property="og:type" content="website">
@@ -82,7 +82,7 @@ html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-s
 
   <div class="card">
     <span class="day-pill" id="dayPill">جاري التحميل...</span>
-    <h2 class="title">تسريبات <span class="gold">اختبار التحصيلي</span></h2>
+    <h2 class="title">تجميعات <span class="gold">اختبار التحصيلي</span></h2>
     <div class="subtitle" id="subtitle">ملف PDF احترافي · من اختبارات سعودية حقيقية</div>
 
     <div class="stats">
@@ -102,9 +102,9 @@ html,body{margin:0;padding:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-s
       <span><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M22 3H2v6h20V3M12 22V9"/></svg>هدية مجانية</span>
     </div>
 
-    <!-- قائمة كل التسريبات المتاحة (تظهر بعد التحميل) -->
+    <!-- قائمة كل التجميعات المتاحة (تظهر بعد التحميل) -->
     <div id="allLeaks" style="margin-top:24px;width:100%;display:none">
-      <div style="font-size:11.5px;color:#C4B5FD;font-weight:700;margin-bottom:10px;text-align:center">📚 كل التسريبات المتاحة:</div>
+      <div style="font-size:11.5px;color:#C4B5FD;font-weight:700;margin-bottom:10px;text-align:center">📚 كل التجميعات المتاحة:</div>
       <div id="allLeaksList" style="display:flex;flex-direction:column;gap:7px"></div>
     </div>
 
@@ -172,7 +172,7 @@ async function startDownload(){
     // 2) Start the download
     const a = document.createElement('a');
     a.href = pdfUrl;
-    a.download = (window._currentTitle || 'تسريبات-التحصيلي') + '.pdf';
+    a.download = (window._currentTitle || 'تجميعات-التحصيلي') + '.pdf';
     a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
@@ -218,7 +218,7 @@ async function loadGroupInfo(){
       document.getElementById('metaDate').textContent = `محدّث ${dt}`;
       window._currentTitle = g.title.replace(/[ /]/g, '-');
 
-      // 2) جلب باقي التسريبات المتاحة للعرض كقائمة
+      // 2) جلب باقي التجميعات المتاحة للعرض كقائمة
       const allR = await fetch(SB_URL + '/rest/v1/leak_groups?is_active=eq.true&pdf_url=not.is.null&select=id,title,leak_date,question_count,pdf_downloads&order=leak_date.desc&limit=10', {
         headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
       });
@@ -229,7 +229,7 @@ async function loadGroupInfo(){
         list.innerHTML = others.map(o => {
           const odt = new Date(o.leak_date).toLocaleDateString('ar-SA', {day:'numeric', month:'long'});
           return `<a href="/dl.html?id=${o.id}" style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:10px 14px;border-radius:11px;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:600;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.10)'">
-            <span>📘 ${o.title.replace('تسريبات التحصيلي – ','')}</span>
+            <span>📘 ${o.title.replace('تجميعات التحصيلي – ','')}</span>
             <span style="color:#FBBF24;font-size:11px">${o.question_count} سؤال</span>
           </a>`;
         }).join('');

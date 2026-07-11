@@ -1116,7 +1116,7 @@ async function loadFreshLeakBanner() {
         // وجهة الزر: المشترك → التسريبات مجاناً · غير المشترك → صفحة الحزمة/الاشتراك
         const isPro = profile && M.isSubscribed(profile);
         const linkFromCfg = cfg.link;
-        const dest = linkFromCfg || (isPro ? '/leaks.html' : '/period1');
+        const dest = linkFromCfg || (isPro ? '/leaks.html' : '/pricing.html');
 
         // ملء القيم من DB config (مع fallback لقيم افتراضية للسلامة)
         const tagSpan = el.querySelector('.fresh-leak-tag span:last-child');

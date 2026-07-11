@@ -495,10 +495,8 @@ async function init() {
                 } catch(_) {}
             }
             if (!hasProductAccess) {
-                // Send to period1 if it's a tahsili leak (likely period1 customer);
-                // otherwise to full pricing
                 const back = encodeURIComponent(location.pathname + location.search);
-                location.href = (SECTION === 'tahsili' ? '/period1' : '/pricing.html') + '?from=' + back;
+                location.href = '/pricing.html?from=' + back;
                 return;
             }
         }
