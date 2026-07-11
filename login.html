@@ -2,204 +2,203 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>مدارك النخبة — تسجيل الدخول</title>
-<script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
-<style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
+<meta name="description" content="سجّل دخولك إلى مدارك النخبة وكمّل تدريبك على القدرات والتحصيلي من حيث وقفت.">
+<meta name="theme-color" content="#0F1128">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
---bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
---pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
---acc:#FF8A3D;--as:rgba(255,138,61,.08);
---suc:#22C55E;--ss:rgba(34,197,94,.07);
---dng:#EF4444;--ds:rgba(239,68,68,.07);
---ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
---ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
---r:14px;--r2:18px;--gold:#F59E0B;
---ease:cubic-bezier(.25,.8,.25,1);
-}
-[data-t="d"]{
---bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
---ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
---as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
---ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
---ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
+  --bg:#F8F7FF; --sf:#FFFFFF; --s2:#F3F1FA;
+  --pri:#7C3AED; --pri2:#5B21B6; --ps:rgba(124,58,237,.08); --pm:rgba(124,58,237,.22);
+  --navy:#0F1128; --navy2:#1E1060; --navy3:#3B1FB0;
+  --gold:#F59E0B; --gold2:#FBBF24;
+  --suc:#22C55E; --dng:#EF4444;
+  --ink:#1A1D2E; --i2:#3D4058; --i3:#6B7280;
+  --ln:rgba(15,17,40,.08); --ln2:rgba(15,17,40,.14);
+  --ease:cubic-bezier(.16,1,.3,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-font-smoothing:antialiased}
-body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+h1,h2,.disp{font-family:'Cairo',sans-serif}
+a,button{font-family:inherit;cursor:pointer;color:inherit;text-decoration:none;border:none;background:none}
 input{font-family:inherit}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:400px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg)}
-.card{background:var(--sf);border-radius:var(--r2);border:1px solid var(--ln)}
+.wrap{max-width:560px;margin:0 auto;padding:0 26px}
+img{max-width:100%}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
-/* ── HEADER ── */
-.h-wrap{padding:40px 28px 16px;text-align:center;background:linear-gradient(180deg,var(--sf) 0%,var(--bg) 60%)}
-.logo{width:72px;height:72px;border-radius:22px;overflow:hidden;margin:0 auto 14px;box-shadow:0 8px 28px rgba(109,93,246,.28)}
-.logo img{width:100%;height:100%}
-.greet{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--ps);color:var(--pri);font-size:11px;font-weight:700;border-radius:20px;margin-bottom:12px}
-.greet svg{width:12px;height:12px;stroke:var(--pri);fill:none;stroke-width:2}
-.h-title{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
-.h-sub{font-size:12px;color:var(--i3);line-height:1.7}
+/* ───── header ───── */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(15,17,40,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.hdr-in{max-width:1050px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15.5px;color:#fff}
+.brand .bx{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;box-shadow:0 4px 14px rgba(124,58,237,.45)}
+.brand svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2}
+.sp{flex:1}
+.h-cta{padding:9px 17px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:13px;font-weight:700;border-radius:10px;box-shadow:0 4px 16px rgba(124,58,237,.45);transition:.2s var(--ease)}
+.h-cta:hover{transform:translateY(-1px)}
 
-/* ── BIOMETRIC ── */
-.bio-btn{width:calc(100% - 56px);margin:10px 28px 0;padding:13px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),var(--acc));color:#fff;font-size:13px;font-weight:700;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(109,93,246,.25)}
+/* ───── hero ───── */
+.hero{position:relative;background:linear-gradient(165deg,var(--navy) 0%,var(--navy2) 55%,var(--navy3) 115%);color:#fff;padding:42px 0 120px;overflow:hidden;text-align:center}
+.hero .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1px);background-size:24px 24px;opacity:.35;pointer-events:none}
+.hero .glow1{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.5),transparent 65%);top:-140px;right:-120px;pointer-events:none}
+.hero .glow2{position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.2),transparent 65%);bottom:-80px;left:-110px;pointer-events:none}
+.hero-in{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#DDD6FE;padding:6px 15px;border-radius:20px;font-size:12px;font-weight:600;animation:up .7s var(--ease) both}
+.pill svg{width:13px;height:13px;stroke:var(--gold2);fill:none;stroke-width:2}
+.hero h1{font-size:clamp(25px,7vw,38px);font-weight:900;line-height:1.4;margin:16px 0 8px;animation:up .7s .12s var(--ease) both}
+.hero h1 .g{background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:clamp(13.5px,3.8vw,15.5px);color:#B9AFF2;max-width:380px;margin:0 auto;animation:up .7s .22s var(--ease) both}
+
+/* ───── الصدفة العائمة ───── */
+.qz{position:relative;z-index:5;margin-top:-88px;padding-bottom:26px;animation:up .8s .34s var(--ease) both}
+.shell{background:var(--sf);border-radius:26px;padding:24px 22px;box-shadow:0 24px 70px -18px rgba(30,16,96,.45),0 0 0 1px var(--ln)}
+
+/* motivation */
+.motiv{padding:13px 15px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:14px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--i2);line-height:1.7;font-weight:500;margin-bottom:16px}
+.motiv svg{width:17px;height:17px;stroke:var(--suc);fill:none;stroke-width:2.5;flex-shrink:0}
+.motiv b{color:#15803D;font-weight:700}
+
+/* biometric */
+.bio-btn{width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:14px;font-weight:700;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 22px rgba(124,58,237,.35);transition:.2s var(--ease);margin-bottom:4px}
+.bio-btn:hover{transform:translateY(-1px)}
+.bio-btn:active{transform:scale(.99)}
 .bio-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
-.bio-btn:active{transform:scale(.98)}
-.bio-divider{display:none;margin:18px 28px 0;align-items:center;gap:10px;color:var(--i4);font-size:10px;font-weight:600}
+.bio-divider{display:none;margin:14px 0;align-items:center;gap:10px;color:var(--i3);font-size:11px;font-weight:600}
 .bio-divider.on,.bio-btn.on{display:flex}
-.bio-divider::before,.bio-divider::after{content:'';flex:1;height:1px;background:var(--ln2)}
+.bio-divider::before,.bio-divider::after{content:'';flex:1;height:1px;background:var(--ln)}
 
-/* ── FORM ── */
-.form{margin:18px 16px 0;padding:20px 16px}
-.lbl{font-size:11px;font-weight:600;color:var(--i3);margin-bottom:6px;display:block}
+/* form */
+.lbl{font-size:12px;font-weight:700;color:var(--i2);margin-bottom:6px;display:block}
 .input-row{position:relative;margin-bottom:14px}
-.input{width:100%;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--ln2);background:var(--s2);color:var(--ink);font-size:13px;outline:none;transition:all .2s;font-weight:500}
+.input{width:100%;padding:13px 15px;border-radius:14px;border:1.5px solid var(--ln2);background:var(--s2);color:var(--ink);font-size:14px;outline:none;transition:.2s;font-weight:500}
 .input:focus{border-color:var(--pri);background:var(--sf);box-shadow:0 0 0 3px var(--ps)}
-.input::placeholder{color:var(--i4);font-weight:400}
+.input::placeholder{color:#A8ABB8;font-weight:400}
 .input[type=email],.input[type=password]{direction:ltr;text-align:right}
 .eye{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;color:var(--i3);border-radius:8px;transition:color .2s}
 .eye:hover{color:var(--pri)}
 .eye svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2}
-.submit{width:100%;padding:14px;border-radius:var(--r);background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s;margin-top:4px}
-.submit:active{transform:scale(.98)}
-.submit:disabled{opacity:.6;cursor:not-allowed}
+.submit{width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 10px 26px rgba(124,58,237,.4);transition:.2s var(--ease);margin-top:4px}
+.submit:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(124,58,237,.5)}
+.submit:active{transform:scale(.99)}
+.submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .submit svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5}
-.forgot{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--pri);font-weight:600;padding:6px;cursor:pointer;background:none;border:none;width:100%;font-family:inherit;transition:opacity .2s}
+.forgot{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--pri);font-weight:700;padding:6px;width:100%;transition:opacity .2s}
 .forgot:hover{opacity:.75}
 
-/* ── BOTTOM ── */
-.bottom{text-align:center;margin:20px 28px 30px;font-size:12px;color:var(--i3)}
+.bottom{text-align:center;margin-top:16px;font-size:13px;color:var(--i3)}
 .bottom a{color:var(--pri);font-weight:700;margin-right:4px}
 .bottom a:hover{text-decoration:underline}
-.back{display:block;text-align:center;margin:12px 0 20px;font-size:11px;color:var(--i4);padding:6px}
+.back{display:block;text-align:center;margin:8px 0 0;font-size:12px;color:var(--i3);font-weight:600;padding:6px}
 .back:hover{color:var(--pri)}
 
-/* ── MOTIVATION ── */
-.motiv{margin:0 28px 4px;padding:12px 14px;background:var(--ss);border:1px solid rgba(34,197,94,.15);border-radius:var(--r);display:flex;align-items:center;gap:10px;font-size:11px;color:var(--i2);line-height:1.6}
-.motiv svg{width:16px;height:16px;stroke:var(--suc);fill:none;stroke-width:2;flex-shrink:0}
-.motiv b{color:var(--suc);font-weight:700}
-
-/* ── TOAST ── */
+/* toast */
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:9999;padding:12px 22px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transition:all .3s;max-width:90%;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{background:var(--dng)}
 .toast.ok{background:var(--suc)}
 .toast.info{background:var(--pri)}
 
-/* ── MODAL ── */
-.mdl{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
+/* modal */
+.mdl{position:fixed;inset:0;z-index:999;background:rgba(15,17,40,.6);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
 .mdl.on{display:flex}
-.mdl-card{width:100%;max-width:380px;background:var(--sf);border-radius:20px;padding:24px 20px;border:1px solid var(--ln)}
-.mdl-h{font-size:17px;font-weight:700;text-align:center;margin-bottom:6px}
-.mdl-p{font-size:12px;color:var(--i3);text-align:center;margin-bottom:18px;line-height:1.7}
-.mdl-msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:11px;text-align:center;display:none}
+.mdl-card{width:100%;max-width:380px;background:var(--sf);border-radius:22px;padding:26px 22px;box-shadow:0 24px 70px -18px rgba(30,16,96,.5);animation:up .4s var(--ease)}
+.mdl-h{font-family:'Cairo';font-size:18px;font-weight:900;text-align:center;margin-bottom:6px}
+.mdl-p{font-size:12.5px;color:var(--i3);text-align:center;margin-bottom:18px;line-height:1.8}
+.mdl-msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:12px;text-align:center;display:none;line-height:1.7}
 .mdl-msg.on{display:block}
-.mdl-msg.err{background:var(--ds);color:var(--dng)}
-.mdl-msg.ok{background:var(--ss);color:var(--suc)}
+.mdl-msg.err{background:rgba(239,68,68,.08);color:var(--dng)}
+.mdl-msg.ok{background:rgba(34,197,94,.08);color:#15803D}
 .mdl-msg.info{background:var(--ps);color:var(--pri)}
-.mdl-cancel{width:100%;margin-top:10px;padding:10px;font-size:12px;color:var(--i3);background:none;border:none;cursor:pointer}
+.mdl-cancel{width:100%;margin-top:10px;padding:10px;font-size:12.5px;color:var(--i3);font-weight:600}
+.mdl-cancel:hover{color:var(--pri)}
 
-/* FONT-SIZE PREF */
-html[data-fs="small"] .wrap{zoom:0.93}
-html[data-fs="large"] .wrap{zoom:1.1}
-@supports not (zoom:1){html[data-fs="small"] .wrap{font-size:14px}html[data-fs="large"] .wrap{font-size:16.5px}}
+/* footer */
+.ftr{padding:26px 0 44px;text-align:center}
+.ftr .lks{display:flex;justify-content:center;gap:22px;margin-bottom:12px}
+.ftr a{font-size:12.5px;color:var(--i3);font-weight:600}
+.ftr a:hover{color:var(--pri)}
+.ftr .cp{font-size:11.5px;color:#A8ABB8}
 
-/* ─────────────────────────────────────────
-   RESPONSIVE: Tablet + Desktop (phone-frame)
-   ـ ارتفاع ثابت = لا تذبذب
-   ـ 520px أوسع من 440px القديم
-   ───────────────────────────────────────── */
-@media (min-width:768px){
-  body{
-    background:
-      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
-      radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
-      var(--bg);
-    min-height:100vh;
-    display:flex;align-items:center;justify-content:center;
-    padding:24px 16px;
-  }
-  [data-t="d"] body,html.dark body{
-    background:
-      radial-gradient(circle at top right,rgba(155,140,255,.18),transparent 55%),
-      radial-gradient(circle at bottom left,rgba(255,138,61,.1),transparent 55%),
-      var(--bg);
-  }
-  .wrap{
-    max-width:520px;
-    height:min(840px,calc(100vh - 48px));
-    min-height:640px;
-    overflow-y:auto;
-    border-radius:30px;
-    box-shadow:0 24px 64px rgba(20,17,52,.16),0 6px 20px rgba(20,17,52,.06);
-    border:1px solid var(--ln);
-  }
-  [data-t="d"] .wrap,html.dark .wrap{
-    box-shadow:0 24px 64px rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.35);
-  }
-  .wrap::-webkit-scrollbar{width:5px}
-  .wrap::-webkit-scrollbar-track{background:transparent}
-  .wrap::-webkit-scrollbar-thumb{background:var(--ln2);border-radius:3px}
+@media(min-width:768px){
+  .hero{padding:52px 0 140px}
+  .shell{padding:30px 32px}
 }
 </style>
 <script src="/analytics.js" async></script>
 </head>
 <body>
-<div class="wrap">
 
-<div class="h-wrap">
-  <div class="logo"><img src="icons/icon-192.png" alt="مدارك النخبة"></div>
-  <div class="greet" id="greetBox">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-    <span id="greetText">أهلاً بعودتك</span>
+<header class="hdr">
+  <div class="hdr-in">
+    <a class="brand" href="/">
+      <span class="bx"><svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V10l4 3 4-8 4 8 4-3v10"/></svg></span>
+      مدارك النخبة
+    </a>
+    <div class="sp"></div>
+    <a class="h-cta" href="/register.html">سجّل الآن</a>
   </div>
-  <div class="h-title">سجّل دخولك وكمّل رحلتك</div>
-  <div class="h-sub">كل يوم تدريب خطوة أقرب لحلمك</div>
-</div>
+</header>
 
-<div class="motiv">
-  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <span><b>استمرارك</b> هو مفتاح نجاحك — سجّل دخولك وكمّل من حيث وقفت</span>
-</div>
+<section class="hero">
+  <div class="dots"></div><div class="glow1"></div><div class="glow2"></div>
+  <div class="wrap hero-in">
+    <span class="pill" id="greetBox">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <span id="greetText">أهلاً بعودتك</span>
+    </span>
+    <h1>سجّل دخولك <span class="g">وكمّل رحلتك</span></h1>
+    <p>كل يوم تدريب خطوة أقرب لحلمك.</p>
+  </div>
+</section>
 
-<button class="bio-btn" id="bioBtn" onclick="loginBio()">
-  <svg viewBox="0 0 24 24"><path d="M12 11c-2 0-3 1-3 3v2M12 11c2 0 3 1 3 3v2M12 7a4 4 0 014 4M12 7a4 4 0 00-4 4M4 12a8 8 0 0116 0M4 12v2a8 8 0 008 8 8 8 0 008-8v-2"/></svg>
-  <span id="bioLabel">دخول بالبصمة</span>
-</button>
-<div class="bio-divider" id="bioDiv"><span>أو بالبريد الإلكتروني</span></div>
+<div class="wrap qz">
+  <div class="shell">
 
-<div class="card form">
-  <form id="loginForm">
-    <label class="lbl">البريد الإلكتروني</label>
-    <div class="input-row">
-      <input class="input" type="email" id="email" placeholder="example@gmail.com" autocomplete="email" required>
+    <div class="motiv">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <span><b>استمرارك</b> هو مفتاح نجاحك — سجّل دخولك وكمّل من حيث وقفت</span>
     </div>
 
-    <label class="lbl">كلمة المرور</label>
-    <div class="input-row">
-      <input class="input" type="password" id="password" placeholder="كلمة المرور" autocomplete="current-password" required>
-      <button type="button" class="eye" onclick="togglePw(this)" aria-label="إظهار/إخفاء كلمة المرور">
-        <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-      </button>
-    </div>
-
-    <button type="submit" class="submit" id="submitBtn">
-      <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-      <span>تسجيل الدخول</span>
+    <button class="bio-btn" id="bioBtn" onclick="loginBio()">
+      <svg viewBox="0 0 24 24"><path d="M12 11c-2 0-3 1-3 3v2M12 11c2 0 3 1 3 3v2M12 7a4 4 0 014 4M12 7a4 4 0 00-4 4M4 12a8 8 0 0116 0M4 12v2a8 8 0 008 8 8 8 0 008-8v-2"/></svg>
+      <span id="bioLabel">دخول بالبصمة</span>
     </button>
+    <div class="bio-divider" id="bioDiv"><span>أو بالبريد الإلكتروني</span></div>
 
-    <button type="button" class="forgot" onclick="forgotPassword()">نسيت كلمة المرور؟</button>
-  </form>
-</div>
+    <form id="loginForm">
+      <label class="lbl">البريد الإلكتروني</label>
+      <div class="input-row">
+        <input class="input" type="email" id="email" placeholder="example@gmail.com" autocomplete="email" required>
+      </div>
 
-<div class="bottom">
-  ما عندك حساب؟ <a href="/register.html">سجّل الآن</a>
+      <label class="lbl">كلمة المرور</label>
+      <div class="input-row">
+        <input class="input" type="password" id="password" placeholder="كلمة المرور" autocomplete="current-password" required>
+        <button type="button" class="eye" onclick="togglePw(this)" aria-label="إظهار/إخفاء كلمة المرور">
+          <svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        </button>
+      </div>
+
+      <button type="submit" class="submit" id="submitBtn">
+        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>تسجيل الدخول</span>
+      </button>
+
+      <button type="button" class="forgot" onclick="forgotPassword()">نسيت كلمة المرور؟</button>
+    </form>
+
+    <div class="bottom">
+      ما عندك حساب؟ <a href="/register.html">سجّل الآن</a>
+    </div>
+    <a href="/" class="back">← العودة للرئيسية</a>
+
+  </div>
 </div>
-<a href="/" class="back">← العودة للرئيسية</a>
 
 <!-- FORGOT PASSWORD MODAL -->
 <div class="mdl" id="forgotModal">
@@ -234,10 +233,17 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
 </div>
 
-</div><!-- /wrap -->
+<footer class="ftr wrap">
+  <div class="lks">
+    <a href="/privacy.html">الخصوصية</a>
+    <a href="/terms.html">الشروط</a>
+    <a href="https://wa.me/966553339885" target="_blank" rel="noopener">تواصل معنا</a>
+  </div>
+  <div class="cp">مدارك النخبة — منصة سعودية للتدريب على القدرات والتحصيلي</div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../biometric.js"></script>
+<script src="/biometric.js"></script>
 <script>
 (function(){
 'use strict';
@@ -408,7 +414,7 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
     _attempts=0;
     try{localStorage.setItem('khawariz_user',JSON.stringify({id:data.user.id,email:data.user.email,name:data.user.user_metadata?.name||''}));}catch(_){}
     if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(_){}}
-    btn.innerHTML='<span>تم! جاري التحويل...</span>';
+    btn.innerHTML='<span>تم — جاري التحويل...</span>';
     setTimeout(function(){window.location.href='dashboard.html';},600);
   }catch(err){
     _attempts++;
