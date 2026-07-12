@@ -7,22 +7,22 @@
 <script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
 <style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
 <link rel="icon" href="icons/icon-192.png" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
---bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
---pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.18);--pt:#5B4DD4;
+--bg:#F8F7FF;--sf:#FFF;--s2:#F3F1FA;--s3:#ECE9F8;
+--pri:#7C3AED;--ps:rgba(124,58,237,.07);--pm:rgba(124,58,237,.18);--pt:#5B21B6;
 --acc:#FF8A3D;--as:rgba(255,138,61,.08);
 --suc:#22C55E;--ss:rgba(34,197,94,.07);
 --dng:#EF4444;--ds:rgba(239,68,68,.07);
 --ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
 --ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
---r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--r:14px;--r2:18px;--nav:#0F1128;--gold:#F59E0B;
 --ease:cubic-bezier(.25,.8,.25,1);
 }
 .dark{
 --bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
---ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.25);--pt:#9B8CFF;
+--ps:rgba(124,58,237,.12);--pm:rgba(124,58,237,.25);--pt:#A78BFA;
 --as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
 --ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
 --ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
@@ -40,7 +40,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .elite-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:14px;background:var(--pri);color:#fff;letter-spacing:.4px}
 
 /* SUBSCRIBE BANNER */
-.sub-banner{margin:14px 16px 4px;padding:18px 18px 16px;border-radius:18px;background:linear-gradient(135deg,#7C6BFA 0%,#6D5DF6 100%);color:#fff;position:relative;overflow:hidden;animation:si .3s var(--ease)}
+.sub-banner{margin:14px 16px 4px;padding:18px 18px 16px;border-radius:18px;background:linear-gradient(135deg,#8B5CF6 0%,#7C3AED 100%);color:#fff;position:relative;overflow:hidden;animation:si .3s var(--ease)}
 .sub-banner::before{content:"";position:absolute;top:-30px;right:-20px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.06)}
 .sub-banner::after{content:"";position:absolute;bottom:-40px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.04)}
 .sub-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);padding:5px 11px;border-radius:14px;font-size:11px;font-weight:600;margin-bottom:14px;position:relative;z-index:1}
@@ -69,7 +69,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* 🔒 locked state — التصميم الأصلي (موف خفيف) + القفل وردي فقط */
 .cat.locked{opacity:.85}
 .cat.locked:hover{opacity:.95}
-.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--pri);font-weight:700;margin-top:8px;text-align:center;padding:11px 14px;background:rgba(109,93,246,.08);border-radius:11px;border:1px dashed rgba(109,93,246,.32)}
+.cat.locked .cat-locked-msg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--pri);font-weight:700;margin-top:8px;text-align:center;padding:11px 14px;background:rgba(124,58,237,.08);border-radius:11px;border:1px dashed rgba(124,58,237,.32)}
 /* SVG القفل: وردي مميّز فقط (هو ما يلفت الانتباه — النص بلون الهوية) */
 .cat.locked .cat-locked-msg svg{width:20px;height:20px;stroke:#EC4899;fill:none;stroke-width:2.5;stroke-linecap:round;flex-shrink:0}
 [data-t="d"] .cat.locked .cat-locked-msg,html.dark .cat.locked .cat-locked-msg{background:rgba(155,140,255,.12);color:var(--pt);border-color:rgba(155,140,255,.32)}
@@ -78,7 +78,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cat-row{display:flex;align-items:center;gap:12px}
 .ci{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex-shrink:0}
 .ci svg{width:22px;height:22px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ci.km{background:rgba(109,93,246,.1)}.ci.km svg{stroke:var(--pri)}
+.ci.km{background:rgba(124,58,237,.1)}.ci.km svg{stroke:var(--pri)}
 .ci.lf{background:rgba(34,197,94,.1)}.ci.lf svg{stroke:var(--suc)}
 .ci.mx{background:rgba(239,68,68,.08)}.ci.mx svg{stroke:var(--dng)}
 .ci.th{background:rgba(255,138,61,.1)}.ci.th svg{stroke:var(--acc)}
@@ -102,7 +102,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .pr-lbl{font-size:11px;color:var(--i3);font-weight:500;flex-shrink:0}
 
 /* LANGUAGE TEST CARD */
-.lang-card{margin:0 16px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#7C6BFA 0%,#6D5DF6 100%);color:#fff;position:relative;overflow:hidden;cursor:pointer;animation:si .3s var(--ease) backwards;animation-delay:.2s;display:flex;flex-direction:column;gap:0;text-decoration:none}
+.lang-card{margin:0 16px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#8B5CF6 0%,#7C3AED 100%);color:#fff;position:relative;overflow:hidden;cursor:pointer;animation:si .3s var(--ease) backwards;animation-delay:.2s;display:flex;flex-direction:column;gap:0;text-decoration:none}
 .lang-card,.lang-card *{text-decoration:none}
 .lang-card::before{content:"";position:absolute;top:-30px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06)}
 .lang-card:active{transform:scale(.99)}
@@ -175,11 +175,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .mhint{font-size:11px;color:var(--i4);text-align:center;margin-top:8px}
 
 /* NAV */
-.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(124,58,237,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
 .ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
 .ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
-.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+.ni.on{background:rgba(124,58,237,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
 
 /* FONT-SIZE PREF */
 html[data-fs="small"] .wrap{zoom:0.93}
@@ -189,7 +189,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @media (min-width:768px){
   body{
     background:
-      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at top right,rgba(124,58,237,.16),transparent 55%),
       radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
       var(--bg);
     min-height:100vh;
@@ -225,7 +225,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @media (min-width:1024px){
   body{
     background:
-      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.32),transparent 60%),
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(124,58,237,.32),transparent 60%),
       radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.26),transparent 60%),
       radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.12),transparent 70%),
       var(--bg);
@@ -237,7 +237,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
       var(--bg);
   }
   .wrap{
-    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(109,93,246,.12);
+    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(124,58,237,.12);
   }
 }
 
@@ -275,7 +275,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- ═══ TAHSILI TOP-REPEATED FEATURED BANNER ═══ -->
-<a href="/practice.html?section=tahsili&top_repeated=1&count=20&mode=instant" onclick="openTahsiliCountModal('top_repeated');return false;" id="topRepBanner" style="display:block;text-decoration:none;margin:0 0 14px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(255,215,0,.32) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(255,138,61,.22) 0%,transparent 55%),linear-gradient(135deg,#1A1428 0%,#3D2EB8 50%,#5B4DD4 100%);position:relative;box-shadow:0 14px 40px rgba(245,158,11,.20),0 6px 20px rgba(109,93,246,.18);border:1px solid rgba(255,215,0,.25);cursor:pointer">
+<a href="/practice.html?section=tahsili&top_repeated=1&count=20&mode=instant" onclick="openTahsiliCountModal('top_repeated');return false;" id="topRepBanner" style="display:block;text-decoration:none;margin:0 0 14px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(255,215,0,.32) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(255,138,61,.22) 0%,transparent 55%),linear-gradient(135deg,#1A1428 0%,#3D2EB8 50%,#5B21B6 100%);position:relative;box-shadow:0 14px 40px rgba(245,158,11,.20),0 6px 20px rgba(124,58,237,.18);border:1px solid rgba(255,215,0,.25);cursor:pointer">
   <div style="padding:20px 18px 18px;color:#fff;position:relative">
     <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:rgba(255,215,0,.20);border:1px solid rgba(255,215,0,.45);border-radius:50px;font-size:10.5px;font-weight:700;color:#FFD700;margin-bottom:10px">
       <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FF6B6B;animation:pulse 1.6s infinite ease-in-out"></span>
@@ -316,7 +316,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 #tahsiliCountModal .tcm-sub { font-size:12.5px; color:var(--i3); text-align:center; margin:0 0 18px; line-height:1.6 }
 #tahsiliCountModal .tcm-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px }
 .tcm-btn { padding:14px 12px; border:1.5px solid var(--ln); background:var(--bg); border-radius:14px; font-size:14px; font-weight:700; color:var(--ink); cursor:pointer; transition:all .18s; font-family:inherit; text-align:center }
-.tcm-btn:hover { border-color:var(--pri); background:rgba(109,93,246,.06); transform:translateY(-1px) }
+.tcm-btn:hover { border-color:var(--pri); background:rgba(124,58,237,.06); transform:translateY(-1px) }
 .tcm-btn:active { transform:translateY(0) scale(.98) }
 .tcm-btn .tcm-num { display:block; font-size:20px; font-weight:900; color:var(--pri); margin-bottom:2px }
 .tcm-btn.tcm-all { background:linear-gradient(135deg,#FFD700 0%,#F59E0B 100%); border-color:#F59E0B; color:#1A1428 }
@@ -328,6 +328,9 @@ html[data-fs="large"] .wrap{zoom:1.1}
 #tahsiliCountModal.tcm-mode-predicted .tcm-btn .tcm-num { color:#059669 }
 .tcm-cancel { display:block; width:100%; margin-top:14px; padding:11px; background:transparent; border:none; color:var(--i3); font-size:13px; font-weight:600; cursor:pointer; font-family:inherit }
 .tcm-cancel:hover { color:var(--ink) }
+
+/* هوية v3: Cairo للعناوين */
+.title,.sec-title,.mttl,.tcm-title{font-family:'Cairo',sans-serif;font-weight:800}
 </style>
 
 <!-- ═══ TAHSILI PREDICTIONS BANNER (توقعات النخبة) ═══ -->
