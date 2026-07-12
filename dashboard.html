@@ -376,7 +376,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <div class="av" id="userAvatar">—</div>
     <div>
       <div class="hdr-nm"><span id="userName">مرحباً</span> <span class="sub-badge" id="subBadge" style="display:none"></span></div>
-      <div class="hdr-sub" id="userSub">جاري التحميل...</div>
+      <div class="hdr-sub" id="userSub">أهلاً بك</div>
     </div>
   </a>
   <div style="display:flex;gap:6px">
@@ -390,6 +390,22 @@ html[data-fs="large"] .wrap{zoom:1.1}
   </div>
 </div>
 
+<!-- DAILY PLAN — البطل: أول عنصر بعد الهيدر (قرار جلسة رئيسية المشترك 2026-07-12) -->
+<div class="plan-card card">
+  <div class="plan-bar"></div>
+  <div class="plan-in">
+    <div class="plan-h">
+      <div class="plan-ttl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>خطة اليوم</div>
+      <div class="plan-b">مخصصة لك</div>
+    </div>
+    <div id="planTasks"></div>
+    <button class="sbtn" id="planCta" onclick="location.href='training.html'"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ خطتك اليوم</button>
+  </div>
+</div>
+
+<!-- ═══ سلوت البنرات الموحد: يظهر بنر واحد فقط حسب الأولوية ═══
+     الأولوية: محاكي نشط > بنر الأدمن (freshLeak/main) > بنر صورة > اشتراك (مجاني) > إحالة
+     كل loader يسجّل رغبته بـ data-wants ثم applyBannerSlot() تحسمها -->
 <!-- AD BANNER (main - from banners table) -->
 <div class="ad-ban" id="mainBanner"></div>
 
@@ -438,7 +454,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- REFERRAL CASH BANNER (للجميع — يحوّل لـreferrals dashboard) -->
-<div class="ref-cash-ban" id="refCashBan" onclick="location.href='/referrals.html'">
+<div class="ref-cash-ban" id="refCashBan" data-wants="1" style="display:none" onclick="location.href='/referrals.html'">
   <div class="ref-cash-ic">
     <svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9 M22 7H2v5h20V7 M12 22V7 M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
   </div>
@@ -463,19 +479,6 @@ html[data-fs="large"] .wrap{zoom:1.1}
     <div class="stk-b" id="streakBadge">0 أيام</div>
   </div>
   <div class="days" id="streakDays"></div>
-</div>
-
-<!-- DAILY PLAN -->
-<div class="plan-card card">
-  <div class="plan-bar"></div>
-  <div class="plan-in">
-    <div class="plan-h">
-      <div class="plan-ttl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>خطة اليوم</div>
-      <div class="plan-b">مخصصة لك</div>
-    </div>
-    <div id="planTasks"></div>
-    <button class="sbtn" id="planCta" onclick="location.href='training.html'"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ خطتك اليوم</button>
-  </div>
 </div>
 
 <!-- PROGRESS RING -->
@@ -591,6 +594,29 @@ let homeStats = null;
     } catch(_) { /* corrupt cache → نتجاهل ونكمّل عادي */ }
 })();
 
+// ── سلوت البنرات الموحد ──
+// بنر واحد فقط يظهر في نفس اللحظة. كل loader يسجّل رغبته في data-wants
+// ثم هذي الدالة تحسم: أول بنر "يريد الظهور" حسب الأولوية يظهر والباقي يختفي.
+// التيكر خارج المنافسة (شريط إعلان مستقل). التطبيق (Expo) يعتمد نفس المنطق لاحقاً.
+// ⚠️ لازم يبقى هذا البلوك قبل init() — يُستدعى بشكل متزامن منها (TDZ).
+const BANNER_SLOT = [
+    { id: 'mockBan',      display: 'block' },  // محاكي نشط/قادم — أعلى أولوية
+    { id: 'freshLeakBan', display: 'block' },  // بنر الأدمن الرئيسي من DB
+    { id: 'mainBanner',   display: 'block' },  // بنر ad قديم (يُستخدم في المعاينة فقط)
+    { id: 'imageBanner',  display: 'block' },  // بنر صورة من DB
+    { id: 'subBanner',    display: 'flex'  },  // دعوة الاشتراك (مجاني فقط)
+    { id: 'refCashBan',   display: 'flex'  }   // الإحالة — الاحتياطي الدائم
+];
+function applyBannerSlot() {
+    let taken = false;
+    BANNER_SLOT.forEach(({ id, display }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.dataset.wants === '1' && !taken) { el.style.display = display; taken = true; }
+        else { el.style.display = 'none'; }
+    });
+}
+
 init();
 
 async function init() {
@@ -656,6 +682,8 @@ async function init() {
         checkSubscription()
     ]).catch(() => {});
     loadFreshLeakBanner();
+    // حسم السلوت النهائي (يُظهر الإحالة كاحتياطي لو ما فيه بنر أعلى أولوية)
+    applyBannerSlot();
 }
 
 // ── Header ──
@@ -921,9 +949,12 @@ async function loadHomeStats() {
         await renderPlan(isNewUser, mistakeCount || 0);
 
         // أخفِ مساعد AI للمستخدم الجديد (لا يوجد تاريخ لتحليله)
+        // + حالة فارغة إنسانية لمؤشر التقدم بدل الأصفار
         if (isNewUser) {
             const aiBox = document.getElementById('aiBox');
             if (aiBox) aiBox.style.display = 'none';
+            document.getElementById('progPct').textContent = '—';
+            document.getElementById('progXP').textContent = 'أول تدريب لك يرسم هذا المؤشر';
         }
 
     } catch(e) {
@@ -1094,7 +1125,7 @@ async function loadBanners() {
             }
             else if (b.banner_type === 'image' && cfg.image_url) {
                 const ban = document.getElementById('imageBanner');
-                ban.style.display = 'block';
+                ban.dataset.wants = '1';
                 ban.style.padding = '0';
                 ban.style.cursor = cfg.link ? 'pointer' : 'default';
                 const img = '<img src="' + esc(cfg.image_url) + '" style="width:100%;border-radius:var(--r2);display:block" alt="">';
@@ -1108,6 +1139,7 @@ async function loadBanners() {
             }
         });
     } catch(e) {}
+    applyBannerSlot();
     loadMockExamBanner();
 }
 
@@ -1119,7 +1151,7 @@ async function loadFreshLeakBanner() {
     try {
         // البنر يقرأ من DB (banner_type=main) — يختفي تلقائياً لو الأدمن أوقفه
         const cfg = window._mainBannerConfig;
-        if (!cfg) { el.style.display = 'none'; return; }
+        if (!cfg) { el.dataset.wants = '0'; applyBannerSlot(); return; }
 
         // وجهة الزر: المشترك → التسريبات مجاناً · غير المشترك → صفحة الحزمة/الاشتراك
         const isPro = profile && M.isSubscribed(profile);
@@ -1184,10 +1216,12 @@ async function loadFreshLeakBanner() {
             cdEl.style.display = 'none';
         }
 
-        el.style.display = 'block';
+        el.dataset.wants = '1';
+        applyBannerSlot();
     } catch(e) {
         console.error('tahsiliBanner:', e);
-        el.style.display = 'none';
+        el.dataset.wants = '0';
+        applyBannerSlot();
     }
 }
 
@@ -1202,7 +1236,8 @@ async function loadMockExamBanner() {
         const { data: exam } = await sb.rpc('get_active_mock_exam_status');
         if (!exam || !exam.length) {
             // No active exam (none scheduled or all toggled off) → hide
-            m.style.display = 'none';
+            m.dataset.wants = '0';
+            applyBannerSlot();
             return;
         }
         const e = exam[0];
@@ -1210,7 +1245,8 @@ async function loadMockExamBanner() {
         const endsTs = startsTs + (parseInt(e.duration_min,10) || 0) * 60000;
         // Auto-hide 6 hours after exam ended (results window closed)
         if (Date.now() > endsTs + 6 * 60 * 60 * 1000) {
-            m.style.display = 'none';
+            m.dataset.wants = '0';
+            applyBannerSlot();
             return;
         }
         _mockExamId = e.exam_id;
@@ -1224,7 +1260,8 @@ async function loadMockExamBanner() {
         });
         if (e.user_registered) applyMockExamRegistered();
     } catch(_) {
-        m.style.display = 'none';
+        m.dataset.wants = '0';
+        applyBannerSlot();
     }
 }
 
@@ -1244,7 +1281,7 @@ function applyMockExamConfig(cfg) {
     const ban = document.getElementById('mockBan');
     if (!ttl || !meta || !cta) return;
     // Reveal banner (hidden by default in CSS to prevent flash on page load)
-    if (ban) ban.style.display = 'block';
+    if (ban) { ban.dataset.wants = '1'; applyBannerSlot(); }
     if (cfg.title) ttl.textContent = cfg.title;
     const dateStr = formatExamDate(cfg.exam_date);
     const q = parseInt(cfg.questions, 10);
@@ -1295,7 +1332,9 @@ async function loadStreak() {
     const todayDay = today.getDay(); // 0=Sunday
     const streakDays = homeStats?.streak_days || profile?.streak_days || 0;
 
-    document.getElementById('streakBadge').textContent = streakDays + ' ' + (streakDays === 1 ? 'يوم' : 'أيام');
+    document.getElementById('streakBadge').textContent = streakDays > 0
+        ? streakDays + ' ' + (streakDays === 1 ? 'يوم' : 'أيام')
+        : 'تبدأ بأول تدريب';
 
     // Get last 7 days of streak data
     let completedDates = new Set();
@@ -1441,13 +1480,15 @@ async function checkNotifications() {
 async function checkSubscription() {
     const banner = document.getElementById('subBanner');
     if (!M.isSubscribed(profile)) {
-        // مستخدم مجاني → اعرض البنر
-        banner.style.display = 'flex';
+        // مستخدم مجاني → البنر مرشح في السلوت
+        banner.dataset.wants = '1';
         document.getElementById('subBannerText').textContent = 'اشترك الآن للوصول لجميع الأسئلة والتسريبات';
+        applyBannerSlot();
         return;
     }
     // مشترك نشط → اخفِ البنر كلياً (لا "جدّد الآن")
-    banner.style.display = 'none';
+    banner.dataset.wants = '0';
+    applyBannerSlot();
 }
 
 // ── Dark Mode ──
@@ -1522,11 +1563,12 @@ function loadPreviewMode() {
     ticker.style.display = 'block';
     (() => { const c = '<span class="kw" style="color:#FF6B35">جديد</span> تسريبات 16 أبريل — 167 سؤال قدرات حقيقي مع شرح مفصّل'; const seg = '<span class="seg">'+c+'</span>'; document.getElementById('tickerText').innerHTML = seg+seg+seg+seg; })();
 
-    // Main Banner
+    // Main Banner (يمر عبر السلوت الموحد مثل production)
     const ban = document.getElementById('mainBanner');
     ban.style.background = 'linear-gradient(135deg,#0F1128,#1E1060)';
-    ban.style.display = 'block';
+    ban.dataset.wants = '1';
     ban.innerHTML = '<div class="ad-tag">اختبار محاكي أسبوعي</div><div class="ad-title">السبت القادم — القدرات</div><div class="ad-sub">اختبار جماعي بنفس الوقت لكل المشتركين — أعلى 3 يُعلَن عنهم</div><button class="ad-btn" style="background:#F59E0B;color:#1A1230">سجّل مشاركتي</button>';
+    applyBannerSlot();
 
     // Streak
     document.getElementById('streakBadge').textContent = '5 أيام';
