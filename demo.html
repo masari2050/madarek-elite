@@ -279,42 +279,44 @@ if (params.get('ref')) {
 }
 
 document.body.dataset.screen = 's-trial';
-// ── 5 أسئلة ثابتة (hard-coded — مختارة بعناية، نفسها لكل زائر) ──
+// ── 5 أسئلة ثابتة (hard-coded — أنماط قياس الكلاسيكية الأهم، بشرح بأسلوب الهوك) ──
+// الترتيب مقصود: نبدأ بالأسهل (تناظر) ونصعد تدريجياً — الطالب يدخل الجو قبل الأرقام
+// ملاحظة: مختلفة عمداً عن سؤالي هوك الرئيسية — الجاي من الهوك ما يعيد نفس الأسئلة
 const FIXED_TRIAL_QUESTIONS = [
     {
+        section: 'verbal',
+        question_text: 'أكمل التناظر: نحلة : عسل = بقرة : ____',
+        choices: ['عشب', 'حليب', 'حظيرة', 'قطيع'],
+        correct_idx: 1,
+        explanation: 'حدد العلاقة بجملة واحدة: النحلة تنتج العسل. طبقها على البقرة: البقرة تنتج الحليب. هذي طريقة كل أسئلة التناظر — علاقة واحدة واضحة (ينتج، يقيس، جزء من...) ثم تطبيقها.'
+    },
+    {
         section: 'quant',
-        question_text: 'إذا كان س + ص = 10، وس × ص = 24، فما قيمة س² + ص²؟',
-        choices: ['52', '48', '60', '44'],
-        correct_idx: 0,
-        explanation: 'س² + ص² = (س + ص)² − 2سص = 10² − 2(24) = 100 − 48 = 52'
+        question_text: 'متوسط ثلاثة أعداد هو 20. أُضيف عدد رابع فأصبح المتوسط 25. فما العدد الرابع؟',
+        choices: ['30', '35', '40', '45'],
+        correct_idx: 2,
+        explanation: 'حوّل المتوسط إلى مجموع: مجموع الثلاثة = 20 × 3 = 60، ومجموع الأربعة = 25 × 4 = 100. العدد الرابع هو الفرق: 100 − 60 = 40. القاعدة: أي سؤال متوسط، حوّله لمجموع وقارن.'
+    },
+    {
+        section: 'quant',
+        question_text: 'جهاز سعره 80 ريالاً، نزل عليه خصم 25%. كم يصير سعره بعد الخصم؟',
+        choices: ['55 ريالاً', '60 ريالاً', '65 ريالاً', '70 ريالاً'],
+        correct_idx: 1,
+        explanation: 'الطريقة السريعة: 25% يعني الربع، وربع الـ80 هو 20، فالسعر يصير 80 − 20 = 60 ريالاً. حوّل النسب المشهورة لكسور (25% ربع، 50% نص، 10% عُشر) وبتحسبها بدون ورقة.'
     },
     {
         section: 'verbal',
-        question_text: 'اختر الكلمة التي تختلف عن المجموعة: قلم، مسطرة، كتاب، مقص',
+        question_text: 'اختر الكلمة التي تختلف عن بقية المجموعة: قلم، مسطرة، كتاب، مقص',
         choices: ['قلم', 'مسطرة', 'كتاب', 'مقص'],
         correct_idx: 2,
-        explanation: 'الكتاب مصدر معلومات، أما القلم والمسطرة والمقص فهي أدوات.'
-    },
-    {
-        section: 'tahsili',
-        question_text: 'ما عدد الإلكترونات في الغلاف الخارجي لذرة الكلور (العدد الذري 17)؟',
-        choices: ['2', '5', '7', '8'],
-        correct_idx: 2,
-        explanation: 'توزيع إلكترونات الكلور: 2، 8، 7. الغلاف الخارجي يحتوي على 7 إلكترونات.'
+        explanation: 'دور على الوصف اللي يجمع ثلاث كلمات ويستبعد الرابعة: القلم والمسطرة والمقص أدوات تشتغل بها بيدك، أما الكتاب فمصدر تقرأ منه. لو وصفك ينطبق على الأربع، غيّر الوصف — مو الإجابة.'
     },
     {
         section: 'quant',
-        question_text: 'تاجر اشترى سلعة بـ 200 ريال وباعها بخسارة 15%، ثم أعاد شراءها بسعر البيع وباعها بربح 20%. كم ربح أو خسر في المجموع؟',
-        choices: ['ربح 4 ريال', 'خسر 4 ريال', 'ربح 2 ريال', 'لم يربح ولم يخسر'],
-        correct_idx: 0,
-        explanation: 'باع أولاً بـ 200×0.85=170 (خسر 30). أعاد الشراء بـ 170 وباع بـ 170×1.20=204 (ربح 34). الإجمالي: 34−30 = ربح 4 ريال.'
-    },
-    {
-        section: 'verbal',
-        question_text: 'أكمل التناظر: ساعة : وقت = ميزان : ____',
-        choices: ['ذهب', 'وزن', 'عدل', 'تجارة'],
-        correct_idx: 1,
-        explanation: 'الساعة تقيس الوقت، والميزان يقيس الوزن. العلاقة: أداة قياس وما تقيسه.'
+        question_text: 'ما العدد التالي في النمط: 3، 6، 12، 24، ...؟',
+        choices: ['30', '36', '48', '60'],
+        correct_idx: 2,
+        explanation: 'كل عدد ضعف اللي قبله: 3×2=6، 6×2=12، 12×2=24، فالتالي 24×2=48. في أسئلة الأنماط جرّب أول شي: هل الفرق ثابت (جمع)؟ لا. هل النسبة ثابتة (ضرب)؟ نعم ×2 — انحل السؤال.'
     }
 ];
 
@@ -380,6 +382,11 @@ window.trialAnswer = async function(btn, idx) {
 
     btn.classList.remove('picked');
     btn.classList.add(isCorrect ? 'ok' : 'no');
+    // مثل هوك الرئيسية: عند الخطأ نضيء الإجابة الصحيحة بالأخضر — الطالب يتعلم بصرياً قبل ما يقرأ
+    if (!isCorrect) {
+        const correctBtn = document.querySelector('#trialOpts .opt[data-idx="' + q.correct_idx + '"]');
+        if (correctBtn) { correctBtn.classList.remove('dim'); correctBtn.classList.add('ok'); }
+    }
 
     const fbDiv = document.getElementById('tFb');
     const fbClass = isCorrect ? 'ok' : 'no';
@@ -388,14 +395,16 @@ window.trialAnswer = async function(btn, idx) {
         : '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
     const fbText = isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة';
 
-    const realExp = q.explanation || 'الإجابة الصحيحة هي ' + (q.choices && q.choices[0] ? q.choices[0] : '—') + '. الشرح الكامل يوضّح كل خطوات الحل بالتفصيل مع أمثلة إضافية وطرق حل بديلة، ونصائح لتجنّب هذا الخطأ في المستقبل.';
+    // الشرح واضح بالكامل (مو مغبّش) — الطالب يذوق القيمة الحقيقية، والإغراء بجودة الشرح نفسه
+    const realExp = q.explanation || '';
     fbDiv.innerHTML = '<div class="q-fb ' + fbClass + '"><div class="fb-title">' + fbIcon + fbText + '</div>'
-        + '<div class="fb-exp" style="position:relative;overflow:hidden">'
-        + '<div class="lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>الشرح المفصّل</div>'
-        + '<div style="filter:blur(5px);user-select:none;pointer-events:none;line-height:1.8">' + safeHtmlW(realExp) + '</div>'
-        + '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.88) 45%);padding:16px">'
-        +   '<a href="/register.html" target="_blank" rel="noopener" style="padding:10px 20px;background:var(--pri);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(109,93,246,.3);text-decoration:none;display:inline-block">اشترك لرؤية كل الشروح</a>'
+        + '<div class="fb-exp">'
+        + '<div class="lbl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>طريقة الحل</div>'
+        + '<div style="line-height:1.9">' + safeHtmlW(realExp) + '</div>'
         + '</div>'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 12px;background:var(--ps);border:1px dashed var(--pm);border-radius:12px;flex-wrap:wrap">'
+        +   '<span style="font-size:11.5px;color:var(--i2);font-weight:600">كل سؤال في المنصة مشروح بنفس الطريقة</span>'
+        +   '<a href="/register.html" target="_blank" rel="noopener" style="padding:8px 16px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-radius:10px;font-size:11.5px;font-weight:700;text-decoration:none;display:inline-block;box-shadow:0 4px 12px rgba(124,58,237,.3)">سجّل وافتح البنك كاملاً</a>'
         + '</div></div>';
 
     const nextBtn = document.getElementById('tNext');
