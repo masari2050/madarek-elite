@@ -38,7 +38,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* TICKER — direction:ltr container makes transform math predictable.
    Arabic text inside each .seg uses dir=rtl to keep bidi correct.
    4 identical segs + slide one-seg-width (-25%) = perfectly seamless loop, no gap. */
-.ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;direction:ltr}
+.ticker{background:var(--pri);color:#fff;font-size:12px;font-weight:600;padding:8px 0;overflow:hidden;white-space:nowrap;direction:ltr;border-bottom:1px solid rgba(124,58,237,.25);-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
 .ticker .kw{font-weight:700;margin-inline-end:6px}
 .ticker-in{display:inline-block;animation:tick 22s linear infinite;will-change:transform}
 .ticker-in > .seg{display:inline-block;padding-inline-end:60px;direction:rtl}
@@ -905,7 +905,9 @@ async function loadHomeStats() {
         window.__attemptsTotal = totalAttempts || 0;
         window.__mistakesTotal = mistakeCount || 0;
 
-        const isNewUser = (totalAttempts || 0) === 0 || profile.onboarding_skipped === true;
+        // جديد = ما حل أي سؤال فعلياً. (كان الشرط يضيف onboarding_skipped
+        // فيصنف حسابات قديمة نشطة كجديدة — عبدالله مستوى 7 طلع له "ابدأ رحلتك")
+        const isNewUser = (totalAttempts || 0) === 0;
 
         // Streak subtitle
         const streak = homeStats.streak_days || 0;
@@ -941,7 +943,15 @@ async function loadHomeStats() {
             ? 'ابدأ التدريب لتظهر في الترتيب'
             : (rank ? 'أنت في المرتبة #' + rank : 'لم تدخل الترتيب بعد');
         try {
-            const top = await M.getLeaderboard('week');
+            let top = await M.getLeaderboard('week');
+            let podiumLabel = 'متصدرو هذا الأسبوع';
+            // أسبوع هادئ (صفر تدريب)؟ اعرض متصدري كل الوقت بدل منصة فاضية — أسماء حقيقية دائماً
+            if (!Array.isArray(top) || top.length === 0) {
+                top = await M.getLeaderboard('all');
+                podiumLabel = 'المتصدرون';
+            }
+            const podiumTitle = document.querySelector('#leadBox .lead-title');
+            if (podiumTitle) podiumTitle.textContent = podiumLabel;
             renderPodium(Array.isArray(top) ? top : []);
         } catch(_){}
 
@@ -1395,8 +1405,8 @@ async function loadWeakTopics() {
             .order('created_at', { ascending: false })
             .limit(200);
 
-        // المستخدم الجديد (0 محاولات أو تخطى التشخيص) — AI مخفي أصلاً، نتوقف هنا
-        if (window.__attemptsTotal === 0 || profile.onboarding_skipped === true) return;
+        // المستخدم الجديد (0 محاولات فعلياً) — AI مخفي أصلاً، نتوقف هنا
+        if (window.__attemptsTotal === 0) return;
 
         if (!attempts || attempts.length < 5) {
             const aiTopicEl = document.getElementById('aiTopic');
