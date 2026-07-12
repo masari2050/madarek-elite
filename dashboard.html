@@ -46,7 +46,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* HEADER */
 .hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
-.av{width:40px;height:40px;border-radius:50%;background:var(--pri);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden}
+.av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#5B21B6);box-shadow:0 4px 14px rgba(124,58,237,.4);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden}
 .hdr-nm{font-size:15px;font-weight:700}.hdr-sub{font-size:11px;color:var(--i3);margin-top:1px}
 .sub-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:12px;margin-right:6px;vertical-align:middle;letter-spacing:.3px}
 .sub-badge.monthly{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3)}
@@ -200,7 +200,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ti.c{background:var(--as)}.ti.c svg{stroke:var(--acc)}
 .tn{font-size:13px;font-weight:600}.td{font-size:11px;color:var(--i3);margin-top:1px}
 .tc{font-size:13px;font-weight:700;color:var(--i4)}
-.sbtn{width:100%;padding:12px;border-radius:11px;background:var(--pri);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s}
+.sbtn{width:100%;padding:12px;border-radius:11px;background:linear-gradient(135deg,#7C3AED,#5B21B6);box-shadow:0 8px 22px rgba(124,58,237,.35);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s}
 .sbtn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5}
 .sbtn:active{transform:scale(.98)}
 
@@ -1518,7 +1518,7 @@ function loadPreviewMode() {
 
     // Main Banner
     const ban = document.getElementById('mainBanner');
-    ban.style.background = 'linear-gradient(135deg,#1A1230,#2D1B69)';
+    ban.style.background = 'linear-gradient(135deg,#0F1128,#1E1060)';
     ban.style.display = 'block';
     ban.innerHTML = '<div class="ad-tag">اختبار محاكي أسبوعي</div><div class="ad-title">السبت القادم — القدرات</div><div class="ad-sub">اختبار جماعي بنفس الوقت لكل المشتركين — أعلى 3 يُعلَن عنهم</div><button class="ad-btn" style="background:#F59E0B;color:#1A1230">سجّل مشاركتي</button>';
 

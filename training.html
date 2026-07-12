@@ -275,7 +275,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 </div>
 
 <!-- ═══ TAHSILI TOP-REPEATED FEATURED BANNER ═══ -->
-<a href="/practice.html?section=tahsili&top_repeated=1&count=20&mode=instant" onclick="openTahsiliCountModal('top_repeated');return false;" id="topRepBanner" style="display:block;text-decoration:none;margin:0 0 14px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(255,215,0,.32) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(255,138,61,.22) 0%,transparent 55%),linear-gradient(135deg,#1A1428 0%,#3D2EB8 50%,#5B21B6 100%);position:relative;box-shadow:0 14px 40px rgba(245,158,11,.20),0 6px 20px rgba(124,58,237,.18);border:1px solid rgba(255,215,0,.25);cursor:pointer">
+<a href="/practice.html?section=tahsili&top_repeated=1&count=20&mode=instant" onclick="openTahsiliCountModal('top_repeated');return false;" id="topRepBanner" style="display:none;text-decoration:none;margin:0 0 14px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(255,215,0,.32) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(255,138,61,.22) 0%,transparent 55%),linear-gradient(135deg,#1A1428 0%,#3D2EB8 50%,#5B21B6 100%);position:relative;box-shadow:0 14px 40px rgba(245,158,11,.20),0 6px 20px rgba(124,58,237,.18);border:1px solid rgba(255,215,0,.25);cursor:pointer">
   <div style="padding:20px 18px 18px;color:#fff;position:relative">
     <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:rgba(255,215,0,.20);border:1px solid rgba(255,215,0,.45);border-radius:50px;font-size:10.5px;font-weight:700;color:#FFD700;margin-bottom:10px">
       <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#FF6B6B;animation:pulse 1.6s infinite ease-in-out"></span>
@@ -333,8 +333,11 @@ html[data-fs="large"] .wrap{zoom:1.1}
 .title,.sec-title,.mttl,.tcm-title{font-family:'Cairo',sans-serif;font-weight:800}
 </style>
 
+<!-- ⏸️ بنرا التحصيلي مخفيان موسمياً (قرار عبدالله 2026-07-12) — موسم 1447 انتهى.
+     الأسئلة باقية في البنك موسومة is_top_repeated / is_predicted وتشتغل من صفحة التدريب العادية.
+     للموسم القادم (تحصيلي 1448): رجّع display:none إلى display:block في topRepBanner و predBanner وحدّث النصوص. -->
 <!-- ═══ TAHSILI PREDICTIONS BANNER (توقعات النخبة) ═══ -->
-<a href="/practice.html?section=tahsili&predicted=1&count=20&mode=instant" onclick="openTahsiliCountModal('predicted');return false;" id="predBanner" style="display:block;text-decoration:none;margin:0 0 18px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(16,185,129,.30) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(217,119,6,.20) 0%,transparent 55%),linear-gradient(135deg,#0F2A26 0%,#0E5C4F 50%,#10B981 100%);position:relative;box-shadow:0 14px 40px rgba(16,185,129,.18),0 6px 20px rgba(15,42,38,.22);border:1px solid rgba(16,185,129,.30);cursor:pointer">
+<a href="/practice.html?section=tahsili&predicted=1&count=20&mode=instant" onclick="openTahsiliCountModal('predicted');return false;" id="predBanner" style="display:none;text-decoration:none;margin:0 0 18px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 88% 18%,rgba(16,185,129,.30) 0%,transparent 55%),radial-gradient(circle at 8% 95%,rgba(217,119,6,.20) 0%,transparent 55%),linear-gradient(135deg,#0F2A26 0%,#0E5C4F 50%,#10B981 100%);position:relative;box-shadow:0 14px 40px rgba(16,185,129,.18),0 6px 20px rgba(15,42,38,.22);border:1px solid rgba(16,185,129,.30);cursor:pointer">
   <div style="padding:20px 18px 18px;color:#fff;position:relative">
     <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:rgba(255,255,255,.14);border:1px solid rgba(16,185,129,.45);border-radius:50px;font-size:10.5px;font-weight:700;color:#A7F3D0;margin-bottom:10px">
       <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10B981;animation:pulse 1.6s infinite ease-in-out"></span>
