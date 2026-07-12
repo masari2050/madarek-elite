@@ -7,7 +7,7 @@
 <script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(!fs||fs==="small")fs="large";if(["medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
 <style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
 <link rel="icon" href="icons/icon-192.png" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
 --bg:#F8F7FF;--sf:#FFF;--s2:#F3F1FA;--s3:#E9E6F3;
@@ -18,7 +18,7 @@
 --gold:#F59E0B;--gs:rgba(245,158,11,.1);
 --ink:#1A1D2E;--i2:#3D4058;--i3:#6B7280;--i4:#9CA3AF;
 --ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
---r:14px;--r2:18px;--nav:#141729;
+--r:14px;--r2:18px;--nav:#0F1128;
 --ease:cubic-bezier(.25,.8,.25,1);
 }
 .dark{
@@ -337,7 +337,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @media (min-width:768px){
   body{
     background:
-      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at top right,rgba(124,58,237,.16),transparent 55%),
       radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
       var(--bg);
     min-height:100vh;
@@ -373,7 +373,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @media (min-width:1024px){
   body{
     background:
-      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.32),transparent 60%),
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(124,58,237,.32),transparent 60%),
       radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.26),transparent 60%),
       radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.12),transparent 70%),
       var(--bg);
@@ -385,10 +385,13 @@ html[data-fs="large"] .wrap{zoom:1.1}
       var(--bg);
   }
   .wrap{
-    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(109,93,246,.12);
+    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(124,58,237,.12);
   }
 }
 
+
+/* هوية v3: Cairo للاسم والأرقام البارزة */
+.h-name,.h-stat-v{font-family:'Cairo',sans-serif;font-weight:800}
 </style>
 <script src="/analytics.js" async></script>
 </head>
