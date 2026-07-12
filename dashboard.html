@@ -1564,7 +1564,8 @@ function renderPodium(list) {
 // ── Preview Mode (demo data, no auth needed) ──
 function loadPreviewMode() {
     profile = { id: 'demo', full_name: 'عبدالله', avatar_emoji: 'ع', streak_days: 5, xp: 560, level: 3, level_name: 'متدرب' };
-    document.getElementById('userName').innerHTML = 'أهلاً، عبدالله <span class="sub-badge monthly" style="display:inline">Pro</span>';
+    document.getElementById('userName').textContent = 'أهلاً، عبدالله';
+    (function(){ const b = document.getElementById('subBadge'); if (b) { b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = 'inline'; } })();
     document.getElementById('userAvatar').textContent = 'ع';
     document.getElementById('userSub').textContent = 'واصل سلسلتك — اليوم الخامس';
 
