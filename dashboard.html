@@ -271,11 +271,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ftr{padding:12px 16px;text-align:center;font-size:10px;color:var(--i4);border-top:1px solid var(--ln)}
 
 /* NAV */
-.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(124,58,237,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:linear-gradient(180deg,#161A3E 0%,#0F1128 100%);border-top:1px solid rgba(124,58,237,.28);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -10px 34px rgba(15,17,40,.22)}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
-.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
-.ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
-.ni.on{background:rgba(124,58,237,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+.ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.45);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:11px;font-weight:600;color:rgba(255,255,255,.45);transition:color .2s}
+.ni.on{background:linear-gradient(135deg,#7C3AED,#5B21B6);box-shadow:0 6px 18px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.14)}.ni.on svg{stroke:#fff;stroke-width:2.1}.ni.on span{color:#fff;font-weight:700}
 
 /* WA FLOAT */
 .wa-float{position:fixed;bottom:82px;left:16px;width:46px;height:46px;border-radius:50%;background:#25D366;display:grid;place-items:center;z-index:90;box-shadow:0 4px 16px rgba(37,211,102,.4);cursor:pointer;transition:transform .18s}
@@ -283,7 +283,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .wa-float svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
 
 /* SUBSCRIPTION BANNER */
-.sub-banner{margin:0 6px 14px;padding:12px 16px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),#4838C7);color:#fff;display:none;align-items:center;gap:10px}
+.sub-banner{margin:0 6px 14px;padding:12px 16px;border-radius:var(--r);background:linear-gradient(135deg,var(--pri),#5B21B6);color:#fff;display:none;align-items:center;gap:10px}
 .sub-banner svg{width:18px;height:18px;stroke:#FFD700;fill:none;stroke-width:2;flex-shrink:0}
 .sub-banner .t{font-size:12px;font-weight:600;flex:1}
 .sub-banner .btn{padding:6px 12px;background:rgba(255,255,255,.2);border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap}
