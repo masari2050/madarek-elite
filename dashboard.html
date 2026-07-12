@@ -7,22 +7,22 @@
 <script>(function(){try{var d=localStorage.getItem("madarek_dark_mode")==="true"||localStorage.getItem("madarek_theme")==="dark";if(d){document.documentElement.setAttribute("data-t","d");document.documentElement.classList.add("dark");document.documentElement.style.background="#0E1019";}var fs=localStorage.getItem("madarek_font_size");if(fs&&["small","medium","large"].indexOf(fs)>-1)document.documentElement.setAttribute("data-fs",fs);}catch(e){}})();</script>
 <style>@view-transition{navigation:auto}::view-transition-old(root),::view-transition-new(root){animation-duration:.22s;animation-timing-function:cubic-bezier(.25,.8,.25,1)}::view-transition-old(root){animation-name:vtOut}::view-transition-new(root){animation-name:vtIn}@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}</style>
 <link rel="icon" href="icons/icon-192.png" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
---bg:#F5F3EF;--sf:#FFF;--s2:#FAF8F5;--s3:#F0EDE7;
---pri:#6D5DF6;--ps:rgba(109,93,246,.07);--pm:rgba(109,93,246,.13);--pt:#5B4DD4;
+--bg:#F8F7FF;--sf:#FFF;--s2:#F3F1FA;--s3:#ECE9F8;
+--pri:#7C3AED;--ps:rgba(124,58,237,.07);--pm:rgba(124,58,237,.13);--pt:#5B21B6;
 --acc:#FF8A3D;--as:rgba(255,138,61,.08);
 --suc:#22C55E;--ss:rgba(34,197,94,.07);
 --dng:#EF4444;--ds:rgba(239,68,68,.07);
 --ink:#1A1D2E;--i2:#3D4058;--i3:#6B7094;--i4:#9EA2B8;
 --ln:rgba(0,0,0,.05);--ln2:rgba(0,0,0,.09);
---r:14px;--r2:18px;--nav:#141729;--gold:#F59E0B;
+--r:14px;--r2:18px;--nav:#0F1128;--gold:#F59E0B;
 --ease:cubic-bezier(.25,.8,.25,1);
 }
 .dark{
 --bg:#0E1019;--sf:#1A1D2E;--s2:#1F2236;--s3:#252840;
---ps:rgba(109,93,246,.12);--pm:rgba(109,93,246,.2);--pt:#9B8CFF;
+--ps:rgba(124,58,237,.12);--pm:rgba(124,58,237,.2);--pt:#A78BFA;
 --as:rgba(255,138,61,.12);--ss:rgba(34,197,94,.1);--ds:rgba(239,68,68,.1);
 --ink:#F0F0F6;--i2:#C4C6D6;--i3:#8A8DA6;--i4:#555872;
 --ln:rgba(255,255,255,.05);--ln2:rgba(255,255,255,.09);
@@ -68,9 +68,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* MOCK EXAM BANNER (للجميع) — hidden by default, shown only after loadMockExamBanner confirms an active exam */
 .mock-ban{display:none;margin:0 6px 14px;padding:18px 18px 16px;border-radius:var(--r2);
-  background:linear-gradient(135deg,#5B4DD4 0%,#6D5DF6 55%,#8B7FFF 100%);
+  background:linear-gradient(135deg,#5B21B6 0%,#7C3AED 55%,#8B5CF6 100%);
   color:#fff;position:relative;overflow:hidden;
-  box-shadow:0 8px 24px rgba(109,93,246,.3);
+  box-shadow:0 8px 24px rgba(124,58,237,.3);
 }
 .mock-ban::before{content:"";position:absolute;top:-60px;right:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
 .mock-ban::after{content:"";position:absolute;bottom:-70px;left:-60px;width:160px;height:160px;border-radius:50%;background:rgba(255,215,0,.06);pointer-events:none}
@@ -231,7 +231,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* LEADERBOARD PODIUM */
 .lead-box{margin:0 6px 8px;padding:14px 14px 10px;background:#F4F3FF;border:.5px solid #9D95F5;border-radius:var(--r2);width:calc(100% - 16px)}
-.lead-title{font-size:14px;font-weight:700;color:#6D5DF6;text-align:center;margin-bottom:12px}
+.lead-title{font-size:14px;font-weight:700;color:#7C3AED;text-align:center;margin-bottom:12px}
 .podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:6px;margin-bottom:10px}
 .pd-col{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
 .pd-medal{font-size:22px;margin-bottom:4px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
@@ -252,7 +252,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .pd-3 .pd-pillar{background:#DDD6FE;color:#4C1D95;height:50px}
 .lead-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:.5px solid rgba(157,149,245,.35);font-size:11.5px;gap:10px}
 .lead-footer .my-rank{font-weight:600;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lead-footer .full-link{color:#6D5DF6;font-weight:700;text-decoration:none;flex-shrink:0;cursor:pointer;padding:4px 0}
+.lead-footer .full-link{color:#7C3AED;font-weight:700;text-decoration:none;flex-shrink:0;cursor:pointer;padding:4px 0}
 .lead-footer .full-link:hover{text-decoration:underline}
 
 /* SECTION HEADERS */
@@ -271,11 +271,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .ftr{padding:12px 16px;text-align:center;font-size:10px;color:var(--i4);border-top:1px solid var(--ln)}
 
 /* NAV */
-.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(109,93,246,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.nav{position:fixed;bottom:0;left:50%;translate:-50% 0;width:100%;max-width:400px;height:70px;background:var(--nav);border-top:1px solid rgba(124,58,237,.18);border-top-left-radius:24px;border-top-right-radius:24px;display:flex;align-items:center;justify-content:space-around;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:10px;cursor:pointer;transition:all .2s;min-width:54px;text-decoration:none}
 .ni svg{width:22px;height:22px;stroke:rgba(255,255,255,.3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
 .ni span{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);transition:color .2s}
-.ni.on{background:rgba(109,93,246,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
+.ni.on{background:rgba(124,58,237,.22)}.ni.on svg{stroke:#fff}.ni.on span{color:#fff}
 
 /* WA FLOAT */
 .wa-float{position:fixed;bottom:82px;left:16px;width:46px;height:46px;border-radius:50%;background:#25D366;display:grid;place-items:center;z-index:90;box-shadow:0 4px 16px rgba(37,211,102,.4);cursor:pointer;transition:transform .18s}
@@ -299,7 +299,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @media (min-width:768px){
   body{
     background:
-      radial-gradient(circle at top right,rgba(109,93,246,.16),transparent 55%),
+      radial-gradient(circle at top right,rgba(124,58,237,.16),transparent 55%),
       radial-gradient(circle at bottom left,rgba(255,138,61,.12),transparent 55%),
       var(--bg);
     min-height:100vh;
@@ -335,7 +335,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 @media (min-width:1024px){
   body{
     background:
-      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(109,93,246,.32),transparent 60%),
+      radial-gradient(ellipse 900px 600px at 92% 8%,rgba(124,58,237,.32),transparent 60%),
       radial-gradient(ellipse 800px 500px at 8% 92%,rgba(255,138,61,.26),transparent 60%),
       radial-gradient(circle 500px at 50% 50%,rgba(139,92,246,.12),transparent 70%),
       var(--bg);
@@ -347,10 +347,12 @@ html[data-fs="large"] .wrap{zoom:1.1}
       var(--bg);
   }
   .wrap{
-    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(109,93,246,.12);
+    box-shadow:0 30px 90px rgba(20,17,52,.2),0 12px 32px rgba(124,58,237,.12);
   }
 }
 
+/* ── هوية v3: Cairo للعناوين والأرقام البارزة (توحيد مع مسار الزائر) ── */
+.hdr-nm,.stk-ttl,.plan-ttl,.ai-ttl,.mock-ttl,.fresh-leak-ttl,.ref-cash-ttl,.lead-title,.tip-ttl,.ad-title,.prog-val{font-family:'Cairo',sans-serif;font-weight:800}
 </style>
 <script src="/analytics.js" async></script>
 </head>
