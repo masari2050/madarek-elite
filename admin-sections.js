@@ -4602,6 +4602,33 @@ window.loadVisitors = async function(opts = {}) {
             return elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : fmtDate(t);
         };
 
+        // ── الزوار الفريدون + الأعضاء الفعالون باليوم (آخر 14 يوم، بتوقيت السعودية) ──
+        const since14Iso = new Date(Date.now() - 14*86400000).toISOString();
+        const [dailyVisRes, dailyAttRes] = await Promise.all([
+            sb.from('analytics_events').select('anonymous_id,user_id,created_at').eq('event_type','page_view').gte('created_at', since14Iso).limit(10000),
+            sb.from('attempts').select('user_id,created_at').gte('created_at', since14Iso).limit(10000)
+        ]);
+        const ksaDay = t => new Date(t).toLocaleDateString('en-CA', { timeZone: 'Asia/Riyadh' });
+        const dailyVis = {};   // yyyy-mm-dd -> Set of visitor ids
+        const dailyAct = {};   // yyyy-mm-dd -> Set of member ids who solved
+        (dailyVisRes.data||[]).forEach(e => {
+            const id = e.user_id || e.anonymous_id; if (!id) return;
+            const d = ksaDay(e.created_at);
+            (dailyVis[d] = dailyVis[d] || new Set()).add(id);
+        });
+        (dailyAttRes.data||[]).forEach(a => {
+            if (!a.user_id) return;
+            const d = ksaDay(a.created_at);
+            (dailyAct[d] = dailyAct[d] || new Set()).add(a.user_id);
+        });
+        // آخر 14 يوم كقائمة مرتبة (الأحدث أولاً) — أيام بدون بيانات تظهر صفر (حقيقة، مو فراغ)
+        const dailyRows = [];
+        for (let i = 0; i < 14; i++) {
+            const key = ksaDay(Date.now() - i*86400000);
+            dailyRows.push({ day: key, vis: (dailyVis[key]||new Set()).size, act: (dailyAct[key]||new Set()).size });
+        }
+        const maxDailyVis = Math.max(1, ...dailyRows.map(r => r.vis));
+
         // Update last refresh indicator
         const refreshLbl = document.getElementById('visLastRefresh');
         if (refreshLbl) refreshLbl.textContent = new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
@@ -4698,6 +4725,32 @@ window.loadVisitors = async function(opts = {}) {
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:14px">
             ${renderFunnelCard(uniqueVisitors, trialIds.size, signupCount, paidUserIds.size, rangeLabel)}
             ${renderUtmCard(utmSourceCounts, utmCampaignCounts)}
+        </div>
+
+        <!-- الزوار الفريدون + الأعضاء الفعالون باليوم (توقيت السعودية) -->
+        <div class="card" style="margin-top:14px">
+            <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="card-title">الزوار الفريدون والأعضاء الفعالون باليوم</div><div class="card-sub">آخر 14 يوم · بتوقيت السعودية · الأعضاء الفعالون = حلّوا سؤالاً واحداً على الأقل</div></div></div></div>
+            <div class="card-body">
+                <table style="width:100%;border-collapse:collapse;font-size:12px">
+                    <thead><tr style="color:var(--i3);font-size:10.5px">
+                        <th style="text-align:right;padding:6px 4px;font-weight:600">اليوم</th>
+                        <th style="text-align:right;padding:6px 4px;font-weight:600;width:45%">زوار فريدون</th>
+                        <th style="text-align:center;padding:6px 4px;font-weight:600">أعضاء فعالون</th>
+                    </tr></thead>
+                    <tbody>${dailyRows.map(r => `
+                        <tr style="border-top:1px solid var(--ln)">
+                            <td style="padding:7px 4px;font-variant-numeric:tabular-nums;color:var(--i2);white-space:nowrap">${r.day}</td>
+                            <td style="padding:7px 4px">
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <div style="flex:1;height:8px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:${Math.round(r.vis/maxDailyVis*100)}%;height:100%;background:var(--pri)"></div></div>
+                                    <span style="font-weight:700;min-width:26px;text-align:left">${r.vis.toLocaleString('en-US')}</span>
+                                </div>
+                            </td>
+                            <td style="padding:7px 4px;text-align:center;font-weight:700;color:${r.act>0?'var(--suc)':'var(--i4)'}">${r.act.toLocaleString('en-US')}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
         </div>`;
     } catch(e) { console.error('loadVisitors', e); if (!isRefresh) showToast('خطأ: '+(e.message||''),'err'); }
 };

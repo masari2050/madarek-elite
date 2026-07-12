@@ -519,7 +519,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
 <script src="v2/supabase-helpers-v2.js"></script>
-<script src="admin-sections.js?v=2026-05-15-tahsili-links"></script>
+<script src="admin-sections.js?v=2026-07-12-daily-visitors"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script>
 (function(){
@@ -737,7 +737,7 @@ function renderOverview(d) {
         <div class="kpi green"><div class="kpi-label">مشتركون فعالون</div><div class="kpi-val">${fmt(d.activeSubs)}</div><div class="kpi-sub">شهري ${d.monthlySubs} · سنوي ${d.yearlySubs}</div></div>
         <div class="kpi gold"><div class="kpi-label">حسابات مجانية</div><div class="kpi-val">${fmt(d.freeUsers)}</div><div class="kpi-sub">من ${fmt(d.totalUsers)} عضو</div></div>
         <div class="kpi blue"><div class="kpi-label">الإيراد الشهري</div><div class="kpi-val">${fmt(d.monthlyRevenue)}</div><div class="kpi-sub">ريال سعودي (30 يوم)</div></div>
-        <div class="kpi orange"><div class="kpi-label">زوار اليوم</div><div class="kpi-val">${fmt(d.todayVisitors)}</div><div class="kpi-sub">تقدير</div></div>
+        <div class="kpi orange"><div class="kpi-label">زوار اليوم</div><div class="kpi-val" id="ovTodayVisitors">${fmt(d.todayVisitors)}</div><div class="kpi-sub">زائر فريد · بتوقيت السعودية</div></div>
     </div>
     <div class="row c2">
         <div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic red"><svg viewBox="0 0 24 24"><path d="M12 2v6m0 4v10"/></svg></div><div><div class="card-title">أكثر الأسئلة خطأً</div><div class="card-sub">الأسبوع الحالي</div></div></div></div><div class="card-body" id="topMistakes"><div class="loader">...</div></div></div>
@@ -754,6 +754,26 @@ function renderOverview(d) {
     loadTopMistakes();
     loadSectionBreakdown();
     loadTopUsers();
+    loadTodayVisitorsKpi();
+}
+
+// زوار اليوم الفريدون من analytics_events — حدود اليوم بتوقيت السعودية (UTC+3 ثابت، لا يوجد توقيت صيفي)
+async function loadTodayVisitorsKpi() {
+    const el = document.getElementById('ovTodayVisitors');
+    if (!el) return;
+    if (new URLSearchParams(window.location.search).has('preview')) return;
+    try {
+        const ksaNow = new Date(Date.now() + 3*3600e3);
+        const dayStartIso = new Date(Date.UTC(ksaNow.getUTCFullYear(), ksaNow.getUTCMonth(), ksaNow.getUTCDate()) - 3*3600e3).toISOString();
+        const { data } = await sb.from('analytics_events')
+            .select('anonymous_id,user_id')
+            .eq('event_type','page_view')
+            .gte('created_at', dayStartIso)
+            .limit(10000);
+        const ids = new Set();
+        (data||[]).forEach(e => { const id = e.user_id || e.anonymous_id; if (id) ids.add(id); });
+        el.textContent = ids.size.toLocaleString('en-US');
+    } catch(_) { /* نبقي القيمة الحالية بدل رقم خاطئ */ }
 }
 
 async function loadTopMistakes() {
