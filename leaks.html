@@ -314,7 +314,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
-<script src="v2/supabase-helpers-v2.js"></script>
+<script src="v2/supabase-helpers-v2.js?v=2026-07-12-gtseg"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script src="js/haptics.js"></script>
 <script src="js/locked-modal.js"></script>
@@ -559,7 +559,7 @@ function sectionLabelAr(s) {
 }
 
 function renderCard(g) {
-    const dateStr = new Date(g.leak_date).toLocaleDateString('ar-SA', { day:'numeric', month:'long' });
+    const dateStr = new Date(g.leak_date).toLocaleDateString('ar-SA-u-nu-latn', { day:'numeric', month:'long' });
     const sectionLabel = sectionLabelAr(g.section);
     const sectionTag = sectionLabel ? '<span class="lk-sec">' + esc(sectionLabel) + '</span>' : '';
     const meta = dateStr + ' · ' + (g.question_count||0) + ' سؤال';

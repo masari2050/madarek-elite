@@ -673,7 +673,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
-<script src="v2/supabase-helpers-v2.js"></script>
+<script src="v2/supabase-helpers-v2.js?v=2026-07-12-gtseg"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script>
 (function(){
@@ -822,7 +822,7 @@ function renderUser() {
         const days = M.subscriptionDaysLeft ? M.subscriptionDaysLeft(profile) : 0;
         subT.textContent = t === 'yearly' ? 'خطة Elite السنوية' : t === 'monthly' ? 'خطة Pro الشهرية' : 'خطة نشطة';
         if (profile.subscription_end) {
-            const endStr = new Date(profile.subscription_end).toLocaleDateString('ar-SA',{day:'numeric',month:'long',year:'numeric'});
+            const endStr = new Date(profile.subscription_end).toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
             subS.textContent = 'تنتهي في ' + endStr;
         } else {
             subS.textContent = 'دائمة';
@@ -952,7 +952,7 @@ window.openAchSheet = function(id, unlocked, cur, targ, name, desc, unlockedAt) 
 
     let extra = '';
     if (unlocked && unlockedAt) {
-        const dt = new Date(unlockedAt).toLocaleDateString('ar-SA',{day:'numeric',month:'long',year:'numeric'});
+        const dt = new Date(unlockedAt).toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
         extra = '<div class="ach-date">تحقق في ' + dt + '</div>';
     } else if (isInProgress) {
         extra = '<div class="ach-prog-detail"><div class="ach-prog-bar"><div class="ach-prog-fill" style="width:'+progPct+'%"></div></div><div class="ach-prog-txt">'+cur+' من '+targ+' — متبقي '+remaining+' لتحقيقه</div></div>';

@@ -562,7 +562,7 @@ html[data-fs="large"] .wrap{zoom:1.1}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
-<script src="v2/supabase-helpers-v2.js"></script>
+<script src="v2/supabase-helpers-v2.js?v=2026-07-12-gtseg"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script>
 (function(){
@@ -890,6 +890,14 @@ function heatBucket(acc) {
 async function loadAITab() {
     const area = document.getElementById('aiArea');
 
+    // قبل عرض القفل: أعد التحقق مرة (فشل جلب الملف الشخصي لحظياً كان يقفل على مشتركين فعليين)
+    if (!isSubscriber && !new URLSearchParams(location.search).get('force_free')) {
+        try {
+            const fresh = await M.getProfile(true);
+            if (fresh) { profile = fresh; isSubscriber = M.isSubscribed(fresh); }
+        } catch(_) {}
+    }
+
     if (!isSubscriber) {
         area.innerHTML = `
             <div class="ai-locked">
@@ -1119,7 +1127,7 @@ async function loadErrTab() {
 function renderErrCard(q, selectedIdx, dt) {
     if (!q) return '';
     const tag = sectionMap[q.section] || q.section || 'عام';
-    const dtStr = new Date(dt).toLocaleDateString('ar-SA', {month:'short',day:'numeric'});
+    const dtStr = new Date(dt).toLocaleDateString('ar-SA-u-nu-latn', {month:'short',day:'numeric'});
     const choices = q.choices || [];
     const userAns = choices[selectedIdx] || '—';
     const rightAns = choices[q.correct_index] || '—';
@@ -1151,7 +1159,7 @@ async function loadSavedTab() {
             const q = s.questions;
             if (!q) return '';
             const tag = sectionMap[q.section] || q.section || 'عام';
-            const dt = new Date(s.saved_at).toLocaleDateString('ar-SA',{month:'short',day:'numeric'});
+            const dt = new Date(s.saved_at).toLocaleDateString('ar-SA-u-nu-latn',{month:'short',day:'numeric'});
             const hasImg = q.image_url && q.image_url.trim();
             let html = '<div class="err card"><div class="err-head"><span class="err-tag">'+esc(tag)+'</span><span class="err-dt">'+dt+'</span></div>';
             if (hasImg) html += '<img class="err-img" src="'+esc(q.image_url)+'" onclick="openLB(this.src)" onerror="this.style.display=\'none\'">';

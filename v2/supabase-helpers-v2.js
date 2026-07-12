@@ -320,12 +320,13 @@
             const content = (kw ? '<span style="font-weight:700;margin-left:6px;color:' + kwColor + '">' + escape(kw) + '</span>' : '') + escape(text);
             const style = document.createElement('style');
             // direction:ltr container + 4 segs (dir=rtl) + slide -25% = seamless RTL ticker, no gap
-            style.textContent = '@keyframes madarek-tick{from{transform:translateX(-25%)}to{transform:translateX(0)}} #globalTicker .seg{display:inline-block;padding-inline-end:60px;direction:rtl}';
+            // gt-seg (مو seg): الأسماء العامة تتصادم مع CSS الصفحات — reports.html عندها .seg خاص فيها
+            style.textContent = '@keyframes madarek-tick{from{transform:translateX(-25%)}to{transform:translateX(0)}} #globalTicker .gt-seg{display:inline-block;padding-inline-end:60px;direction:rtl;background:none;border:none;box-shadow:none;margin:0}';
             document.head.appendChild(style);
             const el = document.createElement('div');
             el.id = 'globalTicker';
-            el.style.cssText = 'background:' + bg + ';color:' + color + ';font-size:12px;font-weight:600;padding:7px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:60;direction:ltr';
-            const seg = '<span class="seg">' + content + '</span>';
+            el.style.cssText = 'background:' + bg + ';color:' + color + ';font-size:12px;font-weight:600;padding:8px 0;overflow:hidden;white-space:nowrap;position:sticky;top:0;z-index:60;direction:ltr;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)';
+            const seg = '<span class="gt-seg">' + content + '</span>';
             el.innerHTML = '<span style="display:inline-block;animation:madarek-tick ' + dur + 's linear infinite;will-change:transform">' + seg + seg + seg + seg + '</span>';
             // Insert at very top of wrap if exists, else body
             const wrap = document.querySelector('.wrap');
