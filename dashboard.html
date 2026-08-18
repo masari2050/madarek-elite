@@ -581,13 +581,15 @@ let homeStats = null;
                 }
                 else avEl.textContent = v || firstName.charAt(0);
             }
-            // Sub badge من الـcache (لو فيه)
-            if (cached.subscription_type === 'monthly' || cached.subscription_type === 'yearly') {
+            // Sub badge من الـcache (لو فيه) — نفس منطق showSubBadge الموحد
+            {
                 const b = document.getElementById('subBadge');
+                const ct = cached.subscription_type;
                 if (b) {
-                    if (cached.subscription_type === 'monthly') { b.textContent='Pro'; b.className='sub-badge monthly'; }
-                    else { b.textContent='✦ Elite'; b.className='sub-badge yearly'; }
-                    b.style.display = '';
+                    if (cached.role === 'admin' || cached.role === 'staff') { b.textContent='Pro'; b.className='sub-badge monthly'; b.style.display=''; }
+                    else if (ct === 'monthly') { b.textContent='Pro'; b.className='sub-badge monthly'; b.style.display=''; }
+                    else if (ct === 'quarterly') { b.textContent='Plus'; b.className='sub-badge monthly'; b.style.display=''; }
+                    else if (ct === 'yearly') { b.textContent='✦ Elite'; b.className='sub-badge yearly'; b.style.display=''; }
                 }
             }
         }
@@ -723,8 +725,14 @@ function renderAvatar(el, value, fallbackName) {
 // ── Sub Badge ──
 function showSubBadge() {
     const b = document.getElementById('subBadge');
+    // admin/staff: وصول كامل بلا باقة — شارة Pro موحدة مع التطبيق (لا تُترك فارغة)
+    if (profile.role === 'admin' || profile.role === 'staff') {
+        b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = '';
+        return;
+    }
     const t = profile.subscription_type;
     if (t === 'monthly') { b.textContent = 'Pro'; b.className = 'sub-badge monthly'; b.style.display = ''; }
+    else if (t === 'quarterly') { b.textContent = 'Plus'; b.className = 'sub-badge monthly'; b.style.display = ''; }
     else if (t === 'yearly') { b.textContent = '✦ Elite'; b.className = 'sub-badge yearly'; b.style.display = ''; }
     else if (profile.used_coupon) { b.textContent = 'كوبون'; b.className = 'sub-badge coupon'; b.style.display = ''; }
 }

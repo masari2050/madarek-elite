@@ -820,7 +820,14 @@ function renderUser() {
     const t = profile.subscription_type;
     if (subscribed) {
         const days = M.subscriptionDaysLeft ? M.subscriptionDaysLeft(profile) : 0;
-        subT.textContent = t === 'yearly' ? 'خطة Elite السنوية' : t === 'monthly' ? 'خطة Pro الشهرية' : 'خطة نشطة';
+        const isTeam = profile.role === 'admin' || profile.role === 'staff';
+        subT.textContent = isTeam ? 'حساب فريق العمل'
+            : t === 'yearly' ? 'خطة Elite السنوية' : t === 'monthly' ? 'خطة Pro الشهرية' : 'خطة نشطة';
+        if (isTeam) {
+            subS.textContent = 'وصول كامل لجميع المزايا';
+            subBadge.style.display = '';
+            return;
+        }
         if (profile.subscription_end) {
             const endStr = new Date(profile.subscription_end).toLocaleDateString('ar-SA-u-nu-latn',{day:'numeric',month:'long',year:'numeric'});
             subS.textContent = 'تنتهي في ' + endStr;
