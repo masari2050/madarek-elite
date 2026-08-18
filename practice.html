@@ -50,7 +50,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .q-hint{font-size:10px;color:var(--i3)}
 
 /* PASSAGE */
-.q-passage{margin:0 6px 8px;padding:14px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);font-size:13px;line-height:1.8;color:var(--i2);max-height:200px;overflow-y:auto}
+.q-passage{margin:0 6px 8px;padding:14px;border-radius:var(--r);background:var(--s2);border:1px solid var(--ln);font-size:13px;line-height:1.8;color:var(--i2);max-height:200px;overflow-y:auto;white-space:pre-line}
 .q-passage-lbl{font-size:10px;font-weight:700;color:var(--pri);margin-bottom:6px}
 
 /* QUESTION CARD */
@@ -514,6 +514,25 @@ async function init() {
     }
 }
 
+// تسريبات فيها قطع استيعاب: المستقلة تُخلط، وكل قطعة تبقى كتلة واحدة
+// بترتيب أسئلتها (passage_order) ولا تدخل القائمة إلا كاملة — بلا تقسيم
+function pickLeakMix(valid, count) {
+    const singles = valid.filter(q => !q.passage_id);
+    const byPass = {};
+    valid.forEach(q => {
+        if (q.passage_id) (byPass[q.passage_id] = byPass[q.passage_id] || []).push(q);
+    });
+    const blocks = Object.keys(byPass).map(k =>
+        byPass[k].sort((a, b) => (a.passage_order || 0) - (b.passage_order || 0)));
+    const units = shuffle(singles.map(q => [q]).concat(blocks));
+    const picked = [];
+    for (const u of units) {
+        if (picked.length >= count) break;
+        if (u.length === 1 || picked.length + u.length <= count) picked.push.apply(picked, u);
+    }
+    return picked;
+}
+
 async function loadQuestions() {
     try {
         let query = sb.from('questions').select(SAFE_COLS).eq('disabled', false);
@@ -538,7 +557,10 @@ async function loadQuestions() {
         }
 
         // Get more than needed, then shuffle & slice
-        const { data, error } = await query.is('passage_id', null).limit(500);
+        // أسئلة القطع (استيعاب المقروء) تُستبعد من التدريب العام فقط —
+        // في التسريبات تُحمَّل وتُعرض كتلاً متسلسلة (القطعة تظهر مع كل سؤال)
+        if (!LEAK_GROUP_ID) query = query.is('passage_id', null);
+        const { data, error } = await query.limit(500);
         if (error) throw error;
 
         // استبعد الأسئلة بدون correct_index صالح (تنظيف دفاعي)
@@ -566,6 +588,8 @@ async function loadQuestions() {
             } catch(_) {
                 questions = shuffle(valid).slice(0, COUNT);
             }
+        } else if (LEAK_GROUP_ID) {
+            questions = pickLeakMix(valid, COUNT);
         } else {
             questions = shuffle(valid).slice(0, COUNT);
         }
