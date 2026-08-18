@@ -568,7 +568,10 @@ function renderCard(g) {
     const accentStyle = accent
         ? ' style="border-right:4px solid ' + accent + ';background:linear-gradient(135deg,' + accent + '0d,' + accent + '03)"'
         : '';
-    const accentBadge = accent
+    // بادج "جديد" للمجموعات الحديثة فقط (7 أيام) — الحد اللوني يبقى للجميع
+    const isFresh = accent && g.leak_date &&
+        (Date.now() - new Date(g.leak_date + 'T00:00:00').getTime()) < 7 * 864e5;
+    const accentBadge = isFresh
         ? '<span class="lk-fresh" style="background:' + accent + ';color:#fff">جديد</span> '
         : '';
 
