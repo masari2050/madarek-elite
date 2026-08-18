@@ -202,6 +202,16 @@ img{max-width:100%}
   .seg{grid-template-columns:1fr 1fr}
   .mock{padding:48px 44px}
 }
+/* ───── شريط التجميعات الجديدة ───── */
+.tj-strip{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(90deg,#161A3E,#0F1128);color:#fff;padding:10px 16px;font-size:13.5px;text-decoration:none;flex-wrap:wrap;text-align:center}
+.tj-dot{width:8px;height:8px;border-radius:50%;background:#FBBF24;box-shadow:0 0 10px rgba(251,191,36,.75);animation:tjPulse 1.6s ease-in-out infinite;flex-shrink:0}
+@keyframes tjPulse{0%,100%{opacity:1}50%{opacity:.35}}
+.tj-badge{background:#FBBF24;color:#0F1128;font-weight:800;font-size:11px;padding:2px 9px;border-radius:10px}
+.tj-txt{font-weight:600;color:rgba(255,255,255,.92)}
+.tj-txt b{color:#FBBF24;font-weight:800}
+.tj-cta{background:#fff;color:#4C1D95;font-weight:800;font-size:12px;padding:6px 14px;border-radius:9px;white-space:nowrap;transition:transform .15s}
+.tj-strip:hover .tj-cta{transform:translateY(-1px)}
+@media (max-width:560px){.tj-strip{font-size:12px;gap:8px;padding:9px 12px}.tj-cta{font-size:11px;padding:5px 11px}}
 </style>
 </head>
 <body>
@@ -217,6 +227,14 @@ img{max-width:100%}
     <a class="h-cta" href="/register.html">سجّل الآن</a>
   </div>
 </header>
+
+<!-- ═══ شريط التجميعات الجديدة (يظهر فقط عند وجود مجموعة حديثة في DB) ═══ -->
+<a class="tj-strip" id="tjStrip" href="/leaks-preview.html" style="display:none">
+  <span class="tj-dot"></span>
+  <span class="tj-badge">جديد</span>
+  <span class="tj-txt" id="tjTxt"><b>تجميعات القدرات</b> — أسئلة آخر اختبار بشروحها</span>
+  <span class="tj-cta">جرب 5 أسئلة مجاناً</span>
+</a>
 
 <section class="hero">
   <div class="dots"></div><div class="glow1"></div><div class="glow2"></div>
@@ -473,6 +491,28 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     if (!s) return;
     put(document.getElementById('cQ'), s.total_questions);
     put(document.getElementById('cU'), s.total_users);
+  }).catch(() => {});
+
+  // شريط التجميعات: يظهر فقط لو آخر مجموعة نشطة نزلت خلال 7 أيام
+  fetch(U + '/rest/v1/leak_groups?select=section,question_count,leak_date&is_active=eq.true&order=leak_date.desc,created_at.desc&limit=1', {
+    headers: { apikey: K, Authorization: 'Bearer ' + K }
+  }).then(r => r.ok ? r.json() : null).then(rows => {
+    const g = rows && rows[0];
+    if (!g || !g.leak_date) return;
+    const d = new Date(g.leak_date + 'T00:00:00');
+    const ageDays = (Date.now() - d.getTime()) / 864e5;
+    if (ageDays < 0 || ageDays > 7) return;
+    const strip = document.getElementById('tjStrip');
+    const txt = document.getElementById('tjTxt');
+    if (!strip || !txt) return;
+    const name = g.section === 'tahsili' ? 'تجميعات التحصيلي' : 'تجميعات القدرات';
+    const dateLbl = d.toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { weekday: 'long', day: 'numeric', month: 'long' });
+    const cnt = g.question_count ? g.question_count + ' سؤالاً بشروحها' : 'أسئلة محلولة بشروحها';
+    txt.innerHTML = '<b></b> — اختبار <span></span> · <span></span>';
+    txt.querySelector('b').textContent = name;
+    txt.querySelectorAll('span')[0].textContent = dateLbl;
+    txt.querySelectorAll('span')[1].textContent = cnt;
+    strip.style.display = 'flex';
   }).catch(() => {});
 })();
 </script>
