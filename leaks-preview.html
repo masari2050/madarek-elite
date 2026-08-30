@@ -326,7 +326,7 @@ function renderQuestion(){
   document.getElementById('pbTxt').textContent = current + ' / ' + SAMPLE_SIZE;
 
   let html = '<div class="q-card">';
-  html += '<div class="q-tag">' + esc(q.subject) + (q.topic ? ' · ' + esc(q.topic) : '') + '</div>';
+  html += '<div class="q-tag">' + esc([q.subject, q.topic].filter(Boolean).join(' · ') || 'سؤال تدريبي') + '</div>';
   html += '<div class="q-text">' + esc(q.question_text) + '</div>';
   html += '<div class="q-choices">';
   choices.forEach((c, i) => {
