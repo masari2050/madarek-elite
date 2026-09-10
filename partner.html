@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>لوحة الشريك — مدارك النخبة</title>
+<meta name="theme-color" content="#0F1128">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F7FF; --sf:#FFFFFF; --s2:#F3F1FA;
+  --pri:#7C3AED; --pri2:#5B21B6; --ps:rgba(124,58,237,.08); --pm:rgba(124,58,237,.22);
+  --navy:#0F1128; --navy2:#1E1060; --navy3:#3B1FB0;
+  --gold:#F59E0B; --gold2:#FBBF24; --suc:#22C55E; --dng:#EF4444;
+  --ink:#1A1D2E; --i2:#3D4058; --i3:#6B7280;
+  --ln:rgba(15,17,40,.08); --ln2:rgba(15,17,40,.14);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.disp{font-family:'Cairo',sans-serif}
+a,button{font-family:inherit;cursor:pointer;color:inherit;text-decoration:none;border:none;background:none}
+.wrap{max-width:640px;margin:0 auto;padding:0 26px}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.hdr{position:sticky;top:0;z-index:60;background:rgba(15,17,40,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.hdr-in{max-width:1050px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15.5px;color:#fff}
+.brand .bx{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;box-shadow:0 4px 14px rgba(124,58,237,.45)}
+.brand svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2}
+.sp{flex:1}
+.h-tag{font-size:12px;font-weight:600;color:#C9C3EE}
+
+.hero{position:relative;background:linear-gradient(165deg,var(--navy) 0%,var(--navy2) 55%,var(--navy3) 115%);color:#fff;padding:38px 0 110px;overflow:hidden;text-align:center}
+.hero .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1px);background-size:24px 24px;opacity:.35;pointer-events:none}
+.hero .glow1{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.5),transparent 65%);top:-140px;right:-120px;pointer-events:none}
+.hero-in{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#DDD6FE;padding:6px 15px;border-radius:20px;font-size:12px;font-weight:600;animation:up .7s var(--ease) both}
+.hero h1{font-size:clamp(24px,6.5vw,34px);font-weight:900;line-height:1.4;margin:14px 0 6px;animation:up .7s .1s var(--ease) both}
+.hero p{font-size:14px;color:#C9C3EE;font-weight:500;animation:up .7s .18s var(--ease) both}
+.hero p b{color:var(--gold2);font-weight:800}
+
+.shell{position:relative;margin-top:-84px;background:var(--sf);border:1px solid var(--ln);border-radius:26px;padding:22px 20px;box-shadow:0 30px 70px -30px rgba(30,16,96,.35);animation:up .7s .22s var(--ease) both}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{padding:16px 14px;background:var(--s2);border:1px solid var(--ln);border-radius:18px}
+.kpi-n{font-family:'Cairo';font-size:28px;font-weight:900;color:var(--ink);line-height:1.15}
+.kpi-n small{font-size:12px;font-weight:700;color:var(--i3);font-family:'IBM Plex Sans Arabic';margin-right:4px}
+.kpi-l{font-size:12px;color:var(--i2);font-weight:600;margin-top:4px}
+.kpi.gold{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(251,191,36,.06));border-color:rgba(245,158,11,.28)}
+.kpi.gold .kpi-n{color:#92400E}
+
+.card{padding:18px;background:var(--s2);border:1px solid var(--ln);border-radius:18px;margin-bottom:12px}
+.card-h{font-family:'Cairo';font-size:15px;font-weight:900;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card-h svg{width:16px;height:16px;stroke:var(--pri);fill:none;stroke-width:2}
+.row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--ln);font-size:13px}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--i2);font-weight:500}
+.row .v{font-weight:700;color:var(--ink)}
+.row .v.ok{color:#15803D}
+.row .v.pri{color:var(--pri)}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay{padding:12px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;text-align:center}
+.pay-n{font-family:'Cairo';font-size:22px;font-weight:900;color:var(--pri)}
+.pay-n.ok{color:#15803D}
+.pay-l{font-size:11.5px;color:var(--i3);font-weight:600}
+.note{font-size:11.5px;color:var(--i3);line-height:1.8;margin-top:8px}
+
+.share .chip{display:flex;align-items:center;gap:8px;background:var(--sf);border:1.5px dashed var(--pm);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.share .chip code{flex:1;min-width:0;font-family:inherit;font-size:13px;font-weight:700;color:var(--pri);direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-s{padding:8px 13px;border-radius:10px;background:var(--ps);color:var(--pri);font-size:12px;font-weight:700;border:1.5px solid var(--pm);white-space:nowrap;transition:.15s}
+.btn-s:hover{background:var(--pm)}
+.btn-s.done{background:rgba(34,197,94,.1);color:#15803D;border-color:rgba(34,197,94,.3)}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border-radius:14px;background:#25D366;color:#fff;font-size:14px;font-weight:700;margin-top:6px;box-shadow:0 8px 22px rgba(37,211,102,.3)}
+.btn-wa svg{width:18px;height:18px;fill:#fff}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{font-size:11px;color:var(--i3);font-weight:700;text-align:right;padding:6px 4px;border-bottom:1px solid var(--ln2)}
+td{padding:8px 4px;border-bottom:1px solid var(--ln);color:var(--ink);font-weight:500}
+td.c{color:#15803D;font-weight:700}
+.empty{padding:22px 10px;text-align:center;color:var(--i3);font-size:13px;line-height:1.8}
+
+.state{padding:60px 26px;text-align:center;color:var(--i2);font-size:14px}
+.ftr{padding:26px 0 44px;text-align:center;font-size:11.5px;color:#A8ABB8;line-height:1.9}
+.ftr a{color:var(--pri);font-weight:700}
+@media(min-width:768px){.shell{padding:30px 32px}.kpis{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <a class="brand" href="/">
+      <span class="bx"><svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V10l4 3 4-8 4 8 4-3v10"/></svg></span>
+      مدارك النخبة
+    </a>
+    <div class="sp"></div>
+    <span class="h-tag">لوحة الشريك</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="dots"></div><div class="glow1"></div>
+  <div class="wrap hero-in">
+    <span class="pill">شريك مدارك النخبة</span>
+    <h1 id="pName">جاري التحميل</h1>
+    <p id="pSub"></p>
+  </div>
+</section>
+
+<div class="wrap" id="main" style="display:none">
+  <div class="shell">
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-n" id="kVisits">0</div><div class="kpi-l">زائر وصل عبر رابطك</div></div>
+      <div class="kpi"><div class="kpi-n" id="kEntries">0</div><div class="kpi-l">طالب أدخل كودك</div></div>
+      <div class="kpi"><div class="kpi-n" id="kPaid">0</div><div class="kpi-l">اشتراك مدفوع</div></div>
+      <div class="kpi gold"><div class="kpi-n" id="kComm">0<small>ر.س</small></div><div class="kpi-l">عمولتك المتراكمة</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>الصرف</div>
+      <div class="pay-grid">
+        <div class="pay"><div class="pay-n" id="pPending">0</div><div class="pay-l">متاح للتحويل (ر.س)</div></div>
+        <div class="pay"><div class="pay-n ok" id="pPaidOut">0</div><div class="pay-l">تم تحويله (ر.س)</div></div>
+      </div>
+      <div class="note" id="pNote">التحويل شهرياً على آيبانك. العمولة تُحتسب على أول دفعة يدفعها الطالب بكودك.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>التفاصيل</div>
+      <div class="row"><span class="k">كودك</span><span class="v pri" id="dCode">—</span></div>
+      <div class="row"><span class="k">خصم طلابك</span><span class="v" id="dDisc">—</span></div>
+      <div class="row"><span class="k">نسبة عمولتك</span><span class="v" id="dPct">—</span></div>
+      <div class="row"><span class="k">اشتراكات شهرية</span><span class="v" id="dM">0</span></div>
+      <div class="row"><span class="k">اشتراكات 3 شهور</span><span class="v" id="dQ">0</span></div>
+      <div class="row"><span class="k">اشتراكات سنوية</span><span class="v" id="dY">0</span></div>
+      <div class="row"><span class="k">إجمالي ما دفعه طلابك</span><span class="v ok" id="dRev">0 ر.س</span></div>
+      <div class="row"><span class="k">شريك منذ</span><span class="v" id="dSince">—</span></div>
+    </div>
+
+    <div class="card share">
+      <div class="card-h"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>رابطك وكودك</div>
+      <div class="chip"><code id="sLink">—</code><button class="btn-s" onclick="copyIt('sLink',this)">نسخ الرابط</button></div>
+      <div class="chip"><code id="sCode">—</code><button class="btn-s" onclick="copyIt('sCode',this)">نسخ الكود</button></div>
+      <a class="btn-wa" id="waShare" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.8.5-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3C4 15.1 3.7 13.6 3.7 12c0-4.6 3.7-8.3 8.3-8.3s8.3 3.7 8.3 8.3-3.7 8.2-8.3 8.2z"/></svg>
+        شارك رابطك مع طلابك
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>آخر الاشتراكات بكودك</div>
+      <div id="recentWrap"></div>
+    </div>
+  </div>
+
+  <div class="ftr">
+    الأرقام تتحدث لحظياً · لا تُعرض أي بيانات شخصية للطلاب<br>
+    استفسار؟ <a href="https://wa.me/966553339885" target="_blank" rel="noopener">تواصل مع فريق مدارك النخبة</a>
+  </div>
+</div>
+
+<div class="state" id="stateBox">جاري تحميل لوحتك</div>
+
+<script>
+(function(){
+  const U = 'https://czzcmbxejxbotjemyuqf.supabase.co';
+  const K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6emNtYnhlanhib3RqZW15dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzQ0ODEsImV4cCI6MjA4NTc1MDQ4MX0.xDfG1qsDZGyUrpL44JfqOtk57dVsLaMsvIzJz1KgiR0';
+  const $ = id => document.getElementById(id);
+  const n = v => (+v || 0).toLocaleString('en-US');
+  const PLAN = { monthly: 'شهري', quarterly: '3 شهور', yearly: 'سنوي', period1: 'باقة الموسم' };
+  const key = new URLSearchParams(location.search).get('k') || '';
+
+  function fail(msg){ $('stateBox').textContent = msg; $('pName').textContent = 'لوحة الشريك'; }
+  function fmtDate(iso){
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  async function load(){
+    if (!/^[a-f0-9]{16,64}$/i.test(key)) return fail('هذا الرابط غير صالح — اطلب رابط لوحتك من فريق مدارك النخبة');
+    let d = null;
+    try {
+      const r = await fetch(U + '/rest/v1/rpc/get_partner_stats', {
+        method: 'POST',
+        headers: { apikey: K, Authorization: 'Bearer ' + K, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_key: key })
+      });
+      d = r.ok ? await r.json() : null;
+    } catch(_) {}
+    if (!d) return fail('هذا الرابط غير صالح أو اللوحة موقوفة — تواصل مع فريق مدارك النخبة');
+
+    const link = 'https://www.madarekelite.com/p/' + d.code;
+    const disc = d.discount_type === 'percentage' ? d.discount_value + '%' : (d.discount_value ? d.discount_value + ' ر.س' : '—');
+
+    $('pName').textContent = d.name;
+    $('pSub').innerHTML = 'كودك <b></b> يعطي طلابك خصم <b></b> · عمولتك <b></b> من أول دفعة';
+    const bs = $('pSub').querySelectorAll('b');
+    bs[0].textContent = d.code; bs[1].textContent = disc; bs[2].textContent = n(d.commission_pct) + '%';
+
+    $('kVisits').textContent = n(d.visits);
+    $('kEntries').textContent = n(d.code_users);
+    $('kPaid').textContent = n(d.paid_count);
+    $('kComm').innerHTML = n(d.commission_total) + '<small>ر.س</small>';
+    $('pPending').textContent = n(d.pending);
+    $('pPaidOut').textContent = n(d.paid_total);
+    if (d.last_payout_at) $('pNote').textContent = 'آخر تحويل: ' + fmtDate(d.last_payout_at) + ' · التحويل شهرياً على آيبانك. العمولة على أول دفعة يدفعها الطالب بكودك.';
+
+    $('dCode').textContent = d.code;
+    $('dDisc').textContent = disc + (d.coupon_expires_at ? ' — حتى ' + fmtDate(d.coupon_expires_at) : '');
+    $('dPct').textContent = n(d.commission_pct) + '%';
+    const bp = d.by_plan || {};
+    $('dM').textContent = n(bp.monthly); $('dQ').textContent = n(bp.quarterly); $('dY').textContent = n(bp.yearly);
+    $('dRev').textContent = n(d.revenue) + ' ر.س';
+    $('dSince').textContent = fmtDate(d.since);
+
+    $('sLink').textContent = link;
+    $('sCode').textContent = d.code;
+    const msg = 'تدرّب على أسئلة قياس الحقيقية مع مدارك النخبة — أكثر من 5,000 سؤال بشرح مبسّط وتجميعات الاختبارات.\nكودي ' + d.code + ' يعطيك خصم ' + disc + ' على أي باقة:\n' + link;
+    $('waShare').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+
+    const rec = d.recent || [];
+    if (!rec.length) {
+      $('recentWrap').innerHTML = '<div class="empty">ما فيه اشتراكات بعد — أول اشتراك بكودك يظهر هنا فور دفعه</div>';
+    } else {
+      let html = '<table><thead><tr><th>التاريخ</th><th>الباقة</th><th>المبلغ</th><th>عمولتك</th></tr></thead><tbody>';
+      rec.forEach(r => {
+        html += '<tr><td>' + r.date + '</td><td>' + (PLAN[r.plan] || r.plan) + '</td><td>' + n(r.amount) + ' ر.س</td><td class="c">' + n(r.commission) + ' ر.س</td></tr>';
+      });
+      $('recentWrap').innerHTML = html + '</tbody></table>';
+    }
+
+    $('stateBox').style.display = 'none';
+    $('main').style.display = 'block';
+  }
+
+  window.copyIt = function(id, btn){
+    const t = $(id).textContent;
+    const done = () => { btn.textContent = 'تم النسخ'; btn.classList.add('done'); setTimeout(() => { btn.textContent = id === 'sLink' ? 'نسخ الرابط' : 'نسخ الكود'; btn.classList.remove('done'); }, 1600); };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(done).catch(done); else done();
+  };
+
+  load();
+  setInterval(load, 60000);
+})();
+</script>
+</body>
+</html>

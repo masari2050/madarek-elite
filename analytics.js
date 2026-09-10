@@ -94,6 +94,13 @@
 
     var pageUtm = captureUtm();
 
+    // ─── كود خصم من الرابط (روابط الشركاء والحملات) → يُحفظ ليُطبَّق تلقائياً في صفحة الاشتراك ───
+    try {
+        var cq = new URLSearchParams(location.search);
+        var cc = (cq.get('coupon') || cq.get('c') || '').trim().toUpperCase();
+        if (/^[A-Z0-9-]{3,20}$/.test(cc)) localStorage.setItem('madarek_coupon', cc);
+    } catch(e){}
+
     // ─── تتبع زيارة الصفحة ───
     trackEvent('page_view', {
         referrer: document.referrer || null,

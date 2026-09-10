@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/p/:code", "destination": "/?coupon=:code&utm_source=:code&utm_medium=partner&utm_campaign=partners", "permanent": false },
+    { "source": "/ali",     "destination": "/p/ABAAD", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/invite/:code", "destination": "/invite.html?code=:code" },
     { "source": "/r/:code",       "destination": "/invite.html?code=:code" },

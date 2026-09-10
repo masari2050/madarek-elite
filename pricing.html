@@ -107,6 +107,17 @@ img{max-width:100%}
 .pl-saving{display:inline-flex;align-items:center;gap:4px;margin-top:8px;background:rgba(34,197,94,.08);color:#15803D;font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
 .pl-saving svg{width:11px;height:11px;stroke:var(--suc);fill:none;stroke-width:2.5}
 
+/* ───── campaign banner (DB-driven) ───── */
+.cp-card{position:relative;padding:18px 18px 16px;border-radius:18px;color:#fff;margin-bottom:16px;overflow:hidden;box-shadow:0 14px 34px -14px rgba(76,29,149,.55)}
+.cp-card::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08);top:-90px;left:-60px;pointer-events:none}
+.cp-badge{display:inline-block;color:#fff;font-size:11px;font-weight:800;padding:3px 11px;border-radius:12px;margin-bottom:8px}
+.cp-title{font-family:'Cairo';font-size:19px;font-weight:900;line-height:1.4}
+.cp-sub{font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500;margin-top:3px;line-height:1.7}
+.cp-row{display:flex;align-items:center;gap:8px;margin-top:12px}
+.cp-code{flex:1;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.14);border:1.5px dashed rgba(255,255,255,.45);font-weight:800;font-size:15px;letter-spacing:1.5px;text-align:center;direction:ltr}
+.cp-btn{padding:11px 16px;border-radius:12px;background:#fff;color:#5B21B6;font-size:12.5px;font-weight:800;white-space:nowrap;transition:transform .15s}
+.cp-btn:hover{transform:translateY(-1px)}
+
 /* ───── coupon ───── */
 .coupon{padding:16px;background:var(--s2);border:1px solid var(--ln);border-radius:18px;margin-bottom:14px}
 .coupon-h{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px}
@@ -242,6 +253,17 @@ img{max-width:100%}
 
 <div class="wrap qz">
   <div class="shell">
+
+    <!-- CAMPAIGN BANNER (يظهر فقط لو فيه بنر campaign نشط ومجدول في DB) -->
+    <div class="cp-card" id="cpCard" style="display:none">
+      <span class="cp-badge" id="cpBadge"></span>
+      <div class="cp-title" id="cpTitle"></div>
+      <div class="cp-sub" id="cpSub"></div>
+      <div class="cp-row">
+        <span class="cp-code" id="cpCode"></span>
+        <button class="cp-btn" id="cpBtn" onclick="applyCampaignCode()">طبّق الكود</button>
+      </div>
+    </div>
 
     <h3 class="sec-h">اختر خطتك</h3>
     <div class="plans" id="plansList">
@@ -477,6 +499,7 @@ async function init(){
     renderPlans();
     updateSummary();
     prefillCoupon();
+    loadCampaignBanner();
     return;
   }
 
@@ -511,6 +534,7 @@ async function init(){
   } catch(e) { console.warn('subscription check:', e); }
 
   loadHeroStats();
+  loadCampaignBanner();
   await loadPlans();
   prefillCoupon();
   // ── خصم الإحالة 10% (لو المستخدم محال) ──
@@ -682,9 +706,38 @@ function prefillCoupon(){
     const code = (u.get('coupon') || u.get('c') || localStorage.getItem('madarek_coupon') || '').trim().toUpperCase();
     if (code && /^[A-Z0-9-]{3,20}$/.test(code)) {
       $('couponInput').value = code;
+      // كود جاي من رابط شريك/حملة: يُطبَّق مباشرة بدون ضغطة "تحقّق"
+      if (!isPreview && typeof window.applyCouponClick === 'function') window.applyCouponClick();
     }
   } catch(_) {}
 }
+
+// ═══ بنر الحملة (DB-driven عبر get_active_banners — مجدول، ينطفئ تلقائياً) ═══
+async function loadCampaignBanner(){
+  try {
+    const { data } = await sb.rpc('get_active_banners', { target_page: 'pricing' });
+    const b = (data || []).find(x => x.banner_type === 'campaign');
+    const card = $('cpCard');
+    if (!b || !card) return;
+    const c = b.config || {};
+    card.style.background = 'linear-gradient(135deg,' + (c.bg_left || '#4C1D95') + ',' + (c.bg_right || '#7C3AED') + ')';
+    $('cpBadge').textContent = c.badge || '';
+    $('cpBadge').style.background = c.badge_bg || '#16A34A';
+    $('cpTitle').textContent = c.title || '';
+    $('cpSub').textContent = c.subtitle || '';
+    $('cpCode').textContent = c.code || '';
+    $('cpBtn').textContent = c.cta_text || 'طبّق الكود';
+    card.dataset.code = c.code || '';
+    card.style.display = 'block';
+  } catch(_) {}
+}
+window.applyCampaignCode = function(){
+  const code = ($('cpCard').dataset.code || '').trim().toUpperCase();
+  if (!code) return;
+  $('couponInput').value = code;
+  window.applyCouponClick();
+  $('couponInput').scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
 
 window.applyCouponClick = async function(){
   const input = $('couponInput');

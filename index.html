@@ -212,6 +212,11 @@ img{max-width:100%}
 .tj-cta{background:#fff;color:#4C1D95;font-weight:800;font-size:12px;padding:6px 14px;border-radius:9px;white-space:nowrap;transition:transform .15s}
 .tj-strip:hover .tj-cta{transform:translateY(-1px)}
 @media (max-width:560px){.tj-strip{font-size:12px;gap:8px;padding:9px 12px}.tj-cta{font-size:11px;padding:5px 11px}}
+/* شريط الحملة (DB-driven، مجدول) — نفس هيكل شريط التجميعات بشارة ملوّنة من الإعداد */
+.cp-strip{background:linear-gradient(90deg,#4C1D95,#7C3AED)}
+.cp-strip .tj-badge{color:#fff}
+.cp-strip .tj-txt b{color:#FDE68A}
+.cp-strip .tj-code{background:rgba(255,255,255,.16);border:1px dashed rgba(255,255,255,.55);padding:2px 10px;border-radius:8px;font-weight:800;letter-spacing:1px;direction:ltr}
 </style>
 </head>
 <body>
@@ -234,6 +239,15 @@ img{max-width:100%}
   <span class="tj-badge">جديد</span>
   <span class="tj-txt" id="tjTxt"><b>تجميعات القدرات</b> — أسئلة آخر اختبار بشروحها</span>
   <span class="tj-cta">جرب 5 أسئلة مجاناً</span>
+</a>
+
+<!-- ═══ شريط الحملة (يظهر فقط عند وجود بنر campaign نشط ومجدول في DB) ═══ -->
+<a class="tj-strip cp-strip" id="cpStrip" href="/pricing.html" style="display:none">
+  <span class="tj-dot"></span>
+  <span class="tj-badge" id="cpBadge"></span>
+  <span class="tj-txt" id="cpTxt"></span>
+  <span class="tj-code" id="cpCode"></span>
+  <span class="tj-cta" id="cpCta"></span>
 </a>
 
 <section class="hero">
@@ -512,6 +526,28 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     txt.querySelector('b').textContent = name;
     txt.querySelectorAll('span')[0].textContent = dateLbl;
     txt.querySelectorAll('span')[1].textContent = cnt;
+    strip.style.display = 'flex';
+  }).catch(() => {});
+
+  // شريط الحملة: بنر campaign من DB (مجدول — يظهر وينطفئ تلقائياً بدون أي نشر)
+  fetch(U + '/rest/v1/rpc/get_active_banners', {
+    method: 'POST',
+    headers: { apikey: K, Authorization: 'Bearer ' + K, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ target_page: 'index' })
+  }).then(r => r.ok ? r.json() : null).then(rows => {
+    const b = (rows || []).find(x => x.banner_type === 'campaign');
+    const strip = document.getElementById('cpStrip');
+    if (!b || !strip) return;
+    const c = b.config || {};
+    if (c.bg_left && c.bg_right) strip.style.background = 'linear-gradient(90deg,' + c.bg_left + ',' + c.bg_right + ')';
+    const badge = document.getElementById('cpBadge');
+    badge.textContent = c.badge || '';
+    badge.style.background = c.badge_bg || '#16A34A';
+    document.getElementById('cpTxt').innerHTML = '<b></b>';
+    document.getElementById('cpTxt').querySelector('b').textContent = c.title || '';
+    document.getElementById('cpCode').textContent = c.code || '';
+    document.getElementById('cpCta').textContent = c.cta_text || 'اشترك الآن';
+    if (c.link) strip.href = c.link;
     strip.style.display = 'flex';
   }).catch(() => {});
 })();
