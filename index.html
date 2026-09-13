@@ -583,12 +583,6 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
       } catch (_) {}
       if (base) now = base - Math.round(base * pct / 100);
     }
-    // العدّ التنازلي الحقيقي من نهاية جدولة البنر
-    let left = '';
-    if (b.schedule_end) {
-      const d = Math.ceil((new Date(b.schedule_end) - Date.now()) / 864e5);
-      left = d >= 11 ? 'باقي ' + d + ' يوماً' : d >= 3 ? 'باقي ' + d + ' أيام' : d === 2 ? 'باقي يومين' : d === 1 ? 'آخر يوم' : '';
-    }
     if (c.bg_left && c.bg_right) strip.style.background = 'linear-gradient(90deg,' + c.bg_left + ',' + c.bg_right + ')';
     const badge = document.getElementById('cpBadge');
     badge.textContent = c.badge || '';
@@ -613,7 +607,7 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
       const code = document.getElementById('pCode'), cta = document.getElementById('pCta');
       if (from) from.textContent = 'عرض ' + (c.badge || 'خاص') + ' — الاشتراك الشهري';
       if (amt) amt.innerHTML = '<s>' + base + ' ر.س</s>' + now + ' <small>ر.س / شهر</small>';
-      if (code && c.subtitle) { code.textContent = c.subtitle + (left ? ' · ' + left : ''); code.style.display = 'inline-block'; }
+      if (code && c.subtitle) { code.textContent = c.subtitle; code.style.display = 'inline-block'; }
       if (cta) { if (c.link) cta.href = c.link; cta.textContent = c.cta_text || 'اشترك بالخصم'; }
       const save = document.getElementById('pSave');
       if (save && yBase) {

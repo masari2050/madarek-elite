@@ -748,12 +748,7 @@ async function loadCampaignBanner(){
     $('cpBadge').textContent = c.badge || '';
     $('cpBadge').style.background = c.badge_bg || '#16A34A';
     $('cpTitle').textContent = c.title || '';
-    let left = '';
-    if (b.schedule_end) {
-      const d = Math.ceil((new Date(b.schedule_end) - Date.now()) / 864e5);
-      left = d >= 11 ? 'باقي ' + d + ' يوماً' : d >= 3 ? 'باقي ' + d + ' أيام' : d === 2 ? 'باقي يومين' : d === 1 ? 'آخر يوم' : '';
-    }
-    $('cpSub').textContent = (c.subtitle || '') + (left ? ' · ' + left : '');
+    $('cpSub').textContent = c.subtitle || '';
     $('cpCode').textContent = c.code || '';
     $('cpBtn').textContent = c.cta_text || 'طبّق الكود';
     card.dataset.code = c.code || '';
