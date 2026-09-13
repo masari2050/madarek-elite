@@ -217,6 +217,11 @@ img{max-width:100%}
 .cp-strip .tj-badge{color:#fff}
 .cp-strip .tj-txt b{color:#FDE68A}
 .cp-strip .tj-code{background:rgba(255,255,255,.16);border:1px dashed rgba(255,255,255,.55);padding:2px 10px;border-radius:8px;font-weight:800;letter-spacing:1px;direction:ltr}
+.cp-strip{padding:14px 18px;font-size:16px;gap:12px}
+.cp-strip .tj-badge{font-size:12.5px;padding:4px 12px}
+.cp-strip .tj-code{font-size:15.5px;padding:4px 13px}
+.cp-strip .tj-cta{font-size:13.5px;padding:8px 18px}
+@media (max-width:560px){.cp-strip{font-size:14px;padding:12px 12px;gap:9px}.cp-strip .tj-code{font-size:14px}.cp-strip .tj-cta{font-size:12.5px;padding:7px 13px}}
 </style>
 </head>
 <body>
@@ -282,9 +287,9 @@ img{max-width:100%}
 
 <section class="stats wrap rv">
   <div class="st-row">
-    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" id="cQ" data-target="4953">0</span></div><div class="t">سؤال متجدد</div></div>
-    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" id="cU" data-target="429">0</span></div><div class="t">طالب</div></div>
-    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" data-target="8295">0</span></div><div class="t">إجابة تدريب</div></div>
+    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" id="cQ" data-target="5681">0</span></div><div class="t">سؤال متجدد</div></div>
+    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" id="cU" data-target="446">0</span></div><div class="t">طالب</div></div>
+    <div class="st"><div class="n"><span class="p">+</span><span class="cnt" data-target="8687">0</span></div><div class="t">إجابة تدريب</div></div>
   </div>
 </section>
 
@@ -507,8 +512,8 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     put(document.getElementById('cU'), s.total_users);
   }).catch(() => {});
 
-  // شريط التجميعات: يظهر فقط لو آخر مجموعة نشطة نزلت خلال 7 أيام
-  fetch(U + '/rest/v1/leak_groups?select=section,question_count,leak_date&is_active=eq.true&order=leak_date.desc,created_at.desc&limit=1', {
+  // شريط التجميعات: يظهر فقط لو آخر مجموعة نشطة نزلت خلال 7 أيام، ويجمع أيام الأسبوع نفسه
+  fetch(U + '/rest/v1/leak_groups?select=section,question_count,leak_date&is_active=eq.true&order=leak_date.desc,created_at.desc&limit=12', {
     headers: { apikey: K, Authorization: 'Bearer ' + K }
   }).then(r => r.ok ? r.json() : null).then(rows => {
     const g = rows && rows[0];
@@ -519,12 +524,26 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     const strip = document.getElementById('tjStrip');
     const txt = document.getElementById('tjTxt');
     if (!strip || !txt) return;
-    const name = g.section === 'tahsili' ? 'تجميعات التحصيلي' : 'تجميعات القدرات';
-    const dateLbl = d.toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { weekday: 'long', day: 'numeric', month: 'long' });
-    const cnt = g.question_count ? g.question_count + ' سؤالاً بشروحها' : 'أسئلة محلولة بشروحها';
-    txt.innerHTML = '<b></b> — اختبار <span></span> · <span></span>';
+    const isT = s => s === 'tahsili';
+    const week = rows.filter(x => x.leak_date && isT(x.section) === isT(g.section)
+      && (d - new Date(x.leak_date + 'T00:00:00')) / 864e5 <= 6);
+    const days = new Set(week.map(x => x.leak_date)).size;
+    const total = week.reduce((a, x) => a + (x.question_count || 0), 0);
+    const name = isT(g.section) ? 'تجميعات التحصيلي' : 'تجميعات القدرات';
+    const L = 'ar-SA-u-nu-latn-ca-gregory';
+    let when, cnt;
+    if (days > 1) {
+      const f = new Date(week[week.length - 1].leak_date + 'T00:00:00');
+      const from = f.toLocaleDateString(L, f.getMonth() === d.getMonth() ? { day: 'numeric' } : { day: 'numeric', month: 'long' });
+      when = 'اختبارات ' + from + ' إلى ' + d.toLocaleDateString(L, { day: 'numeric', month: 'long' }) + ' كاملة';
+      cnt = total + ' سؤالاً بشروحها';
+    } else {
+      when = 'اختبار ' + d.toLocaleDateString(L, { weekday: 'long', day: 'numeric', month: 'long' });
+      cnt = g.question_count ? g.question_count + ' سؤالاً بشروحها' : 'أسئلة محلولة بشروحها';
+    }
+    txt.innerHTML = '<b></b> — <span></span> · <span></span>';
     txt.querySelector('b').textContent = name;
-    txt.querySelectorAll('span')[0].textContent = dateLbl;
+    txt.querySelectorAll('span')[0].textContent = when;
     txt.querySelectorAll('span')[1].textContent = cnt;
     strip.style.display = 'flex';
   }).catch(() => {});

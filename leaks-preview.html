@@ -210,7 +210,7 @@ a{color:inherit;text-decoration:none}
         <div class="cta-num-lbl" id="ctaNumLbl">سؤال إضافي محلول<br>من آخر اختبار</div>
       </div>
       <h3>افتح كل التجميعات + التدريب الذكي</h3>
-      <div class="cta-sub">اشتراك واحد يفتح لك 4,900+ سؤال، تجميعات مستمرّة بعد كل فترة، وتدريب يقترح عليك نقاط ضعفك.</div>
+      <div class="cta-sub">اشتراك واحد يفتح لك 5,600+ سؤال، تجميعات مستمرّة بعد كل فترة، وتدريب يقترح عليك نقاط ضعفك.</div>
 
       <div class="feat-list">
         <div class="feat-row" id="featCount"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>كل أسئلة آخر اختبار — محلولة بالكامل</div>
@@ -243,9 +243,18 @@ const SAMPLE_SIZE = 5;
 
 async function resolveLatestGroup(){
   try {
-    const r = await fetch(SB_URL + '/rest/v1/leak_groups?select=id,section,question_count,leak_date&is_active=eq.true&order=leak_date.desc,created_at.desc&limit=1',
+    const r = await fetch(SB_URL + '/rest/v1/leak_groups?select=id,section,question_count,leak_date&is_active=eq.true&order=leak_date.desc,created_at.desc&limit=12',
       {headers:{apikey:SB_KEY, Authorization:'Bearer '+SB_KEY}});
-    if (r.ok) { const rows = await r.json(); if (rows && rows.length) return rows[0]; }
+    if (r.ok) {
+      const rows = await r.json();
+      if (rows && rows.length) {
+        // مجموعات أسبوع الاختبار نفسه (نفس النوع، خلال 6 أيام من آخر مجموعة)
+        const g = rows[0], d = new Date(g.leak_date + 'T00:00:00'), isT = s => s === 'tahsili';
+        g.week = rows.filter(x => x.leak_date && isT(x.section) === isT(g.section)
+          && (d - new Date(x.leak_date + 'T00:00:00')) / 864e5 <= 6);
+        return g;
+      }
+    }
   } catch(_){}
   return FALLBACK_GROUP;
 }
@@ -256,11 +265,20 @@ function applyGroupTexts(g){
                   : (g.section === 'quant' || g.section === 'verbal' || g.section === 'mixed') ? 'تجميعات القدرات'
                   : 'تجميعات الاختبارات';
     const d = g.leak_date ? new Date(g.leak_date + 'T00:00:00') : null;
-    const dateLbl = d ? d.toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { weekday:'long', day:'numeric', month:'long' }) : 'آخر اختبار';
+    let dateLbl = d ? d.toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { weekday:'long', day:'numeric', month:'long' }) : 'آخر اختبار';
+    let ex = 'اختبار ';
+    const wk = g.week || [];
+    if (d && new Set(wk.map(x => x.leak_date)).size > 1) {
+      const f = new Date(wk[wk.length - 1].leak_date + 'T00:00:00'), L = 'ar-SA-u-nu-latn-ca-gregory';
+      const from = f.toLocaleDateString(L, f.getMonth() === d.getMonth() ? { day:'numeric' } : { day:'numeric', month:'long' });
+      dateLbl = from + ' إلى ' + d.toLocaleDateString(L, { day:'numeric', month:'long' });
+      g = Object.assign({}, g, { question_count: wk.reduce((a, x) => a + (x.question_count || 0), 0) });
+      ex = 'اختبارات ';
+    }
     const ttl = document.getElementById('heroTtl');
     if (ttl) ttl.innerHTML = esc(secName) + ' <span class="gold">أوّل بأوّل</span>';
     const sub = document.getElementById('heroSub');
-    if (sub) sub.textContent = 'جرّب 5 أسئلة من اختبار ' + dateLbl + ' مع شروح مبسّطة — ثم افتح الباقي بالاشتراك.';
+    if (sub) sub.textContent = 'جرّب 5 أسئلة من ' + ex + dateLbl + ' مع شروح مبسّطة — ثم افتح الباقي بالاشتراك.';
     const day = document.getElementById('heroDay');
     if (day && d) {
       const diff = Math.floor((Date.now() - d.getTime()) / 864e5);
@@ -271,11 +289,11 @@ function applyGroupTexts(g){
       const num = document.getElementById('ctaNum');
       if (num) num.textContent = n;
       const lbl = document.getElementById('ctaNumLbl');
-      if (lbl) lbl.innerHTML = 'سؤال إضافي محلول<br>من اختبار ' + esc(dateLbl);
+      if (lbl) lbl.innerHTML = 'سؤال إضافي محلول<br>من ' + ex + esc(dateLbl);
       const feat = document.getElementById('featCount');
-      if (feat) feat.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' + n + ' سؤالاً من اختبار ' + esc(dateLbl) + ' — كلها محلولة';
+      if (feat) feat.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' + n + ' سؤالاً من ' + ex + esc(dateLbl) + ' — كلها محلولة';
       const rs = document.getElementById('resultSub');
-      if (rs) rs.textContent = 'المرحلة القادمة: الوصول الكامل لكل الـ' + n + ' سؤالاً محلولة من اختبار ' + dateLbl + '، مع شروح أعمق ولوحة تقدّمك الشخصية.';
+      if (rs) rs.textContent = 'المرحلة القادمة: الوصول الكامل لكل الـ' + n + ' سؤالاً محلولة من ' + ex + dateLbl + '، مع شروح أعمق ولوحة تقدّمك الشخصية.';
     }
   } catch(_){}
 }
@@ -293,13 +311,13 @@ async function loadQuestions(){
   // حدد أحدث مجموعة نشطة أولاً ثم حدّث نصوص الصفحة
   if (!LEAK_GROUP_ID) {
     const g = await resolveLatestGroup();
-    LEAK_GROUP_ID = g.id;
+    LEAK_GROUP_ID = (g.week && g.week.length > 1) ? 'in.(' + g.week.map(x => x.id).join(',') + ')' : 'eq.' + g.id;
     applyGroupTexts(g);
   }
-  // get a varied sample — pull 40 questions and shuffle, then pick first 5
+  // get a varied sample — pull 80 questions and shuffle, then pick first 5
   // (أسئلة القطع مستبعدة من العيّنة — تحتاج عرض القطعة كاملة)
-  const url = SB_URL + '/rest/v1/questions?leak_group_id=eq.' + LEAK_GROUP_ID
-    + '&select=subject,topic,question_text,choices,correct_index,explanation&limit=40&disabled=eq.false&passage_id=is.null&image_url=is.null';
+  const url = SB_URL + '/rest/v1/questions?leak_group_id=' + LEAK_GROUP_ID
+    + '&select=subject,topic,question_text,choices,correct_index,explanation&limit=80&disabled=eq.false&passage_id=is.null&image_url=is.null';
   try {
     const r = await fetch(url, {headers:{apikey:SB_KEY, Authorization:'Bearer '+SB_KEY}});
     if(!r.ok) throw new Error('fetch failed');
