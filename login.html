@@ -275,6 +275,23 @@ var sb=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{flowType:'implicit'
 // ── Brute force protection ──
 var _attempts=0,_locked=false,_lockTime=0;
 
+// ── وجهة ما بعد الدخول: يُسمح فقط بالرجوع لصفحة الأسعار (حماية من open redirect)، وإلا الرئيسية ──
+function afterLoginUrl(){
+  try{
+    var nx=new URLSearchParams(window.location.search).get('next')||'';
+    if(/^\/pricing\.html(\?[A-Za-z0-9=&%_-]*)?$/.test(nx))return nx;
+  }catch(e){}
+  return 'dashboard.html';
+}
+// زائر جاي من صفحة الأسعار (بكود خصم): رابط التسجيل يرجعه للأسعار بنفس الكود بعد إنشاء الحساب
+(function(){
+  var nx=afterLoginUrl();
+  if(nx==='dashboard.html')return;
+  var cp=(new URLSearchParams(nx.split('?')[1]||'').get('coupon')||'').toUpperCase();
+  var href='/register.html?redirect=pricing'+(/^[A-Z0-9-]{3,20}$/.test(cp)?'&coupon='+encodeURIComponent(cp):'');
+  document.querySelectorAll('a[href="/register.html"]').forEach(function(a){a.setAttribute('href',href);});
+})();
+
 // ── Auto-login if session exists (skip on recovery URL) ──
 if(!_isRecoveryUrl){
   (async function(){
@@ -282,7 +299,7 @@ if(!_isRecoveryUrl){
       var r=await sb.auth.getSession();
       if(r.data&&r.data.session){
         if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(e){}}
-        window.location.href='dashboard.html';
+        window.location.href=afterLoginUrl();
       }
     }catch(e){}
   })();
@@ -308,7 +325,7 @@ window.loginBio=async function(){
   var status=await window._biometric.authenticate();
   if(status==='success'){
     var r=await sb.auth.getSession();
-    if(r.data&&r.data.session){window.location.href='dashboard.html';}
+    if(r.data&&r.data.session){window.location.href=afterLoginUrl();}
     else{toast('جلستك انتهت — سجّل دخول بالبريد','err');}
   }else if(status==='failed'){toast('البصمة ما نجحت — جرّب مرة ثانية','err');}
 };
@@ -415,7 +432,7 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
     try{localStorage.setItem('khawariz_user',JSON.stringify({id:data.user.id,email:data.user.email,name:data.user.user_metadata?.name||''}));}catch(_){}
     if(window._biometric&&window._biometric.promptEnable){try{await window._biometric.promptEnable();}catch(_){}}
     btn.innerHTML='<span>تم — جاري التحويل...</span>';
-    setTimeout(function(){window.location.href='dashboard.html';},600);
+    setTimeout(function(){window.location.href=afterLoginUrl();},600);
   }catch(err){
     _attempts++;
     if(_attempts>=10){_locked=true;_lockTime=Date.now()+120000;toast('كثرت المحاولات — حاول بعد دقيقتين','err');}
