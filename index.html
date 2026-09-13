@@ -175,6 +175,8 @@ img{max-width:100%}
 .price .amt s{display:block;font-size:22px;font-weight:700;color:#A8ABB8;letter-spacing:0;line-height:1.3}
 .price .p-code{display:inline-block;margin:4px 0 14px;background:rgba(22,163,74,.1);color:#15803D;font-size:12.5px;font-weight:700;padding:5px 13px;border-radius:12px}
 .cp-strip .tj-txt s{color:rgba(255,255,255,.62);font-weight:600}
+/* وقت الحملة: زر شريط التجميعات يختفي (الشريط كله يبقى رابطاً) حتى لا يتكرر مع زر الخصم */
+.has-cp #tjStrip .tj-cta{display:none}
 .price .p-save{margin-top:14px;font-size:13px;font-weight:600;color:var(--i2)}
 .price .p-save b{color:#15803D;font-weight:800}
 
@@ -604,6 +606,7 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     document.getElementById('cpCta').textContent = c.cta_text || 'اشترك الآن';
     if (c.link) strip.href = c.link;
     strip.style.display = 'flex';
+    document.body.classList.add('has-cp');
     // قسم السعر: القديم مشطوب والجديد ظاهر
     if (now) {
       const from = document.getElementById('pFrom'), amt = document.getElementById('pAmt');
