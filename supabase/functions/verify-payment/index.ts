@@ -160,7 +160,7 @@ serve(async (req) => {
     const paymentRecordId = String(invoiceData.InvoiceId)
 
     const { data: pmtRow, error: pmtErr } = await supabaseAdmin.from('payments')
-      .select('amount, plan_type, coupon_code, user_id')
+      .select('amount, plan_type, coupon_code, user_id, status')
       .eq('payment_id', paymentRecordId)
       .maybeSingle()
 
@@ -319,6 +319,18 @@ serve(async (req) => {
       .eq('payment_id', String(invoiceData.InvoiceId))
       .select('id')
       .maybeSingle()
+
+    // عداد استخدام الكوبون يزيد مرة واحدة فقط: عند أول تحوّل للدفعة إلى paid (إعادة التحقق لا تعدّ مرتين)
+    if (pmtRow.coupon_code && pmtRow.status !== 'paid') {
+      try {
+        const { error: incErr } = await supabaseAdmin.rpc('increment_coupon_usage', {
+          p_code: String(pmtRow.coupon_code).toUpperCase()
+        })
+        if (incErr) console.warn('[verify-payment] increment_coupon_usage warn:', incErr.message)
+      } catch (e) {
+        console.warn('[verify-payment] increment_coupon_usage exception:', (e as Error).message)
+      }
+    }
 
     // ── تسجيل دفعة الإحالة (لو فيه إحالة معلّقة) ──
     // الـRPC يرجع {success:false} بأمان لو ما في إحالة — لا نفشل الدالة كلها.
