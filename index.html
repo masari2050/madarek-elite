@@ -172,6 +172,9 @@ img{max-width:100%}
 .p-f svg{width:16px;height:16px;stroke:var(--suc);stroke-width:2.5;fill:none;flex-shrink:0}
 .p-cta{display:inline-block;padding:14px 34px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:14.5px;font-weight:700;border-radius:13px;box-shadow:0 10px 26px rgba(124,58,237,.38);transition:.2s var(--ease)}
 .p-cta:hover{transform:translateY(-2px)}
+.price .amt s{display:block;font-size:22px;font-weight:700;color:#A8ABB8;letter-spacing:0;line-height:1.3}
+.price .p-code{display:inline-block;margin:4px 0 14px;background:rgba(22,163,74,.1);color:#15803D;font-size:12.5px;font-weight:700;padding:5px 13px;border-radius:12px}
+.cp-strip .tj-txt s{color:rgba(255,255,255,.62);font-weight:600}
 
 /* ───── FAQ ───── */
 .faq{margin-top:22px}
@@ -356,15 +359,16 @@ img{max-width:100%}
 
 <div class="wrap rv">
   <section class="price">
-    <div class="from">اشتراك واحد يفتح كل شي — يبدأ من</div>
-    <div class="amt">99 <small>ر.س / شهر</small></div>
+    <div class="from" id="pFrom">اشتراك واحد يفتح كل شي — يبدأ من</div>
+    <div class="amt" id="pAmt">99 <small>ر.س / شهر</small></div>
+    <div class="p-code" id="pCode" style="display:none"></div>
     <div class="per">قدرات كمي ولفظي + تحصيلي بكل مواده</div>
     <div class="p-feats">
       <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>كل بنك الأسئلة والتجميعات المحدثة</div>
       <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>شرح مفصل لكل سؤال</div>
       <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تقارير الأداء والاختبارات المحاكية</div>
     </div>
-    <a class="p-cta" href="/pricing.html">شوف الباقات</a>
+    <a class="p-cta" id="pCta" href="/pricing.html">شوف الباقات</a>
   </section>
 </div>
 
@@ -548,26 +552,57 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     strip.style.display = 'flex';
   }).catch(() => {});
 
-  // شريط الحملة: بنر campaign من DB (مجدول — يظهر وينطفئ تلقائياً بدون أي نشر)
+  // شريط الحملة + قسم السعر: بنر campaign من DB (مجدول — يظهر وينطفئ تلقائياً بدون أي نشر)
   fetch(U + '/rest/v1/rpc/get_active_banners', {
     method: 'POST',
     headers: { apikey: K, Authorization: 'Bearer ' + K, 'Content-Type': 'application/json' },
     body: JSON.stringify({ target_page: 'index' })
-  }).then(r => r.ok ? r.json() : null).then(rows => {
+  }).then(r => r.ok ? r.json() : null).then(async rows => {
     const b = (rows || []).find(x => x.banner_type === 'campaign');
     const strip = document.getElementById('cpStrip');
     if (!b || !strip) return;
     const c = b.config || {};
+    // زائر جاي برابط شريك بكوده: لا نعرض له عرضاً آخر يربكه
+    const qs = new URLSearchParams(location.search);
+    const urlCode = (qs.get('coupon') || qs.get('c') || '').trim().toUpperCase();
+    if (urlCode && urlCode !== String(c.code || '').toUpperCase()) return;
+    // التركيز على الشهري: السعر الحالي من plans والجديد بنفس معادلة السيرفر
+    const pct = Number(c.pct) || 0;
+    let base = 0, now = 0;
+    if (pct > 0 && pct < 100) {
+      try {
+        const pr = await fetch(U + '/rest/v1/plans?slug=eq.monthly&select=price', { headers: { apikey: K, Authorization: 'Bearer ' + K } })
+          .then(r => r.ok ? r.json() : []);
+        base = Number(pr && pr[0] && pr[0].price) || 0;
+      } catch (_) {}
+      if (base) now = base - Math.round(base * pct / 100);
+    }
     if (c.bg_left && c.bg_right) strip.style.background = 'linear-gradient(90deg,' + c.bg_left + ',' + c.bg_right + ')';
     const badge = document.getElementById('cpBadge');
     badge.textContent = c.badge || '';
     badge.style.background = c.badge_bg || '#16A34A';
-    document.getElementById('cpTxt').innerHTML = '<b></b>';
-    document.getElementById('cpTxt').querySelector('b').textContent = c.title || '';
+    const txt = document.getElementById('cpTxt');
+    if (now) {
+      txt.innerHTML = '<b>الاشتراك الشهري</b> <s></s> <b></b>';
+      txt.querySelector('s').textContent = base;
+      txt.querySelectorAll('b')[1].textContent = now + ' ر.س';
+    } else {
+      txt.innerHTML = '<b></b>';
+      txt.querySelector('b').textContent = c.title || '';
+    }
     document.getElementById('cpCode').textContent = c.code || '';
     document.getElementById('cpCta').textContent = c.cta_text || 'اشترك الآن';
     if (c.link) strip.href = c.link;
     strip.style.display = 'flex';
+    // قسم السعر: القديم مشطوب والجديد ظاهر
+    if (now) {
+      const from = document.getElementById('pFrom'), amt = document.getElementById('pAmt');
+      const code = document.getElementById('pCode'), cta = document.getElementById('pCta');
+      if (from) from.textContent = 'عرض ' + (c.badge || 'خاص') + ' — الاشتراك الشهري';
+      if (amt) amt.innerHTML = '<s>' + base + ' ر.س</s>' + now + ' <small>ر.س / شهر</small>';
+      if (code && c.subtitle) { code.textContent = c.subtitle; code.style.display = 'inline-block'; }
+      if (cta) { if (c.link) cta.href = c.link; cta.textContent = c.cta_text || 'اشترك بالخصم'; }
+    }
   }).catch(() => {});
 })();
 </script>

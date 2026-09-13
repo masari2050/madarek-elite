@@ -117,6 +117,11 @@ img{max-width:100%}
 .cp-code{flex:1;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.14);border:1.5px dashed rgba(255,255,255,.5);font-weight:800;font-size:17px;letter-spacing:1.5px;text-align:center;direction:ltr}
 .cp-btn{padding:13px 18px;border-radius:12px;background:#fff;color:#5B21B6;font-size:14px;font-weight:800;white-space:nowrap;transition:transform .15s}
 .cp-btn:hover{transform:translateY(-1px)}
+.cp-btn:disabled{opacity:.85;cursor:default;transform:none}
+.cp-prices{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cp-pr{display:inline-flex;align-items:baseline;gap:6px;background:rgba(255,255,255,.14);border-radius:11px;padding:7px 11px;font-size:13.5px;font-weight:700}
+.cp-pr s{font-size:13px;font-weight:600;color:rgba(255,255,255,.62)}
+.cp-pr b{font-family:'Cairo';font-size:17px;font-weight:900;color:#FDE68A}
 
 /* ───── coupon ───── */
 .coupon{padding:16px;background:var(--s2);border:1px solid var(--ln);border-radius:18px;margin-bottom:14px}
@@ -259,6 +264,7 @@ img{max-width:100%}
       <span class="cp-badge" id="cpBadge"></span>
       <div class="cp-title" id="cpTitle"></div>
       <div class="cp-sub" id="cpSub"></div>
+      <div class="cp-prices" id="cpPrices" style="display:none"></div>
       <div class="cp-row">
         <span class="cp-code" id="cpCode"></span>
         <button class="cp-btn" id="cpBtn" onclick="applyCampaignCode()">طبّق الكود</button>
@@ -439,6 +445,7 @@ const sb = window.sb || (typeof supabase !== 'undefined' && typeof supabase.crea
 let plans = [];               // الخطط من DB أو defaults
 let selectedSlug = 'monthly';  // الشهري الافتراضي — يقلّل sticker shock وأقرب لتوقّع السوق
 let appliedCoupon = null;     // { code, discount_type, discount_value, final, base }
+let campaignCfg = null;       // config بنر الحملة النشط (code, pct, ...) — null خارج الحملة
 let referralDiscount = null;  // { has: bool, percent: 10, referral_id, referrer_name } — يُحمَّل من DB في init
 let currentUser = null;       // user object
 let loadingCheckout = false;
@@ -643,17 +650,29 @@ async function loadPlans(){
 
   renderPlans();
   updateSummary();
+  renderCampaignPrices();
+}
+
+// نسبة كوبون الخصم المطبّق (0 لو ما فيه كوبون نسبة) — نفس معادلة السيرفر: السعر − round(السعر × النسبة)
+function couponPct(){
+  if (!appliedCoupon || appliedCoupon.discount_type !== 'percentage') return 0;
+  const v = Number(appliedCoupon.discount_value) || 0;
+  return (v > 0 && v < 100) ? v : 0;
 }
 
 // ═══ Render plans ═════════════════════════════════════════
 function renderPlans(){
   const list = $('plansList');
+  const cPct = couponPct();
   list.innerHTML = plans.map(p => {
     const isSel = p.slug === selectedSlug;
-    const hasDisc = p.original && p.original > p.price;
-    const pct = hasDisc ? Math.round((1 - p.price/p.original) * 100) : 0;
-    const equivPerMonth = p.duration_months > 1 ? Math.round(p.price / p.duration_months) : null;
-    const saving = hasDisc ? (p.original - p.price) : 0;
+    // وقت الخصم: السعر الحالي مشطوب والسعر بعد الكوبون ظاهر
+    const now = cPct ? p.price - Math.round(p.price * cPct / 100) : p.price;
+    const oldPrice = cPct ? p.price : p.original;
+    const hasDisc = oldPrice && oldPrice > now;
+    const pct = cPct || (hasDisc ? Math.round((1 - now/oldPrice) * 100) : 0);
+    const equivPerMonth = p.duration_months > 1 ? Math.round(now / p.duration_months) : null;
+    const saving = hasDisc ? (oldPrice - now) : 0;
 
     const cardHtml = `
       <div class="plan${isSel ? ' selected' : ''}" data-slug="${p.slug}" onclick="selectPlan('${p.slug}')">
@@ -663,8 +682,8 @@ function renderPlans(){
         <div class="pl-body">
           <div class="pl-name">${p.name}</div>
           <div class="pl-price-row">
-            <div class="pl-price">${p.price} <small>ر.س</small></div>
-            ${hasDisc ? `<span class="pl-original">${p.original} ر.س</span>` : ''}
+            <div class="pl-price">${now} <small>ر.س</small></div>
+            ${hasDisc ? `<span class="pl-original">${oldPrice} ر.س</span>` : ''}
             ${pct > 0 ? `<span class="pl-discount">-${pct}%</span>` : ''}
           </div>
           ${equivPerMonth ? `<div class="pl-equiv">ما يعادل ${equivPerMonth} ر.س/شهر</div>` : ''}
@@ -728,8 +747,42 @@ async function loadCampaignBanner(){
     $('cpCode').textContent = c.code || '';
     $('cpBtn').textContent = c.cta_text || 'طبّق الكود';
     card.dataset.code = c.code || '';
-    card.style.display = 'block';
+    campaignCfg = c;
+    renderCampaignPrices();
+    syncCampaignCard();
   } catch(_) {}
+}
+
+// أسعار الباقات داخل بطاقة الحملة: القديم مشطوب والجديد ظاهر (من جدول plans ونسبة الحملة)
+function renderCampaignPrices(){
+  const box = $('cpPrices');
+  const pct = campaignCfg ? Number(campaignCfg.pct) || 0 : 0;
+  if (!box || !pct || pct >= 100 || !plans.length) return;
+  const escH = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  box.innerHTML = plans.map(p => {
+    const now = p.price - Math.round(p.price * pct / 100);
+    return `<span class="cp-pr">${escH(p.name)} <s>${p.price}</s> <b>${now}</b></span>`;
+  }).join('');
+  box.style.display = 'flex';
+}
+
+// تُخفى بطاقة الحملة لو الزائر عنده كود أفضل مطبّق (مثل كود شريك) حتى لا يستبدله بخصم أقل
+function syncCampaignCard(){
+  const card = $('cpCard');
+  if (!card || !campaignCfg) return;
+  const code = String(campaignCfg.code || '').toUpperCase();
+  const pct = Number(campaignCfg.pct) || 0;
+  let show = true;
+  if (appliedCoupon && appliedCoupon.code !== code) {
+    const applied = (appliedCoupon.base || 0) - (appliedCoupon.final || 0);
+    const campaign = Math.round((appliedCoupon.base || 0) * pct / 100);
+    if (!pct || applied >= campaign) show = false;
+  }
+  card.style.display = show ? 'block' : 'none';
+  const btn = $('cpBtn');
+  const isOn = !!appliedCoupon && appliedCoupon.code === code;
+  btn.disabled = isOn;
+  btn.textContent = isOn ? 'مطبّق' : (campaignCfg.cta_text || 'طبّق الكود');
 }
 window.applyCampaignCode = function(){
   const code = ($('cpCard').dataset.code || '').trim().toUpperCase();
@@ -838,6 +891,8 @@ window.applyCouponClick = async function(){
   } finally {
     btn.disabled = false;
     if (!btn.classList.contains('applied')) btn.textContent = 'تحقّق';
+    renderPlans();
+    syncCampaignCard();
     updateSummary();
   }
 };
