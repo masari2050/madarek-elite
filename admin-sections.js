@@ -6212,4 +6212,421 @@ window.loadMockExamTab = async function(tab) {
     }
 };
 
+
+// ═══════════════════════════════════════════════════════
+// PARTNERS — الشركاء (مذيعو لايف تيك توك والمدربون)
+// يعتمد على RPCs: admin_list_partners / admin_upsert_partner /
+//                  admin_partner_payout / admin_set_partner_active  (migration 20261108020000)
+// ═══════════════════════════════════════════════════════
+const PT_SITE = 'https://www.madarekelite.com';
+const PT_PLAN = { monthly:'شهري', quarterly:'3 شهور', yearly:'سنوي' };
+window._partners = window._partners || [];
+
+const PT_MOCK = [
+  { id:'11111111-1111-4111-8111-111111111111', slug:'abaad', name:'د. علي الرويس', code:'ABAAD', commission_pct:35, discount_value:15,
+    coupon_expires_at:'2026-12-31T20:59:59Z', access_key:'15ef3e29d8dea3a04bc72b7121c2abf8', iban:null, notes:'شريك الإطلاق',
+    paid_total:0, last_payout_at:null, is_active:true, created_at:'2026-09-10T07:55:00Z', visits:4, code_users:0, paid_count:0,
+    revenue:0, by_plan:{}, commission_total:0, pending:0, coupon_expired:false, payouts:[] },
+  { id:'22222222-2222-4222-8222-222222222222', slug:'qudrat-live', name:'حساب تجريبي', code:'LIVE20', commission_pct:30, discount_value:20,
+    coupon_expires_at:'2027-02-01T20:59:59Z', access_key:'0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f', iban:'SA7305000068207214490000', notes:null,
+    paid_total:200, last_payout_at:'2026-11-01T10:00:00Z', is_active:true, created_at:'2026-10-01T07:55:00Z', visits:312, code_users:19, paid_count:12,
+    revenue:1140, by_plan:{monthly:9, quarterly:2, yearly:1}, commission_total:342, pending:142, coupon_expired:false,
+    payouts:[{amount:200, note:'تحويل الإنماء', date:'2026-11-01'}] }
+];
+
+window.loadPartners = async function() {
+    const { sb } = window.A;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+
+    $c().innerHTML = `
+    <div id="ptArea">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px" id="ptKpis"><div class="loader">...</div></div>
+
+        <div class="card">
+            <div class="card-hdr">
+                <div class="card-hdr-l">
+                    <div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                    <div><div class="card-title">الشركاء</div><div class="card-sub">مذيعو لايف تيك توك والمدربون — كود خصم لكل شريك وعمولة من اشتراكات طلابه</div></div>
+                </div>
+                <button class="btn btn-pri" onclick="openPartnerForm()" style="margin:0">+ إضافة شريك</button>
+            </div>
+            <div class="tbl-wrap" id="ptTable"><div class="loader">جاري التحميل...</div></div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+            <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">كيف يشتغل النظام</div></div></div></div>
+            <div style="padding:0 18px 16px;font-size:12.5px;color:var(--i2);line-height:2">
+                <div>• رابط الشريك <b style="font-family:monospace;color:var(--pri)">${PT_SITE.replace('https://','')}/p/الكود</b> يحفظ كوده عند الزائر ويطبّقه تلقائياً في صفحة الأسعار.</div>
+                <div>• الزيارات تُحسب من هذا الرابط فقط. «أدخلوا الكود» = طلاب وصلوا لمرحلة الدفع بكوده. الإيراد = المدفوع فعلياً بعد الخصم.</div>
+                <div>• العمولة = نسبة الشريك من الإيراد المدفوع. المتبقي = العمولة ناقص ما سجّلته له من صرف.</div>
+                <div>• لوحة الشريك رابط سري بلا تسجيل دخول — انسخه من زر «لوحته» وأرسله له على الخاص، ولا يُنشر.</div>
+                <div>• «إيقاف» ينهي صلاحية كوده فوراً ويقفل لوحته. «تشغيل» يرجّعه ويمدّد الكود سنة.</div>
+            </div>
+        </div>
+    </div>`;
+
+    try {
+        let rows;
+        if (isPreview) {
+            rows = PT_MOCK;
+        } else {
+            const { data, error } = await sb.rpc('admin_list_partners');
+            if (error) throw error;
+            rows = Array.isArray(data) ? data : [];
+        }
+        window._partners = rows;
+        renderPartnersKpis(rows);
+        renderPartnersTable(rows);
+        // أسعار الباقات الحية لحسبة نموذج الإضافة (تفشل بصمت → أسعار افتراضية)
+        if (!isPreview && !window._plansCache) {
+            try {
+                const { data: pl } = await sb.from('plans').select('slug,price').eq('is_active', true).order('price');
+                if (Array.isArray(pl) && pl.length) window._plansCache = pl.map(x => ({ slug: x.slug, price: Number(x.price) }));
+            } catch(_) {}
+        }
+    } catch(e) {
+        console.error(e);
+        document.getElementById('ptKpis').innerHTML = '';
+        document.getElementById('ptTable').innerHTML = '<div class="empty-d" style="padding:20px">خطأ في التحميل: ' + esc(e.message||'') + '</div>';
+    }
+};
+
+function ptNum(v) { return fmt(Math.round(Number(v || 0))); }
+
+function renderPartnersKpis(rows) {
+    const active = rows.filter(r => r.is_active);
+    const sum = k => rows.reduce((s, r) => s + Number(r[k] || 0), 0);
+    document.getElementById('ptKpis').innerHTML = `
+    <div class="kpi blue">
+        <div class="kpi-label">شركاء نشطون</div>
+        <div class="kpi-val">${fmt(active.length)}</div>
+        <div class="kpi-sub">${rows.length - active.length ? fmt(rows.length - active.length) + ' موقوف' : 'كل الشركاء شغّالون'}</div>
+    </div>
+    <div class="kpi green">
+        <div class="kpi-label">اشتراكات بأكوادهم</div>
+        <div class="kpi-val">${ptNum(sum('paid_count'))}</div>
+        <div class="kpi-sub">${ptNum(sum('code_users'))} طالباً أدخلوا كوداً</div>
+    </div>
+    <div class="kpi gold">
+        <div class="kpi-label">إيراد عبر الشركاء</div>
+        <div class="kpi-val">${ptNum(sum('revenue'))}</div>
+        <div class="kpi-sub">ر.س مدفوعة فعلياً</div>
+    </div>
+    <div class="kpi orange">
+        <div class="kpi-label">عمولات متبقية</div>
+        <div class="kpi-val">${ptNum(sum('pending'))}</div>
+        <div class="kpi-sub">ر.س — صُرف ${ptNum(sum('paid_total'))} من ${ptNum(sum('commission_total'))}</div>
+    </div>`;
+}
+
+function ptStatusPill(r) {
+    if (!r.is_active) return '<span class="status-pill expired">موقوف</span>';
+    if (r.coupon_expired) return '<span class="status-pill pending">الكود منتهٍ</span>';
+    return '<span class="status-pill active">نشط</span>';
+}
+
+function renderPartnersTable(rows) {
+    const el = document.getElementById('ptTable');
+    if (!rows.length) {
+        el.innerHTML = `<div class="empty" style="padding:36px 20px">
+            <div class="empty-t">لا يوجد شركاء بعد</div>
+            <div class="empty-d" style="margin-top:6px">أضف أول مذيع: اسمه وكوده ونسبة الخصم والعمولة — ويطلع لك رابط لوحته فوراً</div>
+            <button class="btn btn-pri" style="margin-top:14px" onclick="openPartnerForm()">+ إضافة شريك</button>
+        </div>`;
+        return;
+    }
+    el.innerHTML = '<table><thead><tr>' +
+        '<th>الشريك</th>' +
+        '<th>الخصم · العمولة</th>' +
+        '<th style="text-align:center">زيارات</th>' +
+        '<th style="text-align:center">أدخلوا الكود</th>' +
+        '<th>الاشتراكات</th>' +
+        '<th>الإيراد</th>' +
+        '<th>العمولة</th>' +
+        '<th>الحالة</th>' +
+        '<th>الإجراءات</th>' +
+        '</tr></thead><tbody>' +
+        rows.map(r => {
+            const plans = Object.entries(r.by_plan || {}).map(([k,v]) => `${PT_PLAN[k] || k} ${fmt(v)}`).join(' · ');
+            const exp = r.coupon_expires_at ? fmtDate(r.coupon_expires_at) : '—';
+            return `<tr style="${r.is_active ? '' : 'opacity:.6'}">
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div class="tbl-avatar">${esc((r.name||'?').charAt(0))}</div>
+                        <div>
+                            <div class="td-name">${esc(r.name)}</div>
+                            <div style="font-size:10.5px;color:var(--i3);margin-top:2px">
+                                <span style="font-family:monospace;color:var(--pri);font-weight:700">${esc(r.code)}</span>
+                                · /p/${esc(r.slug)}
+                                · منذ ${fmtDate(r.created_at)}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div><b>${ptNum(r.discount_value)}%</b> <span style="font-size:11px;color:var(--i3)">للطالب</span></div>
+                    <div><b>${ptNum(r.commission_pct)}%</b> <span style="font-size:11px;color:var(--i3)">عمولة</span></div>
+                    <div style="font-size:10px;color:var(--i3);margin-top:2px">الكود حتى ${exp}</div>
+                </td>
+                <td style="text-align:center"><b>${ptNum(r.visits)}</b></td>
+                <td style="text-align:center"><b>${ptNum(r.code_users)}</b></td>
+                <td>
+                    <b style="font-size:14px">${ptNum(r.paid_count)}</b>
+                    <div style="font-size:10.5px;color:var(--i3)">${esc(plans) || '—'}</div>
+                    ${r.last_sale_at ? `<div style="font-size:10px;color:var(--i3)">آخر اشتراك ${fmtDate(r.last_sale_at)}</div>` : ''}
+                </td>
+                <td><b style="color:var(--suc);font-size:14px">${ptNum(r.revenue)}</b> <span style="font-size:11px;color:var(--i3)">ر.س</span></td>
+                <td style="font-size:12px;line-height:1.7">
+                    <div>مستحق <b>${ptNum(r.commission_total)}</b></div>
+                    <div style="color:var(--i3)">صُرف ${ptNum(r.paid_total)}</div>
+                    <div>متبقٍ <b style="color:${Number(r.pending) > 0 ? 'var(--acc)' : 'var(--i3)'}">${ptNum(r.pending)}</b></div>
+                </td>
+                <td>${ptStatusPill(r)}</td>
+                <td>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:230px">
+                        <button class="btn btn-pri" style="padding:5px 9px;font-size:11px" onclick="ptCopy('${PT_SITE}/partner.html?k=${esc(r.access_key)}','رابط لوحة ${esc(r.name)}')" title="نسخ رابط لوحة الشريك (سري)">لوحته</button>
+                        <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="ptCopy('${PT_SITE}/p/${esc(r.code)}','رابط ${esc(r.name)} للطلاب')" title="نسخ رابط الطلاب">الرابط</button>
+                        <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px" onclick="openPartnerForm('${r.id}')">تعديل</button>
+                        <button class="btn btn-ghost" style="padding:5px 9px;font-size:11px;color:var(--suc)" onclick="openPartnerPayout('${r.id}')">صرف</button>
+                        ${r.is_active
+                            ? `<button class="btn btn-ghost" style="padding:5px 9px;font-size:11px;color:var(--dng)" onclick="togglePartner('${r.id}', false)">إيقاف</button>`
+                            : `<button class="btn btn-ghost" style="padding:5px 9px;font-size:11px;color:var(--suc)" onclick="togglePartner('${r.id}', true)">تشغيل</button>`}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('') +
+        '</tbody></table>';
+}
+
+window.ptCopy = function(text, label) {
+    const done = () => showToast('تم نسخ ' + (label || 'الرابط'), 'suc');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => window.prompt('انسخ الرابط:', text));
+    } else {
+        window.prompt('انسخ الرابط:', text);
+    }
+};
+
+// تاريخ انتهاء الكود: نخزّنه 23:59:59 بتوقيت السعودية (= 20:59:59Z)
+function ptDateToInput(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    const ksa = new Date(d.getTime() + 3 * 3600 * 1000);
+    return ksa.toISOString().slice(0, 10);
+}
+function ptInputToIso(v) {
+    if (!v || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return null;
+    return v + 'T20:59:59Z';
+}
+function ptDefaultExpiry() {
+    const d = new Date(); d.setFullYear(d.getFullYear() + 1);
+    return d.toISOString().slice(0, 10);
+}
+
+window.openPartnerForm = function(id) {
+    const r = id ? (window._partners || []).find(p => p.id === id) : null;
+    const isEdit = !!r;
+    const body = `
+    <div style="padding:4px 0">
+        <div class="form-field">
+            <label class="form-label">اسم الشريك <span style="color:var(--dng)">*</span></label>
+            <input class="form-input" id="ptName" value="${esc(r?.name || '')}" placeholder="مثال: أ. محمد العتيبي" autocomplete="off">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-field">
+                <label class="form-label">الكود <span style="color:var(--dng)">*</span></label>
+                <input class="form-input" id="ptCode" value="${esc(r?.code || '')}" placeholder="مثال: MOHAMMED" autocomplete="off" style="font-family:monospace;text-transform:uppercase" ${isEdit ? 'disabled' : ''}>
+                <div style="font-size:10.5px;color:var(--i3);margin-top:4px">${isEdit ? 'الكود لا يتغيّر بعد الإنشاء' : 'حروف إنجليزية كبيرة وأرقام، يدخله الطالب في صفحة الأسعار'}</div>
+            </div>
+            <div class="form-field">
+                <label class="form-label">الرابط المختصر <span style="color:var(--dng)">*</span></label>
+                <input class="form-input" id="ptSlug" value="${esc(r?.slug || '')}" placeholder="مثال: mohammed" autocomplete="off" style="font-family:monospace;text-transform:lowercase;direction:ltr" ${isEdit ? 'disabled' : ''}>
+                <div style="font-size:10.5px;color:var(--i3);margin-top:4px">${isEdit ? 'الرابط لا يتغيّر بعد الإنشاء' : 'يُستخدم لتتبّع الزيارات — عادةً نفس الكود بحروف صغيرة'}</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+            <div class="form-field">
+                <label class="form-label">خصم الطالب %</label>
+                <input class="form-input" id="ptDiscount" type="number" min="1" max="100" value="${r ? Number(r.discount_value || 20) : 20}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">عمولة الشريك %</label>
+                <input class="form-input" id="ptCommission" type="number" min="0" max="100" value="${r ? Number(r.commission_pct || 30) : 30}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">الكود صالح حتى</label>
+                <input class="form-input" id="ptExpires" type="date" value="${r ? ptDateToInput(r.coupon_expires_at) : ptDefaultExpiry()}" style="direction:ltr">
+            </div>
+        </div>
+        <div class="form-field">
+            <label class="form-label">آيبان الشريك (اختياري)</label>
+            <input class="form-input" id="ptIban" value="${esc(r?.iban || '')}" placeholder="SA.." autocomplete="off" style="font-family:monospace;direction:ltr;text-transform:uppercase">
+        </div>
+        <div class="form-field">
+            <label class="form-label">ملاحظات (اختياري)</label>
+            <textarea class="form-textarea" id="ptNotes" rows="2" placeholder="حساب تيك توك، طريقة التواصل، شروط خاصة">${esc(r?.notes || '')}</textarea>
+        </div>
+        <div id="ptPreview" style="background:var(--s2,#F3F1FA);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--i2);line-height:1.9"></div>
+    </div>`;
+    const foot = `<button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+                  <button class="btn btn-pri" onclick="savePartner(${isEdit ? `'${r.id}'` : 'null'})">${isEdit ? 'حفظ التعديلات' : 'إنشاء الشريك'}</button>`;
+    openModal(isEdit ? 'تعديل ' + r.name : 'إضافة شريك جديد', body, foot);
+
+    const upd = () => {
+        const d = Number(document.getElementById('ptDiscount').value || 0);
+        const c = Number(document.getElementById('ptCommission').value || 0);
+        const plans = (window._plansCache || [{ slug:'monthly', price:99 }, { slug:'quarterly', price:249 }, { slug:'yearly', price:799 }]);
+        const line = plans.map(p => {
+            const price = Number(p.price || 0);
+            const after = price - Math.round(price * d / 100);
+            return `${PT_PLAN[p.slug] || p.slug}: الطالب يدفع <b>${after}</b> والشريك يأخذ <b>${Math.round(after * c / 100)}</b>`;
+        }).join('<br>');
+        document.getElementById('ptPreview').innerHTML = `<div style="font-weight:700;color:var(--i1);margin-bottom:2px">الحسبة على الأسعار الحالية</div>${line}`;
+    };
+    ['ptDiscount','ptCommission'].forEach(i => document.getElementById(i).addEventListener('input', upd));
+    const codeEl = document.getElementById('ptCode'), slugEl = document.getElementById('ptSlug');
+    if (!isEdit) codeEl.addEventListener('input', () => { if (!slugEl.dataset.touched) slugEl.value = codeEl.value.toLowerCase().replace(/[^a-z0-9-]/g, ''); });
+    if (!isEdit) slugEl.addEventListener('input', () => { slugEl.dataset.touched = '1'; });
+    upd();
+    setTimeout(() => document.getElementById('ptName')?.focus(), 100);
+};
+
+window.savePartner = async function(id) {
+    const g = i => (document.getElementById(i)?.value || '').trim();
+    const payload = {
+        p_id: id || null,
+        p_slug: g('ptSlug').toLowerCase(),
+        p_name: g('ptName'),
+        p_coupon_code: g('ptCode').toUpperCase(),
+        p_discount_pct: Number(g('ptDiscount')),
+        p_commission_pct: Number(g('ptCommission')),
+        p_iban: g('ptIban') || null,
+        p_notes: g('ptNotes') || null,
+        p_coupon_expires_at: ptInputToIso(g('ptExpires'))
+    };
+    if (payload.p_name.length < 2) return showToast('اسم الشريك مطلوب', 'err');
+    if (!id && !/^[A-Z0-9]{3,20}$/.test(payload.p_coupon_code)) return showToast('الكود: حروف إنجليزية كبيرة وأرقام فقط (3-20)', 'err');
+    if (!id && !/^[a-z0-9][a-z0-9-]{1,29}$/.test(payload.p_slug)) return showToast('الرابط المختصر: حروف إنجليزية صغيرة وأرقام وشرطة (2-30)', 'err');
+    if (!(payload.p_discount_pct >= 1 && payload.p_discount_pct <= 100)) return showToast('نسبة الخصم بين 1 و100', 'err');
+    if (!(payload.p_commission_pct >= 0 && payload.p_commission_pct <= 100)) return showToast('نسبة العمولة بين 0 و100', 'err');
+
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    try {
+        let res;
+        if (isPreview) {
+            res = { success:true, id: id || 'preview', name: payload.p_name, code: payload.p_coupon_code, slug: payload.p_slug, access_key: 'preview0000000000000000000000000' };
+        } else {
+            const { data, error } = await window.A.sb.rpc('admin_upsert_partner', payload);
+            if (error) throw error;
+            res = data;
+        }
+        if (!res?.success) throw new Error(res?.error || 'فشل الحفظ');
+        closeModal();
+        if (id) {
+            showToast('تم حفظ تعديلات ' + res.name, 'suc');
+            loadPartners();
+        } else {
+            loadPartners();
+            showPartnerCreated(res);
+        }
+    } catch(e) { showToast('خطأ: ' + (e.message || ''), 'err'); }
+};
+
+function showPartnerCreated(res) {
+    const dash = `${PT_SITE}/partner.html?k=${res.access_key}`;
+    const link = `${PT_SITE}/p/${res.code}`;
+    const row = (label, url, hint) => `
+        <div style="margin-bottom:12px">
+            <div style="font-size:12px;font-weight:700;color:var(--i1);margin-bottom:4px">${label}</div>
+            <div style="display:flex;gap:6px;align-items:center">
+                <input class="form-input" value="${esc(url)}" readonly style="font-family:monospace;font-size:11.5px;direction:ltr;flex:1" onclick="this.select()">
+                <button class="btn btn-pri" style="padding:8px 12px;font-size:11px;white-space:nowrap" onclick="ptCopy('${esc(url)}','${label}')">نسخ</button>
+            </div>
+            <div style="font-size:10.5px;color:var(--i3);margin-top:3px">${hint}</div>
+        </div>`;
+    const body = `
+    <div style="padding:4px 0">
+        <div style="background:var(--suc-s);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:12px;margin-bottom:16px">
+            <div style="font-weight:800;color:var(--suc)">تم إنشاء الشريك ${esc(res.name)}</div>
+            <div style="font-size:12px;color:var(--i2);margin-top:4px">الكود <b style="font-family:monospace">${esc(res.code)}</b> شغّال من الآن في صفحة الأسعار، والرابطان أدناه يعملان فوراً بلا نشر.</div>
+        </div>
+        ${row('رابط لوحة الشريك (سري — له فقط)', dash, 'يفتح لوحته بلا تسجيل دخول. أرسله له على الخاص ولا يُنشر في أي مكان عام.')}
+        ${row('رابط الطلاب (ينشره في البايو واللايف)', link, 'يحفظ كوده عند الزائر ويطبّق الخصم تلقائياً في صفحة الأسعار.')}
+    </div>`;
+    openModal('الشريك جاهز', body, `<button class="btn btn-pri" onclick="closeModal()">تم</button>`);
+}
+
+window.openPartnerPayout = function(id) {
+    const r = (window._partners || []).find(p => p.id === id);
+    if (!r) return;
+    const hist = (r.payouts || []).length
+        ? '<table style="font-size:12px"><thead><tr><th>التاريخ</th><th>المبلغ</th><th>ملاحظة</th></tr></thead><tbody>' +
+          r.payouts.map(p => `<tr><td style="font-size:11px;color:var(--i3)">${esc(p.date)}</td><td><b>${ptNum(p.amount)}</b> ر.س</td><td style="font-size:11px;color:var(--i3)">${esc(p.note || '—')}</td></tr>`).join('') +
+          '</tbody></table>'
+        : '<div style="font-size:12px;color:var(--i3);padding:8px 0">لم يُصرف له شيء بعد</div>';
+    const body = `
+    <div style="padding:4px 0">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;text-align:center">
+            <div style="background:var(--s2,#F3F1FA);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--i3)">مستحق</div><div style="font-size:18px;font-weight:800">${ptNum(r.commission_total)}</div></div>
+            <div style="background:var(--s2,#F3F1FA);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--i3)">صُرف</div><div style="font-size:18px;font-weight:800;color:var(--i2)">${ptNum(r.paid_total)}</div></div>
+            <div style="background:var(--suc-s);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--i3)">متبقٍ</div><div style="font-size:18px;font-weight:800;color:var(--suc)">${ptNum(r.pending)}</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--i2);margin-bottom:12px">الآيبان: <b style="font-family:monospace;direction:ltr;display:inline-block">${esc(r.iban || 'غير مسجّل — أضفه من «تعديل»')}</b></div>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+            <div class="form-field">
+                <label class="form-label">المبلغ المحوّل (ر.س) <span style="color:var(--dng)">*</span></label>
+                <input class="form-input" id="ptPayAmount" type="number" min="1" step="1" value="${Math.round(Number(r.pending || 0)) || ''}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">مرجع التحويل أو ملاحظة</label>
+                <input class="form-input" id="ptPayNote" placeholder="مثال: حوالة الإنماء 08-11" autocomplete="off">
+            </div>
+        </div>
+        <div style="background:var(--warn-s,#FEFCE8);border:1px solid #FDE68A;border-radius:8px;padding:10px;margin:4px 0 14px;font-size:12px;color:#92400E">
+            سجّل الصرف بعد إتمام التحويل فعلياً من البنك — السجل لا يُحذف من اللوحة.
+        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--i1);margin-bottom:6px">آخر الصرفيات</div>
+        ${hist}
+    </div>`;
+    const foot = `<button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+                  <button class="btn btn-pri" style="background:var(--suc);border-color:var(--suc)" onclick="confirmPartnerPayout('${r.id}')">تسجيل الصرف</button>`;
+    openModal('صرف عمولة — ' + r.name, body, foot);
+    setTimeout(() => document.getElementById('ptPayAmount')?.focus(), 100);
+};
+
+window.confirmPartnerPayout = async function(id) {
+    const amount = Number((document.getElementById('ptPayAmount')?.value || '').trim());
+    const note = (document.getElementById('ptPayNote')?.value || '').trim();
+    if (!(amount > 0)) return showToast('المبلغ يجب أن يكون أكبر من صفر', 'err');
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    try {
+        if (isPreview) { closeModal(); showToast('(معاينة) سُجّل صرف ' + fmt(amount) + ' ر.س', 'suc'); return; }
+        const { data, error } = await window.A.sb.rpc('admin_partner_payout', { p_partner_id: id, p_amount: amount, p_note: note || null });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'فشلت العملية');
+        closeModal();
+        showToast('سُجّل صرف ' + fmt(amount) + ' ر.س — الإجمالي المصروف ' + ptNum(data.paid_total), 'suc');
+        loadPartners();
+    } catch(e) { showToast('خطأ: ' + (e.message || ''), 'err'); }
+};
+
+window.togglePartner = async function(id, active) {
+    const r = (window._partners || []).find(p => p.id === id);
+    if (!r) return;
+    const msg = active
+        ? `تشغيل ${r.name}: يرجع كوده ${r.code} شغّالاً سنة من اليوم وتفتح لوحته. متأكد؟`
+        : `إيقاف ${r.name}: ينتهي كوده ${r.code} فوراً وتقفل لوحته. الأرقام والسجل يبقون. متأكد؟`;
+    if (!window.confirm(msg)) return;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+    try {
+        if (isPreview) { showToast('(معاينة) ' + (active ? 'تم التشغيل' : 'تم الإيقاف'), 'suc'); return; }
+        const { data, error } = await window.A.sb.rpc('admin_set_partner_active', { p_partner_id: id, p_active: active, p_coupon_expires_at: null });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'فشلت العملية');
+        showToast(active ? 'تم تشغيل ' + r.name : 'تم إيقاف ' + r.name + ' وإنهاء كوده', 'suc');
+        loadPartners();
+    } catch(e) { showToast('خطأ: ' + (e.message || ''), 'err'); }
+};
+
 })();

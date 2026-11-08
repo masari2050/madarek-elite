@@ -469,6 +469,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
     <div class="sb-item" data-page="pages" data-title="الصفحات التعريفية"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>الصفحات التعريفية</span></div>
     <div class="sb-item" data-page="referrals" data-title="الإحالات"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>الإحالات</span></div>
     <div class="sb-item" data-page="payouts" data-title="طلبات الصرف"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/><path d="M7 15h4"/></svg><span>طلبات الصرف</span><span class="badge" id="payoutsBadge" style="display:none">0</span></div>
+    <div class="sb-item" data-page="partners" data-title="الشركاء"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>الشركاء</span></div>
     <div class="sb-item" data-page="tips" data-title="النصائح اليومية"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>النصائح اليومية</span></div>
     <div class="sb-item" data-page="seo" data-title="SEO والظهور"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>SEO والظهور</span></div>
 
@@ -520,7 +521,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
 <script src="v2/supabase-helpers-v2.js?v=2026-07-12-gtseg"></script>
-<script src="admin-sections.js?v=2026-07-12-daily-visitors"></script>
+<script src="admin-sections.js?v=2026-11-08-partners"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script>
 (function(){
@@ -626,7 +627,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar
 // يقرأ التاب من URL hash عند التحميل الأول → يبقى نفسه عند الـrefresh
 function loadInitialPage() {
     const hash = (location.hash || '').replace(/^#/, '');
-    const validPages = ['overview','questions','review','users','users-analytics','plans','coupons','finance','invoices','expenses','mockexams','banners','pages','referrals','payouts','tips','seo','staff','incoming-reports','visitors','settings'];
+    const validPages = ['overview','questions','review','users','users-analytics','plans','coupons','finance','invoices','expenses','mockexams','banners','pages','referrals','payouts','partners','tips','seo','staff','incoming-reports','visitors','settings'];
     const page = validPages.includes(hash) ? hash : 'overview';
     const item = document.querySelector('[data-page="'+page+'"]');
     const title = item ? (item.getAttribute('data-title') || '') : '';
@@ -667,6 +668,7 @@ function switchPage(page, title) {
         pages: window.loadPages,
         referrals: window.loadReferrals,
         payouts: window.loadPayouts,
+        partners: window.loadPartners,
         tips: window.loadTips,
         seo: window.loadSEO,
         staff: window.loadStaff,
