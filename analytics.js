@@ -109,7 +109,10 @@
         utm_medium: pageUtm.utm_medium || null,
         utm_campaign: pageUtm.utm_campaign || null,
         utm_term: pageUtm.utm_term || null,
-        utm_content: pageUtm.utm_content || null
+        utm_content: pageUtm.utm_content || null,
+        ua: (navigator.userAgent || '').slice(0, 160),
+        lang: navigator.language || null,
+        screen_w: (window.screen && window.screen.width) || null
     });
 
     // ─── تحديث آخر ظهور كل 2 دقيقة ───
