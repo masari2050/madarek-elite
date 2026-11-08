@@ -293,12 +293,13 @@ serve(async (req) => {
     }
 
     // ── استخراج وسيلة الدفع من MyFatoorah (visa/mada/apple_pay/stc_pay) ──
-    // نقرأ من InvoiceTransactions[0].PaymentGateway (أكثر صدقاً من الحقول الأخرى)
+    // نقرأ PaymentGateway من المحاولة الناجحة — الفاتورة الواحدة قد تحمل عدة محاولات
+    // (2026-11-08: STC Pay فاشلة ثم Apple Pay ناجحة سُجّلت stc_pay لأن الكود كان يأخذ [0])
     let paymentMethod: string | null = null
     try {
-      const tx = Array.isArray(invoiceData.InvoiceTransactions)
-        ? invoiceData.InvoiceTransactions[0]
-        : null
+      const txs: any[] = Array.isArray(invoiceData.InvoiceTransactions) ? invoiceData.InvoiceTransactions : []
+      const tx = txs.find((t: any) => /succ/i.test(String(t?.TransactionStatus || '')))
+        || txs[txs.length - 1] || null
       const gw = String(tx?.PaymentGateway || invoiceData.PaymentGateway || '').toLowerCase()
       if (gw.includes('mada') || gw === 'md') paymentMethod = 'mada'
       else if (gw.includes('visa') || gw.includes('master')) paymentMethod = 'visa'
