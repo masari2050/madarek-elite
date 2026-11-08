@@ -359,10 +359,14 @@ const sb = M.getSb();
 
 // ── URL Params ──
 const params = new URLSearchParams(window.location.search);
-const SECTION = params.get('section') || 'quant';
-const COUNT = parseInt(params.get('count')) || 10;
+// ── التدريب المجاني اليومي (free=1): للعضو غير المشترك — 5 أسئلة يومياً من مجموعة الأسئلة الواضحة (is_free_sample)
+const FREE = params.get('free') === '1';
+const FREE_DAILY_LIMIT = 5;
+let freeMode = false; // يصير true فقط لغير المشترك الذي مرّ من بوابة التدريب المجاني
+const SECTION = FREE ? (['quant','verbal'].includes(params.get('section')) ? params.get('section') : 'mixed') : (params.get('section') || 'quant');
+let COUNT = parseInt(params.get('count')) || 10;
 const MODE = params.get('mode') || 'instant'; // instant | end
-const SECTION_NAME = params.get('name') || 'تدريب';
+const SECTION_NAME = params.get('name') || (FREE ? 'تدريبك المجاني' : 'تدريب');
 const LEAK_GROUP_ID = params.get('leak') || null; // فلترة حسب leak_group
 const TOP_REPEATED = params.get('top_repeated') === '1' || params.get('top_repeated') === 'true'; // فلترة الأسئلة الأكثر تكراراً
 const PREDICTED = params.get('predicted') === '1' || params.get('predicted') === 'true'; // فلترة توقعات النخبة
@@ -497,6 +501,17 @@ async function init() {
                     hasProductAccess = data === true;
                 } catch(_) {}
             }
+            if (!hasProductAccess && FREE) {
+                // بوابة التدريب المجاني اليومي: الحد 5 إجابات في اليوم (بتوقيت السعودية)
+                const todayCount = await countAttemptsTodayKSA();
+                if (todayCount >= FREE_DAILY_LIMIT) {
+                    location.href = '/pricing.html?from=free_done';
+                    return;
+                }
+                freeMode = true;
+                COUNT = Math.max(1, Math.min(COUNT, FREE_DAILY_LIMIT - todayCount));
+                hasProductAccess = true;
+            }
             if (!hasProductAccess) {
                 const back = encodeURIComponent(location.pathname + location.search);
                 location.href = '/pricing.html?from=' + back;
@@ -512,6 +527,21 @@ async function init() {
         await createSession();
         M.updateStreak();
     }
+}
+
+// عدد إجابات المستخدم اليوم بتوقيت السعودية (UTC+3) — للحد اليومي للتدريب المجاني
+async function countAttemptsTodayKSA() {
+    try {
+        const ksa = new Date(Date.now() + 3 * 3600e3);
+        ksa.setUTCHours(0, 0, 0, 0);
+        const start = new Date(ksa.getTime() - 3 * 3600e3).toISOString();
+        const { count, error } = await sb.from('attempts')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', profile.id)
+            .gte('created_at', start);
+        if (error) return 0;
+        return count || 0;
+    } catch(_) { return 0; }
 }
 
 // تسريبات فيها قطع استيعاب: المستقلة تُخلط، وكل قطعة تبقى كتلة واحدة
@@ -536,6 +566,9 @@ function pickLeakMix(valid, count) {
 async function loadQuestions() {
     try {
         let query = sb.from('questions').select(SAFE_COLS).eq('disabled', false);
+
+        // التدريب المجاني: من مجموعة الأسئلة الواضحة فقط (شرح واضح، بلا صور ولا قطع ولا تعقيد)
+        if (FREE) query = query.eq('is_free_sample', true);
 
         // إذا جاء من تسريبة محددة، فلتر على leak_group_id فقط
         if (LEAK_GROUP_ID) {
@@ -573,7 +606,20 @@ async function loadQuestions() {
         // لو المستخدم حلّ سؤالاً صح في آخر 14 يوم، نأجّله لآخر القائمة
         // عشان كل تدريب جديد يحس بأسئلة جديدة، وما يكرر اللي اتقنها فوراً
         const isRealUser = profile && profile.id && profile.id !== '00000000-0000-0000-0000-000000000000';
-        if ((TOP_REPEATED || PREDICTED) && isRealUser) {
+        if (freeMode && isRealUser) {
+            // التدريب المجاني: أسئلة لم يرها من قبل أولاً، فكل يوم يحس بأسئلة جديدة
+            try {
+                const { data: seenRows } = await sb.from('attempts')
+                    .select('question_id')
+                    .eq('user_id', profile.id)
+                    .limit(2000);
+                const seenIds = new Set((seenRows || []).map(r => r.question_id));
+                const fresh = valid.filter(q => !seenIds.has(q.id));
+                questions = (fresh.length >= COUNT ? shuffle(fresh) : [...shuffle(fresh), ...shuffle(valid.filter(q => seenIds.has(q.id)))]).slice(0, COUNT);
+            } catch(_) {
+                questions = shuffle(valid).slice(0, COUNT);
+            }
+        } else if ((TOP_REPEATED || PREDICTED) && isRealUser) {
             try {
                 const since = new Date(Date.now() - 14 * 864e5).toISOString();
                 const { data: recent } = await sb.from('attempts')
@@ -1011,6 +1057,27 @@ function showResults() {
     document.getElementById('resMotivIc').textContent = motiv.ic;
     document.getElementById('resMotivT').textContent = motiv.t;
     document.getElementById('resMotivD').textContent = motiv.d;
+
+    // التدريب المجاني: دعوة هادئة للاشتراك بدل «أعد الاختبار» و«رجوع للأقسام»
+    if (freeMode) {
+        const btns = document.querySelector('.res-btns');
+        if (btns && !document.getElementById('freeCta')) {
+            btns.querySelectorAll('.res-btn.suc, .res-btn.sec').forEach(b => {
+                if ((b.getAttribute('onclick') || '').indexOf('dashboard.html') === -1) b.style.display = 'none';
+            });
+            const cta = document.createElement('a');
+            cta.id = 'freeCta';
+            cta.href = '/pricing.html?from=free';
+            cta.className = 'res-btn pri';
+            cta.style.cssText = 'display:flex;text-decoration:none;background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;border:0';
+            cta.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>أعجبك الشرح؟ افتح كل الأسئلة بنفس الأسلوب';
+            btns.insertBefore(cta, btns.children[1] || null);
+            const note = document.createElement('div');
+            note.style.cssText = 'text-align:center;font-size:12.5px;color:var(--i3);margin-top:10px;font-weight:600';
+            note.textContent = 'أسئلتك المجانية تتجدد كل يوم';
+            btns.appendChild(note);
+        }
+    }
 
     document.getElementById('resultsScreen').classList.add('on');
 }

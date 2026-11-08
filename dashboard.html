@@ -988,7 +988,45 @@ async function renderPlan(isNewUser, mistakeCount) {
     if (!container) return;
 
     let tasks = [];
-    if (isNewUser) {
+    const isProPlan = profile && M.isSubscribed(profile);
+    const FREE_HREF = '/practice.html?free=1&section=mixed&count=5&mode=instant';
+    if (!isProPlan) {
+        // عضو مجاني (قرار 2026-11-08): تدريبه المجاني اليومي أولاً — كان زر «اختبر مستواك» يوصّله
+        // لصفحة التدريب وبوابة الاشتراك تحوّله فوراً للأسعار، فما يذوق شيئاً بعد التسجيل
+        tasks = [
+            {
+                cls: 'a',
+                icon: '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                title: 'تدريبك المجاني اليوم',
+                desc: '5 أسئلة بشرح واضح — تتجدد كل يوم',
+                href: FREE_HREF,
+                num: 5
+            }
+        ];
+        if (!(profile.onboarding_completed || profile.onboarding_skipped)) {
+            tasks.push({
+                cls: 'c',
+                icon: '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+                title: 'اختبر مستواك',
+                desc: '15 سؤالاً كمي ولفظي لتحديد مستواك',
+                href: '/v2/onboarding-v2.html',
+                num: 15
+            });
+        }
+        tasks.push({
+            cls: 'b',
+            icon: '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+            title: 'افتح كل الأسئلة والتجميعات',
+            desc: 'كل سؤال مشروح بنفس الطريقة',
+            href: '/pricing.html?from=plan',
+            num: 1
+        });
+        const cta = document.getElementById('planCta');
+        if (cta) {
+            cta.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ابدأ تدريبك المجاني';
+            cta.setAttribute('onclick', "location.href='" + FREE_HREF + "'");
+        }
+    } else if (isNewUser) {
         // المشترك الجديد: اختبر مستواك (15 سؤال) + اختبار سريع مختلط + استكشف الأقسام
         tasks = [
             {
@@ -1497,14 +1535,34 @@ async function checkNotifications() {
 // ── Subscription Check ──
 async function checkSubscription() {
     const banner = document.getElementById('subBanner');
+    const txt = document.getElementById('subBannerText');
+    const btn = banner.querySelector('.btn');
+    const wasMember = profile && profile.subscription_type && profile.subscription_type !== 'free';
     if (!M.isSubscribed(profile)) {
-        // مستخدم مجاني → البنر مرشح في السلوت
         banner.dataset.wants = '1';
-        document.getElementById('subBannerText').textContent = 'اشترك الآن للوصول لجميع الأسئلة والتسريبات';
+        if (wasMember) {
+            // عضو انتهى اشتراكه (2026-11-08): تذكير بالتجديد — ما كان فيه أي تذكير فالاشتراكات الشهرية كانت تنتهي بصمت
+            txt.textContent = 'انتهى اشتراكك — جدّده واحتفظ بتقدمك والتسريبات';
+            if (btn) btn.textContent = 'جدّد الآن';
+            banner.href = '/pricing.html?from=renew';
+        } else {
+            // مستخدم مجاني → دعوة الاشتراك
+            txt.textContent = 'اشترك الآن للوصول لجميع الأسئلة والتسريبات';
+        }
         applyBannerSlot();
         return;
     }
-    // مشترك نشط → اخفِ البنر كلياً (لا "جدّد الآن")
+    // مشترك نشط: تذكير هادئ فقط في آخر 7 أيام (منحة الإدارة بلا تاريخ انتهاء لا تُذكَّر)
+    const daysLeft = profile && profile.subscription_end && profile.role !== 'admin' && profile.role !== 'staff'
+        ? M.subscriptionDaysLeft(profile) : 0;
+    if (profile && profile.subscription_end && daysLeft > 0 && daysLeft <= 7) {
+        banner.dataset.wants = '1';
+        txt.textContent = daysLeft === 1 ? 'اشتراكك ينتهي غداً — جدّده الآن ولا تفقد تقدمك' : 'اشتراكك ينتهي خلال ' + daysLeft + ' أيام — جدّده الآن';
+        if (btn) btn.textContent = 'جدّد الآن';
+        banner.href = '/pricing.html?from=renew';
+        applyBannerSlot();
+        return;
+    }
     banner.dataset.wants = '0';
     applyBannerSlot();
 }

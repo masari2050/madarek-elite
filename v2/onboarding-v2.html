@@ -358,10 +358,15 @@ async function loadQuestions() {
         const half = Math.ceil(QUESTION_COUNT / 2); // 8
         const other = QUESTION_COUNT - half; // 7
 
-        const [{ data: q1 }, { data: q2 }] = await Promise.all([
-            sb.from('questions').select(SAFE_COLS).eq('disabled', false).eq('section', 'quant').is('passage_id', null).limit(200),
-            sb.from('questions').select(SAFE_COLS).eq('disabled', false).eq('section', 'verbal').is('passage_id', null).limit(200)
-        ]);
+        // أسئلة التشخيص من مجموعة الأسئلة الواضحة (is_free_sample) — قرار 2026-11-08:
+        // أول ما يشوفه الطالب لازم يكون شرحه واضحاً وغير معقّد. لو المجموعة أقل من المطلوب نرجع للبنك العام
+        const base = (sec) => sb.from('questions').select(SAFE_COLS).eq('disabled', false).eq('section', sec).is('passage_id', null);
+        let r = await Promise.all([ base('quant').eq('is_free_sample', true).limit(200), base('verbal').eq('is_free_sample', true).limit(200) ]);
+        let q1 = r[0].data, q2 = r[1].data;
+        if ((q1 || []).length < half || (q2 || []).length < other) {
+            r = await Promise.all([ base('quant').limit(200), base('verbal').limit(200) ]);
+            q1 = r[0].data; q2 = r[1].data;
+        }
 
         const quantPool = shuffle(q1 || []);
         const verbalPool = shuffle(q2 || []);

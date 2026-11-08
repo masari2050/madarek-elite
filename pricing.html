@@ -256,6 +256,23 @@ img{max-width:100%}
   </div>
 </section>
 
+<!-- رسالة قادم التدريب المجاني (from=free_done / from=free) — سكربت مستقل لا يمس منطق الدفع -->
+<div class="wrap" id="freeNote" style="display:none;margin:-10px auto 14px">
+  <div style="background:#F3F1FA;border:1px solid #DDD6FE;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.7;color:#3B1FB0;font-weight:700;text-align:center" id="freeNoteText"></div>
+</div>
+<script>
+(function(){
+  try {
+    var f = new URLSearchParams(location.search).get('from');
+    var el = document.getElementById('freeNote'), t = document.getElementById('freeNoteText');
+    if (!el || !t) return;
+    if (f === 'free_done') { t.textContent = 'خلّصت أسئلتك المجانية لهذا اليوم — اشترك وافتح كل الأسئلة الآن، أو ارجع بكرة لخمسة أسئلة جديدة'; el.style.display = 'block'; }
+    else if (f === 'free') { t.textContent = 'أعجبك الشرح؟ كل سؤال في المنصة مشروح بنفس الطريقة — والاشتراك يفتحها كلها'; el.style.display = 'block'; }
+    else if (f === 'renew') { t.textContent = 'أهلاً بعودتك — جدّد اشتراكك واحتفظ بتقدمك وتسريباتك'; el.style.display = 'block'; }
+  } catch(e) {}
+})();
+</script>
+
 <div class="wrap qz">
   <div class="shell">
 

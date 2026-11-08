@@ -860,6 +860,16 @@ window.openModal = function(section, name, evt) {
 // يطبّق mark"locked" على بطاقات الاختبارات الرئيسية لغير المشتركين
 function applyTrainingLockUI() {
     if (!profile || isSubscribed(profile)) return;  // مشترك → لا قفل
+    // عضو مجاني: بطاقة التدريب المجاني اليومي فوق الأقسام المقفلة (قرار 2026-11-08)
+    const hdr = document.querySelector('.sec-hdr');
+    if (hdr && !document.getElementById('freeDaily')) {
+        const a = document.createElement('a');
+        a.id = 'freeDaily';
+        a.href = '/practice.html?free=1&section=mixed&count=5&mode=instant';
+        a.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 16px 6px;padding:14px 16px;border-radius:16px;text-decoration:none;color:#fff;background:linear-gradient(135deg,#7C3AED,#5B21B6);box-shadow:0 8px 22px rgba(30,16,96,.18)';
+        a.innerHTML = '<div><div style="font-weight:800;font-size:15px">تدريبك المجاني اليوم</div><div style="font-size:12.5px;opacity:.9;margin-top:3px">5 أسئلة بشرح واضح — تتجدد كل يوم</div></div><span style="background:#fff;color:#5B21B6;font-weight:800;font-size:12.5px;padding:8px 12px;border-radius:10px;white-space:nowrap">ابدأ</span>';
+        hdr.parentNode.insertBefore(a, hdr);
+    }
     document.querySelectorAll('.trn-list .cat').forEach(card => {
         if (card.classList.contains('locked')) return;
         card.classList.add('locked');
