@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>مدارك النخبة — جرّب الاختبار قبل ما يجرّبك</title>
-<meta name="description" content="سؤال حقيقي من اختبارات سابقة — حله الحين وشوف الشرح. تجميعات محدثة أول بأول وتدريب ذكي للقدرات والتحصيلي.">
+<meta name="description" content="سؤال حقيقي من اختبارات سابقة — حله الحين وشوف الشرح. تسريبات محدثة أول بأول وتدريب ذكي للقدرات والتحصيلي.">
 <link rel="canonical" href="https://madarekelite.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://madarekelite.com/">
 <meta property="og:title" content="مدارك النخبة — جرّب الاختبار قبل ما يجرّبك">
-<meta property="og:description" content="سؤال حقيقي من اختبارات سابقة — حله الحين وشوف الشرح. تجميعات محدثة أول بأول وتدريب ذكي للقدرات والتحصيلي.">
+<meta property="og:description" content="سؤال حقيقي من اختبارات سابقة — حله الحين وشوف الشرح. تسريبات محدثة أول بأول وتدريب ذكي للقدرات والتحصيلي.">
 <meta property="og:image" content="https://madarekelite.com/icons/icon-512.png">
 <meta property="og:locale" content="ar_SA">
 <meta name="twitter:card" content="summary">
@@ -175,7 +175,7 @@ img{max-width:100%}
 .price .amt s{display:block;font-size:22px;font-weight:700;color:#A8ABB8;letter-spacing:0;line-height:1.3}
 .price .p-code{display:inline-block;margin:4px 0 14px;background:rgba(22,163,74,.1);color:#15803D;font-size:12.5px;font-weight:700;padding:5px 13px;border-radius:12px}
 .cp-strip .tj-txt s{color:rgba(255,255,255,.62);font-weight:600}
-/* وقت الحملة: زر شريط التجميعات يختفي (الشريط كله يبقى رابطاً) حتى لا يتكرر مع زر الخصم */
+/* وقت الحملة: زر شريط التسريبات يختفي (الشريط كله يبقى رابطاً) حتى لا يتكرر مع زر الخصم */
 .has-cp #tjStrip .tj-cta{display:none}
 .price .p-save{margin-top:14px;font-size:13px;font-weight:600;color:var(--i2)}
 .price .p-save b{color:#15803D;font-weight:800}
@@ -209,7 +209,7 @@ img{max-width:100%}
   .seg{grid-template-columns:1fr 1fr}
   .mock{padding:48px 44px}
 }
-/* ───── شريط التجميعات الجديدة ───── */
+/* ───── شريط التسريبات الجديدة ───── */
 .tj-strip{display:flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(90deg,#161A3E,#0F1128);color:#fff;padding:14px 18px;font-size:16px;line-height:1.6;text-decoration:none;flex-wrap:wrap;text-align:center;position:relative;overflow:hidden}
 /* نبض الشريط كاملاً: طبقة بنفسجية تظهر وتختفي بهدوء فوق الكحلي */
 .tj-strip:not(.cp-strip)::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 160% at 50% 50%,rgba(251,191,36,.34),rgba(251,191,36,.10) 55%,rgba(251,191,36,0) 80%);border-top:2px solid #FBBF24;border-bottom:2px solid #FBBF24;opacity:.18;animation:tjBreath 2.2s ease-in-out infinite;pointer-events:none}
@@ -228,7 +228,7 @@ img{max-width:100%}
 .tj-strip:not(.cp-strip) .tj-badge{background:transparent;color:#FBBF24;border:1.5px solid rgba(251,191,36,.7)}
 .tj-strip:hover .tj-cta{transform:translateY(-1px)}
 @media (max-width:560px){.tj-strip{font-size:15px;gap:9px;padding:13px 14px}.tj-badge{font-size:12.5px}.tj-cta{font-size:14px;padding:8px 18px}}
-/* شريط الحملة (DB-driven، مجدول) — نفس هيكل شريط التجميعات بشارة ملوّنة من الإعداد */
+/* شريط الحملة (DB-driven، مجدول) — نفس هيكل شريط التسريبات بشارة ملوّنة من الإعداد */
 .cp-strip{background:linear-gradient(90deg,#4C1D95,#7C3AED)}
 .cp-strip .tj-badge{color:#fff}
 .cp-strip .tj-txt b{color:#FDE68A}
@@ -254,7 +254,7 @@ img{max-width:100%}
   </div>
 </header>
 
-<!-- ═══ شريط التجميعات الجديدة (يظهر فقط عند وجود مجموعة حديثة في DB) ═══ -->
+<!-- ═══ شريط التسريبات الجديدة (يظهر فقط عند وجود مجموعة حديثة في DB) ═══ -->
 <a class="tj-strip" id="tjStrip" href="/leaks-preview.html" style="display:none">
   <span class="tj-dot"></span>
   <span class="tj-badge">جديد</span>
@@ -335,7 +335,7 @@ img{max-width:100%}
     <div class="w-row rv">
       <div class="w-num">01</div>
       <div class="w-bd">
-        <h3>تجميعات محدثة أول بأول</h3>
+        <h3>تسريبات محدثة أول بأول</h3>
         <p>أسئلة الاختبارات تنضاف بعد كل فترة، محلولة ومشروحة — تعرف وش يجي فعلاً، مو وش المفروض يجي.</p>
       </div>
     </div>
@@ -377,7 +377,7 @@ img{max-width:100%}
     <div class="p-code" id="pCode" style="display:none"></div>
     <div class="per">قدرات كمي ولفظي + تحصيلي بكل مواده</div>
     <div class="p-feats">
-      <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>كل بنك الأسئلة والتجميعات المحدثة</div>
+      <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>كل بنك الأسئلة والتسريبات المحدثة</div>
       <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>شرح مفصل لكل سؤال</div>
       <div class="p-f"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تقارير الأداء والاختبارات المحاكية</div>
     </div>
@@ -392,7 +392,7 @@ img{max-width:100%}
   <div class="faq">
     <details class="f-i">
       <summary>الأسئلة من وين تجيبونها؟<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
-      <div class="f-a">من تجميعات اختبارات سابقة، يجهزها فريقنا محلولة ومشروحة وتتحدث بعد كل فترة اختبارات — إضافة لبنك تدريب واسع مصنف حسب المواضيع.</div>
+      <div class="f-a">من تسريبات اختبارات سابقة، يجهزها فريقنا محلولة ومشروحة وتتحدث بعد كل فترة اختبارات — إضافة لبنك تدريب واسع مصنف حسب المواضيع.</div>
     </details>
     <details class="f-i">
       <summary>أقدر أجرب قبل ما أشترك؟<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></summary>
@@ -530,7 +530,7 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     put(document.getElementById('cU'), s.total_users);
   }).catch(() => {});
 
-  // شريط التجميعات: يظهر فقط لو آخر مجموعة نشطة نزلت خلال 7 أيام، ويجمع أيام الأسبوع نفسه
+  // شريط التسريبات: يظهر فقط لو آخر مجموعة نشطة نزلت خلال 7 أيام، ويجمع أيام الأسبوع نفسه
   fetch(U + '/rest/v1/leak_groups?select=section,question_count,leak_date&is_active=eq.true&order=leak_date.desc,created_at.desc&limit=12', {
     headers: { apikey: K, Authorization: 'Bearer ' + K }
   }).then(r => r.ok ? r.json() : null).then(rows => {

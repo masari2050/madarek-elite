@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<title>تجميعات القدرات والتحصيلي — عيّنة مجانية — مدارك النخبة</title>
+<title>تسريبات القدرات والتحصيلي — عيّنة مجانية — مدارك النخبة</title>
 <link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#10B981">
-<meta name="description" content="جرّب 5 أسئلة مجانية من تجميعات آخر اختبارات القدرات والتحصيلي — مع شروح مبسّطة. ثم اشترك للوصول لكل الأسئلة.">
+<meta name="description" content="جرّب 5 أسئلة مجانية من تسريبات آخر اختبارات القدرات والتحصيلي — مع شروح مبسّطة. ثم اشترك للوصول لكل الأسئلة.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800;900&display=swap">
@@ -159,7 +159,7 @@ a{color:inherit;text-decoration:none}
       <span>عيّنة مجانية</span>
       <span class="day" id="heroDay">جديد</span>
     </div>
-    <h1 id="heroTtl">تجميعات الاختبارات <span class="gold">أوّل بأوّل</span></h1>
+    <h1 id="heroTtl">تسريبات الاختبارات <span class="gold">أوّل بأوّل</span></h1>
     <p id="heroSub">جرّب 5 أسئلة من آخر اختبار مع شروح مبسّطة — ثم افتح الباقي بالاشتراك.</p>
     <div class="hero-meta">
       <span><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>محلولة بالكامل</span>
@@ -209,18 +209,18 @@ a{color:inherit;text-decoration:none}
         <div class="cta-num" id="ctaNum">85</div>
         <div class="cta-num-lbl" id="ctaNumLbl">سؤال إضافي محلول<br>من آخر اختبار</div>
       </div>
-      <h3>افتح كل التجميعات + التدريب الذكي</h3>
-      <div class="cta-sub">اشتراك واحد يفتح لك 5,600+ سؤال، تجميعات مستمرّة بعد كل فترة، وتدريب يقترح عليك نقاط ضعفك.</div>
+      <h3>افتح كل التسريبات + التدريب الذكي</h3>
+      <div class="cta-sub">اشتراك واحد يفتح لك 5,600+ سؤال، تسريبات مستمرّة بعد كل فترة، وتدريب يقترح عليك نقاط ضعفك.</div>
 
       <div class="feat-list">
         <div class="feat-row" id="featCount"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>كل أسئلة آخر اختبار — محلولة بالكامل</div>
-        <div class="feat-row"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تجميعات الفترات القادمة فور صدورها</div>
+        <div class="feat-row"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تسريبات كل فترة جديدة بعد انتهاء اختباراتها</div>
         <div class="feat-row"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تدريب ذكي + اختبارات محاكية + تقارير تقدّمك</div>
       </div>
 
       <div class="cta-actions">
         <a class="cta-btn cta-btn-pri" href="/register.html?from=leaks-preview">
-          سجّل الآن وافتح كل التجميعات
+          سجّل الآن وافتح كل التسريبات
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </a>
         <a class="cta-btn cta-btn-sec" href="/pricing.html?from=leaks-preview">شوف الباقات</a>
@@ -261,9 +261,9 @@ async function resolveLatestGroup(){
 
 function applyGroupTexts(g){
   try {
-    const secName = g.section === 'tahsili' ? 'تجميعات التحصيلي'
-                  : (g.section === 'quant' || g.section === 'verbal' || g.section === 'mixed') ? 'تجميعات القدرات'
-                  : 'تجميعات الاختبارات';
+    const secName = g.section === 'tahsili' ? 'تسريبات التحصيلي'
+                  : (g.section === 'quant' || g.section === 'verbal' || g.section === 'mixed') ? 'تسريبات القدرات'
+                  : 'تسريبات الاختبارات';
     const d = g.leak_date ? new Date(g.leak_date + 'T00:00:00') : null;
     let dateLbl = d ? d.toLocaleDateString('ar-SA-u-nu-latn-ca-gregory', { weekday:'long', day:'numeric', month:'long' }) : 'آخر اختبار';
     let ex = 'اختبار ';
@@ -413,13 +413,13 @@ function showResult(){
   const subEl = document.getElementById('resultSub');
   if (pct >= 80) {
     titleEl.innerHTML = 'ممتاز — <span class="accent">جاهز للاختبار</span>';
-    subEl.textContent = 'مستواك قوي. تخيّل لو دخلت الاختبار وقد حللت كل أسئلة آخر اختبار مع نظرائها من تجميعات الفترات السابقة.';
+    subEl.textContent = 'مستواك قوي. تخيّل لو دخلت الاختبار وقد حللت كل أسئلة آخر اختبار مع نظرائها من تسريبات الفترات السابقة.';
   } else if (pct >= 50) {
     titleEl.innerHTML = 'جيّد — <span class="accent">في الطريق الصحيح</span>';
     subEl.textContent = 'فيه مساحة للتحسّن. باقي أسئلة الاختبار + الشروح المبسّطة + تدريبنا الذكي يرفعونك مستويين تقريباً.';
   } else {
     titleEl.innerHTML = 'لا بأس — <span class="accent">البداية مهمّة</span>';
-    subEl.textContent = 'الأهم أنك بدأت. التدريب المركّز على نقاط ضعفك + التجميعات المحلولة يقدر يقلب نتيجتك خلال أيام.';
+    subEl.textContent = 'الأهم أنك بدأت. التدريب المركّز على نقاط ضعفك + التسريبات المحلولة يقدر يقلب نتيجتك خلال أيام.';
   }
 }
 
