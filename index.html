@@ -258,7 +258,7 @@ img{max-width:100%}
 <a class="tj-strip" id="tjStrip" href="/leaks-preview.html" style="display:none">
   <span class="tj-dot"></span>
   <span class="tj-badge">جديد</span>
-  <span class="tj-txt" id="tjTxt"><b>تجميعات القدرات</b> — أسئلة حقيقية من آخر اختبار</span>
+  <span class="tj-txt" id="tjTxt"><b>تسريبات القدرات</b> — أسئلة حقيقية من آخر اختبار</span>
   <span class="tj-cta">حل 5 منها مجاناً</span>
 </a>
 
@@ -547,7 +547,7 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
       && (d - new Date(x.leak_date + 'T00:00:00')) / 864e5 <= 6);
     const days = new Set(week.map(x => x.leak_date)).size;
     const total = week.reduce((a, x) => a + (x.question_count || 0), 0);
-    const name = isT(g.section) ? 'تجميعات التحصيلي' : 'تجميعات القدرات';
+    const name = isT(g.section) ? 'تسريبات التحصيلي' : 'تسريبات القدرات';
     const L = 'ar-SA-u-nu-latn-ca-gregory';
     let when, cnt;
     if (days > 1) {
