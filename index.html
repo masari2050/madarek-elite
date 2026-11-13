@@ -212,9 +212,9 @@ img{max-width:100%}
 /* ───── شريط التجميعات الجديدة ───── */
 .tj-strip{display:flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(90deg,#161A3E,#0F1128);color:#fff;padding:14px 18px;font-size:16px;line-height:1.6;text-decoration:none;flex-wrap:wrap;text-align:center;position:relative;overflow:hidden}
 /* نبض الشريط كاملاً: طبقة بنفسجية تظهر وتختفي بهدوء فوق الكحلي */
-.tj-strip:not(.cp-strip)::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#5B21B6,#3B1FB0);opacity:0;animation:tjBreath 2.2s ease-in-out infinite;pointer-events:none}
+.tj-strip:not(.cp-strip)::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 160% at 50% 50%,rgba(251,191,36,.34),rgba(251,191,36,.10) 55%,rgba(251,191,36,0) 80%);border-top:2px solid #FBBF24;border-bottom:2px solid #FBBF24;opacity:.18;animation:tjBreath 2.2s ease-in-out infinite;pointer-events:none}
 .tj-strip>*{position:relative}
-@keyframes tjBreath{0%,100%{opacity:0}50%{opacity:.85}}
+@keyframes tjBreath{0%,100%{opacity:.18}50%{opacity:1}}
 @keyframes tjNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @media (prefers-reduced-motion:reduce){.tj-strip::before,.tj-strip .tj-cta{animation:none !important}}
 .tj-dot{width:8px;height:8px;border-radius:50%;background:#FBBF24;box-shadow:0 0 10px rgba(251,191,36,.75);animation:tjPulse 1.6s ease-in-out infinite;flex-shrink:0}
@@ -224,7 +224,8 @@ img{max-width:100%}
 .tj-txt b{color:#FBBF24;font-weight:800}
 #tjTxt span{white-space:nowrap}
 .tj-cta{background:#fff;color:#4C1D95;font-weight:800;font-size:14.5px;padding:8px 18px;border-radius:10px;white-space:nowrap;transition:transform .15s}
-.tj-strip:not(.cp-strip) .tj-cta{animation:tjNudge 2.2s ease-in-out infinite}
+.tj-strip:not(.cp-strip) .tj-cta{background:#FBBF24;color:#0F1128;animation:tjNudge 2.2s ease-in-out infinite}
+.tj-strip:not(.cp-strip) .tj-badge{background:transparent;color:#FBBF24;border:1.5px solid rgba(251,191,36,.7)}
 .tj-strip:hover .tj-cta{transform:translateY(-1px)}
 @media (max-width:560px){.tj-strip{font-size:15px;gap:9px;padding:13px 14px}.tj-badge{font-size:12.5px}.tj-cta{font-size:14px;padding:8px 18px}}
 /* شريط الحملة (DB-driven، مجدول) — نفس هيكل شريط التجميعات بشارة ملوّنة من الإعداد */
@@ -257,8 +258,8 @@ img{max-width:100%}
 <a class="tj-strip" id="tjStrip" href="/leaks-preview.html" style="display:none">
   <span class="tj-dot"></span>
   <span class="tj-badge">جديد</span>
-  <span class="tj-txt" id="tjTxt"><b>تجميعات القدرات</b> — أسئلة آخر اختبار بشروحها</span>
-  <span class="tj-cta">جرب 5 أسئلة مجاناً</span>
+  <span class="tj-txt" id="tjTxt"><b>تجميعات القدرات</b> — أسئلة حقيقية من آخر اختبار</span>
+  <span class="tj-cta">حل 5 منها مجاناً</span>
 </a>
 
 <!-- ═══ شريط الحملة (يظهر فقط عند وجود بنر campaign نشط ومجدول في DB) ═══ -->
@@ -552,16 +553,16 @@ document.querySelectorAll('.cnt').forEach(el => cObs.observe(el));
     if (days > 1) {
       const f = new Date(week[week.length - 1].leak_date + 'T00:00:00');
       const from = f.toLocaleDateString(L, f.getMonth() === d.getMonth() ? { day: 'numeric' } : { day: 'numeric', month: 'long' });
-      when = 'اختبارات ' + from + ' إلى ' + d.toLocaleDateString(L, { day: 'numeric', month: 'long' }) + ' كاملة';
-      cnt = total + ' سؤالاً بشروحها';
+      when = 'من اختبارات ' + from + ' إلى ' + d.toLocaleDateString(L, { day: 'numeric', month: 'long' });
+      cnt = total + ' سؤالاً حقيقياً';
     } else {
-      when = 'اختبار ' + d.toLocaleDateString(L, { weekday: 'long', day: 'numeric', month: 'long' });
-      cnt = g.question_count ? g.question_count + ' سؤالاً بشروحها' : 'أسئلة محلولة بشروحها';
+      when = 'من اختبار ' + d.toLocaleDateString(L, { weekday: 'long', day: 'numeric', month: 'long' });
+      cnt = g.question_count ? g.question_count + ' سؤالاً حقيقياً' : 'أسئلة حقيقية';
     }
-    txt.innerHTML = '<b></b> — <span></span> · <span></span>';
+    txt.innerHTML = '<b></b> — <span></span> <span></span>';
     txt.querySelector('b').textContent = name;
-    txt.querySelectorAll('span')[0].textContent = when;
-    txt.querySelectorAll('span')[1].textContent = cnt;
+    txt.querySelectorAll('span')[0].textContent = cnt;
+    txt.querySelectorAll('span')[1].textContent = when;
     strip.style.display = 'flex';
   }).catch(() => {});
 
