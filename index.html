@@ -210,15 +210,23 @@ img{max-width:100%}
   .mock{padding:48px 44px}
 }
 /* ───── شريط التجميعات الجديدة ───── */
-.tj-strip{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(90deg,#161A3E,#0F1128);color:#fff;padding:10px 16px;font-size:13.5px;text-decoration:none;flex-wrap:wrap;text-align:center}
+.tj-strip{display:flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(90deg,#161A3E,#0F1128);color:#fff;padding:14px 18px;font-size:16px;line-height:1.6;text-decoration:none;flex-wrap:wrap;text-align:center;position:relative;overflow:hidden}
+/* نبض الشريط كاملاً: طبقة بنفسجية تظهر وتختفي بهدوء فوق الكحلي */
+.tj-strip:not(.cp-strip)::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#5B21B6,#3B1FB0);opacity:0;animation:tjBreath 2.2s ease-in-out infinite;pointer-events:none}
+.tj-strip>*{position:relative}
+@keyframes tjBreath{0%,100%{opacity:0}50%{opacity:.85}}
+@keyframes tjNudge{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@media (prefers-reduced-motion:reduce){.tj-strip::before,.tj-strip .tj-cta{animation:none !important}}
 .tj-dot{width:8px;height:8px;border-radius:50%;background:#FBBF24;box-shadow:0 0 10px rgba(251,191,36,.75);animation:tjPulse 1.6s ease-in-out infinite;flex-shrink:0}
 @keyframes tjPulse{0%,100%{opacity:1}50%{opacity:.35}}
-.tj-badge{background:#FBBF24;color:#0F1128;font-weight:800;font-size:11px;padding:2px 9px;border-radius:10px}
-.tj-txt{font-weight:600;color:rgba(255,255,255,.92)}
+.tj-badge{background:#FBBF24;color:#0F1128;font-weight:800;font-size:13px;padding:3px 12px;border-radius:10px}
+.tj-txt{font-weight:700;color:#fff}
 .tj-txt b{color:#FBBF24;font-weight:800}
-.tj-cta{background:#fff;color:#4C1D95;font-weight:800;font-size:12px;padding:6px 14px;border-radius:9px;white-space:nowrap;transition:transform .15s}
+#tjTxt span{white-space:nowrap}
+.tj-cta{background:#fff;color:#4C1D95;font-weight:800;font-size:14.5px;padding:8px 18px;border-radius:10px;white-space:nowrap;transition:transform .15s}
+.tj-strip:not(.cp-strip) .tj-cta{animation:tjNudge 2.2s ease-in-out infinite}
 .tj-strip:hover .tj-cta{transform:translateY(-1px)}
-@media (max-width:560px){.tj-strip{font-size:12px;gap:8px;padding:9px 12px}.tj-cta{font-size:11px;padding:5px 11px}}
+@media (max-width:560px){.tj-strip{font-size:15px;gap:9px;padding:13px 14px}.tj-badge{font-size:12.5px}.tj-cta{font-size:14px;padding:8px 18px}}
 /* شريط الحملة (DB-driven، مجدول) — نفس هيكل شريط التجميعات بشارة ملوّنة من الإعداد */
 .cp-strip{background:linear-gradient(90deg,#4C1D95,#7C3AED)}
 .cp-strip .tj-badge{color:#fff}
