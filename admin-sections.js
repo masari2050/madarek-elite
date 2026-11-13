@@ -3641,7 +3641,7 @@ window.saveSEO = async function(id) {
 // 13. USERS ANALYTICS
 // ═══════════════════════════════════════════════════════
 // State for filters (preserved across re-renders)
-window._uaFilters = window._uaFilters || { sub:'', source:'', activity:'', registered:'', search:'', sort:'xp' };
+window._uaFilters = window._uaFilters || { sub:'', source:'', activity:'', registered:'', search:'', sort:'last_seen' };
 
 window.loadUsersAnalytics = async function(page=1) {
     const { sb } = window.A;
@@ -3654,10 +3654,10 @@ window.loadUsersAnalytics = async function(page=1) {
     $c().innerHTML = `
     <!-- KPIs bar -->
     <div id="uaKpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
-        <div class="kpi blue"><div class="kpi-label">إجمالي الأعضاء</div><div class="kpi-val" id="uaKpiTotal">—</div><div class="kpi-sub" id="uaKpiTotalSub">—</div></div>
-        <div class="kpi green"><div class="kpi-label">مشتركون نشطون</div><div class="kpi-val" id="uaKpiActive">—</div><div class="kpi-sub" id="uaKpiActiveSub">من الإجمالي</div></div>
-        <div class="kpi orange"><div class="kpi-label">مجانيون نشطون</div><div class="kpi-val" id="uaKpiFree">—</div><div class="kpi-sub">حلّوا أسئلة آخر 30 يوم</div></div>
-        <div class="kpi gold"><div class="kpi-label">متوسط XP</div><div class="kpi-val" id="uaKpiXp">—</div><div class="kpi-sub">لكل عضو</div></div>
+        <div class="kpi blue" style="cursor:pointer" onclick="uaQuick('','')" title="عرض كل الأعضاء"><div class="kpi-label">إجمالي الأعضاء</div><div class="kpi-val" id="uaKpiTotal">—</div><div class="kpi-sub" id="uaKpiTotalSub">—</div></div>
+        <div class="kpi green" style="cursor:pointer" onclick="uaQuick('','week')" title="عرض من دخل آخر 7 أيام"><div class="kpi-label">دخلوا آخر 7 أيام</div><div class="kpi-val" id="uaKpiWeek">—</div><div class="kpi-sub" id="uaKpiWeekSub">—</div></div>
+        <div class="kpi gold" style="cursor:pointer" onclick="uaQuick('active','')" title="عرض أصحاب الاشتراكات السارية"><div class="kpi-label">اشتراكات سارية</div><div class="kpi-val" id="uaKpiActive">—</div><div class="kpi-sub" id="uaKpiActiveSub">—</div></div>
+        <div class="kpi red" style="cursor:pointer" onclick="uaQuick('','dormant')" title="عرض الخامدين"><div class="kpi-label">خامدون</div><div class="kpi-val" id="uaKpiDormant">—</div><div class="kpi-sub" id="uaKpiDormantSub">لم يدخلوا منذ أكثر من 30 يوماً</div></div>
     </div>
 
     <!-- Filter bar — autocomplete=off + selected on default option to prevent browser caching -->
@@ -3683,10 +3683,10 @@ window.loadUsersAnalytics = async function(page=1) {
         </select>
         <select class="form-select" id="uaFilterActivity" style="width:auto" autocomplete="off" onchange="uaApplyFilter()" title="حالة النشاط">
             <option value="" ${!f.activity?'selected':''}>كل الحالات</option>
-            <option value="online" ${f.activity==='online'?'selected':''}>🟢 متصل الآن</option>
-            <option value="week" ${f.activity==='week'?'selected':''}>🟡 نشط الأسبوع</option>
-            <option value="month" ${f.activity==='month'?'selected':''}>🟡 نشط الشهر</option>
-            <option value="dormant" ${f.activity==='dormant'?'selected':''}>🔴 خامد (>30 يوم)</option>
+            <option value="online" ${f.activity==='online'?'selected':''}>متصل الآن</option>
+            <option value="week" ${f.activity==='week'?'selected':''}>دخل آخر 7 أيام</option>
+            <option value="month" ${f.activity==='month'?'selected':''}>دخل آخر 30 يوماً</option>
+            <option value="dormant" ${f.activity==='dormant'?'selected':''}>خامد (أكثر من 30 يوماً)</option>
         </select>
         <select class="form-select" id="uaFilterRegistered" style="width:auto" autocomplete="off" onchange="uaApplyFilter()" title="تاريخ الانضمام">
             <option value="" ${!f.registered?'selected':''}>كل التواريخ</option>
@@ -3695,9 +3695,9 @@ window.loadUsersAnalytics = async function(page=1) {
             <option value="month" ${f.registered==='month'?'selected':''}>آخر 30 يوم</option>
         </select>
         <select class="form-select" id="uaSort" style="width:auto" autocomplete="off" onchange="uaApplyFilter()">
-            <option value="xp" ${f.sort==='xp'||!f.sort?'selected':''}>الأكثر XP</option>
+            <option value="last_seen" ${f.sort==='last_seen'||!f.sort?'selected':''}>الأحدث نشاطاً</option>
             <option value="new" ${f.sort==='new'?'selected':''}>الأحدث تسجيلاً</option>
-            <option value="last_seen" ${f.sort==='last_seen'?'selected':''}>الأحدث دخولاً</option>
+            <option value="xp" ${f.sort==='xp'?'selected':''}>الأكثر XP</option>
             <option value="dormant" ${f.sort==='dormant'?'selected':''}>الأقدم نشاطاً</option>
         </select>
         <button class="btn btn-ghost" onclick="exportUsers()" title="تصدير الفلتر الحالي"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
@@ -3707,7 +3707,7 @@ window.loadUsersAnalytics = async function(page=1) {
 
     // ── Build query with filters ──
     try {
-        let q = sb.from('profiles').select('id,full_name,email,phone,subscription_type,subscription_end,subscription_source,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
+        let q = sb.from('profiles').select('id,full_name,email,phone,role,subscription_type,subscription_end,subscription_source,used_coupon,xp,avatar_emoji,created_at,last_seen_at', { count:'exact' });
 
         // Subscription filter
         const nowIso = new Date().toISOString();
@@ -3744,9 +3744,9 @@ window.loadUsersAnalytics = async function(page=1) {
 
         // Sort
         if (f.sort === 'new') q = q.order('created_at',{ascending:false});
-        else if (f.sort === 'last_seen') q = q.order('last_seen_at',{ascending:false,nullsFirst:false});
         else if (f.sort === 'dormant') q = q.order('last_seen_at',{ascending:true,nullsFirst:true});
-        else q = q.order('xp',{ascending:false,nullsFirst:false});
+        else if (f.sort === 'xp') q = q.order('xp',{ascending:false,nullsFirst:false});
+        else q = q.order('last_seen_at',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false});
 
         const { data, count } = await q.range((page-1)*PAGE_SIZE, page*PAGE_SIZE-1);
 
@@ -3793,25 +3793,21 @@ window.loadUsersAnalytics = async function(page=1) {
         const tbl = document.getElementById('uaTable');
         if (!filteredData || filteredData.length === 0) { tbl.innerHTML = '<div class="empty-d" style="padding:30px;text-align:center"><div style="font-size:13px">لا توجد نتائج</div><div style="font-size:11px;color:var(--i4);margin-top:6px">جرّب تخفيف الفلاتر</div></div>'; return; }
 
-        // Lifecycle status badge
+        // حالة النشاط: آخر دخول أو آخر تدريب (الأحدث منهما) — الحسابات القديمة قد لا تملك last_seen_at
         const lifecycleBadge = (u) => {
-            const lastSeen = u.last_seen_at ? new Date(u.last_seen_at).getTime() : 0;
+            const st = stats[u.id];
+            const lastSeen = Math.max(u.last_seen_at ? new Date(u.last_seen_at).getTime() : 0, st && st.last ? new Date(st.last).getTime() : 0);
             const elapsed = NOW - lastSeen;
-            if (lastSeen && elapsed < 5*60000) {
-                return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 8px;border-radius:8px;white-space:nowrap"><span style="width:6px;height:6px;border-radius:50%;background:var(--suc);animation:livePulse 1.4s infinite"></span>متصل الآن</span>';
-            }
+            const pill = (txt, color, bg, title) => '<span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:'+color+';background:'+bg+';padding:3px 8px;border-radius:8px;white-space:nowrap" title="'+(title||'')+'"><span style="width:6px;height:6px;border-radius:50%;background:'+color+'"></span>'+txt+'</span>';
+            if (lastSeen && elapsed < 5*60000) return pill('متصل الآن', 'var(--suc)', 'var(--ss)');
             if (lastSeen && elapsed < 7*DAY) {
                 const hrs = Math.floor(elapsed / 3600000);
-                const lbl = hrs < 1 ? 'قبل دقائق' : hrs < 24 ? 'قبل '+hrs+' س' : 'قبل '+Math.floor(hrs/24)+' يوم';
-                return '<span style="font-size:10px;font-weight:700;color:var(--suc);background:var(--ss);padding:3px 8px;border-radius:8px;white-space:nowrap" title="آخر دخول '+lbl+'">🟢 نشط</span>';
+                const lbl = hrs < 1 ? 'قبل دقائق' : hrs < 24 ? 'قبل '+hrs+' ساعة' : 'قبل '+Math.floor(hrs/24)+' يوم';
+                return pill('نشط · '+lbl, 'var(--suc)', 'var(--ss)');
             }
-            if (lastSeen && elapsed < 30*DAY) {
-                return '<span style="font-size:10px;font-weight:700;color:var(--acc);background:var(--as);padding:3px 8px;border-radius:8px;white-space:nowrap">🟡 متوسط</span>';
-            }
-            if (!lastSeen) {
-                return '<span style="font-size:10px;font-weight:700;color:var(--i4);background:var(--s2);padding:3px 8px;border-radius:8px;white-space:nowrap" title="لم يدخل بعد">— جديد</span>';
-            }
-            return '<span style="font-size:10px;font-weight:700;color:var(--dng);background:rgba(239,68,68,.10);padding:3px 8px;border-radius:8px;white-space:nowrap" title="غاب لأكثر من 30 يوم">🔴 خامد</span>';
+            if (lastSeen && elapsed < 30*DAY) return pill('هذا الشهر', 'var(--acc)', 'var(--as)', 'آخر نشاط قبل '+Math.floor(elapsed/DAY)+' يوماً');
+            if (!lastSeen) return pill('لم يدخل بعد', 'var(--i4)', 'var(--s2)', 'سجّل ولم يفتح حسابه');
+            return pill('خامد', 'var(--i3)', 'var(--s2)', 'آخر نشاط قبل '+Math.floor(elapsed/DAY)+' يوماً');
         };
 
         const sourceBadge = (u) => {
@@ -3859,14 +3855,17 @@ window.loadUsersAnalytics = async function(page=1) {
                 const subLabel = subActive
                     ? (u.subscription_type==='yearly'?'سنوي':u.subscription_type==='quarterly'?'ربع سنوي':'شهري')
                     : 'مجاني';
-                const sub = subActive
+                const isTeam = u.role === 'admin' || u.role === 'staff';
+                const sub = isTeam
+                    ? '<span class="status-pill" style="background:var(--ps);color:var(--pri)">فريق العمل</span>'
+                    : subActive
                     ? '<span class="status-pill active">'+subLabel+'</span>'
                     : '<span class="status-pill free">'+subLabel+'</span>';
                 return `<tr>
                     <td><div style="display:flex;align-items:center;gap:10px"><div class="tbl-avatar">${(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar_emoji, u.full_name, 36) : esc((u.full_name||'?').charAt(0)))}</div><div><div class="td-name">${esc(u.full_name||'—')}</div><div style="font-size:10.5px;color:var(--i4);direction:ltr;text-align:right;margin-top:2px">${esc(u.email||'')}</div></div></div></td>
                     <td>${lifecycleBadge(u)}</td>
                     <td>${sub}</td>
-                    <td>${sourceBadge(u)}</td>
+                    <td>${isTeam ? '<span class="td-muted">—</span>' : sourceBadge(u)}</td>
                     <td><b>${fmt(st.t)}</b></td>
                     <td style="min-width:90px"><div style="display:flex;align-items:center;gap:6px"><div style="width:40px;height:4px;background:var(--s2);border-radius:2px;overflow:hidden"><div style="width:${acc}%;height:100%;background:${acc>=70?'var(--suc)':acc>=50?'var(--acc)':'var(--dng)'}"></div></div><b style="color:${acc>=70?'var(--suc)':acc>=50?'var(--acc)':'var(--dng)'};font-size:11px">${acc}%</b></div></td>
                     <td class="td-muted">${fmtDate(u.last_seen_at)}</td>
@@ -3889,13 +3888,13 @@ window.uaApplyFilter = function() {
     window._uaFilters.source = document.getElementById('uaFilterSource')?.value || '';
     window._uaFilters.activity = document.getElementById('uaFilterActivity')?.value || '';
     window._uaFilters.registered = document.getElementById('uaFilterRegistered')?.value || '';
-    window._uaFilters.sort = document.getElementById('uaSort')?.value || 'xp';
+    window._uaFilters.sort = document.getElementById('uaSort')?.value || 'last_seen';
     loadUsersAnalytics(1);
 };
 
 // Clear all filters (one-click reset)
 window.uaClearFilters = function() {
-    window._uaFilters = { sub:'', source:'', activity:'', registered:'', search:'', sort:'xp' };
+    window._uaFilters = { sub:'', source:'', activity:'', registered:'', search:'', sort:'last_seen' };
     loadUsersAnalytics(1);
 };
 
@@ -3905,34 +3904,37 @@ window.loadUaKpis = async function() {
     const NOW = Date.now();
     const DAY = 86400000;
     const nowIso = new Date().toISOString();
-    const month30Iso = new Date(NOW - 30*DAY).toISOString();
-    const monthAgoIso = new Date(NOW - 30*DAY).toISOString();
-    const month60Iso = new Date(NOW - 60*DAY).toISOString();
+    const d7 = new Date(NOW - 7*DAY).toISOString();
+    const d30 = new Date(NOW - 30*DAY).toISOString();
+    const cnt = () => sb.from('profiles').select('id',{count:'exact',head:true});
+    const subs = q => q.in('subscription_type',['monthly','quarterly','yearly']).gt('subscription_end', nowIso);
     try {
-        const [total, totalLastMonth, active, freeActive, xpAll] = await Promise.all([
-            sb.from('profiles').select('id',{count:'exact',head:true}),
-            sb.from('profiles').select('id',{count:'exact',head:true}).lt('created_at', monthAgoIso),
-            sb.from('profiles').select('id',{count:'exact',head:true}).in('subscription_type',['monthly','quarterly','yearly']).gt('subscription_end', nowIso),
-            sb.from('attempts').select('user_id').gte('created_at', month30Iso),
-            sb.from('profiles').select('xp')
+        const [total, new30, week, month, active, activeSeen, dormant] = await Promise.all([
+            cnt(),
+            cnt().gte('created_at', d30),
+            cnt().gt('last_seen_at', d7),
+            cnt().gt('last_seen_at', d30),
+            subs(cnt()),
+            subs(cnt()).gt('last_seen_at', d30),
+            cnt().or('last_seen_at.is.null,last_seen_at.lt.'+d30)
         ]);
         const totalCount = total.count || 0;
-        const lastMonthCount = totalLastMonth.count || 0;
-        const newThisMonth = totalCount - lastMonthCount;
-        const activeCount = active.count || 0;
-        const subscribedPct = totalCount > 0 ? Math.round(activeCount / totalCount * 100) : 0;
-        const uniqueFreeActive = new Set((freeActive.data||[]).map(a => a.user_id)).size;
-        const xpData = xpAll.data || [];
-        const avgXp = xpData.length > 0 ? Math.round(xpData.reduce((s,r) => s + (Number(r.xp)||0), 0) / xpData.length) : 0;
-
         const setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
         setT('uaKpiTotal', fmt(totalCount));
-        setT('uaKpiTotalSub', '+'+fmt(newThisMonth)+' آخر 30 يوم');
-        setT('uaKpiActive', fmt(activeCount));
-        setT('uaKpiActiveSub', subscribedPct+'% من الإجمالي');
-        setT('uaKpiFree', fmt(uniqueFreeActive));
-        setT('uaKpiXp', fmt(avgXp));
+        setT('uaKpiTotalSub', '+'+fmt(new30.count||0)+' تسجيلاً آخر 30 يوماً');
+        setT('uaKpiWeek', fmt(week.count||0));
+        setT('uaKpiWeekSub', 'وآخر 30 يوماً: '+fmt(month.count||0));
+        setT('uaKpiActive', fmt(active.count||0));
+        setT('uaKpiActiveSub', 'دخل منهم آخر 30 يوماً: '+fmt(activeSeen.count||0));
+        setT('uaKpiDormant', fmt(dormant.count||0));
+        setT('uaKpiDormantSub', (totalCount ? Math.round((dormant.count||0)/totalCount*100) : 0)+'% من الأعضاء · لم يدخلوا منذ 30 يوماً');
     } catch(e) { console.error('loadUaKpis', e); }
+};
+
+// بطاقات المؤشرات تعمل كفلاتر سريعة
+window.uaQuick = function(sub, activity) {
+    window._uaFilters = { sub: sub, source:'', activity: activity, registered:'', search:'', sort: activity === 'dormant' ? 'dormant' : 'last_seen' };
+    loadUsersAnalytics(1);
 };
 
 let uaTimer;
@@ -4335,727 +4337,416 @@ window.loadIncomingReports = async function() {
 window.switchToReview = function() { document.querySelector('[data-page="review"]')?.click(); };
 
 // ═══════════════════════════════════════════════════════
-// 16. VISITORS ANALYTICS (بيانات حقيقية)
+// 16. VISITORS — صفحة الزوار (إعادة بناء 2026-11-13)
+//   تجاوب ثلاثة أسئلة بالترتيب: كم زائر حقيقي؟ من أين جاء؟ ماذا فعل؟
+//   تستبعد فريق العمل والروبوتات من كل الأرقام.
 // ═══════════════════════════════════════════════════════
-// Visitors page state (persists across re-renders / auto-refresh)
 window._visState = window._visState || { range: 'today', refreshTimer: null };
 
-window.loadVisitors = async function(opts = {}) {
-    const { sb } = window.A;
-    const isRefresh = opts.refresh === true;
-
-    // First-time render: build skeleton with live feed + time range chips
-    if (!isRefresh) {
-        $c().innerHTML = `
-        <!-- ═══ النشاط اللحظي (Live Activity Feed) ═══ -->
-        <div style="background:var(--sf);border:1px solid var(--ln);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--ln);background:linear-gradient(180deg,rgba(34,197,94,.05),transparent)">
-                <div style="display:flex;align-items:center;gap:10px">
-                    <span style="width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:livePulse 1.4s infinite"></span>
-                    <div>
-                        <div style="font-size:14px;font-weight:800;color:var(--ink)">النشاط اللحظي</div>
-                        <div style="font-size:10.5px;color:var(--i3)">آخر 24 ساعة · يتحدّث كل 5 ثوان</div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    <select id="visLiveFilter" onchange="window._visState.liveFilter=this.value;visRefreshLive()" style="font-size:11px;padding:5px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);font-family:inherit;cursor:pointer">
-                        <option value="all">كل الأحداث</option>
-                        <option value="visits">زيارات الصفحات</option>
-                        <option value="signups">تسجيلات جديدة</option>
-                        <option value="practice">حلّ الأسئلة</option>
-                        <option value="payments">المدفوعات</option>
-                    </select>
-                    <button onclick="visRefreshLive()" style="font-size:11px;padding:5px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--i2);font-family:inherit;cursor:pointer">↻</button>
-                </div>
-            </div>
-            <div id="visLiveList" style="max-height:380px;overflow-y:auto;padding:6px 0">
-                <div class="loader" style="padding:30px">جاري التحميل...</div>
-            </div>
-            <div style="padding:10px 16px;border-top:1px solid var(--ln);font-size:10.5px;color:var(--i3);text-align:center;background:var(--s2)">
-                <span id="visLiveCount">0</span> حدث في آخر 24 ساعة
-                · <span id="visLiveUpdate">--:--</span>
-            </div>
-        </div>
-
-        <!-- Time range selector -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-            <span style="font-size:12px;color:var(--i3);font-weight:600">الفترة الزمنية:</span>
-            <div id="visRangeChips" style="display:inline-flex;background:var(--s2);border:1px solid var(--ln);border-radius:10px;padding:3px;gap:2px">
-                <button class="vis-chip ${window._visState.range==='today'?'active':''}" data-range="today" onclick="visSetRange('today')">اليوم</button>
-                <button class="vis-chip ${window._visState.range==='yesterday'?'active':''}" data-range="yesterday" onclick="visSetRange('yesterday')">أمس</button>
-                <button class="vis-chip ${window._visState.range==='week'?'active':''}" data-range="week" onclick="visSetRange('week')">7 أيام</button>
-                <button class="vis-chip ${window._visState.range==='month'?'active':''}" data-range="month" onclick="visSetRange('month')">30 يوم</button>
-            </div>
-            <div style="margin-right:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--i3)">
-                <span style="width:7px;height:7px;border-radius:50%;background:var(--suc);animation:livePulse 1.4s infinite"></span>
-                <span>إحصائيات الفترة · <span id="visLastRefresh">الآن</span></span>
-            </div>
-        </div>
-        <div id="visArea"><div class="loader">جاري التحميل...</div></div>`;
-
-        // Inject chip styles + livePulse keyframe + live feed styles (once)
-        if (!document.getElementById('visChipStyles')) {
-            const s = document.createElement('style');
-            s.id = 'visChipStyles';
-            s.textContent = `.vis-chip{padding:6px 14px;border:none;background:transparent;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--i3);cursor:pointer;font-family:inherit;transition:all .15s}.vis-chip:hover{color:var(--pri)}.vis-chip.active{background:var(--sf);color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.06)}@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}
-.vlive-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(0,0,0,.04);transition:background .2s}
-.vlive-row:hover{background:var(--s2)}
-.vlive-row.new{animation:vliveIn .5s ease}
-@keyframes vliveIn{from{background:rgba(34,197,94,.18);transform:translateX(-8px);opacity:0}to{background:transparent;transform:none;opacity:1}}
-.vlive-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;flex-shrink:0}
-.vlive-body{flex:1;min-width:0}
-.vlive-text{font-size:12.5px;color:var(--ink);line-height:1.5}
-.vlive-meta{font-size:10.5px;color:var(--i3);margin-top:2px;display:flex;gap:8px;align-items:center}
-.vlive-time{font-size:11px;color:var(--i3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
-.vlive-pill{font-size:9px;padding:2px 6px;border-radius:6px;font-weight:700}`;
-            document.head.appendChild(s);
-        }
-
-        // Init live feed state
-        if (!window._visState.liveFilter) window._visState.liveFilter = 'all';
-        if (!window._visState.liveSeen) window._visState.liveSeen = new Set();
-
-        // Start live feed (immediate + every 5s)
-        if (window._visState.liveTimer) clearInterval(window._visState.liveTimer);
-        visRefreshLive();
-        window._visState.liveTimer = setInterval(() => {
-            if (document.getElementById('visLiveList')) visRefreshLive();
-            else { clearInterval(window._visState.liveTimer); window._visState.liveTimer = null; }
-        }, 5000);
-
-        // Schedule full auto-refresh every 30s for KPIs
-        if (window._visState.refreshTimer) clearInterval(window._visState.refreshTimer);
-        window._visState.refreshTimer = setInterval(() => {
-            if (document.getElementById('visArea')) loadVisitors({ refresh: true });
-            else { clearInterval(window._visState.refreshTimer); window._visState.refreshTimer = null; }
-        }, 30000);
-    }
-
-    // Compute time range bounds + previous period for delta
-    const now = new Date();
-    const startOfToday = new Date(now); startOfToday.setHours(0,0,0,0);
-    let rangeStart, rangeEnd, prevStart, prevEnd, rangeLabel;
-    const range = window._visState.range || 'today';
-    if (range === 'today') {
-        rangeStart = startOfToday; rangeEnd = new Date(now);
-        prevStart = new Date(startOfToday.getTime() - 86400000); prevEnd = new Date(startOfToday);
-        rangeLabel = 'اليوم';
-    } else if (range === 'yesterday') {
-        rangeStart = new Date(startOfToday.getTime() - 86400000); rangeEnd = new Date(startOfToday);
-        prevStart = new Date(rangeStart.getTime() - 86400000); prevEnd = new Date(rangeStart);
-        rangeLabel = 'أمس';
-    } else if (range === 'week') {
-        rangeStart = new Date(now.getTime() - 7*86400000); rangeEnd = new Date(now);
-        prevStart = new Date(now.getTime() - 14*86400000); prevEnd = new Date(rangeStart);
-        rangeLabel = 'آخر 7 أيام';
-    } else { // month
-        rangeStart = new Date(now.getTime() - 30*86400000); rangeEnd = new Date(now);
-        prevStart = new Date(now.getTime() - 60*86400000); prevEnd = new Date(rangeStart);
-        rangeLabel = 'آخر 30 يوم';
-    }
-
-    try {
-        const rangeStartIso = rangeStart.toISOString();
-        const rangeEndIso = rangeEnd.toISOString();
-        const prevStartIso = prevStart.toISOString();
-        const prevEndIso = prevEnd.toISOString();
-
-        // Current period
-        const [pays, signups, active5min, trainedRange, visitorEvents] = await Promise.all([
-            sb.from('payments').select('amount,payment_id,user_id').eq('status','paid').gte('paid_at', rangeStartIso).lt('paid_at', rangeEndIso),
-            sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
-            sb.from('profiles').select('id',{count:'exact',head:true}).gte('last_seen_at', new Date(Date.now()-5*60000).toISOString()),
-            sb.from('attempts').select('user_id').gte('created_at', rangeStartIso).lt('created_at', rangeEndIso),
-            sb.from('analytics_events').select('anonymous_id,user_id,device,page_path,metadata,created_at').gte('created_at', rangeStartIso).lt('created_at', rangeEndIso).eq('event_type','page_view').limit(10000)
-        ]);
-
-        // Aggregate visitor events
-        const visEvents = visitorEvents.data || [];
-        const visitorIds = new Set();
-        const trialIds = new Set();
-        const deviceCounts = { desktop: 0, mobile: 0, app: 0, other: 0 };
-        const refCounts = {};
-        const pageCounts = {};
-        const hourCounts = new Array(24).fill(0);
-        const utmSourceCounts = {};
-        const utmCampaignCounts = {};
-        visEvents.forEach(e => {
-            const id = e.user_id || e.anonymous_id;
-            if (id) {
-                visitorIds.add(id);
-                // Anyone who visited /demo or /welcome counts as "started trial"
-                const p = e.page_path || '';
-                if (p.includes('demo') || p.includes('welcome')) trialIds.add(id);
-            }
-            const dev = (e.device || 'other').toLowerCase();
-            if (deviceCounts[dev] != null) deviceCounts[dev]++; else deviceCounts.other++;
-            // UTM tracking
-            const utmSrc = e.metadata?.utm_source;
-            if (utmSrc) utmSourceCounts[utmSrc] = (utmSourceCounts[utmSrc] || 0) + 1;
-            const utmCmp = e.metadata?.utm_campaign;
-            if (utmCmp) utmCampaignCounts[utmCmp] = (utmCampaignCounts[utmCmp] || 0) + 1;
-            // Referrer parse: extract hostname from metadata.referrer
-            const ref = e.metadata?.referrer || '';
-            let refKey = 'مباشر';
-            if (ref) {
-                try {
-                    const host = new URL(ref).hostname.replace(/^www\./, '');
-                    if (host.includes('google')) refKey = 'Google';
-                    else if (host.includes('tiktok')) refKey = 'TikTok';
-                    else if (host.includes('facebook') || host.includes('fb.com')) refKey = 'Facebook';
-                    else if (host.includes('instagram')) refKey = 'Instagram';
-                    else if (host.includes('twitter') || host.includes('x.com')) refKey = 'Twitter/X';
-                    else if (host.includes('snapchat')) refKey = 'Snapchat';
-                    else if (host.includes('whatsapp') || host.includes('wa.me')) refKey = 'WhatsApp';
-                    else if (host.includes('youtube')) refKey = 'YouTube';
-                    else if (host.includes('madarekelite')) refKey = 'داخلي';
-                    else refKey = host;
-                } catch(_) { refKey = 'مباشر'; }
-            }
-            refCounts[refKey] = (refCounts[refKey] || 0) + 1;
-            // Top pages
-            const path = e.page_path || '/';
-            pageCounts[path] = (pageCounts[path] || 0) + 1;
-            // Hourly distribution (use local hour)
-            const hr = new Date(e.created_at).getHours();
-            if (hr >= 0 && hr < 24) hourCounts[hr]++;
-        });
-        const visitors = { count: visitorIds.size };
-
-        // Previous period (for delta) — fetch unique-id list to dedupe like current period
-        const [paysPrev, signupsPrev, visitorsPrevEvents] = await Promise.all([
-            sb.from('payments').select('amount,payment_id').eq('status','paid').gte('paid_at', prevStartIso).lt('paid_at', prevEndIso),
-            sb.from('profiles').select('*',{count:'exact',head:true}).gte('created_at', prevStartIso).lt('created_at', prevEndIso),
-            sb.from('analytics_events').select('anonymous_id,user_id').gte('created_at', prevStartIso).lt('created_at', prevEndIso).eq('event_type','page_view').limit(10000)
-        ]);
-
-        const realPays = (pays.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
-        const realPaysPrev = (paysPrev.data||[]).filter(p => !(p.payment_id||'').startsWith('FREE-') && Number(p.amount||0) > 0);
-        const rangeRev = realPays.reduce((s,p)=>s+Number(p.amount||0),0);
-        const prevRev = realPaysPrev.reduce((s,p)=>s+Number(p.amount||0),0);
-        const paidUserIds = new Set(realPays.map(p => p.user_id).filter(Boolean));
-
-        const uniqueTrainees = new Set((trainedRange.data||[]).map(a=>a.user_id)).size;
-        const uniqueVisitors = visitorIds.size;
-        const prevVisIds = new Set();
-        (visitorsPrevEvents.data||[]).forEach(e => { const id = e.user_id || e.anonymous_id; if (id) prevVisIds.add(id); });
-        const uniqueVisitorsPrev = prevVisIds.size;
-        const signupCount = signups.count || 0;
-        const signupCountPrev = signupsPrev.count || 0;
-        const cvr = uniqueVisitors > 0 ? ((signupCount) / uniqueVisitors * 100).toFixed(1) : 0;
-
-        // Delta helper: returns formatted "+12% ↑" or "−5% ↓" or "—"
-        const delta = (cur, prev) => {
-            if (!prev && !cur) return '<span style="font-size:10px;color:var(--i4)">— لا مقارنة</span>';
-            if (!prev) return '<span style="font-size:10px;color:var(--suc);font-weight:700">جديد</span>';
-            const pct = Math.round((cur - prev) / prev * 100);
-            if (pct === 0) return '<span style="font-size:10px;color:var(--i4)">= نفس الفترة السابقة</span>';
-            const up = pct > 0;
-            return `<span style="font-size:10px;color:${up?'var(--suc)':'var(--dng)'};font-weight:700">${up?'↑':'↓'} ${Math.abs(pct)}%</span> <span style="font-size:9px;color:var(--i4)">vs السابق</span>`;
-        };
-
-        // Activity feed (آخر 24 ساعة) — موسّع من 10 events إلى أوسع لتغطية كل النشاطين
-        const dayAgoIso = new Date(Date.now() - 24*60*60*1000).toISOString();
-        const [recentSignups, recentAttempts, recentPayments] = await Promise.all([
-            sb.from('profiles').select('id,full_name,created_at').gte('created_at', dayAgoIso).order('created_at',{ascending:false}).limit(30),
-            sb.from('attempts').select('user_id,is_correct,created_at,profiles(full_name)').gte('created_at', dayAgoIso).order('created_at',{ascending:false}).limit(500),
-            sb.from('payments').select('user_id,amount,created_at,payment_id,profiles(full_name)').eq('status','paid').gte('created_at', dayAgoIso).order('created_at',{ascending:false}).limit(30)
-        ]);
-
-        const feed = [];
-        (recentSignups.data||[]).forEach(p => feed.push({type:'signup',icon:'👤',color:'var(--pri)',text:'<b>'+esc(p.full_name||'مستخدم')+'</b> سجّل حساب جديد',time:p.created_at}));
-        (recentPayments.data||[]).forEach(p => {
-            const isFree = (p.payment_id||'').startsWith('FREE-');
-            if (isFree) feed.push({type:'coupon',icon:'🎟️',color:'var(--acc)',text:'<b>'+esc(p.profiles?.full_name||'مستخدم')+'</b> فعّل اشتراك مجاني (كوبون)',time:p.created_at});
-            else feed.push({type:'subscribe',icon:'⭐',color:'var(--suc)',text:'<b>'+esc(p.profiles?.full_name||'مستخدم')+'</b> اشترك بـ '+Number(p.amount)+' ريال',time:p.created_at});
-        });
-        // جمّع كل المحاولات حسب المستخدم (لا limit الآن — يلتقط كل من حلّ في آخر 24 ساعة)
-        const attByUser = {};
-        (recentAttempts.data||[]).forEach(a => {
-            const k = a.user_id;
-            if (!attByUser[k]) attByUser[k] = { name: a.profiles?.full_name, time: a.created_at, count: 0, correct: 0 };
-            attByUser[k].count++;
-            if (a.is_correct) attByUser[k].correct++;
-            if (new Date(a.created_at) > new Date(attByUser[k].time)) attByUser[k].time = a.created_at;
-        });
-        // اعرض كل المستخدمين اللي حلّوا (بدل slice(0,5))، مرتّبة حسب آخر نشاط
-        Object.values(attByUser)
-            .sort((a,b) => new Date(b.time) - new Date(a.time))
-            .forEach(u => feed.push({type:'practice',icon:'📝',color:'var(--pri)',text:'<b>'+esc(u.name||'مستخدم')+'</b> حلّ '+u.count+' سؤال ('+u.correct+' صح)',time:u.time}));
-        feed.sort((a,b) => new Date(b.time) - new Date(a.time));
-
-        // Top trainees in range
-        const trainStats = {};
-        (trainedRange.data||[]).forEach(a => trainStats[a.user_id] = (trainStats[a.user_id]||0) + 1);
-        const topTrainees = Object.entries(trainStats).sort((a,b)=>b[1]-a[1]).slice(0,10);
-        let topTraineesData = [];
-        if (topTrainees.length > 0) {
-            const { data: profs } = await sb.from('profiles').select('id,full_name,avatar_emoji,xp').in('id', topTrainees.map(t=>t[0]));
-            topTraineesData = topTrainees.map(t => {
-                const p = (profs||[]).find(x => x.id === t[0]);
-                return { name: p?.full_name||'مستخدم', avatar: p?.avatar_emoji, count: t[1], xp: p?.xp||0 };
-            });
-        }
-
-        const renderFeedTime = (t) => {
-            const elapsed = Math.floor((Date.now() - new Date(t).getTime()) / 60000);
-            return elapsed < 1 ? 'الآن' : elapsed < 60 ? 'قبل '+elapsed+' دقيقة' : elapsed < 1440 ? 'قبل '+Math.floor(elapsed/60)+' ساعة' : fmtDate(t);
-        };
-
-        // ── الزوار الفريدون + الأعضاء الفعالون باليوم (آخر 14 يوم، بتوقيت السعودية) ──
-        const since14Iso = new Date(Date.now() - 14*86400000).toISOString();
-        const [dailyVisRes, dailyAttRes] = await Promise.all([
-            sb.from('analytics_events').select('anonymous_id,user_id,created_at').eq('event_type','page_view').gte('created_at', since14Iso).limit(10000),
-            sb.from('attempts').select('user_id,created_at').gte('created_at', since14Iso).limit(10000)
-        ]);
-        const ksaDay = t => new Date(t).toLocaleDateString('en-CA', { timeZone: 'Asia/Riyadh' });
-        const dailyVis = {};   // yyyy-mm-dd -> Set of visitor ids
-        const dailyAct = {};   // yyyy-mm-dd -> Set of member ids who solved
-        (dailyVisRes.data||[]).forEach(e => {
-            const id = e.user_id || e.anonymous_id; if (!id) return;
-            const d = ksaDay(e.created_at);
-            (dailyVis[d] = dailyVis[d] || new Set()).add(id);
-        });
-        (dailyAttRes.data||[]).forEach(a => {
-            if (!a.user_id) return;
-            const d = ksaDay(a.created_at);
-            (dailyAct[d] = dailyAct[d] || new Set()).add(a.user_id);
-        });
-        // آخر 14 يوم كقائمة مرتبة (الأحدث أولاً) — أيام بدون بيانات تظهر صفر (حقيقة، مو فراغ)
-        const dailyRows = [];
-        for (let i = 0; i < 14; i++) {
-            const key = ksaDay(Date.now() - i*86400000);
-            dailyRows.push({ day: key, vis: (dailyVis[key]||new Set()).size, act: (dailyAct[key]||new Set()).size });
-        }
-        const maxDailyVis = Math.max(1, ...dailyRows.map(r => r.vis));
-
-        // Update last refresh indicator
-        const refreshLbl = document.getElementById('visLastRefresh');
-        if (refreshLbl) refreshLbl.textContent = new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
-
-        document.getElementById('visArea').innerHTML = `
-        <!-- Top KPIs row 1 (revenue + signups + trainees + online) -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
-            <div class="kpi green">
-                <div class="kpi-label">إيراد ${rangeLabel}</div>
-                <div class="kpi-val">${fmt(Math.round(rangeRev))}</div>
-                <div class="kpi-sub">${realPays.length} معاملة · ${delta(rangeRev, prevRev)}</div>
-            </div>
-            <div class="kpi blue">
-                <div class="kpi-label">مشتركون جدد</div>
-                <div class="kpi-val">${fmt(signupCount)}</div>
-                <div class="kpi-sub">${delta(signupCount, signupCountPrev)}</div>
-            </div>
-            <div class="kpi orange">
-                <div class="kpi-label">تدربوا في الفترة</div>
-                <div class="kpi-val">${fmt(uniqueTrainees)}</div>
-                <div class="kpi-sub">مستخدم نشط</div>
-            </div>
-            <div class="kpi gold">
-                <div class="kpi-label">متصلون الآن</div>
-                <div class="kpi-val">${fmt(active5min.count||0)}</div>
-                <div class="kpi-sub">آخر 5 دقائق</div>
-            </div>
-        </div>
-
-        <!-- Row 2: visitors funnel -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
-            <div class="kpi blue">
-                <div class="kpi-label">زوار ${rangeLabel}</div>
-                <div class="kpi-val">${fmt(uniqueVisitors)}</div>
-                <div class="kpi-sub">${delta(uniqueVisitors, uniqueVisitorsPrev)}</div>
-            </div>
-            <div class="kpi orange">
-                <div class="kpi-label">معدل التحويل</div>
-                <div class="kpi-val">${cvr}<small style="font-size:14px">%</small></div>
-                <div class="kpi-sub">زائر → مسجّل</div>
-            </div>
-            <div class="kpi green">
-                <div class="kpi-label">إيراد لكل زائر</div>
-                <div class="kpi-val">${uniqueVisitors>0?(rangeRev/uniqueVisitors).toFixed(2):'—'}</div>
-                <div class="kpi-sub">ريال / زائر</div>
-            </div>
-        </div>
-
-        <!-- Activity feed + Top trainees -->
-        <div class="row c2">
-            <div class="card">
-                <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><div class="card-title">آخر النشاطات</div><div class="card-sub">حقيقية · لحظية · يحدّث كل 30 ثانية</div></div></div></div>
-                <div class="card-body" style="max-height:480px;overflow-y:auto">${
-                    feed.length === 0 ? '<div class="empty-d" style="padding:20px">لا نشاطات بعد</div>' :
-                    feed.slice(0,15).map(f =>
-                        '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);align-items:center">'+
-                        '<div style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:'+f.color.replace(')',',.12)').replace('var(--','rgba(var(--')+';font-size:14px">'+f.icon+'</div>'+
-                        '<div style="flex:1"><div style="font-size:12px;line-height:1.5">'+f.text+'</div><div style="font-size:9px;color:var(--i4);margin-top:2px">'+renderFeedTime(f.time)+'</div></div>'+
-                        '</div>'
-                    ).join('')
-                }</div>
-            </div>
-
-            <div class="card">
-                <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="card-title">أنشط المستخدمين · ${rangeLabel}</div><div class="card-sub">${topTraineesData.length} مستخدم</div></div></div></div>
-                <div class="card-body" style="max-height:480px;overflow-y:auto">${
-                    topTraineesData.length === 0 ? '<div class="empty-d" style="padding:20px">لا تدريب في هذه الفترة</div>' :
-                    topTraineesData.map((u,i) =>
-                        '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)">'+
-                        '<div style="width:24px;text-align:center;font-size:11px;font-weight:700;color:'+(i===0?'var(--gold)':i===1?'#9CA3AF':i===2?'var(--acc)':'var(--i4)')+'">#'+(i+1)+'</div>'+
-                        '<div class="tbl-avatar">'+(window.buildAvatarHTML ? window.buildAvatarHTML(u.avatar, u.name, 36) : esc((u.name||'?').charAt(0)))+'</div>'+
-                        '<div style="flex:1"><div style="font-size:12px;font-weight:600">'+esc(u.name)+'</div><div style="font-size:10px;color:var(--i4);margin-top:1px">XP: '+fmt(u.xp)+'</div></div>'+
-                        '<div style="font-size:12px;font-weight:700;color:var(--pri)">'+u.count+' سؤال</div>'+
-                        '</div>'
-                    ).join('')
-                }</div>
-            </div>
-        </div>
-
-        <!-- Phase 2: Breakdowns row (devices + referrers + hourly) -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px">
-            ${renderDeviceCard(deviceCounts, uniqueVisitors)}
-            ${renderReferrerCard(refCounts)}
-            ${renderHourlyCard(hourCounts)}
-        </div>
-
-        <!-- Phase 2: Top pages -->
-        <div class="card" style="margin-top:14px">
-            <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="card-title">أكثر الصفحات زيارة · ${rangeLabel}</div><div class="card-sub">من ${fmt(visEvents.length)} مشاهدة صفحة</div></div></div></div>
-            <div class="card-body">${renderTopPages(pageCounts)}</div>
-        </div>
-
-        <!-- Phase 3: Conversion funnel + UTM -->
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:14px">
-            ${renderFunnelCard(uniqueVisitors, trialIds.size, signupCount, paidUserIds.size, rangeLabel)}
-            ${renderUtmCard(utmSourceCounts, utmCampaignCounts)}
-        </div>
-
-        <!-- الزوار الفريدون + الأعضاء الفعالون باليوم (توقيت السعودية) -->
-        <div class="card" style="margin-top:14px">
-            <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="card-title">الزوار الفريدون والأعضاء الفعالون باليوم</div><div class="card-sub">آخر 14 يوم · بتوقيت السعودية · الأعضاء الفعالون = حلّوا سؤالاً واحداً على الأقل</div></div></div></div>
-            <div class="card-body">
-                <table style="width:100%;border-collapse:collapse;font-size:12px">
-                    <thead><tr style="color:var(--i3);font-size:10.5px">
-                        <th style="text-align:right;padding:6px 4px;font-weight:600">اليوم</th>
-                        <th style="text-align:right;padding:6px 4px;font-weight:600;width:45%">زوار فريدون</th>
-                        <th style="text-align:center;padding:6px 4px;font-weight:600">أعضاء فعالون</th>
-                    </tr></thead>
-                    <tbody>${dailyRows.map(r => `
-                        <tr style="border-top:1px solid var(--ln)">
-                            <td style="padding:7px 4px;font-variant-numeric:tabular-nums;color:var(--i2);white-space:nowrap">${r.day}</td>
-                            <td style="padding:7px 4px">
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <div style="flex:1;height:8px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:${Math.round(r.vis/maxDailyVis*100)}%;height:100%;background:var(--pri)"></div></div>
-                                    <span style="font-weight:700;min-width:26px;text-align:left">${r.vis.toLocaleString('en-US')}</span>
-                                </div>
-                            </td>
-                            <td style="padding:7px 4px;text-align:center;font-weight:700;color:${r.act>0?'var(--suc)':'var(--i4)'}">${r.act.toLocaleString('en-US')}</td>
-                        </tr>`).join('')}
-                    </tbody>
-                </table>
-            </div>
-        </div>`;
-    } catch(e) { console.error('loadVisitors', e); if (!isRefresh) showToast('خطأ: '+(e.message||''),'err'); }
+const VIS_DAY = 86400000;
+const VIS_PAGE_LABELS = {
+    '/':'الرئيسية','/dashboard':'رئيسية العضو','/training':'التدريب','/leaks':'التسريبات',
+    '/practice':'حلّ الأسئلة','/profile':'الملف الشخصي','/reports':'التقارير','/pricing':'صفحة الأسعار',
+    '/login':'تسجيل الدخول','/register':'صفحة التسجيل','/demo':'التجربة المجانية',
+    '/leaks-preview':'عينة التجميعات','/tahsili':'صفحة التحصيلي','/tahsili-top-400':'حملة التحصيلي',
+    '/referrals':'الإحالات','/payment-return':'العودة من الدفع','/payment-callback':'العودة من الدفع',
+    '/mock-exam':'الاختبار المحاكي','/about':'عن المنصة','/terms':'الشروط','/privacy':'الخصوصية',
+    '/contact':'تواصل معنا','/subscription-policy':'سياسة الاشتراك','/invoice':'فاتورة',
+    '/onboarding':'اختبار تحديد المستوى','/english-placement':'اختبار الإنجليزي','/select-section':'اختيار القسم',
+    '/dl':'تحميل التطبيق','/question':'سؤال مشارك','/period1':'باقة الفترة الأولى'
 };
-
-// ─── Phase 2 chart helpers ───
-function renderDeviceCard(counts, totalVisitors) {
-    const total = counts.desktop + counts.mobile + counts.app + counts.other;
-    if (total === 0) return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div class="card-title">الأجهزة</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا بيانات</div></div></div>';
-    const items = [
-        { label: 'كمبيوتر', icon: '🖥️', value: counts.desktop, color: '#6D5DF6' },
-        { label: 'جوال', icon: '📱', value: counts.mobile, color: '#22C55E' },
-        { label: 'تطبيق', icon: '📲', value: counts.app, color: '#F59E0B' },
-        { label: 'أخرى', icon: '❓', value: counts.other, color: '#9CA3AF' }
-    ].filter(i => i.value > 0).sort((a,b) => b.value - a.value);
-    const bars = items.map(i => {
-        const pct = (i.value / total * 100).toFixed(1);
-        return `<div style="margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px"><span><span style="margin-left:6px">${i.icon}</span><b>${i.label}</b></span><span style="color:var(--i3);font-size:11px">${fmt(i.value)} <span style="color:var(--i4)">(${pct}%)</span></span></div>
-            <div style="height:7px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${i.color};border-radius:4px;transition:width .4s"></div></div>
-        </div>`;
-    }).join('');
-    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic blu"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div class="card-title">توزيع الأجهزة</div><div class="card-sub">${fmt(totalVisitors)} زائر فريد</div></div></div></div><div class="card-body">${bars}</div></div>`;
+function visPageLabel(path) {
+    let p = (path || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+    p = p.replace(/^\/v2\//, '/').replace(/-v2$/, '');
+    if (p === '/index' || p === '/home-v3' || p === '/welcome') return 'الرئيسية';
+    if (p.indexOf('/brand-preview') === 0) return 'معاينة الهوية';
+    if (p.indexOf('/r/') === 0 || p.indexOf('/invite') === 0) return 'دعوة صديق';
+    if (p.indexOf('/p/') === 0) return 'رابط شريك';
+    return VIS_PAGE_LABELS[p] || p;
 }
 
-function renderReferrerCard(counts) {
-    const total = Object.values(counts).reduce((s,v) => s + v, 0);
-    if (total === 0) return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><div class="card-title">مصادر الزوار</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا بيانات</div></div></div>';
-    const sourceColors = {
-        'مباشر':'#6D5DF6','Google':'#EA4335','TikTok':'#000000','Facebook':'#1877F2','Instagram':'#E4405F','Twitter/X':'#1DA1F2','Snapchat':'#FFFC00','WhatsApp':'#25D366','YouTube':'#FF0000','داخلي':'#9CA3AF'
+// روبوتات: المتصفح يسجَّل في metadata.ua منذ 8 نوفمبر 2026. قبلها: روبوت متجر قوقل كان يفتح /contact فقط بلا مصدر
+const VIS_BOT_RE = /bot|crawl|spider|slurp|headless|lighthouse|playstore-google|facebookexternalhit|pingdom|gtmetrix|uptime/i;
+function visIsBot(e) {
+    const ua = e.metadata && e.metadata.ua;
+    if (ua) return VIS_BOT_RE.test(ua);
+    return !e.user_id && /^\/contact/.test(e.page_path || '') && !(e.metadata && e.metadata.referrer);
+}
+
+// مصدر الزائر: رابط شريك أو حملة (utm) ثم الموقع الذي جاء منه، وإلا «مباشر»
+function visSource(e) {
+    const m = e.metadata || {};
+    const us = String(m.utm_source || '').trim();
+    const usl = us.toLowerCase();
+    const known = (s) => {
+        if (/chatgpt|openai/.test(s)) return { key:'chatgpt', label:'ChatGPT' };
+        if (/tiktok/.test(s)) return { key:'tiktok', label:'تيك توك' };
+        if (/instagram/.test(s)) return { key:'instagram', label:'إنستقرام' };
+        if (/snapchat/.test(s)) return { key:'snapchat', label:'سناب شات' };
+        if (/twitter|x\.com|^t\.co$|^x$/.test(s)) return { key:'x', label:'إكس (تويتر)' };
+        if (/youtube|youtu\.be/.test(s)) return { key:'youtube', label:'يوتيوب' };
+        if (/whatsapp|wa\.me/.test(s)) return { key:'whatsapp', label:'واتساب' };
+        if (/telegram|t\.me/.test(s)) return { key:'telegram', label:'تيليقرام' };
+        if (/facebook|fb\.com/.test(s)) return { key:'facebook', label:'فيسبوك' };
+        if (/google/.test(s)) return { key:'google', label:'بحث قوقل' };
+        if (/bing/.test(s)) return { key:'bing', label:'بحث بينق' };
+        return null;
     };
-    const items = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 8);
-    const rows = items.map(([key, val]) => {
-        const pct = (val / total * 100).toFixed(1);
-        const color = sourceColors[key] || '#FF8A3D';
-        return `<div style="margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px"><b>${esc(key)}</b><span style="color:var(--i3);font-size:11px">${fmt(val)} <span style="color:var(--i4)">(${pct}%)</span></span></div>
-            <div style="height:7px;background:var(--s2);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${color};border-radius:4px;transition:width .4s"></div></div>
-        </div>`;
-    }).join('');
-    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><div class="card-title">مصادر الزوار</div><div class="card-sub">من أين جاؤوا</div></div></div></div><div class="card-body">${rows}</div></div>`;
-}
-
-function renderHourlyCard(hourCounts) {
-    const max = Math.max(...hourCounts, 1);
-    const total = hourCounts.reduce((s,v) => s + v, 0);
-    if (total === 0) return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="card-title">التوزيع بالساعة</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا بيانات</div></div></div>';
-    // Find peak hour
-    let peakHr = 0, peakVal = 0;
-    hourCounts.forEach((v, h) => { if (v > peakVal) { peakVal = v; peakHr = h; } });
-    const fmtHr = h => (h < 12 ? h+'ص' : h === 12 ? '12م' : (h-12)+'م');
-    const bars = hourCounts.map((v, h) => {
-        const pct = (v / max * 100);
-        const isPeak = h === peakHr;
-        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:90px" title="${fmtHr(h)}: ${v} زيارة">
-            <div style="width:80%;height:${Math.max(2, pct)}%;background:${isPeak?'var(--acc)':'var(--pri)'};border-radius:2px 2px 0 0;transition:height .4s;opacity:${v>0?1:.25}"></div>
-            ${[0,6,12,18].includes(h) ? `<div style="font-size:9px;color:var(--i4);margin-top:3px">${fmtHr(h)}</div>` : '<div style="height:12px"></div>'}
-        </div>`;
-    }).join('');
-    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic grn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="card-title">التوزيع بالساعة</div><div class="card-sub">ذروة الزيارات: <b style="color:var(--acc)">${fmtHr(peakHr)}</b> (${fmt(peakVal)})</div></div></div></div><div class="card-body"><div style="display:flex;align-items:flex-end;gap:1px;direction:ltr">${bars}</div></div></div>`;
-}
-
-function renderFunnelCard(visitors, trials, signups, paid, rangeLabel) {
-    if (visitors === 0) {
-        return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></div><div><div class="card-title">قمع التحويل</div><div class="card-sub">زائر → جرّب → سجّل → اشترك</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px">لا زوار بعد في هذه الفترة</div></div></div>';
+    if (us) {
+        if (m.utm_medium === 'partner') return { key:'p:' + usl, label:'شريك · ' + us.toUpperCase(), partner:true };
+        if (usl === 'classroom') return { key:'classroom', label:'مسابقة الفصل' };
+        return known(usl) || { key:'utm:' + usl, label: us };
     }
-    const stages = [
-        { lbl: 'زائر', value: visitors, icon: '👁️', color: '#6D5DF6' },
-        { lbl: 'جرّب', value: trials, icon: '🎯', color: '#22C55E', tip: 'فتح صفحة /demo أو /welcome' },
-        { lbl: 'سجّل', value: signups, icon: '👤', color: '#F59E0B', tip: 'أنشأ حساب جديد' },
-        { lbl: 'اشترك', value: paid, icon: '⭐', color: '#EF4444', tip: 'دفع اشتراك مدفوع' }
-    ];
-    const max = stages[0].value;
-    const rows = stages.map((s, i) => {
-        const pctFromTop = max > 0 ? (s.value / max * 100) : 0;
-        const prevVal = i > 0 ? stages[i-1].value : null;
-        const dropPct = prevVal && prevVal > 0 ? (((prevVal - s.value) / prevVal) * 100).toFixed(1) : null;
-        const conversionFromPrev = prevVal && prevVal > 0 ? ((s.value / prevVal) * 100).toFixed(1) : null;
-        const tipAttr = s.tip ? ` title="${esc(s.tip)}"` : '';
-        return `<div style="margin-bottom:12px"${tipAttr}>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-                <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700"><span style="font-size:16px">${s.icon}</span>${s.lbl}</div>
-                <div style="font-size:13px;font-weight:800;color:${s.color}">${fmt(s.value)}</div>
-            </div>
-            <div style="height:24px;background:var(--s2);border-radius:6px;overflow:hidden;position:relative">
-                <div style="width:${pctFromTop}%;height:100%;background:linear-gradient(90deg,${s.color},${s.color}cc);border-radius:6px;transition:width .5s;display:flex;align-items:center;justify-content:flex-end;padding-left:8px;color:#fff;font-size:10.5px;font-weight:700">${pctFromTop > 12 ? pctFromTop.toFixed(1)+'%' : ''}</div>
-            </div>
-            ${conversionFromPrev !== null ? `<div style="font-size:10px;color:var(--i4);margin-top:3px;display:flex;justify-content:space-between"><span>↳ ${conversionFromPrev}% تحويل من الخطوة السابقة</span><span style="color:${dropPct > 50 ? 'var(--dng)' : 'var(--i4)'}">سقوط ${dropPct}%</span></div>` : ''}
-        </div>`;
-    }).join('');
-    const overallCvr = visitors > 0 ? (paid / visitors * 100).toFixed(2) : 0;
-    return `<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic pur"><svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></div><div><div class="card-title">قمع التحويل · ${rangeLabel}</div><div class="card-sub">معدل التحويل النهائي: <b style="color:var(--pri)">${overallCvr}%</b></div></div></div></div><div class="card-body">${rows}</div></div>`;
-}
-
-function renderUtmCard(sources, campaigns) {
-    const totalSrc = Object.values(sources).reduce((s,v) => s+v, 0);
-    const totalCmp = Object.values(campaigns).reduce((s,v) => s+v, 0);
-    if (totalSrc === 0 && totalCmp === 0) {
-        return '<div class="card"><div class="card-hdr"><div class="card-hdr-l"><div class="card-ic orng"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div><div class="card-title">UTM</div><div class="card-sub">حملات تسويقية</div></div></div></div><div class="card-body"><div class="empty-d" style="padding:16px;font-size:11.5px;line-height:1.6">لا حملات بعد.<br><span style="color:var(--i4);font-size:10.5px">أضف <code style="background:var(--s2);padding:1px 4px;border-radius:3px">?utm_source=tiktok&utm_campaign=launch</code> للروابط الإعلانية</span></div></div></div>';
+    const ref = m.referrer || '';
+    if (ref) {
+        try {
+            const host = new URL(ref).hostname.replace(/^www\./, '').toLowerCase();
+            if (host.indexOf('madarekelite') === -1) return known(host) || { key:'h:' + host, label: host };
+        } catch(_) {}
     }
-    const buildList = (counts, total, max=5) => {
-        return Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, max).map(([k, v]) => {
-            const pct = total > 0 ? (v / total * 100).toFixed(1) : 0;
-            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:11.5px"><b style="color:var(--ink)">${esc(k)}</b><span style="color:var(--i3)">${fmt(v)} <span style="color:var(--i4);font-size:10px">(${pct}%)</span></span></div>`;
-        }).join('');
-    };
-    return `<div class="card">
-        <div class="card-hdr"><div class="card-hdr-l"><div class="card-ic orng"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div><div class="card-title">حملات UTM</div><div class="card-sub">من الإعلانات المدفوعة</div></div></div></div>
-        <div class="card-body">
-            ${totalSrc > 0 ? `<div style="font-size:10.5px;color:var(--i4);font-weight:700;margin-bottom:4px">المصادر</div>${buildList(sources, totalSrc, 5)}` : ''}
-            ${totalCmp > 0 ? `<div style="font-size:10.5px;color:var(--i4);font-weight:700;margin:10px 0 4px;border-top:1px solid var(--ln);padding-top:10px">الحملات</div>${buildList(campaigns, totalCmp, 5)}` : ''}
-        </div>
-    </div>`;
+    return { key:'direct', label:'مباشر' };
 }
 
-function renderTopPages(pageCounts) {
-    const items = Object.entries(pageCounts).sort((a,b) => b[1] - a[1]).slice(0, 10);
-    if (items.length === 0) return '<div class="empty-d" style="padding:16px">لا بيانات</div>';
-    const max = items[0][1];
-    const labels = {
-        '/': 'الرئيسية','/dashboard': 'لوحة الطالب','/training': 'التدريب','/leaks': 'التسريبات','/practice': 'الأسئلة','/profile': 'الملف الشخصي','/reports': 'التقارير','/pricing': 'الاشتراك','/login': 'تسجيل الدخول','/register': 'إنشاء حساب','/welcome': 'الترحيب','/demo': 'تجربة مجانية','/admin': 'لوحة الإدارة','/referrals': 'الإحالات','/payment-return': 'بعد الدفع'
+function visAgo(t) {
+    const s = Math.floor((Date.now() - new Date(t).getTime()) / 1000);
+    if (s < 60) return 'الآن';
+    if (s < 3600) return 'قبل ' + Math.floor(s / 60) + ' د';
+    if (s < 86400) return 'قبل ' + Math.floor(s / 3600) + ' س';
+    return fmtDate(t);
+}
+// صيغة العدد العربية: 1 زائر واحد · 2 زائران · 3-10 زوار · 11+ زائراً
+function visCount(n, one, two, few, many) {
+    if (n === 1) return one;
+    if (n === 2) return two;
+    if (n >= 3 && n <= 10) return fmt(n) + ' ' + few;
+    return fmt(n) + ' ' + many;
+}
+async function visFetchAll(build, maxPages = 8) {
+    const out = [];
+    for (let i = 0; i < maxPages; i++) {
+        const { data, error } = await build().range(i * 1000, i * 1000 + 999);
+        if (error) throw error;
+        out.push(...(data || []));
+        if (!data || data.length < 1000) break;
+    }
+    return out;
+}
+
+// بيانات وهمية للمعاينة المحلية (?preview) فقط
+function visMockData() {
+    const now = Date.now(), ev = [], H = 3600000;
+    const add = (ago, id, path, meta, device, type, uid) => ev.push({ event_type: type || 'page_view', page_path: path, user_id: uid || null, anonymous_id: uid ? null : id, device: device || 'mobile', metadata: Object.assign({ ua:'Mozilla/5.0 Safari' }, meta || {}), created_at: new Date(now - ago).toISOString() });
+    add(0.2*H,'anon_a1','/',{referrer:'https://www.tiktok.com/'},'mobile'); add(0.19*H,'anon_a1','/',{},'mobile','hero_question_answered'); add(0.18*H,'anon_a1','/demo',{}); add(0.15*H,'anon_a1','/register',{});
+    add(1.1*H,'anon_b2','/',{utm_source:'NONY38',utm_medium:'partner'},'mobile'); add(1.05*H,'anon_b2','/pricing',{utm_source:'NONY38',utm_medium:'partner'});
+    add(2*H,'anon_c3','/',{utm_source:'chatgpt.com'},'desktop'); add(1.9*H,'anon_c3','/leaks-preview',{utm_source:'chatgpt.com'},'desktop');
+    add(3*H,'anon_d4','/',{},'mobile'); add(5*H,'anon_e5','/',{referrer:'https://www.google.com/'},'desktop');
+    add(0.5*H,null,'/dashboard',{},'mobile','page_view','u-1'); add(0.45*H,null,'/practice',{},'mobile','page_view','u-1');
+    add(4*H,'anon_bot','/contact',{ua:'PlayStore-Google'},'desktop'); add(0.1*H,null,'/admin',{},'desktop','page_view','team-1');
+    for (let d = 1; d < 14; d++) for (let k = 0; k < (3 + (d * 7) % 9); k++) add(d*24*H + k*H, 'anon_x' + d + '_' + k, '/', k % 3 === 0 ? { referrer:'https://www.google.com/' } : {}, k % 2 ? 'desktop' : 'mobile');
+    return {
+        events: ev,
+        signups: [{ id:'u-1', full_name:'سارة العتيبي', created_at: new Date(now - 0.6*H).toISOString(), role:'user' }, { id:'u-9', full_name:'فهد', created_at: new Date(now - 30*H).toISOString(), role:'user' }],
+        attempts: [0.4,0.41,0.42,0.43].map(h => ({ user_id:'u-1', created_at: new Date(now - h*H).toISOString() })),
+        payments: [{ user_id:'u-9', amount:79, payment_id:'p1', paid_at: new Date(now - 29*H).toISOString(), plan_type:'monthly' }],
+        teamIds: ['team-1'], names: { 'u-1':'سارة العتيبي', 'u-9':'فهد' }
     };
-    const rows = items.map(([path, val], i) => {
-        const pct = (val / max * 100);
-        const lbl = labels[path] || path;
-        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ln)">
-            <div style="width:22px;text-align:center;font-size:10px;font-weight:700;color:${i===0?'var(--gold)':i===1?'#9CA3AF':i===2?'var(--acc)':'var(--i4)'}">#${i+1}</div>
-            <div style="flex:1;min-width:0">
-                <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(path)}">${esc(lbl)}</div>
-                <div style="font-size:10px;color:var(--i4);direction:ltr;text-align:right;margin-top:2px">${esc(path)}</div>
-            </div>
-            <div style="width:130px"><div style="height:6px;background:var(--s2);border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--pri);border-radius:3px"></div></div></div>
-            <div style="font-size:12px;font-weight:700;color:var(--pri);min-width:45px;text-align:left">${fmt(val)}</div>
-        </div>`;
-    }).join('');
-    return rows;
 }
 
 window.visSetRange = function(range) {
     window._visState.range = range;
-    document.querySelectorAll('.vis-chip').forEach(c => c.classList.toggle('active', c.dataset.range === range));
+    document.querySelectorAll('#visRangeChips .vis-chip').forEach(c => c.classList.toggle('active', c.dataset.range === range));
     loadVisitors({ refresh: true });
 };
 
-// ═══════════════════════════════════════════════════════
-// LIVE ACTIVITY FEED — يجلب آخر 24 ساعة من 4 مصادر ويعرضها كـtimeline
-// (موسّع من 30 دقيقة لرؤية أوسع لنشاط الموقع)
-// ═══════════════════════════════════════════════════════
-window.visRefreshLive = async function() {
-    const list = document.getElementById('visLiveList');
-    if (!list) return;
+window.loadVisitors = async function(opts = {}) {
     const { sb } = window.A;
-    // نافذة 24 ساعة + limits أكبر لعدم تفويت أي نشاط
-    const since = new Date(Date.now() - 24*60*60*1000).toISOString();
+    const isRefresh = opts.refresh === true;
+    const isPreview = new URLSearchParams(window.location.search).has('preview');
+
+    if (!isRefresh) {
+        const chip = (r, t) => `<button class="vis-chip ${window._visState.range === r ? 'active' : ''}" data-range="${r}" onclick="visSetRange('${r}')">${t}</button>`;
+        $c().innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+            <div id="visRangeChips" style="display:inline-flex;background:var(--s2);border:1px solid var(--ln);border-radius:10px;padding:3px;gap:2px">
+                ${chip('today','اليوم')}${chip('yesterday','أمس')}${chip('week','آخر 7 أيام')}${chip('month','آخر 30 يوماً')}
+            </div>
+            <div style="margin-right:auto;font-size:11px;color:var(--i3)">تتحدّث تلقائياً كل دقيقة · آخر تحديث <span id="visLastRefresh">الآن</span></div>
+        </div>
+        <div id="visArea"><div class="loader">جاري التحميل...</div></div>`;
+
+        if (!document.getElementById('visChipStyles')) {
+            const s = document.createElement('style');
+            s.id = 'visChipStyles';
+            s.textContent = `.vis-chip{padding:7px 15px;border:none;background:transparent;border-radius:8px;font-size:12px;font-weight:700;color:var(--i3);cursor:pointer;font-family:inherit;transition:all .15s}.vis-chip:hover{color:var(--pri)}.vis-chip.active{background:var(--sf);color:var(--pri);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 4px rgba(34,197,94,0)}}
+.vis-sum{background:var(--sf);border:1px solid var(--ln);border-right:4px solid var(--pri);border-radius:12px;padding:16px 18px;margin-bottom:14px;font-size:14.5px;line-height:1.9;color:var(--ink)}
+.vis-sum b{font-weight:800}.vis-sum .vis-sum2{font-size:12.5px;color:var(--i3);margin-top:2px}
+.vis-step{display:grid;grid-template-columns:150px 1fr 96px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--ln)}.vis-step:last-child{border-bottom:none}
+.vis-step-l{font-size:12.5px;font-weight:700;color:var(--ink)}.vis-step-l small{display:block;font-size:10px;font-weight:500;color:var(--i4);margin-top:1px}
+.vis-bar{height:22px;background:var(--s2);border-radius:6px;overflow:hidden}.vis-bar>i{display:block;height:100%;border-radius:6px;background:var(--pri);min-width:2px}
+.vis-step-n{font-size:15px;font-weight:800;text-align:left;font-variant-numeric:tabular-nums}.vis-step-n small{display:block;font-size:10px;font-weight:600;color:var(--i4)}
+.vis-src{display:grid;grid-template-columns:1fr 110px 54px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--ln);font-size:12.5px}.vis-src:last-child{border-bottom:none}
+.vis-src b{font-weight:700}.vis-src .n{font-weight:800;text-align:left;font-variant-numeric:tabular-nums}
+.vis-days{display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:18px}
+.vis-dcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.vis-dcol .b{width:100%;max-width:38px;background:var(--pri);border-radius:5px 5px 0 0;min-height:2px;opacity:.85}.vis-dcol.today .b{opacity:1;background:var(--suc)}
+.vis-dcol .v{font-size:11px;font-weight:800;color:var(--ink);margin-bottom:3px;font-variant-numeric:tabular-nums}
+.vis-dcol .d{font-size:9.5px;color:var(--i4);margin-top:5px;white-space:nowrap;direction:ltr}
+.vis-dcol .s{font-size:9px;font-weight:800;color:var(--suc);height:13px}
+.vis-j{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln);align-items:flex-start}.vis-j:last-child{border-bottom:none}
+.vis-j-ic{width:36px;height:36px;border-radius:10px;background:var(--s2);display:grid;place-items:center;flex-shrink:0;color:var(--i3)}.vis-j-ic svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.vis-j.member .vis-j-ic{background:var(--ps,rgba(124,58,237,.1));color:var(--pri)}
+.vis-j-b{flex:1;min-width:0}.vis-j-t{font-size:12.5px;color:var(--ink)}.vis-j-t b{font-weight:800}.vis-j-t span{color:var(--i3)}
+.vis-j-p{font-size:12px;color:var(--i2);margin-top:4px;line-height:1.8}.vis-j-p i{font-style:normal;color:var(--i4);margin:0 5px}
+.vis-tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:7px;margin-inline-start:6px;white-space:nowrap}
+.vis-tag.g{background:var(--ss,rgba(34,197,94,.12));color:var(--suc)}.vis-tag.o{background:var(--as,rgba(245,158,11,.14));color:var(--acc)}.vis-tag.p{background:var(--ps,rgba(124,58,237,.1));color:var(--pri)}
+.vis-j-time{font-size:11px;color:var(--i4);font-weight:600;flex-shrink:0;white-space:nowrap}
+.vis-mini{display:grid;grid-template-columns:1fr 46px;gap:8px;align-items:center;padding:6px 0;font-size:12px}.vis-mini .n{font-weight:800;text-align:left}
+.vis-hours{display:flex;align-items:flex-end;gap:2px;height:70px}.vis-hours i{flex:1;background:var(--pri);opacity:.7;border-radius:2px 2px 0 0;min-height:1px}
+.vis-note{font-size:11px;color:var(--i4);margin-top:14px;line-height:1.8}
+@media(max-width:900px){.vis-step{grid-template-columns:110px 1fr 70px}.vis-2{grid-template-columns:1fr !important}}`;
+            document.head.appendChild(s);
+        }
+
+        if (window._visState.liveTimer) { clearInterval(window._visState.liveTimer); window._visState.liveTimer = null; }
+        if (window._visState.refreshTimer) clearInterval(window._visState.refreshTimer);
+        window._visState.refreshTimer = setInterval(() => {
+            if (!document.getElementById('visArea')) { clearInterval(window._visState.refreshTimer); window._visState.refreshTimer = null; return; }
+            if (!document.hidden) loadVisitors({ refresh: true });
+        }, 60000);
+    }
+
+    // ── حدود الفترة والفترة السابقة لها ──
+    const now = Date.now();
+    const sod = new Date(); sod.setHours(0, 0, 0, 0);
+    const today0 = sod.getTime();
+    const range = window._visState.range || 'today';
+    let a, b, pa, pb, rangeLabel, prevLabel;
+    if (range === 'yesterday') { a = today0 - VIS_DAY; b = today0; pa = a - VIS_DAY; pb = a; rangeLabel = 'أمس'; prevLabel = 'قبل أمس'; }
+    else if (range === 'week') { a = now - 7*VIS_DAY; b = now; pa = now - 14*VIS_DAY; pb = a; rangeLabel = 'آخر 7 أيام'; prevLabel = 'الأسبوع السابق'; }
+    else if (range === 'month') { a = now - 30*VIS_DAY; b = now; pa = now - 60*VIS_DAY; pb = a; rangeLabel = 'آخر 30 يوماً'; prevLabel = 'الشهر السابق'; }
+    else { a = today0; b = now; pa = today0 - VIS_DAY; pb = today0; rangeLabel = 'اليوم'; prevLabel = 'أمس'; }
+    const since = Math.min(pa, today0 - 13*VIS_DAY);
+    const sinceIso = new Date(since).toISOString();
 
     try {
-        const [evs, sus, ats, pys] = await Promise.all([
-            sb.from('analytics_events').select('event_type,page_path,user_id,anonymous_id,device,metadata,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(400),
-            sb.from('profiles').select('id,full_name,created_at').gte('created_at', since).order('created_at',{ascending:false}).limit(50),
-            sb.from('attempts').select('user_id,is_correct,created_at,question_id').gte('created_at', since).order('created_at',{ascending:false}).limit(300),
-            sb.from('payments').select('user_id,amount,created_at,payment_id,status').gte('created_at', since).order('created_at',{ascending:false}).limit(50)
-        ]);
-
-        // Collect user_ids to lookup names
-        const userIds = new Set();
-        (evs.data||[]).forEach(e => e.user_id && userIds.add(e.user_id));
-        (sus.data||[]).forEach(s => userIds.add(s.id));
-        (ats.data||[]).forEach(a => userIds.add(a.user_id));
-        (pys.data||[]).forEach(p => userIds.add(p.user_id));
-
-        let nameMap = {};
-        if (userIds.size > 0) {
-            const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', Array.from(userIds));
-            (profs||[]).forEach(p => { nameMap[p.id] = p.full_name || 'مستخدم'; });
-        }
-
-        const PAGE_LABELS = {
-            '/':'الرئيسية','/dashboard':'لوحة الطالب','/training':'التدريب','/leaks':'التسريبات',
-            '/practice':'الأسئلة','/profile':'الملف الشخصي','/reports':'التقارير','/pricing':'الاشتراك',
-            '/login':'تسجيل الدخول','/register':'إنشاء حساب','/welcome':'الترحيب','/demo':'تجربة مجانية',
-            '/admin':'لوحة الإدارة','/referrals':'الإحالات','/payment-return':'بعد الدفع',
-            '/tahsili-top-400':'حملة التحصيلي','/mock-exam':'اختبار محاكي','/about':'عن المنصة',
-            '/terms':'الشروط','/privacy':'الخصوصية','/invoice':'فاتورة','/forgot-password':'استعادة كلمة السر'
-        };
-
-        const items = [];
-
-        // 1) Signups (high priority)
-        (sus.data||[]).forEach(s => items.push({
-            ts: s.created_at, cat: 'signups',
-            ic: '🎉', bg: 'rgba(34,197,94,.12)', txtColor: '#16A34A',
-            text: `<b>${esc(s.full_name||'مستخدم')}</b> أنشأ حساباً جديداً`,
-            meta: '✨ تسجيل جديد', device: ''
-        }));
-
-        // 2) Payments
-        (pys.data||[]).forEach(p => {
-            const name = nameMap[p.user_id] || 'مستخدم';
-            const isFree = (p.payment_id||'').startsWith('FREE-');
-            const paid = p.status === 'paid';
-            items.push({
-                ts: p.created_at, cat: 'payments',
-                ic: isFree ? '🎟️' : (paid ? '⭐' : '💳'),
-                bg: paid ? 'rgba(245,158,11,.14)' : 'rgba(109,93,246,.10)',
-                txtColor: paid ? '#D97706' : 'var(--pri)',
-                text: isFree
-                    ? `<b>${esc(name)}</b> فعّل اشتراك مجاني (كوبون)`
-                    : (paid ? `<b>${esc(name)}</b> اشترك بـ ${Number(p.amount)} ر.س` : `<b>${esc(name)}</b> بدأ عملية دفع (${Number(p.amount||0)} ر.س)`),
-                meta: paid ? '✓ اشتراك مؤكّد' : '⏳ في انتظار التأكيد',
-                device: ''
-            });
-        });
-
-        // 3) Attempts (batch per user)
-        const attBy = {};
-        (ats.data||[]).forEach(a => {
-            const k = a.user_id;
-            if (!attBy[k]) attBy[k] = { count:0, correct:0, latest:a.created_at };
-            attBy[k].count++;
-            if (a.is_correct) attBy[k].correct++;
-            if (new Date(a.created_at) > new Date(attBy[k].latest)) attBy[k].latest = a.created_at;
-        });
-        Object.entries(attBy).forEach(([uid, st]) => {
-            items.push({
-                ts: st.latest, cat: 'practice',
-                ic: '📝', bg: 'rgba(109,93,246,.10)', txtColor: 'var(--pri)',
-                text: `<b>${esc(nameMap[uid]||'مستخدم')}</b> حلّ ${st.count} سؤال (${st.correct} صحيح)`,
-                meta: `معدل: ${Math.round(st.correct/st.count*100)}%`,
-                device: ''
-            });
-        });
-
-        // 4) Page views (most recent unique per user in last 30 min)
-        const seenVisit = new Set();
-        (evs.data||[]).forEach(e => {
-            if (e.event_type !== 'page_view') return;
-            const key = (e.user_id||e.anonymous_id||'?') + '|' + (e.page_path||'/');
-            if (seenVisit.has(key)) return;
-            seenVisit.add(key);
-            const path = (e.page_path||'/').replace(/\/$/,'')||'/';
-            const lbl = PAGE_LABELS[path] || path;
-            // عرض زائر مجهول: آخر 6 chars من anonymous_id كمعرّف مختصر
-            const anonShort = (e.anonymous_id||'').replace(/^anon_/,'').slice(-6) || 'مجهول';
-            const userName = e.user_id ? (nameMap[e.user_id]||'مستخدم') : ('زائر · ' + anonShort);
-            const isAnon = !e.user_id;
-            items.push({
-                ts: e.created_at, cat: 'visits',
-                ic: isAnon ? '👁️' : '👤',
-                bg: isAnon ? 'rgba(107,112,148,.10)' : 'rgba(59,130,246,.10)',
-                txtColor: isAnon ? 'var(--i3)' : '#3B82F6',
-                text: `<b>${esc(userName)}</b> فتح <span style="color:var(--i2)">${esc(lbl)}</span>`,
-                meta: e.metadata?.utm_source ? `من ${esc(e.metadata.utm_source)}` : '',
-                device: e.device || ''
-            });
-        });
-
-        // Sort all items by timestamp desc
-        items.sort((a,b) => new Date(b.ts) - new Date(a.ts));
-
-        // Filter
-        const filter = window._visState.liveFilter || 'all';
-        const filtered = filter === 'all' ? items : items.filter(i => i.cat === filter);
-
-        // Limit display
-        const display = filtered.slice(0, 60);
-
-        if (display.length === 0) {
-            list.innerHTML = '<div style="padding:36px;text-align:center;color:var(--i4);font-size:12px">لا توجد أحداث في آخر 24 ساعة</div>';
+        let D;
+        if (isPreview) {
+            D = visMockData();
         } else {
-            const formatAgo = (t) => {
-                const s = Math.floor((Date.now() - new Date(t).getTime()) / 1000);
-                if (s < 10) return 'الآن';
-                if (s < 60) return `قبل ${s} ث`;
-                if (s < 3600) return `قبل ${Math.floor(s/60)} د`;
-                return `قبل ${Math.floor(s/3600)} س`;
-            };
+            const [events, signups, attempts, payments, team] = await Promise.all([
+                visFetchAll(() => sb.from('analytics_events').select('event_type,page_path,user_id,anonymous_id,device,metadata,created_at').gte('created_at', sinceIso).in('event_type', ['page_view','hero_question_answered']).order('created_at', { ascending: false })),
+                visFetchAll(() => sb.from('profiles').select('id,full_name,created_at,role').gte('created_at', sinceIso).order('created_at', { ascending: false }), 3),
+                visFetchAll(() => sb.from('attempts').select('user_id,created_at').gte('created_at', sinceIso).order('created_at', { ascending: false }), 6),
+                sb.from('payments').select('user_id,amount,payment_id,paid_at,plan_type').eq('status', 'paid').gte('paid_at', sinceIso).then(r => r.data || []),
+                sb.from('profiles').select('id').in('role', ['admin','staff']).then(r => r.data || [])
+            ]);
+            D = { events, signups, attempts, payments, teamIds: team.map(t => t.id), names: {} };
+        }
+        const teamIds = new Set(D.teamIds);
+        const inR = (t, x, y) => t >= x && t < y;
 
-            // Track which events are new (for animation)
-            const seen = window._visState.liveSeen || new Set();
-            const newSeen = new Set();
+        // ── تنظيف: استبعاد فريق العمل والروبوتات وصفحات الإدارة ──
+        const clean = [];
+        let teamViews = 0, botViews = 0;
+        D.events.forEach(e => {
+            e._t = new Date(e.created_at).getTime();
+            const cur = inR(e._t, a, b);
+            if ((e.user_id && teamIds.has(e.user_id)) || (e.metadata && e.metadata.team) || /^\/(admin|partner|arena)/.test(e.page_path || '')) { if (cur) teamViews++; return; }
+            if (visIsBot(e)) { if (cur) botViews++; return; }
+            clean.push(e);
+        });
+        clean.sort((x, y) => x._t - y._t);
 
-            list.innerHTML = display.map(it => {
-                const key = it.ts + '|' + it.text.slice(0,40);
-                newSeen.add(key);
-                const isNew = !seen.has(key) && seen.size > 0;  // skip first load
-                const devPill = it.device ? `<span class="vlive-pill" style="background:var(--s2);color:var(--i3)">${esc(it.device)}</span>` : '';
-                const metaParts = [it.meta, devPill].filter(x => x).join(' · ');
-                return `<div class="vlive-row${isNew?' new':''}">
-                    <div class="vlive-ic" style="background:${it.bg};color:${it.txtColor}">${it.ic}</div>
-                    <div class="vlive-body">
-                        <div class="vlive-text">${it.text}</div>
-                        ${metaParts ? `<div class="vlive-meta">${metaParts}</div>` : ''}
-                    </div>
-                    <div class="vlive-time">${formatAgo(it.ts)}</div>
-                </div>`;
-            }).join('');
+        // هوية الزائر: نفس الجهاز قبل التسجيل وبعده = شخص واحد (متى توفّر المعرّفان معاً)
+        const anonToUser = {};
+        clean.forEach(e => { if (e.user_id && e.anonymous_id) anonToUser[e.anonymous_id] = e.user_id; });
+        const vidOf = e => e.user_id ? 'u:' + e.user_id : (anonToUser[e.anonymous_id] ? 'u:' + anonToUser[e.anonymous_id] : 'a:' + (e.anonymous_id || '?'));
 
-            window._visState.liveSeen = newSeen;
+        const realSignups = D.signups.filter(s => !teamIds.has(s.id) && !['admin','staff'].includes(s.role));
+        const realAttempts = D.attempts.filter(x => x.user_id && !teamIds.has(x.user_id));
+        const realPays = D.payments.filter(p => !(p.payment_id || '').startsWith('FREE-') && Number(p.amount || 0) > 0 && !teamIds.has(p.user_id));
+
+        const stats = (x, y) => {
+            const vis = new Map(); const tried = new Set(), intent = new Set(); let views = 0;
+            clean.forEach(e => {
+                if (!inR(e._t, x, y)) return;
+                const id = vidOf(e);
+                if (!vis.has(id)) vis.set(id, { id, evs: [], first: e, last: e });
+                const v = vis.get(id); v.evs.push(e); v.last = e;
+                if (e.event_type === 'page_view') views++;
+                const lbl = visPageLabel(e.page_path);
+                if (e.event_type === 'hero_question_answered' || lbl === 'التجربة المجانية' || lbl === 'عينة التجميعات') tried.add(id);
+                if (lbl === 'صفحة التسجيل' || lbl === 'صفحة الأسعار') intent.add(id);
+            });
+            const su = realSignups.filter(s => inR(new Date(s.created_at).getTime(), x, y));
+            const at = realAttempts.filter(t => inR(new Date(t.created_at).getTime(), x, y));
+            const py = realPays.filter(p => inR(new Date(p.paid_at).getTime(), x, y));
+            return { vis, tried, intent, views, signups: su, attempts: at, trainees: new Set(at.map(t => t.user_id)), pays: py, rev: py.reduce((s, p) => s + Number(p.amount || 0), 0) };
+        };
+        const C = stats(a, b), P = stats(pa, pb);
+        const nVis = C.vis.size;
+
+        // أسماء الأعضاء الظاهرين في الفترة
+        const names = Object.assign({}, D.names);
+        D.signups.forEach(s => { names[s.id] = s.full_name; });
+        if (!isPreview) {
+            const need = Array.from(C.vis.keys()).filter(k => k.startsWith('u:')).map(k => k.slice(2)).filter(id => !(id in names));
+            if (need.length) {
+                const { data: profs } = await sb.from('profiles').select('id,full_name').in('id', need.slice(0, 200));
+                (profs || []).forEach(p => { names[p.id] = p.full_name; });
+            }
         }
 
-        const countEl = document.getElementById('visLiveCount');
-        if (countEl) countEl.textContent = filtered.length;
-        const updEl = document.getElementById('visLiveUpdate');
-        if (updEl) updEl.textContent = new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        // ── المصادر والأجهزة (لكل زائر مرة واحدة) ──
+        const srcMap = {}; const dev = { mobile: 0, desktop: 0, app: 0 };
+        C.vis.forEach(v => {
+            const s = visSource(v.first);
+            v.src = s;
+            (srcMap[s.key] = srcMap[s.key] || { label: s.label, n: 0, partner: !!s.partner }).n++;
+            const d = String(v.first.device || '').toLowerCase();
+            dev[d === 'app' ? 'app' : d === 'desktop' ? 'desktop' : 'mobile']++;
+        });
+        const sources = Object.values(srcMap).sort((x, y) => y.n - x.n);
+        const members = Array.from(C.vis.keys()).filter(k => k.startsWith('u:')).length;
+
+        // ── الصفحات والساعات ──
+        const pages = {}; const hours = new Array(24).fill(0);
+        C.vis.forEach(v => v.evs.forEach(e => {
+            if (e.event_type !== 'page_view') return;
+            const l = visPageLabel(e.page_path); pages[l] = (pages[l] || 0) + 1;
+            hours[new Date(e._t).getHours()]++;
+        }));
+        const topPages = Object.entries(pages).sort((x, y) => y[1] - x[1]).slice(0, 7);
+        const peakHour = hours.indexOf(Math.max(...hours));
+
+        // ── آخر 14 يوماً ──
+        const days = [];
+        for (let i = 13; i >= 0; i--) {
+            const x = today0 - i*VIS_DAY, y = x + VIS_DAY;
+            const ids = new Set();
+            clean.forEach(e => { if (inR(e._t, x, y)) ids.add(vidOf(e)); });
+            const su = realSignups.filter(s => inR(new Date(s.created_at).getTime(), x, y)).length;
+            const dt = new Date(x);
+            days.push({ n: ids.size, su, lbl: dt.getDate() + '/' + (dt.getMonth() + 1), wd: dt.toLocaleDateString('ar-SA-u-ca-gregory-nu-latn', { weekday: 'long' }), today: i === 0 });
+        }
+        const maxDay = Math.max(1, ...days.map(d => d.n));
+
+        // ── خلاصة بجملة واحدة ──
+        const cmp = (cur, prev) => {
+            const arrow = cur > prev ? '<span style="color:var(--suc);font-weight:800">↑</span> ' : cur < prev ? '<span style="color:var(--dng);font-weight:800">↓</span> ' : '';
+            return arrow + prevLabel + ': ' + fmt(prev);
+        };
+        let summary;
+        if (nVis === 0) {
+            summary = `<b>${rangeLabel}:</b> لا زيارات حتى الآن.`;
+        } else {
+            const parts = [`زار الموقع <b>${visCount(nVis, 'زائر واحد', 'زائران', 'زوار', 'زائراً')}</b>`];
+            parts.push(C.tried.size ? `جرّب الأسئلة منهم <b>${fmt(C.tried.size)}</b>` : 'ولم يجرّب أحد منهم الأسئلة');
+            parts.push(C.signups.length ? `وسجّل حساباً <b>${fmt(C.signups.length)}</b>` : 'ولم يسجّل أحد');
+            parts.push(C.pays.length ? `واشترك <b>${fmt(C.pays.length)}</b> بمبلغ <b>${fmt(Math.round(C.rev))} ر.س</b>` : 'ولا اشتراكات مدفوعة');
+            summary = `<b>${rangeLabel}:</b> ${parts.join('، ')}.`;
+            if (sources.length) summary += `<div class="vis-sum2">أكثر المصادر: ${sources.slice(0, 3).map(s => esc(s.label) + ' (' + fmt(s.n) + ')').join('، ')}${members ? ' · منهم ' + fmt(members) + ' عضو مسجّل دخل حسابه' : ''}</div>`;
+        }
+
+        // ── مسار التحويل ──
+        const step = (title, hint, n, base, color) => {
+            const w = nVis > 0 ? Math.max(0, Math.min(100, n / nVis * 100)) : 0;
+            const pct = base > 0 ? Math.round(n / base * 100) + '% من الخطوة السابقة' : '';
+            return `<div class="vis-step"><div class="vis-step-l">${title}<small>${hint}</small></div><div class="vis-bar"><i style="width:${w}%;background:${color || 'var(--pri)'}"></i></div><div class="vis-step-n">${fmt(n)}<small>${pct}</small></div></div>`;
+        };
+        const funnel = step('زاروا الموقع', 'فتحوا أي صفحة', nVis, 0)
+            + step('جرّبوا الأسئلة', 'سؤال الواجهة أو التجربة', C.tried.size, nVis)
+            + step('فتحوا التسجيل أو الأسعار', 'أبدوا اهتماماً', C.intent.size, C.tried.size || nVis)
+            + step('سجّلوا حساباً', 'من الموقع والتطبيق', C.signups.length, C.intent.size || nVis, 'var(--acc)')
+            + step('اشتركوا ودفعوا', fmt(Math.round(C.rev)) + ' ر.س', C.pays.length, C.signups.length || nVis, 'var(--suc)');
+
+        const srcHtml = sources.length === 0 ? '<div class="empty-d" style="padding:18px">لا زوار في هذه الفترة</div>' : sources.slice(0, 9).map(s =>
+            `<div class="vis-src"><div><b>${esc(s.label)}</b>${s.partner ? '<span class="vis-tag p">رابط شريك</span>' : ''}</div><div class="vis-bar" style="height:10px"><i style="width:${Math.round(s.n / nVis * 100)}%;background:${s.partner ? 'var(--acc)' : 'var(--pri)'}"></i></div><div class="n">${fmt(s.n)}</div></div>`).join('');
+
+        // ── رحلات آخر الزوار ──
+        const attByUser = {}; C.attempts.forEach(t => { attByUser[t.user_id] = (attByUser[t.user_id] || 0) + 1; });
+        const newIds = new Set(C.signups.map(s => s.id)); const paidIds = new Set(C.pays.map(p => p.user_id));
+        const icPhone = '<svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></svg>';
+        const icDesk = '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+        const journeys = Array.from(C.vis.values()).sort((x, y) => y.last._t - x.last._t).slice(0, 40).map(v => {
+            const uid = v.id.startsWith('u:') ? v.id.slice(2) : null;
+            const steps = [];
+            v.evs.forEach(e => { const l = e.event_type === 'hero_question_answered' ? 'جاوب سؤال الواجهة' : visPageLabel(e.page_path); if (steps[steps.length - 1] !== l) steps.push(l); });
+            const shown = steps.length > 7 ? steps.slice(0, 6).concat('… +' + (steps.length - 6)) : steps;
+            const d = String(v.first.device || '').toLowerCase();
+            const devLbl = d === 'app' ? 'التطبيق' : d === 'desktop' ? 'كمبيوتر' : 'جوال';
+            let tags = '';
+            if (uid && newIds.has(uid)) tags += '<span class="vis-tag g">سجّل حساباً</span>';
+            if (uid && attByUser[uid]) tags += `<span class="vis-tag p">حلّ ${visCount(attByUser[uid], 'سؤالاً واحداً', 'سؤالين', 'أسئلة', 'سؤالاً')}</span>`;
+            if (uid && paidIds.has(uid)) tags += '<span class="vis-tag o">اشترك</span>';
+            if (!uid && steps.length === 1) tags += '<span class="vis-tag" style="background:var(--s2);color:var(--i4)">صفحة واحدة ثم خرج</span>';
+            const who = uid ? `<b>${esc(names[uid] || 'عضو')}</b> <span>· عضو</span>` : '<b>زائر</b>';
+            return `<div class="vis-j${uid ? ' member' : ''}"><div class="vis-j-ic">${d === 'desktop' ? icDesk : icPhone}</div><div class="vis-j-b"><div class="vis-j-t">${who} <span>· من ${esc(v.src.label)} · ${devLbl}</span>${tags}</div><div class="vis-j-p">${shown.map(esc).join('<i>←</i>')}</div></div><div class="vis-j-time">${visAgo(v.last.created_at)}</div></div>`;
+        }).join('');
+
+        const kpi = (cls, label, val, sub) => `<div class="kpi ${cls}"><div class="kpi-label">${label}</div><div class="kpi-val">${val}</div><div class="kpi-sub" style="font-size:11px">${sub}</div></div>`;
+        const maxHour = Math.max(1, ...hours);
+
+        const lr = document.getElementById('visLastRefresh');
+        if (lr) lr.textContent = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        document.getElementById('visArea').innerHTML = `
+        <div class="vis-sum">${summary}</div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px" class="vis-2">
+            ${kpi('blue', 'زوار ' + rangeLabel, fmt(nVis), cmp(nVis, P.vis.size))}
+            ${kpi('orange', 'تسجيلات جديدة', fmt(C.signups.length), cmp(C.signups.length, P.signups.length))}
+            ${kpi('gold', 'أعضاء حلّوا أسئلة', fmt(C.trainees.size), visCount(C.attempts.length, 'إجابة واحدة', 'إجابتان', 'إجابات', 'إجابة') + ' · ' + cmp(C.trainees.size, P.trainees.size))}
+            ${kpi('green', 'اشتراكات مدفوعة', fmt(C.pays.length), fmt(Math.round(C.rev)) + ' ر.س · ' + cmp(C.pays.length, P.pays.length))}
+        </div>
+
+        <div style="display:grid;grid-template-columns:3fr 2fr;gap:14px" class="vis-2">
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">ماذا فعل الزوار · ${rangeLabel}</div><div class="card-sub">من الزيارة إلى الاشتراك — أين يتوقف الناس</div></div></div></div>
+                <div class="card-body">${funnel}</div>
+            </div>
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">من أين جاء الزوار</div><div class="card-sub">كل زائر يُحسب مرة واحدة · «مباشر» = كتب الرابط أو فتحه من محفوظاته</div></div></div></div>
+                <div class="card-body">${srcHtml}</div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+            <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">الزوار يومياً · آخر 14 يوماً</div><div class="card-sub">العمود = زوار حقيقيون في اليوم · الرقم الأخضر = تسجيلات جديدة · العمود الأخضر اليوم</div></div></div></div>
+            <div class="card-body"><div class="vis-days">${days.map(d =>
+                `<div class="vis-dcol${d.today ? ' today' : ''}" title="${d.wd} ${d.lbl}: ${d.n} زائر، ${d.su} تسجيل"><div class="s">${d.su ? '+' + d.su : ''}</div><div class="v">${d.n}</div><div class="b" style="height:${Math.round(d.n / maxDay * 100)}%"></div><div class="d">${d.lbl}</div></div>`).join('')}</div></div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+            <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">آخر الزوار · ${rangeLabel}</div><div class="card-sub">كل سطر شخص واحد: من أين جاء وما الصفحات التي فتحها بالترتيب</div></div></div></div>
+            <div class="card-body" style="max-height:560px;overflow-y:auto">${journeys || '<div class="empty-d" style="padding:18px">لا زوار في هذه الفترة</div>'}</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px" class="vis-2">
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">أكثر الصفحات فتحاً</div><div class="card-sub">${fmt(C.views)} مشاهدة</div></div></div></div>
+                <div class="card-body">${topPages.length ? topPages.map(p => `<div class="vis-mini"><div>${esc(p[0])}</div><div class="n">${fmt(p[1])}</div></div>`).join('') : '<div class="empty-d" style="padding:14px">—</div>'}</div>
+            </div>
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">الأجهزة</div><div class="card-sub">حسب عدد الزوار</div></div></div></div>
+                <div class="card-body">
+                    <div class="vis-mini"><div>جوال (متصفح)</div><div class="n">${fmt(dev.mobile)}</div></div>
+                    <div class="vis-mini"><div>كمبيوتر</div><div class="n">${fmt(dev.desktop)}</div></div>
+                    <div class="vis-mini"><div>التطبيق</div><div class="n">${fmt(dev.app)}</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-hdr"><div class="card-hdr-l"><div><div class="card-title">أوقات الزيارة</div><div class="card-sub">${C.views ? 'الذروة قرابة الساعة ' + peakHour + ':00' : 'لا بيانات'} · من 0 إلى 23</div></div></div></div>
+                <div class="card-body"><div class="vis-hours">${hours.map((h, i) => `<i title="الساعة ${i}:00 — ${h} مشاهدة" style="height:${Math.round(h / maxHour * 100)}%"></i>`).join('')}</div></div>
+            </div>
+        </div>
+
+        <div class="vis-note">الأرقام للزوار الحقيقيين فقط. استُبعد من ${rangeLabel}: مشاهدات فريق العمل وصفحات الإدارة (${fmt(teamViews)})، والزيارات الآلية مثل فاحص متجر قوقل بلاي (${fmt(botViews)}).</div>`;
     } catch(e) {
-        console.error('visRefreshLive', e);
+        console.error('loadVisitors', e);
+        const el = document.getElementById('visArea');
+        if (el) el.innerHTML = '<div class="empty-d" style="padding:24px">تعذّر تحميل بيانات الزوار: ' + esc(e.message || '') + '</div>';
     }
 };
 

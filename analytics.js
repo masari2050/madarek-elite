@@ -26,9 +26,13 @@
             if(session && session.user) userId = session.user.id;
         } catch(e){}
 
+        // متصفح فريق العمل (يضبطه admin.html) → تُستبعد زياراته من أرقام الزوار
+        try { if (localStorage.getItem('madarek_team') === '1') { metadata = metadata || {}; metadata.team = true; } } catch(e){}
+
         var body = {
             user_id: userId,
-            anonymous_id: userId ? null : anonId,
+            // معرّف الجهاز يُرسل دائماً: يربط زيارات الشخص قبل التسجيل وبعده فلا يُحسب زائرين
+            anonymous_id: anonId,
             event_type: eventType,
             page_path: location.pathname.replace(/\.html$/,'') || '/',
             metadata: metadata || {},

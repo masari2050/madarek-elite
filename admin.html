@@ -16,6 +16,7 @@
 --pri:#6D5DF6;--pri-s:rgba(109,93,246,.08);--pri-m:rgba(109,93,246,.15);--pri-t:#5144C8;
 --acc:#FF8A3D;--acc-s:rgba(255,138,61,.08);
 --suc:#22C55E;--suc-s:rgba(34,197,94,.08);
+--ps:rgba(109,93,246,.10);--ss:rgba(34,197,94,.12);--as:rgba(255,138,61,.12);--i1:#111827;
 --dng:#EF4444;--dng-s:rgba(239,68,68,.08);
 --gold:#F59E0B;--gold-s:rgba(245,158,11,.08);
 --bg:#F4F5F8;--sf:#FFFFFF;--s2:#F9FAFB;
@@ -521,7 +522,7 @@ td{padding:12px 14px;vertical-align:middle;white-space:nowrap}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="v2/preview-mock.js"></script>
 <script src="v2/supabase-helpers-v2.js?v=2026-07-12-gtseg"></script>
-<script src="admin-sections.js?v=2026-11-08-partners"></script>
+<script src="admin-sections.js?v=2026-11-13-visitors"></script>
 <script src="v2/whatsapp-float.js"></script>
 <script>
 (function(){
@@ -538,9 +539,9 @@ init();
 async function init() {
     const isPreview = new URLSearchParams(window.location.search).has('preview');
 
-    // Set current date (Hijri)
+    // التاريخ ميلادي بأرقام إنجليزية (قاعدة اللوحة: لا هجري ولا أرقام هندية)
     const now = new Date();
-    document.getElementById('curDate').textContent = now.toLocaleDateString('ar-SA-u-ca-islamic', {day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('curDate').textContent = now.toLocaleDateString('ar-SA-u-ca-gregory-nu-latn', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
     if (isPreview) {
         profile = { id:'demo', full_name:'المدير العام', role:'admin', avatar_emoji:'م' };
@@ -560,6 +561,8 @@ async function init() {
         return;
     }
     window.A.profile = profile;
+    // هذا المتصفح لفريق العمل: analytics.js يعلّم زياراته فتُستبعد من أرقام الزوار حتى وهو غير مسجّل دخوله
+    try { localStorage.setItem('madarek_team', '1'); } catch(_) {}
 
     renderAdminInfo();
     bindNav();
@@ -768,13 +771,24 @@ async function loadTodayVisitorsKpi() {
     try {
         const ksaNow = new Date(Date.now() + 3*3600e3);
         const dayStartIso = new Date(Date.UTC(ksaNow.getUTCFullYear(), ksaNow.getUTCMonth(), ksaNow.getUTCDate()) - 3*3600e3).toISOString();
-        const { data } = await sb.from('analytics_events')
-            .select('anonymous_id,user_id')
-            .eq('event_type','page_view')
-            .gte('created_at', dayStartIso)
-            .limit(10000);
+        const [{ data }, { data: team }] = await Promise.all([
+            sb.from('analytics_events')
+                .select('anonymous_id,user_id,page_path,metadata')
+                .eq('event_type','page_view')
+                .gte('created_at', dayStartIso)
+                .limit(10000),
+            sb.from('profiles').select('id').in('role', ['admin','staff'])
+        ]);
+        // نفس قواعد صفحة الزوار: بلا فريق العمل ولا الروبوتات ولا صفحات الإدارة
+        const teamIds = new Set((team||[]).map(t => t.id));
+        const botRe = /bot|crawl|spider|slurp|headless|lighthouse|playstore-google|facebookexternalhit|pingdom|gtmetrix|uptime/i;
         const ids = new Set();
-        (data||[]).forEach(e => { const id = e.user_id || e.anonymous_id; if (id) ids.add(id); });
+        (data||[]).forEach(e => {
+            const m = e.metadata || {};
+            if ((e.user_id && teamIds.has(e.user_id)) || m.team || /^\/(admin|partner|arena)/.test(e.page_path||'')) return;
+            if (m.ua ? botRe.test(m.ua) : (!e.user_id && /^\/contact/.test(e.page_path||'') && !m.referrer)) return;
+            const id = e.user_id || e.anonymous_id; if (id) ids.add(id);
+        });
         el.textContent = ids.size.toLocaleString('en-US');
     } catch(_) { /* نبقي القيمة الحالية بدل رقم خاطئ */ }
 }
